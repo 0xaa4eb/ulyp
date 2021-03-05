@@ -18,7 +18,7 @@ public class ObjectArrayDebugPrinter extends ObjectBinaryPrinter {
     @Override
     boolean supports(TypeInfo type) {
         // used manually by ObjectArrayPrinter
-        return false;
+        return type.isNonPrimitveArray();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.test.printers;
 
 import com.test.cases.AbstractInstrumentationTest;
-import com.test.cases.SafeCaller;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.printers.*;
@@ -11,7 +10,8 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest {
 
