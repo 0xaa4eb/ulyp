@@ -2,6 +2,7 @@ package com.ulyp.core.printers;
 
 public enum TypeTrait {
 
+    CONCRETE_CLASS,
     JAVA_LANG_OBJECT,
     JAVA_LANG_STRING,
     PRIMITIVE,

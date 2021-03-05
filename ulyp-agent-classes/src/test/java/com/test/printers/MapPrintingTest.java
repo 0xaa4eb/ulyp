@@ -19,7 +19,7 @@ public class MapPrintingTest extends AbstractInstrumentationTest {
                 new TestSettingsBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnHashMap")
-                        .recordCollections()
+                        .recordCollections(CollectionsRecordingMode.ALL)
         );
 
         MapRepresentation collection = (MapRepresentation) root.getReturnValue();
@@ -35,13 +35,26 @@ public class MapPrintingTest extends AbstractInstrumentationTest {
     }
 
     @Test
+    public void shouldNotRecordCustomMapIfOnlyJavaMapsAreRecorded() {
+
+        CallRecord root = runSubprocessWithUi(
+                new TestSettingsBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("returnHashMap")
+                        .recordCollections(CollectionsRecordingMode.JAVA)
+        );
+
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+    }
+
+    @Test
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runSubprocessWithUi(
                 new TestSettingsBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnMapThrowingOnIteration")
-                        .recordCollections()
+                        .recordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));

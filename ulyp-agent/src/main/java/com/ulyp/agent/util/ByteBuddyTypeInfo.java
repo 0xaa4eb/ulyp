@@ -78,8 +78,13 @@ public class ByteBuddyTypeInfo implements TypeInfo {
     private Set<TypeTrait> derive(TypeDescription.Generic type) {
         Set<TypeTrait> traits = EnumSet.noneOf(TypeTrait.class);
         TypeDefinition.Sort sort = type.getSort();
+
         if (sort == TypeDefinition.Sort.VARIABLE || sort == TypeDefinition.Sort.VARIABLE_SYMBOLIC || sort == TypeDefinition.Sort.WILDCARD) {
             traits.add(TypeTrait.TYPE_VAR);
+        } else if (type.isInterface()) {
+            traits.add(TypeTrait.INTERFACE);
+        } else if (!type.isAbstract()) {
+            traits.add(TypeTrait.CONCRETE_CLASS);
         }
 
         if (type.equals(TypeDescription.Generic.OBJECT)) {
@@ -111,11 +116,10 @@ public class ByteBuddyTypeInfo implements TypeInfo {
             traits.add(TypeTrait.COLLECTION);
         } else if (getInterfacesClassesNames().contains("java.util.Map") || type.asErasure().equals(MAP_TYPE)) {
             traits.add(TypeTrait.MAP);
-        } else if (type.isInterface()) {
-            traits.add(TypeTrait.INTERFACE);
         } else if (type.asErasure().equals(CLASS_OBJECT_ERASED)) {
             traits.add(TypeTrait.CLASS_OBJECT);
         }
+
         return traits;
     }
 
@@ -124,7 +128,7 @@ public class ByteBuddyTypeInfo implements TypeInfo {
             TypeDefinition.Sort sort = type.getSort();
             if (sort != TypeDefinition.Sort.VARIABLE && sort != TypeDefinition.Sort.VARIABLE_SYMBOLIC && sort != TypeDefinition.Sort.WILDCARD) {
                 while (type != null && !type.equals(TypeDescription.Generic.OBJECT)) {
-                    superClassesNames.add(type.getActualName());
+                    superClassesNames.add(type.asErasure().getActualName());
 
                     for (TypeDescription.Generic interfface : type.getInterfaces()) {
                         addInterfaceAndAllParentInterfaces(interfface);
@@ -139,10 +143,20 @@ public class ByteBuddyTypeInfo implements TypeInfo {
     }
 
     private void addInterfaceAndAllParentInterfaces(TypeDescription.Generic interfface) {
-        interfacesClassesNames.add(interfface.getActualName());
+        interfacesClassesNames.add(trimGenericTypes(interfface.asErasure().getActualName()));
 
         for (TypeDescription.Generic parentInterface : interfface.getInterfaces()) {
             addInterfaceAndAllParentInterfaces(parentInterface);
+        }
+    }
+
+    // TODO fix the hack
+    private String trimGenericTypes(String genericName) {
+        int pos = genericName.indexOf('<');
+        if (pos > 0) {
+            return genericName.substring(0, pos);
+        } else {
+            return genericName;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.test.cases.util;
 
 import com.ulyp.agent.settings.SystemPropertiesSettings;
+import com.ulyp.core.printers.CollectionsRecordingMode;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
@@ -16,10 +17,8 @@ public class TestSettingsBuilder {
     private PackageList excludedFromInstrumentationPackages = new PackageList();
     private int minRecordsForLog = 1;
     private int maxDepth = Integer.MAX_VALUE;
-    private boolean shouldRecordCollections = false;
+    private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
     private int maxCallsPerMethod = Integer.MAX_VALUE;
-
-    private boolean recordCollectionItems = false;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -36,18 +35,14 @@ public class TestSettingsBuilder {
         return this;
     }
 
-    public TestSettingsBuilder recordCollections() {
-        shouldRecordCollections = true;
+    public TestSettingsBuilder recordCollections(CollectionsRecordingMode mode) {
+        collectionsRecordingMode = mode;
         return this;
     }
 
     public TestSettingsBuilder setInstrumentedPackages(String... packages) {
         this.instrumentedPackages = new PackageList(packages);
         return this;
-    }
-
-    public MethodMatcher getMethodToRecord() {
-        return methodToRecord;
     }
 
     public TestSettingsBuilder setMethodToRecord(MethodMatcher methodToRecord) {
@@ -91,10 +86,6 @@ public class TestSettingsBuilder {
         this.outputFile = outputFile;
     }
 
-    public PackageList getExcludedFromInstrumentationPackages() {
-        return excludedFromInstrumentationPackages;
-    }
-
     public TestSettingsBuilder setExcludedFromInstrumentationPackages(String... packages) {
         this.excludedFromInstrumentationPackages = new PackageList(packages);
         return this;
@@ -110,9 +101,7 @@ public class TestSettingsBuilder {
 
         params.add("-D" + SystemPropertiesSettings.START_METHOD_PROPERTY + "=" + methodToRecord.toString());
         params.add("-D" + SystemPropertiesSettings.FILE_PATH + "=" + outputFile);
-        if (shouldRecordCollections) {
-            params.add("-D" + SystemPropertiesSettings.RECORD_COLLECTIONS);
-        }
+        params.add("-D" + SystemPropertiesSettings.RECORD_COLLECTIONS + "=" + collectionsRecordingMode.name());
 
 //        params.add("-D" + SystemPropertiesSettings.MAX_DEPTH_PROPERTY + "=" + maxTreeDepth);
 //        params.add("-D" + SystemPropertiesSettings.MIN_TRACE_COUNT + "=" + minRecordsCountForLog);

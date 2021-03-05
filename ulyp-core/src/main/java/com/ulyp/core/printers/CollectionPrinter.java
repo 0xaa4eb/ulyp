@@ -14,7 +14,10 @@ import java.util.List;
 
 public class CollectionPrinter extends ObjectBinaryPrinter {
 
-    private volatile boolean active = false;
+    private volatile boolean active = true;
+    private CollectionsRecordingMode mode;
+
+    public static final int MAX_ITEMS_TO_RECORD = 3;
 
     private static final int RECORDED_ITEMS = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
@@ -25,11 +28,11 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
 
     @Override
     boolean supports(TypeInfo type) {
-        return active && type.isCollection();
+        return mode.supports(type) && type.isCollection();
     }
 
-    public void activate() {
-        this.active = true;
+    public void setMode(CollectionsRecordingMode mode) {
+        this.mode = mode;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
                     Collection<?> collection = (Collection<?>) object;
                     int length = collection.size();
                     appender.append(length);
-                    int itemsToRecord = Math.min(3, length);
+                    int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
                     appender.append(itemsToRecord);
                     Iterator<?> iterator = collection.iterator();
                     int recorded = 0;

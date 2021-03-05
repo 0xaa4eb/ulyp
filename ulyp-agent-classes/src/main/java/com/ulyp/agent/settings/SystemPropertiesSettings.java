@@ -3,6 +3,7 @@ package com.ulyp.agent.settings;
 import com.ulyp.agent.transport.UiAddress;
 import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.agent.transport.file.FileUiAddress;
+import com.ulyp.core.printers.CollectionsRecordingMode;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import org.jetbrains.annotations.NotNull;
@@ -30,10 +31,11 @@ public class SystemPropertiesSettings {
             shouldRecordConstructors = true;
         }
 
-        boolean shouldRecordCollections = false;
-        if (System.getProperty(RECORD_COLLECTIONS) != null) {
-            shouldRecordCollections = true;
+        String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS, CollectionsRecordingMode.NONE.name());
+        if (recordCollectionsProp.isEmpty()) {
+            recordCollectionsProp = CollectionsRecordingMode.ALL.name();
         }
+        CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp);
 
         /*
         if (true) {
@@ -63,7 +65,7 @@ public class SystemPropertiesSettings {
                 maxRecordedMethodCallsPerMethod,
                 minRecordsCount,
                 shouldRecordConstructors,
-                shouldRecordCollections
+                collectionsRecordingMode
         );
     }
 
@@ -86,7 +88,7 @@ public class SystemPropertiesSettings {
     private final int maxCallsToRecordPerMethod;
     private final int minRecordsCountForLog;
     private final boolean shouldRecordConstructors;
-    private final boolean shouldRecordCollections;
+    private final CollectionsRecordingMode collectionsRecordingMode;
 
     public SystemPropertiesSettings(
             @NotNull UiAddress uiAddress,
@@ -97,7 +99,7 @@ public class SystemPropertiesSettings {
             int maxCallsToRecordPerMethod,
             int minRecordsCountForLog,
             boolean shouldRecordConstructors,
-            boolean shouldRecordCollections)
+            CollectionsRecordingMode collectionsRecordingMode)
     {
         this.uiAddress = uiAddress;
         this.instrumentatedPackages = instrumentedPackages;
@@ -107,7 +109,7 @@ public class SystemPropertiesSettings {
         this.maxCallsToRecordPerMethod = maxCallsToRecordPerMethod;
         this.minRecordsCountForLog = minRecordsCountForLog;
         this.shouldRecordConstructors = shouldRecordConstructors;
-        this.shouldRecordCollections = shouldRecordCollections;
+        this.collectionsRecordingMode = collectionsRecordingMode;
     }
 
     public int getMaxTreeDepth() {
@@ -142,8 +144,8 @@ public class SystemPropertiesSettings {
         return shouldRecordConstructors;
     }
 
-    public boolean shouldRecordCollections() {
-        return shouldRecordCollections;
+    public CollectionsRecordingMode getCollectionsRecordingMode() {
+        return collectionsRecordingMode;
     }
 
     @Override

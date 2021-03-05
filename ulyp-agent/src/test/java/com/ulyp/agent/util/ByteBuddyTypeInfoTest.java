@@ -111,9 +111,11 @@ public class ByteBuddyTypeInfoTest {
 
         TypeDescription.Generic firstArgType = method.getParameters().asTypeList().get(0);
 
-        TypeInfo byteBuddyTypeInfo = ByteBuddyTypeInfo.of(firstArgType);
+        TypeInfo type = ByteBuddyTypeInfo.of(firstArgType);
 
-        assertThat(byteBuddyTypeInfo.getTraits(), Matchers.hasItem(TypeTrait.CLASS_OBJECT));
+        assertThat(type.getTraits(), Matchers.hasItem(TypeTrait.CLASS_OBJECT));
+
+        assertThat(type.getTraits(), Matchers.hasItem(TypeTrait.CONCRETE_CLASS));
     }
 
     @Test
@@ -140,6 +142,12 @@ public class ByteBuddyTypeInfoTest {
         assertThat(ByteBuddyTypeInfo.of(Set.class).getTraits(), Matchers.hasItem(TypeTrait.COLLECTION));
 
         assertThat(ByteBuddyTypeInfo.of(HashSet.class).getTraits(), Matchers.hasItem(TypeTrait.COLLECTION));
+
+        assertThat(ByteBuddyTypeInfo.of(CustomList.class).getTraits(), Matchers.hasItem(TypeTrait.COLLECTION));
+    }
+
+    public abstract class CustomList implements List<String> {
+
     }
 
     @Test

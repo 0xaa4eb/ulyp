@@ -3,10 +3,7 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.CollectionRepresentation;
-import com.ulyp.core.printers.IdentityObjectRepresentation;
-import com.ulyp.core.printers.ObjectRepresentation;
-import com.ulyp.core.printers.StringObjectRepresentation;
+import com.ulyp.core.printers.*;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
@@ -20,13 +17,13 @@ import java.util.List;
 public class CollectionPrintingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordSimpleList() {
+    public void shouldRecordSimpleItemsProperly() {
 
         CallRecord root = runSubprocessWithUi(
                 new TestSettingsBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnArrayListOfString")
-                        .recordCollections()
+                        .recordCollections(CollectionsRecordingMode.ALL)
         );
 
         CollectionRepresentation collection = (CollectionRepresentation) root.getReturnValue();
@@ -41,13 +38,66 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
     }
 
     @Test
+    public void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
+
+        CallRecord root = runSubprocessWithUi(
+                new TestSettingsBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("returnArrayListOfString")
+                        .recordCollections(CollectionsRecordingMode.ALL)
+        );
+
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+    }
+
+    @Test
+    public void shouldRecordSimpleListIfJavaCollectionsAreRecorded() {
+
+        CallRecord root = runSubprocessWithUi(
+                new TestSettingsBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("returnArrayListOfString")
+                        .recordCollections(CollectionsRecordingMode.JAVA)
+        );
+
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+    }
+
+    @Test
+    public void shouldNotRecordAnythingIfSpecifiedToRecordOnlyJavaCollection() {
+
+        CallRecord root = runSubprocessWithUi(
+                new TestSettingsBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("returnCustomList")
+                        .recordCollections(CollectionsRecordingMode.JAVA)
+        );
+
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+    }
+
+    @Test
+    public void shouldRecordCustomListIfSpecifiedAllCollectionsToRecord() {
+
+        CallRecord root = runSubprocessWithUi(
+                new TestSettingsBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("returnCustomList")
+                        .recordCollections(CollectionsRecordingMode.ALL)
+        );
+
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+    }
+
+
+    @Test
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runSubprocessWithUi(
                 new TestSettingsBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnThrowingOnIteratorList")
-                        .recordCollections()
+                        .recordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
@@ -57,6 +107,15 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
 
         public static List<String> returnArrayListOfString() {
             return Arrays.asList("a", "b");
+        }
+
+        public static List<String> returnCustomList() {
+            return new ArrayList<String>() {
+                {
+                    add("a");
+                    add("b");
+                }
+            };
         }
 
         public static List<String> returnThrowingOnIteratorList() {
@@ -76,6 +135,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
 
         public static void main(String[] args) {
             System.out.println(returnArrayListOfString());
+            System.out.println(returnCustomList());
             List<String> strings = returnThrowingOnIteratorList();
             System.out.println(System.identityHashCode(strings));
         }

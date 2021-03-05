@@ -11,7 +11,8 @@ import java.util.*;
 
 public class MapPrinter extends ObjectBinaryPrinter {
 
-    private volatile boolean active = false;
+    private CollectionsRecordingMode mode;
+    private volatile boolean active = true;
 
     public static final int MAX_ITEMS_TO_RECORD = 3;
 
@@ -24,11 +25,11 @@ public class MapPrinter extends ObjectBinaryPrinter {
 
     @Override
     boolean supports(TypeInfo type) {
-        return active && type.isMap();
+        return type.isMap() && mode.supports(type);
     }
 
-    public void activate() {
-        this.active = true;
+    public void setMode(CollectionsRecordingMode collectionsRecordingMode) {
+        this.mode = collectionsRecordingMode;
     }
 
     @Override

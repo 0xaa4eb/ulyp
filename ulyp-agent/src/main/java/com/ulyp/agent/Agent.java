@@ -58,15 +58,13 @@ public class Agent {
                 ", instrumentation packages = " + settings.getInstrumentatedPackages() +
                 ", excluded from instrumentation packages = " + settings.getExcludedFromInstrumentationPackages() +
                 ", recording will start at " + settings.getMethodsToRecord() +
-                ", will record collection item (may cause side effects) = " + settings.shouldRecordCollections());
+                ", will record collection item (may cause side effects) = " + settings.getCollectionsRecordingMode());
 
-        if (settings.shouldRecordCollections()) {
-            CollectionPrinter printer = (CollectionPrinter) ObjectBinaryPrinterType.COLLECTION_DEBUG_PRINTER.getInstance();
-            printer.activate();
+        CollectionPrinter printer = (CollectionPrinter) ObjectBinaryPrinterType.COLLECTION_DEBUG_PRINTER.getInstance();
+        printer.setMode(settings.getCollectionsRecordingMode());
 
-            MapPrinter mapPrinter = (MapPrinter) ObjectBinaryPrinterType.MAP_PRINTER.getInstance();
-            mapPrinter.activate();
-        }
+        MapPrinter mapPrinter = (MapPrinter) ObjectBinaryPrinterType.MAP_PRINTER.getInstance();
+        mapPrinter.setMode(settings.getCollectionsRecordingMode());
 
         ElementMatcher.Junction<TypeDescription> tracingMatcher = null;
 
