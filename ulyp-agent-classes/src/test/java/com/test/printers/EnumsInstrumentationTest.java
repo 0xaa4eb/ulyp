@@ -27,11 +27,11 @@ public class EnumsInstrumentationTest extends AbstractInstrumentationTest {
         assertThat(root.getArgs(), Matchers.hasSize(3));
 
         EnumRepresentation arg2 = (EnumRepresentation) root.getArgs().get(1);
-        EnumRepresentation arg3 = (EnumRepresentation) root.getArgs().get(1);
+        EnumRepresentation arg3 = (EnumRepresentation) root.getArgs().get(2);
 
         assertThat(arg2.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
         assertThat(arg2.getName(), is("T1"));
-        assertThat(arg2.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
+        assertThat(arg3.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
         assertThat(arg3.getName(), is("T2"));
     }
 

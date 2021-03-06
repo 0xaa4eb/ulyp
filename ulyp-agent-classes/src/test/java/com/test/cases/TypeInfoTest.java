@@ -32,7 +32,7 @@ public class TypeInfoTest extends AbstractInstrumentationTest {
         assertThat(secondArg.getType().getName(), is("java.util.concurrent.atomic.AtomicLong"));
 
         ObjectRepresentation returnValue = root.getReturnValue();
-        assertThat(returnValue.getType(), is("java.lang.String"));
+        assertThat(returnValue.getType().getName(), is("java.lang.String"));
     }
 
     public static class TestCases {
