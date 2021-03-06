@@ -3,10 +3,11 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
+import com.ulyp.core.printers.StringObjectRepresentation;
 import com.ulyp.core.util.MethodMatcher;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class GenericsTest extends AbstractInstrumentationTest {
@@ -20,7 +21,9 @@ public class GenericsTest extends AbstractInstrumentationTest {
                         .setMethodToRecord(MethodMatcher.parse("Box.get"))
         );
 
-        assertThat(root.getReturnValue().getPrintedText(), Matchers.is("abc"));
+        StringObjectRepresentation returnValue = (StringObjectRepresentation) root.getReturnValue();
+
+        assertThat(returnValue.getValue(), is("abc"));
     }
 
     static class Box<T> {

@@ -10,11 +10,6 @@ public class StringObjectRepresentation extends ObjectRepresentation {
         this.value = value;
     }
 
-    @Override
-    public String print() {
-        return value;
-    }
-
     public String getValue() {
         return value;
     }

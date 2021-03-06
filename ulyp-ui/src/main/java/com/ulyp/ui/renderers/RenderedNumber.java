@@ -16,6 +16,6 @@ public class RenderedNumber extends RenderedObject {
             super.getChildren().add(StyledText.of(typeInfo.getName(), CALL_TREE_TYPE_NAME));
             super.getChildren().add(StyledText.of(": ", CALL_TREE_PLAIN_TEXT));
         }
-        super.getChildren().add(StyledText.of(numberObjectRepresentation.getPrintedText(), CALL_TREE_NUMBER));
+        super.getChildren().add(StyledText.of(numberObjectRepresentation.getNumberPrintedText(), CALL_TREE_NUMBER));
     }
 }

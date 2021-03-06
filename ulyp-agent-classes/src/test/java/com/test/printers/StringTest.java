@@ -4,12 +4,10 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.ObjectRepresentation;
-import com.ulyp.core.printers.PlainObjectRepresentation;
 import com.ulyp.core.printers.StringObjectRepresentation;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 public class StringTest extends AbstractInstrumentationTest {
@@ -35,8 +33,7 @@ public class StringTest extends AbstractInstrumentationTest {
                 new TestSettingsBuilder().setMainClassName(TestCases.class).setMethodToRecord("returnLongString")
         );
 
-        ObjectRepresentation thrown = root.getReturnValue();
-        assertThat(thrown, instanceOf(StringObjectRepresentation.class));
-        assertThat(thrown.getPrintedText().length(), lessThan(1000));
+        StringObjectRepresentation returnValue = (StringObjectRepresentation) root.getReturnValue();
+        assertThat(returnValue.getValue().length(), lessThan(1000));
     }
 }

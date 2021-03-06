@@ -49,9 +49,12 @@ public abstract class RenderedObject extends TextFlow {
         } else if (repr instanceof ThrowableRepresentation) {
 
             objectValue = new RenderedThrowable((ThrowableRepresentation) repr, renderSettings);
+        } else if (repr instanceof EnumRepresentation) {
+
+            objectValue = new RenderedEnum((EnumRepresentation) repr, renderSettings);
         } else {
 
-            objectValue = new RenderedPlainObject(repr, repr.getType(), renderSettings);
+            throw new RuntimeException("Not supported for rendering: " + repr);
         }
 
         objectValue.getChildren().forEach(node -> {

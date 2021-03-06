@@ -22,9 +22,4 @@ public class ObjectArrayRepresentation extends ObjectRepresentation {
     public List<ObjectRepresentation> getRecordedItems() {
         return recordedItems;
     }
-
-    @Override
-    public String print() {
-        return recordedItems + ", total items = " + length;
-    }
 }

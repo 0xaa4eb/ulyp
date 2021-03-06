@@ -2,15 +2,14 @@ package com.ulyp.core.printers;
 
 public class NumberObjectRepresentation extends ObjectRepresentation {
 
-    private final String numberPrinted;
+    private final String numberPrintedText;
 
-    public NumberObjectRepresentation(TypeInfo typeInfo, String numberPrinted) {
+    public NumberObjectRepresentation(TypeInfo typeInfo, String numberPrintedText) {
         super(typeInfo);
-        this.numberPrinted = numberPrinted;
+        this.numberPrintedText = numberPrintedText;
     }
 
-    @Override
-    public String print() {
-        return numberPrinted;
+    public String getNumberPrintedText() {
+        return numberPrintedText;
     }
 }

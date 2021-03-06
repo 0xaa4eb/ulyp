@@ -17,9 +17,4 @@ public class NotRecordedObjectRepresentation extends ObjectRepresentation {
     private NotRecordedObjectRepresentation(TypeInfo typeInfo) {
         super(typeInfo);
     }
-
-    @Override
-    public String print() {
-        return "null";
-    }
 }

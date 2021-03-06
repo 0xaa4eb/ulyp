@@ -5,10 +5,12 @@ import com.test.cases.SafeCaller;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.printers.IdentityObjectRepresentation;
-import org.hamcrest.Matchers;
+import com.ulyp.core.printers.NullObjectRepresentation;
+import com.ulyp.core.printers.NumberObjectRepresentation;
+import com.ulyp.core.printers.StringObjectRepresentation;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
@@ -21,9 +23,9 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("acceptsTwoObjects")
         );
 
-        assertThat(root.getArgs(), Matchers.hasSize(2));
-        assertThat(root.getArgs().get(0), Matchers.instanceOf(IdentityObjectRepresentation.class));
-        assertThat(root.getArgs().get(1), Matchers.instanceOf(IdentityObjectRepresentation.class));
+        assertThat(root.getArgs(), hasSize(2));
+        assertThat(root.getArgs().get(0), instanceOf(IdentityObjectRepresentation.class));
+        assertThat(root.getArgs().get(1), instanceOf(IdentityObjectRepresentation.class));
     }
 
     @Test
@@ -34,9 +36,9 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("acceptsTwoObjects2")
         );
 
-        assertThat(root.getArgs(), Matchers.hasSize(2));
-        assertThat(root.getArgs().get(0).getPrintedText(), is("asdasd"));
-        assertThat(root.getArgs().get(1).getPrintedText(), is("34"));
+        assertThat(root.getArgs(), hasSize(2));
+        assertThat(root.getArgs().get(0), instanceOf(StringObjectRepresentation.class));
+        assertThat(root.getArgs().get(1), instanceOf(NumberObjectRepresentation.class));
     }
 
     @Test
@@ -47,9 +49,9 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("acceptsTwoNulls")
         );
 
-        assertThat(root.getArgs(), Matchers.hasSize(2));
-        assertThat(root.getArgTexts().get(0), is("null"));
-        assertThat(root.getArgTexts().get(1), is("null"));
+        assertThat(root.getArgs(), hasSize(2));
+        assertThat(root.getArgs().get(0), instanceOf(NullObjectRepresentation.class));
+        assertThat(root.getArgs().get(1), instanceOf(NullObjectRepresentation.class));
     }
 
     public static class ObjectTestCases {

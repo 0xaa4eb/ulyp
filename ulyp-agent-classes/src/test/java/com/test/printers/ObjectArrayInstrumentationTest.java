@@ -74,13 +74,13 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         assertThat(items, Matchers.hasSize(3));
 
         StringObjectRepresentation str0 = (StringObjectRepresentation) items.get(0);
-        assertEquals(str0.getPrintedText(), "sddsad");
+        assertEquals(str0.getValue(), "sddsad");
 
         StringObjectRepresentation str1 = (StringObjectRepresentation) items.get(1);
-        assertEquals(str1.getPrintedText(), "zx");
+        assertEquals(str1.getValue(), "zx");
 
         StringObjectRepresentation str2 = (StringObjectRepresentation) items.get(2);
-        assertEquals(str2.getPrintedText(), "sdsd");
+        assertEquals(str2.getValue(), "sdsd");
     }
 
     public static class TakesVariousItemsArray {
@@ -123,6 +123,6 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         assertThat(arg0.getType().getName(), Matchers.is(X.class.getName()));
 
         NumberObjectRepresentation arg1 = (NumberObjectRepresentation) items.get(1);
-        assertThat(arg1.getPrintedText(), is("664"));
+        assertThat(arg1.getNumberPrintedText(), is("664"));
     }
 }

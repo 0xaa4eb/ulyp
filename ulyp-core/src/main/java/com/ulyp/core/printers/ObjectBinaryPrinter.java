@@ -17,9 +17,7 @@ public abstract class ObjectBinaryPrinter {
         return id;
     }
 
-    public ObjectRepresentation read(TypeInfo objectType, BinaryInput input, DecodingContext decodingContext) {
-        return new PlainObjectRepresentation(objectType, input.readString());
-    }
+    public abstract ObjectRepresentation read(TypeInfo objectType, BinaryInput input, DecodingContext decodingContext);
 
     abstract boolean supports(TypeInfo type);
 

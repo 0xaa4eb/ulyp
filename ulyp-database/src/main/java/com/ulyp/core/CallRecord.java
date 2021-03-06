@@ -8,7 +8,6 @@ import com.ulyp.transport.TMethodInfoDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Method call record which was deserialized from binary format into POJO. Stands for a particular
@@ -121,10 +120,6 @@ public class CallRecord {
 
     public List<ObjectRepresentation> getArgs() {
         return args;
-    }
-
-    public List<String> getArgTexts() {
-        return args.stream().map(ObjectRepresentation::getPrintedText).collect(Collectors.toList());
     }
 
     public List<String> getParameterNames() {

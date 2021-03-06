@@ -11,9 +11,4 @@ public class NullObjectRepresentation extends ObjectRepresentation {
     private NullObjectRepresentation() {
         super(UnknownTypeInfo.getInstance());
     }
-
-    @Override
-    public String print() {
-        return "null";
-    }
 }

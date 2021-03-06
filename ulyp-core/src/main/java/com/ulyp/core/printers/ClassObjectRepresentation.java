@@ -17,9 +17,4 @@ public class ClassObjectRepresentation extends ObjectRepresentation {
     public TypeInfo getCarriedType() {
         return carriedType;
     }
-
-    @Override
-    public String print() {
-        return "class " + getType().getName();
-    }
 }

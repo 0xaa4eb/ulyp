@@ -4,9 +4,8 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
+import com.ulyp.core.printers.NumberObjectRepresentation;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -45,13 +44,14 @@ public class BoxedNumbersTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void test() {
+    public void testBoxedLong() {
         CallRecord root = runSubprocessWithUi(
                 new TestSettingsBuilder().setMainClassName(BoxedNumbersTestCases.class)
                         .setMethodToRecord("te")
         );
 
-        assertThat(root.getArgTexts(), is(Arrays.asList("1")));
+        NumberObjectRepresentation arg = (NumberObjectRepresentation) root.getArgs().get(0);
+        assertThat(arg.getNumberPrintedText(), is("1"));
     }
 
     @Test
@@ -61,8 +61,9 @@ public class BoxedNumbersTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("primitiveIntSum")
         );
 
-        assertThat(root.getArgTexts(), is(Arrays.asList("-234", "23")));
-        assertThat(root.getReturnValue().getPrintedText(), is("-211"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(0)).getNumberPrintedText(), is("-234"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(1)).getNumberPrintedText(), is("23"));
+        assertThat(((NumberObjectRepresentation) root.getReturnValue()).getNumberPrintedText(), is("-211"));
     }
 
     @Test
@@ -72,8 +73,7 @@ public class BoxedNumbersTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("boxedIntSum")
         );
 
-        assertThat(root.getArgTexts(), is(Arrays.asList("-234", "23")));
-        assertThat(root.getReturnValue().getPrintedText(), is("-211"));
+        assertThat(((NumberObjectRepresentation) root.getReturnValue()).getNumberPrintedText(), is("-211"));
     }
 
     @Test
@@ -83,8 +83,9 @@ public class BoxedNumbersTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("primitiveDoubleSum")
         );
 
-        assertThat(root.getArgTexts(), is(Arrays.asList("-5434.23", "321.2453")));
-        assertThat(root.getReturnValue().getPrintedText(), is("-5112.9847"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(1)).getNumberPrintedText(), is("321.2453"));
+        assertThat(((NumberObjectRepresentation) root.getReturnValue()).getNumberPrintedText(), is("-5112.9847"));
     }
 
     @Test
@@ -94,7 +95,8 @@ public class BoxedNumbersTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("boxedDoubleSum")
         );
 
-        assertThat(root.getArgTexts(), is(Arrays.asList("-5434.23", "321.2453")));
-        assertThat(root.getReturnValue().getPrintedText(), is("-5112.9847"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));
+        assertThat(((NumberObjectRepresentation) root.getArgs().get(1)).getNumberPrintedText(), is("321.2453"));
+        assertThat(((NumberObjectRepresentation) root.getReturnValue()).getNumberPrintedText(), is("-5112.9847"));
     }
 }
