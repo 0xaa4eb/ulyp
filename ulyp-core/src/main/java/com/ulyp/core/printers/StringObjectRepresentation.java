@@ -1,5 +1,6 @@
 package com.ulyp.core.printers;
 
+// TODO rename
 public class StringObjectRepresentation extends ObjectRepresentation {
 
     private final String value;

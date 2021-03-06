@@ -4,6 +4,7 @@ import com.ulyp.core.DecodingContext;
 import com.ulyp.core.AgentRuntime;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
+import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 
 public class ThrowablePrinter extends ObjectBinaryPrinter {
 
@@ -18,12 +19,22 @@ public class ThrowablePrinter extends ObjectBinaryPrinter {
 
     @Override
     public ObjectRepresentation read(TypeInfo type, BinaryInput input, DecodingContext decodingContext) {
-        return new ThrowableRepresentation(type, input.readString());
+        ObjectBinaryPrinter printer = ObjectBinaryPrinterType.printerForId(input.readByte());
+        TypeInfo msgType = decodingContext.getType(input.readInt());
+        ObjectRepresentation message = printer.read(msgType, input, decodingContext);
+        return new ThrowableRepresentation(type, message);
     }
 
     @Override
     public void write(Object object, TypeInfo classDescription, BinaryOutput out, AgentRuntime runtime) throws Exception {
-        Throwable t = (Throwable) object;
-        out.writeString(t.getMessage());
+        try (BinaryOutputAppender appender = out.appender()) {
+            Throwable t = (Throwable) object;
+            String message = t.getMessage();
+            ObjectBinaryPrinter printer = message != null ? ObjectBinaryPrinterType.STRING_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+            appender.append(printer.getId());
+            TypeInfo msgType = runtime.get(message);
+            appender.append(msgType.getId());
+            printer.write(message, msgType, appender, runtime);
+        }
     }
 }
