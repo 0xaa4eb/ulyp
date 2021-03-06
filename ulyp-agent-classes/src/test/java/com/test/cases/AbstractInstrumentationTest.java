@@ -7,6 +7,7 @@ import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,13 +28,14 @@ public class AbstractInstrumentationTest {
     }
 
     protected List<TCallRecordLogUploadRequest> runSubprocessWithUiAndReturnProtoRequest(TestSettingsBuilder settings) {
-        if (settings.getOutputFile() != null) {
-            settings.setOutputFile(new OutputFile("test", ".dat"));
-        }
         TestUtil.runClassInSeparateJavaProcess(settings);
-        List<TCallRecordLogUploadRequest> requests = settings.getOutputFile().read();
-        requests.sort(Comparator.comparingLong(r -> r.getRecordingInfo().getChunkId()));
-        System.out.println("Got " + requests.size() + " chunks from process");
-        return requests;
+        if (settings.getOutputFile() == null) {
+            return Collections.emptyList();
+        } else {
+            List<TCallRecordLogUploadRequest> requests = settings.getOutputFile().read();
+            requests.sort(Comparator.comparingLong(r -> r.getRecordingInfo().getChunkId()));
+            System.out.println("Got " + requests.size() + " chunks from process");
+            return requests;
+        }
     }
 }

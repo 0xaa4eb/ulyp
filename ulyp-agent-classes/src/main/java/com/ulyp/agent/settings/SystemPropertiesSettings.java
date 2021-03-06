@@ -3,6 +3,7 @@ package com.ulyp.agent.settings;
 import com.ulyp.agent.transport.UiAddress;
 import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.agent.transport.file.FileUiAddress;
+import com.ulyp.agent.transport.nop.DisconnectedUiAddress;
 import com.ulyp.core.printers.CollectionsRecordingMode;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
@@ -21,7 +22,11 @@ public class SystemPropertiesSettings {
         UiAddress uiAddress;
         String file = System.getProperty(FILE_PATH);
         if (file != null) {
-            uiAddress = new FileUiAddress(file);
+            if (file.isEmpty()) {
+                uiAddress = new DisconnectedUiAddress();
+            } else {
+                uiAddress = new FileUiAddress(file);
+            }
         } else {
             throw new RuntimeException("Property " + FILE_PATH + " must be set");
         }

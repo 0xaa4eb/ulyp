@@ -82,8 +82,9 @@ public class TestSettingsBuilder {
         return outputFile;
     }
 
-    public void setOutputFile(OutputFile outputFile) {
+    public TestSettingsBuilder setOutputFile(OutputFile outputFile) {
         this.outputFile = outputFile;
+        return this;
     }
 
     public TestSettingsBuilder setExcludedFromInstrumentationPackages(String... packages) {
@@ -100,7 +101,7 @@ public class TestSettingsBuilder {
         }
 
         params.add("-D" + SystemPropertiesSettings.START_METHOD_PROPERTY + "=" + methodToRecord.toString());
-        params.add("-D" + SystemPropertiesSettings.FILE_PATH + "=" + outputFile);
+        params.add("-D" + SystemPropertiesSettings.FILE_PATH + "=" + (outputFile != null ? outputFile : ""));
         params.add("-D" + SystemPropertiesSettings.RECORD_COLLECTIONS + "=" + collectionsRecordingMode.name());
 
 //        params.add("-D" + SystemPropertiesSettings.MAX_DEPTH_PROPERTY + "=" + maxTreeDepth);
