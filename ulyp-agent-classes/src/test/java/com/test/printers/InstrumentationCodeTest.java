@@ -5,11 +5,13 @@ import com.test.cases.SafeCaller;
 import com.test.cases.util.TestSettingsBuilder;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.printers.NullObjectRepresentation;
+import com.ulyp.core.printers.ThrowableRepresentation;
 import org.junit.Test;
 
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class InstrumentationCodeTest extends AbstractInstrumentationTest {
@@ -97,7 +99,10 @@ public class InstrumentationCodeTest extends AbstractInstrumentationTest {
 
         assertThat(root.getChildren(), is(empty()));
         assertThat(root.getArgTexts(), is(empty()));
-        assertThat(root.getReturnValue().getPrintedText(), is("RuntimeException: exception message"));
+
+        ThrowableRepresentation returnValue = (ThrowableRepresentation) root.getReturnValue();
+
+        assertEquals("some exception message", returnValue.getMessage());
         assertThat(root.getSubtreeNodeCount(), is(1L));
         assertThat(root.getClassName(), is("com.test.printers.InstrumentationCodeTest$SimpleTestCases"));
         assertThat(root.getMethodName(), is("throwsRuntimeException"));
@@ -189,7 +194,7 @@ public class InstrumentationCodeTest extends AbstractInstrumentationTest {
         }
 
         public int throwsRuntimeException() {
-            throw new RuntimeException("exception message");
+            throw new RuntimeException("some exception message");
         }
 
         public void consumesInt(int v) {

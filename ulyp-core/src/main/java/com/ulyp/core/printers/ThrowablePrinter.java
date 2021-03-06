@@ -7,24 +7,18 @@ import com.ulyp.core.printers.bytes.BinaryOutput;
 
 public class ThrowablePrinter extends ObjectBinaryPrinter {
 
-    private static final int MAX_LENGTH = 200;
-
     protected ThrowablePrinter(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(TypeInfo type) {
-        // TODO maybe implement
-        return false;
+        return type.getTraits().contains(TypeTrait.THROWABLE);
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo classDescription, BinaryInput input, DecodingContext decodingContext) {
-        return new PlainObjectRepresentation(
-                classDescription,
-                classDescription.getName() + ": " + input.readString()
-        );
+    public ObjectRepresentation read(TypeInfo type, BinaryInput input, DecodingContext decodingContext) {
+        return new ThrowableRepresentation(type, input.readString());
     }
 
     @Override

@@ -17,6 +17,7 @@ public class ByteBuddyTypeInfo implements TypeInfo {
     private static final TypeDescription CLASS_OBJECT_ERASED = TypeDescription.Generic.CLASS.asErasure();
     private static final TypeDescription COLLECTION_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Collection.class).asErasure();
     private static final TypeDescription MAP_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Map.class).asErasure();
+    private static final TypeDescription THROWABLE_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Throwable.class).asErasure();
 
     private static final AtomicInteger classDescriptionId = new AtomicInteger(0);
 
@@ -105,6 +106,8 @@ public class ByteBuddyTypeInfo implements TypeInfo {
             if (PRIMITIVE_DOUBLE_TYPES.contains(type)) {
                 traits.add(TypeTrait.FRACTIONAL);
             }
+        } else if (getSuperClassesNames().contains("java.lang.Throwable") || type.asErasure().equals(THROWABLE_TYPE)) {
+            traits.add(TypeTrait.THROWABLE);
         } else if (getSuperClassesNames().contains("java.lang.Number")) {
             traits.add(TypeTrait.NUMBER);
             if (BOXED_INTEGRAL_TYPES.contains(type)) {
