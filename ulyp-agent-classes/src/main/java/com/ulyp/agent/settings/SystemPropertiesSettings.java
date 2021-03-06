@@ -37,22 +37,6 @@ public class SystemPropertiesSettings {
         }
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp);
 
-        /*
-        if (true) {
-
-        } else {
-            uiAddress = new DisconnectedUiAddress(
-                    Settings.newBuilder()
-                            .addAllInstrumentedPackages(instrumentationPackages)
-                            .addAllExcludedFromInstrumentationPackages(excludedPackages)
-                            .addAllMethodsToRecord(recordingStartMethods.stream().map(MethodMatcher::toString).collect(Collectors.toList()))
-                            .setMayStartRecording(true)
-                            .setRecordCollectionsItems(false)
-                            .build()
-            );
-        }
-        */
-
         int maxTreeDepth = Integer.parseInt(System.getProperty(MAX_DEPTH_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
         int maxRecordedMethodCallsPerMethod = Integer.parseInt(System.getProperty(MAX_CALL_TO_RECORD_PER_METHOD, String.valueOf(Integer.MAX_VALUE / 2)));
         int minRecordsCount = Integer.parseInt(System.getProperty(MIN_TRACE_COUNT, String.valueOf(1)));
