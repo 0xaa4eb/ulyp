@@ -89,7 +89,6 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
     }
 
-
     @Test
     public void shouldFallbackToIdentityIfRecordingFailed() {
 

@@ -41,15 +41,8 @@ public class MapPrinter extends ObjectBinaryPrinter {
             int recordedItemsCount = input.readInt();
             List<MapEntryRepresentation> entries = new ArrayList<>();
             for (int i = 0; i < recordedItemsCount; i++) {
-
-                TypeInfo keyType = decodingContext.getType(input.readInt());
-                ObjectBinaryPrinter keyPrinter = ObjectBinaryPrinterType.printerForId(input.readByte());
-                ObjectRepresentation key = keyPrinter.read(keyType, input, decodingContext);
-
-                TypeInfo valueType = decodingContext.getType(input.readInt());
-                ObjectBinaryPrinter valuePrinter = ObjectBinaryPrinterType.printerForId(input.readByte());
-                ObjectRepresentation value = valuePrinter.read(valueType, input, decodingContext);
-
+                ObjectRepresentation key = input.readObject(decodingContext);
+                ObjectRepresentation value = input.readObject(decodingContext);
                 entries.add(new MapEntryRepresentation(UnknownTypeInfo.getInstance(), key, value));
             }
             return new MapRepresentation(
@@ -80,8 +73,8 @@ public class MapPrinter extends ObjectBinaryPrinter {
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        writeObject(runtime, appender, entry.getKey());
-                        writeObject(runtime, appender, entry.getValue());
+                        appender.append(entry.getKey(), runtime);
+                        appender.append(entry.getValue(), runtime);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
@@ -93,14 +86,6 @@ public class MapPrinter extends ObjectBinaryPrinter {
                 writeMapIdentity(object, out, runtime);
             }
         }
-    }
-
-    private void writeObject(TypeResolver runtime, BinaryOutputAppender appender, Object item) throws Exception {
-        TypeInfo itemType = runtime.get(item);
-        appender.append(itemType.getId());
-        ObjectBinaryPrinter printer = item != null ? itemType.getSuggestedPrinter() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
-        appender.append(printer.getId());
-        printer.write(item, itemType, appender, runtime);
     }
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {

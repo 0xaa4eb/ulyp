@@ -19,22 +19,14 @@ public class ThrowablePrinter extends ObjectBinaryPrinter {
 
     @Override
     public ObjectRepresentation read(TypeInfo type, BinaryInput input, DecodingContext decodingContext) {
-        ObjectBinaryPrinter printer = ObjectBinaryPrinterType.printerForId(input.readByte());
-        TypeInfo msgType = decodingContext.getType(input.readInt());
-        ObjectRepresentation message = printer.read(msgType, input, decodingContext);
-        return new ThrowableRepresentation(type, message);
+        return new ThrowableRepresentation(type, input.readObject(decodingContext));
     }
 
     @Override
     public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             Throwable t = (Throwable) object;
-            String message = t.getMessage();
-            ObjectBinaryPrinter printer = message != null ? ObjectBinaryPrinterType.STRING_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
-            appender.append(printer.getId());
-            TypeInfo msgType = runtime.get(message);
-            appender.append(msgType.getId());
-            printer.write(message, msgType, appender, runtime);
+            appender.append(t.getMessage(), runtime);
         }
     }
 }

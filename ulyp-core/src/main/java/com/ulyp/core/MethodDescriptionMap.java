@@ -16,6 +16,7 @@ public class MethodDescriptionMap {
     private static final AtomicInteger continueRecordingCounter = new AtomicInteger(0);
     private static final AtomicInteger startOrContinueRecordingCounter = new AtomicInteger(0);
 
+    // TODO make maps
     private final AtomicReferenceArray<MethodInfo> continueRecordingMethods = new AtomicReferenceArray<>(4_000_000);
     private final AtomicReferenceArray<MethodInfo> startRecordingMethods = new AtomicReferenceArray<>(32_000);
 

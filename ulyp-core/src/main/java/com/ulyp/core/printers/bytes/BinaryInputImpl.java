@@ -1,5 +1,10 @@
 package com.ulyp.core.printers.bytes;
 
+import com.ulyp.core.DecodingContext;
+import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryPrinterType;
+import com.ulyp.core.printers.ObjectRepresentation;
+import com.ulyp.core.printers.TypeInfo;
 import org.agrona.DirectBuffer;
 
 import java.nio.charset.StandardCharsets;
@@ -38,6 +43,13 @@ public class BinaryInputImpl implements BinaryInput {
         long val = buffer.getLong(bytePos);
         bytePos += Long.BYTES;
         return val;
+    }
+
+    @Override
+    public ObjectRepresentation readObject(DecodingContext decodingContext) {
+        TypeInfo itemClassTypeInfo = decodingContext.getType(readInt());
+        ObjectBinaryPrinter printer = ObjectBinaryPrinterType.printerForId(readByte());
+        return printer.read(itemClassTypeInfo, this, decodingContext);
     }
 
     @Override

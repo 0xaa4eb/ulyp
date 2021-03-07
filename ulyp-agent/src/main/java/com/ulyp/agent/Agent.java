@@ -8,6 +8,7 @@ import com.ulyp.core.printers.CollectionPrinter;
 import com.ulyp.core.printers.MapPrinter;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.process.ProcessInfo;
+import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.ClassUtils;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
@@ -49,7 +50,7 @@ public class Agent {
             // if not specified, then record main(String[] args) method as it's the only entry point to the program we have
             ProcessInfo processInfo = instance.getProcessInfo();
             recordingStartMethodList = new RecordingStartMethodList(
-                    new MethodMatcher(ClassUtils.getSimpleNameFromName(processInfo.getMainClassName()), "main")
+                    new MethodMatcher(ClassMatcher.parse(ClassUtils.getSimpleNameFromName(processInfo.getMainClassName())), "main")
             );
         }
 

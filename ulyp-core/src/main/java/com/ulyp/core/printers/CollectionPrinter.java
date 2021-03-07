@@ -43,10 +43,9 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
             int collectionSize = input.readInt();
             List<ObjectRepresentation> items = new ArrayList<>();
             int recordedItemsCount = input.readInt();
+
             for (int i = 0; i < recordedItemsCount; i++) {
-                TypeInfo itemClassTypeInfo = decodingContext.getType(input.readInt());
-                ObjectBinaryPrinter printer = ObjectBinaryPrinterType.printerForId(input.readByte());
-                items.add(printer.read(itemClassTypeInfo, input, decodingContext));
+                items.add(input.readObject(decodingContext));
             }
             return new CollectionRepresentation(
                     classDescription,
@@ -75,12 +74,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
-                        Object item = iterator.next();
-                        TypeInfo itemType = runtime.get(item);
-                        appender.append(itemType.getId());
-                        ObjectBinaryPrinter printer = item != null ? itemType.getSuggestedPrinter() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
-                        appender.append(printer.getId());
-                        printer.write(item, itemType, appender, runtime);
+                        appender.append(iterator.next(), runtime);
                         recorded++;
                     }
                 } catch (Throwable throwable) {

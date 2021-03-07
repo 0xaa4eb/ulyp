@@ -1,5 +1,9 @@
 package com.ulyp.core.printers.bytes;
 
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryPrinterType;
+import com.ulyp.core.printers.TypeInfo;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
@@ -61,6 +65,14 @@ public class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
         } else {
             append(-1);
         }
+    }
+
+    public void append(Object object, TypeResolver typeResolver) throws Exception {
+        TypeInfo itemType = typeResolver.get(object);
+        append(itemType.getId());
+        ObjectBinaryPrinter printer = object != null ? itemType.getSuggestedPrinter() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+        append(printer.getId());
+        printer.write(object, itemType, this, typeResolver);
     }
 
     @Override
