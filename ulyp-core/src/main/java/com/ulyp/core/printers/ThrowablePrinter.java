@@ -1,6 +1,6 @@
 package com.ulyp.core.printers;
 
-import com.ulyp.core.DecodingContext;
+import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
@@ -18,15 +18,15 @@ public class ThrowablePrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo type, BinaryInput input, DecodingContext decodingContext) {
-        return new ThrowableRepresentation(type, input.readObject(decodingContext));
+    public ObjectRepresentation read(TypeInfo type, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new ThrowableRepresentation(type, input.readObject(typeResolver));
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             Throwable t = (Throwable) object;
-            appender.append(t.getMessage(), runtime);
+            appender.append(t.getMessage(), typeResolver);
         }
     }
 }

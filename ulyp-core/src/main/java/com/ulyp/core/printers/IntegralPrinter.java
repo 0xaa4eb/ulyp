@@ -1,7 +1,7 @@
 package com.ulyp.core.printers;
 
+import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.DecodingContext;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
@@ -18,12 +18,12 @@ public class IntegralPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo objectType, BinaryInput input, DecodingContext decodingContext) {
+    public ObjectRepresentation read(TypeInfo objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new NumberObjectRepresentation(objectType, String.valueOf(input.readLong()));
     }
 
     @Override
-    public void write(Object object, TypeInfo objectType, BinaryOutput out, TypeResolver runtime) throws Exception {
+    public void write(Object object, TypeInfo objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Number number = (Number) object;
         out.writeLong(number.longValue());
     }

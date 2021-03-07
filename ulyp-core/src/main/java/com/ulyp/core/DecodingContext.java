@@ -3,7 +3,7 @@ package com.ulyp.core;
 import com.ulyp.core.printers.TypeInfo;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
-public class DecodingContext {
+public class DecodingContext implements ByIdTypeResolver {
 
     private final Long2ObjectMap<TypeInfo> classIdMap;
 

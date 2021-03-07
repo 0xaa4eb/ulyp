@@ -1,7 +1,7 @@
 package com.ulyp.core.printers;
 
+import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.DecodingContext;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
@@ -36,7 +36,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo classDescription, BinaryInput input, DecodingContext decodingContext) {
+    public ObjectRepresentation read(TypeInfo classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {
@@ -45,7 +45,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
             int recordedItemsCount = input.readInt();
 
             for (int i = 0; i < recordedItemsCount; i++) {
-                items.add(input.readObject(decodingContext));
+                items.add(input.readObject(typeResolver));
             }
             return new CollectionRepresentation(
                     classDescription,
@@ -53,12 +53,12 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
                     items
             );
         } else {
-            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(classDescription, input, decodingContext);
+            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(classDescription, input, typeResolver);
         }
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
             if (active) {
@@ -74,16 +74,16 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
-                        appender.append(iterator.next(), runtime);
+                        appender.append(iterator.next(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
                     checkpoint.rollback();
                     active = false;
-                    writeIdentity(object, out, runtime);
+                    writeIdentity(object, out, typeResolver);
                 }
             } else {
-                writeIdentity(object, out, runtime);
+                writeIdentity(object, out, typeResolver);
             }
         }
     }

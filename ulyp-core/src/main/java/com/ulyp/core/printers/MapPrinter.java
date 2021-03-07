@@ -1,7 +1,7 @@
 package com.ulyp.core.printers;
 
+import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.DecodingContext;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
@@ -33,7 +33,7 @@ public class MapPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo classDescription, BinaryInput input, DecodingContext decodingContext) {
+    public ObjectRepresentation read(TypeInfo classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {
@@ -41,8 +41,8 @@ public class MapPrinter extends ObjectBinaryPrinter {
             int recordedItemsCount = input.readInt();
             List<MapEntryRepresentation> entries = new ArrayList<>();
             for (int i = 0; i < recordedItemsCount; i++) {
-                ObjectRepresentation key = input.readObject(decodingContext);
-                ObjectRepresentation value = input.readObject(decodingContext);
+                ObjectRepresentation key = input.readObject(typeResolver);
+                ObjectRepresentation value = input.readObject(typeResolver);
                 entries.add(new MapEntryRepresentation(UnknownTypeInfo.getInstance(), key, value));
             }
             return new MapRepresentation(
@@ -51,12 +51,12 @@ public class MapPrinter extends ObjectBinaryPrinter {
                     entries
             );
         } else {
-            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(classDescription, input, decodingContext);
+            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(classDescription, input, typeResolver);
         }
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
             if (active) {
@@ -73,17 +73,17 @@ public class MapPrinter extends ObjectBinaryPrinter {
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        appender.append(entry.getKey(), runtime);
-                        appender.append(entry.getValue(), runtime);
+                        appender.append(entry.getKey(), typeResolver);
+                        appender.append(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
                     checkpoint.rollback();
                     active = false;
-                    writeMapIdentity(object, out, runtime);
+                    writeMapIdentity(object, out, typeResolver);
                 }
             } else {
-                writeMapIdentity(object, out, runtime);
+                writeMapIdentity(object, out, typeResolver);
             }
         }
     }
