@@ -52,6 +52,9 @@ public abstract class RenderedObject extends TextFlow {
         } else if (repr instanceof EnumRepresentation) {
 
             objectValue = new RenderedEnum((EnumRepresentation) repr, renderSettings);
+        } else if (repr instanceof DateRepresentation) {
+
+            objectValue = new RenderDate((DateRepresentation) repr, renderSettings);
         } else {
 
             throw new RuntimeException("Not supported for rendering: " + repr);

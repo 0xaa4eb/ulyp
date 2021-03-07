@@ -11,6 +11,8 @@ public enum ObjectBinaryPrinterType {
     OBJECT_ARRAY_PRINTER(new ObjectArrayDebugPrinter((byte) 11), 1),
     COLLECTION_DEBUG_PRINTER(new CollectionPrinter((byte) 10), 1),
     MAP_PRINTER(new MapPrinter((byte) 13), 1),
+    DATE_PRINTER(new DatePrinter((byte) 20), 90),
+
 
     // identity can be used for any objects
     IDENTITY_PRINTER(new IdentityPrinter((byte) 0), Integer.MAX_VALUE / 2),

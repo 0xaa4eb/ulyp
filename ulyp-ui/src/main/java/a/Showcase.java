@@ -3,9 +3,14 @@ package a;
 import com.sun.javafx.image.AlphaType;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Showcase {
+
+    public static Date returnDate() {
+        return new Date();
+    }
 
     public static void throwRuntimeException() {
         throw new RuntimeException("Some message");
@@ -45,5 +50,6 @@ public class Showcase {
 
         System.out.println(returnListOfString());
         System.out.println(returnArrayOfString());
+        System.out.println(returnDate());
     }
 }
