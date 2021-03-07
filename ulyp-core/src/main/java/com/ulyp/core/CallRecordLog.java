@@ -13,7 +13,7 @@ public class CallRecordLog {
 
     private final long recordingSessionId;
     private final long chunkId;
-    private final AgentRuntime agentRuntime;
+    private final TypeResolver typeResolver;
     private final CallEnterRecordList enterRecords = new CallEnterRecordList();
     private final CallExitRecordList exitRecords = new CallExitRecordList();
     private final long epochMillisCreatedTime = System.currentTimeMillis();
@@ -27,12 +27,12 @@ public class CallRecordLog {
     private long lastExitCallId = -1;
     private long callIdCounter = 0;
 
-    public CallRecordLog(AgentRuntime agentRuntime, int maxDepth, int maxCallsToRecordPerMethod) {
+    public CallRecordLog(TypeResolver typeResolver, int maxDepth, int maxCallsToRecordPerMethod) {
         this.chunkId = 0;
         this.recordingSessionId = idGenerator.incrementAndGet();
         this.maxDepth = maxDepth;
         this.maxCallsToRecordPerMethod = maxCallsToRecordPerMethod;
-        this.agentRuntime = agentRuntime;
+        this.typeResolver = typeResolver;
 
         StackTraceElement[] wholeStackTrace = new Exception().getStackTrace();
 
@@ -45,7 +45,7 @@ public class CallRecordLog {
     private CallRecordLog(
             long chunkId,
             long recordingSessionId,
-            AgentRuntime agentRuntime,
+            TypeResolver typeResolver,
             String threadName,
             long threadId,
             StackTraceElement[] stackTrace,
@@ -56,7 +56,7 @@ public class CallRecordLog {
     {
         this.chunkId = chunkId;
         this.recordingSessionId = recordingSessionId;
-        this.agentRuntime = agentRuntime;
+        this.typeResolver = typeResolver;
         this.threadName = threadName;
         this.threadId = threadId;
         this.stackTrace = stackTrace;
@@ -67,7 +67,7 @@ public class CallRecordLog {
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.chunkId + 1, this.recordingSessionId, this.agentRuntime, this.threadName, this.threadId, this.stackTrace, this.maxDepth, this.maxCallsToRecordPerMethod, this.inProcessOfTracing, this.callIdCounter);
+        return new CallRecordLog(this.chunkId + 1, this.recordingSessionId, this.typeResolver, this.threadName, this.threadId, this.stackTrace, this.maxDepth, this.maxCallsToRecordPerMethod, this.inProcessOfTracing, this.callIdCounter);
     }
 
     public long estimateBytesSize() {
@@ -82,7 +82,7 @@ public class CallRecordLog {
         try {
 
             long callId = callIdCounter++;
-            enterRecords.add(callId, methodId, agentRuntime, printers, callee, args);
+            enterRecords.add(callId, methodId, typeResolver, printers, callee, args);
             return callId;
         } finally {
             inProcessOfTracing = true;
@@ -98,9 +98,9 @@ public class CallRecordLog {
         try {
             if (callId >= 0) {
                 if (thrown == null) {
-                    exitRecords.add(callId, methodId, agentRuntime, false, resultPrinter, returnValue);
+                    exitRecords.add(callId, methodId, typeResolver, false, resultPrinter, returnValue);
                 } else {
-                    exitRecords.add(callId, methodId, agentRuntime, true, ObjectBinaryPrinterType.THROWABLE_PRINTER.getInstance(), thrown);
+                    exitRecords.add(callId, methodId, typeResolver, true, ObjectBinaryPrinterType.THROWABLE_PRINTER.getInstance(), thrown);
                 }
                 lastExitCallId = callId;
             }

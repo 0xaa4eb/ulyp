@@ -1,6 +1,6 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.ByteBuddyAgentRuntime;
+import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.core.MethodDescriptionMap;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
@@ -19,7 +19,7 @@ public class MethodCallRecordingAdvice {
             @Advice.AllArguments Object[] arguments) {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
-                    ByteBuddyAgentRuntime.getInstance(),
+                    ByteBuddyTypeResolver.getInstance(),
                     MethodDescriptionMap.getInstance().get(methodId),
                     callee,
                     arguments
@@ -45,7 +45,7 @@ public class MethodCallRecordingAdvice {
         if (callId >= 0) {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnMethodExit(
-                        ByteBuddyAgentRuntime.getInstance(),
+                        ByteBuddyTypeResolver.getInstance(),
                         MethodDescriptionMap.getInstance().get(methodId),
                         returnValue,
                         throwable,
@@ -54,7 +54,7 @@ public class MethodCallRecordingAdvice {
             } else {
                 if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                     Recorder.getInstance().onMethodExit(
-                            ByteBuddyAgentRuntime.getInstance(),
+                            ByteBuddyTypeResolver.getInstance(),
                             MethodDescriptionMap.getInstance().get(methodId),
                             returnValue,
                             throwable,

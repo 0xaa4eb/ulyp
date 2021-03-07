@@ -26,7 +26,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
     public void add(
             long callId,
             int methodId,
-            AgentRuntime agentRuntime,
+            TypeResolver typeResolver,
             boolean thrown,
             ObjectBinaryPrinter returnValuePrinter,
             Object returnValue)
@@ -35,7 +35,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             encoder.callId(callId);
             encoder.methodId(methodId);
             encoder.thrown(thrown ? BooleanType.T : BooleanType.F);
-            TypeInfo classDescription = agentRuntime.get(returnValue);
+            TypeInfo classDescription = typeResolver.get(returnValue);
             encoder.returnClassId(classDescription.getId());
 
             ObjectBinaryPrinter printer = returnValue != null ?
@@ -45,7 +45,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             encoder.returnPrinterId(printer.getId());
             binaryOutput.wrap(encoder);
             try {
-                printer.write(returnValue, binaryOutput, agentRuntime);
+                printer.write(returnValue, binaryOutput, typeResolver);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

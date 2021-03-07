@@ -1,6 +1,6 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.ByteBuddyAgentRuntime;
+import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.core.MethodDescriptionMap;
 import net.bytebuddy.asm.Advice;
 
@@ -19,7 +19,7 @@ public class ConstructorCallRecordingAdvice {
     {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
-                    ByteBuddyAgentRuntime.getInstance(),
+                    ByteBuddyTypeResolver.getInstance(),
                     MethodDescriptionMap.getInstance().get(methodId),
                     arguments
             );
@@ -44,7 +44,7 @@ public class ConstructorCallRecordingAdvice {
         if (callId >= 0) {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnConstructorExit(
-                        ByteBuddyAgentRuntime.getInstance(),
+                        ByteBuddyTypeResolver.getInstance(),
                         MethodDescriptionMap.getInstance().get(methodId),
                         callId,
                         returnValue
@@ -52,7 +52,7 @@ public class ConstructorCallRecordingAdvice {
             } else {
                 if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                     Recorder.getInstance().onConstructorExit(
-                            ByteBuddyAgentRuntime.getInstance(),
+                            ByteBuddyTypeResolver.getInstance(),
                             MethodDescriptionMap.getInstance().get(methodId),
                             returnValue,
                             callId

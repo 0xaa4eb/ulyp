@@ -25,7 +25,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
     public void add(
             long callId,
             int methodId,
-            AgentRuntime agentRuntime,
+            TypeResolver typeResolver,
             ObjectBinaryPrinter[] printers,
             Object callee,
             Object[] args)
@@ -39,14 +39,14 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             for (int i = 0; i < args.length; i++) {
                 ObjectBinaryPrinter printer = args[i] != null ? printers[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
-                TypeInfo argTypeInfo = agentRuntime.get(args[i]);
+                TypeInfo argTypeInfo = typeResolver.get(args[i]);
 
                 argumentsEncoder = argumentsEncoder.next();
                 argumentsEncoder.classId(argTypeInfo.getId());
                 argumentsEncoder.printerId(printer.getId());
                 binaryOutput.wrap(encoder);
                 try {
-                    printer.write(args[i], binaryOutput, agentRuntime);
+                    printer.write(args[i], binaryOutput, typeResolver);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -54,11 +54,11 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
 
             ObjectBinaryPrinter printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
-            encoder.calleeClassId(agentRuntime.get(callee).getId());
+            encoder.calleeClassId(typeResolver.get(callee).getId());
             encoder.calleePrinterId(printer.getId());
             binaryOutput.wrap(encoder);
             try {
-                printer.write(callee, binaryOutput, agentRuntime);
+                printer.write(callee, binaryOutput, typeResolver);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

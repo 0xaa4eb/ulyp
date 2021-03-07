@@ -1,7 +1,7 @@
 package com.ulyp.core.printers;
 
 import com.ulyp.core.DecodingContext;
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
@@ -26,7 +26,7 @@ public class ThrowablePrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             Throwable t = (Throwable) object;
             String message = t.getMessage();

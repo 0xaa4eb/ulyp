@@ -1,6 +1,6 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.log.AgentLogManager;
 import com.ulyp.core.log.Logger;
 import com.ulyp.core.printers.TypeInfo;
@@ -11,15 +11,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ByteBuddyAgentRuntime implements AgentRuntime {
+public class ByteBuddyTypeResolver implements TypeResolver {
 
-    private static final Logger LOGGER = AgentLogManager.getLogger(ByteBuddyAgentRuntime.class);
+    private static final Logger LOGGER = AgentLogManager.getLogger(ByteBuddyTypeResolver.class);
 
     private static class InstanceHolder {
-        private static final ByteBuddyAgentRuntime context = new ByteBuddyAgentRuntime();
+        private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();
     }
 
-    public static AgentRuntime getInstance() {
+    public static TypeResolver getInstance() {
         return InstanceHolder.context;
     }
 

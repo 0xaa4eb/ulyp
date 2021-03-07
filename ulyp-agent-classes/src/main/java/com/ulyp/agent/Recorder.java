@@ -39,14 +39,14 @@ public class Recorder {
     }
 
     public long startOrContinueRecordingOnMethodEnter(
-            AgentRuntime agentRuntime,
+            TypeResolver typeResolver,
             MethodInfo methodInfo,
             @Nullable Object callee,
             Object[] args)
     {
         CallRecordLog recordLog = threadLocalRecordsLog.getOrCreate(() -> {
             CallRecordLog log = new CallRecordLog(
-                    agentRuntime,
+                    typeResolver,
                     context.getSysPropsSettings().getMaxTreeDepth(),
                     context.getSysPropsSettings().getMaxCallsToRecordPerMethod());
             currentRecordingSessionCount.incrementAndGet();
@@ -56,13 +56,13 @@ public class Recorder {
     }
 
     public long startOrContinueRecordingOnConstructorEnter(
-            AgentRuntime agentRuntime,
+            TypeResolver typeResolver,
             MethodInfo methodInfo,
             Object[] args)
     {
         CallRecordLog recordLog = threadLocalRecordsLog.getOrCreate(() -> {
             CallRecordLog log = new CallRecordLog(
-                    agentRuntime,
+                    typeResolver,
                     context.getSysPropsSettings().getMaxTreeDepth(),
                     context.getSysPropsSettings().getMaxCallsToRecordPerMethod());
             currentRecordingSessionCount.incrementAndGet();
@@ -71,8 +71,8 @@ public class Recorder {
         return onConstructorEnter(methodInfo, args);
     }
 
-    public void endRecordingIfPossibleOnMethodExit(AgentRuntime agentRuntime, MethodInfo methodInfo, Object result, Throwable thrown, long callId) {
-        onMethodExit(agentRuntime, methodInfo, result, thrown, callId);
+    public void endRecordingIfPossibleOnMethodExit(TypeResolver typeResolver, MethodInfo methodInfo, Object result, Throwable thrown, long callId) {
+        onMethodExit(typeResolver, methodInfo, result, thrown, callId);
 
         CallRecordLog recordLog = threadLocalRecordsLog.get();
         if (recordLog != null && recordLog.isComplete()) {
@@ -84,7 +84,7 @@ public class Recorder {
                         new CallRecordTreeRequest(
                                 recordLog,
                                 MethodDescriptionMap.getInstance().values(),
-                                agentRuntime.getAllKnownTypes(),
+                                typeResolver.getAllKnownTypes(),
                                 context.getProcessInfo()
                         )
                 );
@@ -92,8 +92,8 @@ public class Recorder {
         }
     }
 
-    public void endRecordingIfPossibleOnConstructorExit(AgentRuntime agentRuntime, MethodInfo methodInfo, long callId, Object result) {
-        onConstructorExit(agentRuntime, methodInfo, result, callId);
+    public void endRecordingIfPossibleOnConstructorExit(TypeResolver typeResolver, MethodInfo methodInfo, long callId, Object result) {
+        onConstructorExit(typeResolver, methodInfo, result, callId);
 
         CallRecordLog recordLog = threadLocalRecordsLog.get();
         if (recordLog != null && recordLog.isComplete()) {
@@ -105,7 +105,7 @@ public class Recorder {
                         new CallRecordTreeRequest(
                                 recordLog,
                                 MethodDescriptionMap.getInstance().values(),
-                                agentRuntime.getAllKnownTypes(),
+                                typeResolver.getAllKnownTypes(),
                                 context.getProcessInfo()
                         )
                 );
@@ -125,11 +125,11 @@ public class Recorder {
         return callRecordLog.onMethodEnter(method.getId(), method.getParamPrinters(), callee, args);
     }
 
-    public void onConstructorExit(AgentRuntime agentRuntime, MethodInfo method, Object result, long callId) {
-        onMethodExit(agentRuntime, method, result,null, callId);
+    public void onConstructorExit(TypeResolver typeResolver, MethodInfo method, Object result, long callId) {
+        onMethodExit(typeResolver, method, result,null, callId);
     }
 
-    public void onMethodExit(AgentRuntime agentRuntime, MethodInfo method, Object result, Throwable thrown, long callId) {
+    public void onMethodExit(TypeResolver typeResolver, MethodInfo method, Object result, Throwable thrown, long callId) {
         CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
         if (currentRecordLog == null) return;
         currentRecordLog.onMethodExit(method.getId(), method.getResultPrinter(), result, thrown, callId);
@@ -143,7 +143,7 @@ public class Recorder {
                     new CallRecordTreeRequest(
                             currentRecordLog,
                             MethodDescriptionMap.getInstance().values(),
-                            agentRuntime.getAllKnownTypes(),
+                            typeResolver.getAllKnownTypes(),
                             context.getProcessInfo()
                     )
             );

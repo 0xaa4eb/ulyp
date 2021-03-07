@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public interface AgentRuntime {
+public interface TypeResolver {
 
     @NotNull
     TypeInfo get(Object o);

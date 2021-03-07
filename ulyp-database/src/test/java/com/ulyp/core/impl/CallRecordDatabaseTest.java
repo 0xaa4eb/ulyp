@@ -16,7 +16,7 @@ public abstract class CallRecordDatabaseTest {
 
     protected abstract CallRecordDatabase build();
 
-    private final TestAgentRuntime agentRuntime = new TestAgentRuntime();
+    private final TestTypeResolver agentRuntime = new TestTypeResolver();
 
     @Test
     public void testRecordsSaving() {

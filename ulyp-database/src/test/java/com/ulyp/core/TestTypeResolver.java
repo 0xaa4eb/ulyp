@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestAgentRuntime implements AgentRuntime {
+public class TestTypeResolver implements TypeResolver {
 
     private final Map<Class<?>, TypeInfo> types = new HashMap<>();
     private int id = 0;

@@ -1,6 +1,6 @@
 package com.ulyp.core.printers;
 
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.DecodingContext;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
@@ -63,7 +63,7 @@ public class MapPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
             if (active) {
@@ -95,7 +95,7 @@ public class MapPrinter extends ObjectBinaryPrinter {
         }
     }
 
-    private void writeObject(AgentRuntime runtime, BinaryOutputAppender appender, Object item) throws Exception {
+    private void writeObject(TypeResolver runtime, BinaryOutputAppender appender, Object item) throws Exception {
         TypeInfo itemType = runtime.get(item);
         appender.append(itemType.getId());
         ObjectBinaryPrinter printer = item != null ? itemType.getSuggestedPrinter() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
@@ -103,7 +103,7 @@ public class MapPrinter extends ObjectBinaryPrinter {
         printer.write(item, itemType, appender, runtime);
     }
 
-    private void writeMapIdentity(Object object, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             appender.append(RECORDED_IDENTITY_ONLY);
             ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, runtime);

@@ -1,6 +1,6 @@
 package com.ulyp.core.printers;
 
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.DecodingContext;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
@@ -59,7 +59,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
             if (active) {
@@ -94,7 +94,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
         }
     }
 
-    private void writeIdentity(Object object, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             appender.append(RECORDED_IDENTITY_ONLY);
             ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, runtime);

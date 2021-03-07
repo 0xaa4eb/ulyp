@@ -1,7 +1,7 @@
 package com.ulyp.core.printers;
 
 import com.ulyp.core.DecodingContext;
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
@@ -27,15 +27,15 @@ public abstract class ObjectBinaryPrinter {
      * @param out target binary stream to print to
      * @param runtime runtime provided by instrumentation library
      */
-    public abstract void write(Object object, TypeInfo objectType, BinaryOutput out, AgentRuntime runtime) throws Exception;
+    public abstract void write(Object object, TypeInfo objectType, BinaryOutput out, TypeResolver runtime) throws Exception;
 
     /**
      * @param obj object to print
      * @param out target binary stream to print to
-     * @param agentRuntime runtime provided by instrumentation library
+     * @param typeResolver runtime provided by instrumentation library
      */
     // TODO retire this
-    public void write(Object obj, BinaryOutput out, AgentRuntime agentRuntime) throws Exception {
-        write(obj, agentRuntime.get(obj), out, agentRuntime);
+    public void write(Object obj, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+        write(obj, typeResolver.get(obj), out, typeResolver);
     }
 }
