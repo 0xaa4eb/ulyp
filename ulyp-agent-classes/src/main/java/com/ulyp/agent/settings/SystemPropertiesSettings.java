@@ -5,9 +5,13 @@ import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.agent.transport.file.FileUiAddress;
 import com.ulyp.agent.transport.nop.DisconnectedUiAddress;
 import com.ulyp.core.printers.CollectionsRecordingMode;
+import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SystemPropertiesSettings {
 
@@ -45,6 +49,13 @@ public class SystemPropertiesSettings {
         int maxTreeDepth = Integer.parseInt(System.getProperty(MAX_DEPTH_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
         int maxRecordedMethodCallsPerMethod = Integer.parseInt(System.getProperty(MAX_CALL_TO_RECORD_PER_METHOD, String.valueOf(Integer.MAX_VALUE / 2)));
         int minRecordsCount = Integer.parseInt(System.getProperty(MIN_TRACE_COUNT, String.valueOf(1)));
+
+        Set<ClassMatcher> classesToPrint =
+                CommaSeparatedList.parse(System.getProperty(PRINT_WITH_TO_STRING_CLASSES, ""))
+                    .stream()
+                    .map(ClassMatcher::parse)
+                    .collect(Collectors.toSet());
+
         return new SystemPropertiesSettings(
                 uiAddress,
                 instrumentationPackages,
@@ -54,7 +65,8 @@ public class SystemPropertiesSettings {
                 maxRecordedMethodCallsPerMethod,
                 minRecordsCount,
                 shouldRecordConstructors,
-                collectionsRecordingMode
+                collectionsRecordingMode,
+                classesToPrint
         );
     }
 
@@ -62,6 +74,7 @@ public class SystemPropertiesSettings {
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     // TODO name
     public static final String START_METHOD_PROPERTY = "ulyp.methods";
+    public static final String PRINT_WITH_TO_STRING_CLASSES = "ulyp.to-string-print";
     public static final String FILE_PATH = "ulyp.file";
     public static final String RECORD_CONSTRUCTORS = "ulyp.constructors";
     public static final String RECORD_COLLECTIONS = "ulyp.collections";
@@ -78,6 +91,7 @@ public class SystemPropertiesSettings {
     private final int minRecordsCountForLog;
     private final boolean shouldRecordConstructors;
     private final CollectionsRecordingMode collectionsRecordingMode;
+    private final Set<ClassMatcher> classesToPrintWithToString;
 
     public SystemPropertiesSettings(
             @NotNull UiAddress uiAddress,
@@ -88,7 +102,8 @@ public class SystemPropertiesSettings {
             int maxCallsToRecordPerMethod,
             int minRecordsCountForLog,
             boolean shouldRecordConstructors,
-            CollectionsRecordingMode collectionsRecordingMode)
+            CollectionsRecordingMode collectionsRecordingMode,
+            Set<ClassMatcher> classesToPrintWithToString)
     {
         this.uiAddress = uiAddress;
         this.instrumentatedPackages = instrumentedPackages;
@@ -99,6 +114,7 @@ public class SystemPropertiesSettings {
         this.minRecordsCountForLog = minRecordsCountForLog;
         this.shouldRecordConstructors = shouldRecordConstructors;
         this.collectionsRecordingMode = collectionsRecordingMode;
+        this.classesToPrintWithToString = classesToPrintWithToString;
     }
 
     public int getMaxTreeDepth() {
@@ -135,6 +151,10 @@ public class SystemPropertiesSettings {
 
     public CollectionsRecordingMode getCollectionsRecordingMode() {
         return collectionsRecordingMode;
+    }
+
+    public Set<ClassMatcher> getClassesToPrintWithToString() {
+        return classesToPrintWithToString;
     }
 
     @Override

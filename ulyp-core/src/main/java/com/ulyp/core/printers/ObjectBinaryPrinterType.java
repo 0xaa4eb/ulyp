@@ -12,7 +12,7 @@ public enum ObjectBinaryPrinterType {
     COLLECTION_DEBUG_PRINTER(new CollectionPrinter((byte) 10), 1),
     MAP_PRINTER(new MapPrinter((byte) 13), 1),
     DATE_PRINTER(new DatePrinter((byte) 20), 90),
-
+    TO_STRING_PRINTER(new ToStringPrinter((byte) 91), 99),
 
     // identity can be used for any objects
     IDENTITY_PRINTER(new IdentityPrinter((byte) 0), Integer.MAX_VALUE / 2),

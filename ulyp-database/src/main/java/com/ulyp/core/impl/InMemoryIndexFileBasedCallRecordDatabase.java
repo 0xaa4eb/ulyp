@@ -29,7 +29,7 @@ public class InMemoryIndexFileBasedCallRecordDatabase implements CallRecordDatab
     private final Int2LongMap enterRecordPos = new Int2LongOpenHashMap();
     private final Int2LongMap exitRecordPos = new Int2LongOpenHashMap();
     private final Long2ObjectMap<TypeInfo> classIdMap = new Long2ObjectOpenHashMap<>();
-    private final DecodingContext decodingContext = new DecodingContext(classIdMap);
+    private final ByIdTypeResolver decodingContext = new DecodingContext(classIdMap);
     private final Long2ObjectMap<TMethodInfoDecoder> methodDescriptionMap = new Long2ObjectOpenHashMap<>();
     private final IntArrayList currentRootStack = new IntArrayList();
     private final byte[] tmpBuf = new byte[512 * 1024];

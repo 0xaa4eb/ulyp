@@ -1,6 +1,6 @@
 package com.ulyp.core.printers.bytes;
 
-import com.ulyp.core.DecodingContext;
+import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.printers.ObjectBinaryPrinter;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.ObjectRepresentation;
@@ -46,10 +46,10 @@ public class BinaryInputImpl implements BinaryInput {
     }
 
     @Override
-    public ObjectRepresentation readObject(DecodingContext decodingContext) {
-        TypeInfo itemClassTypeInfo = decodingContext.getType(readInt());
+    public ObjectRepresentation readObject(ByIdTypeResolver typeResolver) {
+        TypeInfo itemClassTypeInfo = typeResolver.getType(readInt());
         ObjectBinaryPrinter printer = ObjectBinaryPrinterType.printerForId(readByte());
-        return printer.read(itemClassTypeInfo, this, decodingContext);
+        return printer.read(itemClassTypeInfo, this, typeResolver);
     }
 
     @Override

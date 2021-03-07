@@ -23,7 +23,7 @@ public class CallRecordLog {
     private final int maxDepth;
     private final int maxCallsToRecordPerMethod;
 
-    private boolean inProcessOfTracing = true;
+    private boolean inProcessOfRecording = true;
     private long lastExitCallId = -1;
     private long callIdCounter = 0;
 
@@ -51,7 +51,7 @@ public class CallRecordLog {
             StackTraceElement[] stackTrace,
             int maxDepth,
             int maxCallsToRecordPerMethod,
-            boolean inProcessOfTracing,
+            boolean inProcessOfRecording,
             long callIdCounter)
     {
         this.chunkId = chunkId;
@@ -62,12 +62,12 @@ public class CallRecordLog {
         this.stackTrace = stackTrace;
         this.maxDepth = maxDepth;
         this.maxCallsToRecordPerMethod = maxCallsToRecordPerMethod;
-        this.inProcessOfTracing = inProcessOfTracing;
+        this.inProcessOfRecording = inProcessOfRecording;
         this.callIdCounter = callIdCounter;
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.chunkId + 1, this.recordingSessionId, this.typeResolver, this.threadName, this.threadId, this.stackTrace, this.maxDepth, this.maxCallsToRecordPerMethod, this.inProcessOfTracing, this.callIdCounter);
+        return new CallRecordLog(this.chunkId + 1, this.recordingSessionId, this.typeResolver, this.threadName, this.threadId, this.stackTrace, this.maxDepth, this.maxCallsToRecordPerMethod, this.inProcessOfRecording, this.callIdCounter);
     }
 
     public long estimateBytesSize() {
@@ -75,26 +75,26 @@ public class CallRecordLog {
     }
 
     public long onMethodEnter(int methodId, ObjectBinaryPrinter[] printers, @Nullable Object callee, Object[] args) {
-        if (!inProcessOfTracing) {
+        if (!inProcessOfRecording) {
             return -1;
         }
-        inProcessOfTracing = false;
+        inProcessOfRecording = false;
         try {
 
             long callId = callIdCounter++;
             enterRecords.add(callId, methodId, typeResolver, printers, callee, args);
             return callId;
         } finally {
-            inProcessOfTracing = true;
+            inProcessOfRecording = true;
         }
     }
 
     public void onMethodExit(int methodId, ObjectBinaryPrinter resultPrinter, Object returnValue, Throwable thrown, long callId) {
-        if (!inProcessOfTracing) {
+        if (!inProcessOfRecording) {
             return;
         }
 
-        inProcessOfTracing = false;
+        inProcessOfRecording = false;
         try {
             if (callId >= 0) {
                 if (thrown == null) {
@@ -105,7 +105,7 @@ public class CallRecordLog {
                 lastExitCallId = callId;
             }
         } finally {
-            inProcessOfTracing = true;
+            inProcessOfRecording = true;
         }
     }
 

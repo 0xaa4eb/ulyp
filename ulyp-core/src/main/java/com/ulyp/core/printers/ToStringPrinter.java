@@ -1,65 +1,62 @@
-/*
 package com.ulyp.core.printers;
 
-import com.ulyp.core.DecodingContext;
-import com.ulyp.core.AgentRuntime;
+import com.ulyp.core.ByIdTypeResolver;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
+import com.ulyp.core.util.ClassMatcher;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ToStringPrinter extends ObjectBinaryPrinter {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
-    private static final int TO_STRING_CALL_NULL = 2;
     private static final int TO_STRING_CALL_FAIL = 0;
+
+    private final Set<ClassMatcher> classesToPrintWithToString = new HashSet<>();
 
     protected ToStringPrinter(byte id) {
         super(id);
     }
 
+    public void addClassNamesSupportPrinting(Set<ClassMatcher> classNames) {
+        this.classesToPrintWithToString.addAll(classNames);
+    }
+
     @Override
     boolean supports(TypeInfo type) {
-        if (type.isExactlyJavaLangObject()) {
-            return false;
-        }
-
-        return type.hasToStringMethod();
+        return classesToPrintWithToString.stream().anyMatch(x -> x.matches(type));
     }
 
     @Override
-    public ObjectRepresentation read(TypeInfo objectType, BinaryInput input, DecodingContext decodingContext) {
-        long result = input.readLong();
+    public ObjectRepresentation read(TypeInfo objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+        long result = input.readInt();
         if (result == TO_STRING_CALL_SUCCESS) {
-            // if StringObject representation is returned, then it will look as String literal in UI (green text with double quotes)
-            StringObjectRepresentation string = (StringObjectRepresentation) ObjectBinaryPrinterType.STRING_PRINTER.getInstance().read(objectType, input, decodingContext);
-            return new PlainObjectRepresentation(objectType, string.getPrintedText());
-        } else if (result == TO_STRING_CALL_NULL) {
-            return NullObjectRepresentation.getInstance();
+            int identityHashCode = input.readInt();
+            ObjectRepresentation printed = input.readObject(typeResolver);
+            return new ToStringPrintedRepresentation(printed, objectType, identityHashCode);
         } else {
-            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(objectType, input, decodingContext);
+            return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(objectType, input, typeResolver);
         }
     }
 
     @Override
-    public void write(Object object, TypeInfo classDescription, BinaryOutput out, AgentRuntime runtime) throws Exception {
+    public void write(Object object, TypeInfo classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try {
             String printed = object.toString();
-            if (printed != null) {
-                try (BinaryOutputAppender appender = out.appender()) {
-                    appender.append(TO_STRING_CALL_SUCCESS);
-                    ObjectBinaryPrinterType.STRING_PRINTER.getInstance().write(printed, appender, runtime);
-                }
-            } else {
-                try (BinaryOutputAppender appender = out.appender()) {
-                    appender.append(TO_STRING_CALL_NULL);
-                }
+
+            try (BinaryOutputAppender appender = out.appender()) {
+                appender.append(TO_STRING_CALL_SUCCESS);
+                appender.append(System.identityHashCode(object));
+                appender.append(printed, typeResolver);
             }
         } catch (Throwable e) {
             try (BinaryOutputAppender appender = out.appender()) {
                 appender.append(TO_STRING_CALL_FAIL);
-                ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, runtime);
+                ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, typeResolver);
             }
         }
     }
 }
-*/

@@ -8,6 +8,10 @@ import java.util.List;
 
 public class Showcase {
 
+    public static X returnPrintable() {
+        return new X(5);
+    }
+
     public static Date returnDate() {
         return new Date();
     }
@@ -51,5 +55,6 @@ public class Showcase {
         System.out.println(returnListOfString());
         System.out.println(returnArrayOfString());
         System.out.println(returnDate());
+        System.out.println(returnPrintable());
     }
 }
