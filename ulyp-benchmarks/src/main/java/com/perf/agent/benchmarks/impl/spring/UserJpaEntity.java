@@ -1,7 +1,5 @@
 package com.perf.agent.benchmarks.impl.spring;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -55,25 +53,6 @@ public class UserJpaEntity {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
-	}
-
-	// overrides
-
-	public boolean equals(UserJpaEntity user) {
-		return getId() == user.getId()
-				&& StringUtils.equals(getFirstname(), user.getFirstname())
-				&& StringUtils.equals(getLastname(), user.getLastname());
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (obj != null && obj instanceof UserJpaEntity) {
-			return equals((UserJpaEntity) obj);
-		}
-		return false;
 	}
 	
 	// type conversion

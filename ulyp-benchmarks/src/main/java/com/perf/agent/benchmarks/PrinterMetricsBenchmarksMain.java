@@ -1,9 +1,7 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.impl.SpringHibernateMediumBenchmark;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.perf.agent.benchmarks.proc.UIServerStub;
 import com.ulyp.core.CallEnterRecordList;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.transport.TCallEnterRecordDecoder;
@@ -13,7 +11,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Prints out total bytes serialized by each printer
@@ -29,7 +26,7 @@ public class PrinterMetricsBenchmarksMain {
         Benchmark benchmark = benchmarkClazz.newInstance();
 
         for (BenchmarkProfile profile : benchmark.getProfiles()) {
-            if (!profile.shouldSendSomethingToUi()) {
+            if (!profile.shouldWriteRecording()) {
                 // If nothing is sent to UI, then there is nothing to measure
                 continue;
             }
@@ -57,12 +54,12 @@ public class PrinterMetricsBenchmarksMain {
 
             sizeMap.forEach(
                     (k, v) -> {
-                        double weight = (v * 1.0 / 1000.0);
+                        double totalSizeDivided = (v * 1.0 / 1000.0);
                         long count = countMap.getOrDefault(k, 0L);
 
                         System.out.println(
                                 ObjectBinaryPrinterType.printerForId(k).toString() + "    ->    " +
-                                        weight + " / " + countMap.get(k) +
+                                        "total size = " + totalSizeDivided + " / count = " + countMap.get(k) +
                                         " ~ avg " + (v * 1.0 / count));
                     }
             );
@@ -81,15 +78,8 @@ public class PrinterMetricsBenchmarksMain {
     }
 
     private static TCallRecordLogUploadRequest run(Class<?> benchmarkClazz, BenchmarkProfile profile) {
-
-        try (UIServerStub uiServerStub = new UIServerStub(profile)) {
-
-            BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
-
-            return uiServerStub.get(5, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
+        return profile.getOutputFile().read().get(0);
     }
 
     private static Histogram emptyHistogram() {

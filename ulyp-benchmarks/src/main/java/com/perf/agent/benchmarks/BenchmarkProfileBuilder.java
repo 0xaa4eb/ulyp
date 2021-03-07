@@ -1,6 +1,7 @@
 package com.perf.agent.benchmarks;
 
 import com.perf.agent.benchmarks.proc.BenchmarkEnv;
+import com.perf.agent.benchmarks.proc.OutputFile;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +15,7 @@ public class BenchmarkProfileBuilder {
     private MethodMatcher methodToRecord;
     @NotNull
     private PackageList instrumentedPackages = new PackageList();
-    private boolean uiEnabled = true;
-    private final int uiPort = BenchmarkEnv.pickFreePort();
+    private OutputFile outputFile = new OutputFile("ulyp-benchmark", "dat");
     private final List<String> additionalProcessArgs = new ArrayList<>();
 
     public BenchmarkProfileBuilder withAdditionalArgs(String... args) {
@@ -34,15 +34,11 @@ public class BenchmarkProfileBuilder {
     }
 
     public BenchmarkProfileBuilder withUiDisabled() {
-        return setUiEnabled(false);
-    }
-
-    private BenchmarkProfileBuilder setUiEnabled(boolean uiEnabled) {
-        this.uiEnabled = uiEnabled;
+        outputFile = null;
         return this;
     }
 
     public BenchmarkProfile build() {
-        return new BenchmarkProfile(methodToRecord, instrumentedPackages, additionalProcessArgs, uiEnabled, uiPort);
+        return new BenchmarkProfile(methodToRecord, instrumentedPackages, additionalProcessArgs, outputFile);
     }
 }

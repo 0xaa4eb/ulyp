@@ -1,10 +1,8 @@
 package com.perf.agent.benchmarks;
 
 import com.perf.agent.benchmarks.impl.H2MemDatabaseBenchmark;
-import com.perf.agent.benchmarks.impl.SpringHibernateMediumBenchmark;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.perf.agent.benchmarks.proc.UIServerStub;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.HdrHistogram.Histogram;
 
@@ -32,7 +30,7 @@ public class RequestMemoryBenchmarksMain {
         Benchmark benchmark = benchmarkClazz.newInstance();
 
         for (BenchmarkProfile profile : benchmark.getProfiles()) {
-            if (!profile.shouldSendSomethingToUi()) {
+            if (!profile.shouldWriteRecording()) {
                 // If nothing is sent to UI, then there is nothing to measure
                 continue;
             }
@@ -46,15 +44,9 @@ public class RequestMemoryBenchmarksMain {
     }
 
     private static TCallRecordLogUploadRequest run(Class<?> benchmarkClazz, BenchmarkProfile profile) {
+        BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
-        try (UIServerStub uiServerStub = new UIServerStub(profile)) {
-
-            BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
-
-            return uiServerStub.get(5, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return profile.getOutputFile().read().get(0);
     }
 
     private static Histogram emptyHistogram() {

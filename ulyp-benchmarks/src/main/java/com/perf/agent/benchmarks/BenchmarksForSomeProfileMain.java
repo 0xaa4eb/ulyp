@@ -2,7 +2,6 @@ package com.perf.agent.benchmarks;
 
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.perf.agent.benchmarks.proc.UIServerStub;
 import com.ulyp.core.CallEnterRecordList;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
@@ -57,23 +56,18 @@ public class BenchmarksForSomeProfileMain {
     private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
 
         try (MillisMeasured measured = new MillisMeasured(procTimeHistogram)) {
-            try (UIServerStub uiServerStub = new UIServerStub(profile)) {
+            BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
-                BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
+            if (profile.shouldWriteRecording()) {
 
-                if (profile.shouldSendSomethingToUi()) {
+                TCallRecordLogUploadRequest request = profile.getOutputFile().read().get(0);
+                recordingTimeHistogram.recordValue(request.getRecordingInfo().getLifetimeMillis());
 
-                    TCallRecordLogUploadRequest request = uiServerStub.get(5, TimeUnit.MINUTES);
-                    recordingTimeHistogram.recordValue(request.getRecordingInfo().getLifetimeMillis());
-
-                    CallEnterRecordList enterRecords = new CallEnterRecordList(request.getRecordLog().getEnterRecords());
-                    return enterRecords.size();
-                }
-
-                return 0;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                CallEnterRecordList enterRecords = new CallEnterRecordList(request.getRecordLog().getEnterRecords());
+                return enterRecords.size();
             }
+
+            return 0;
         }
     }
 

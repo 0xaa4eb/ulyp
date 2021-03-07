@@ -1,7 +1,5 @@
 package com.perf.agent.benchmarks.impl.spring;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class User {
 
 	private int id;
@@ -69,22 +67,5 @@ public class User {
 
 	public void setV3(int v3) {
 		this.v3 = v3;
-	}
-
-	// overrides
-
-	public boolean equals(User user) {
-		return getId() == user.getId() && StringUtils.equals(getFirstName(), user.getFirstName()) && StringUtils.equals(getLastName(), user.getLastName());
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (obj != null && obj instanceof User) {
-			return equals((User) obj);
-		}
-		return false;
 	}
 }
