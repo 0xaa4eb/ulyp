@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ulyp.ui.util.CssClass.CALL_TREE_PLAIN_TEXT;
-import static com.ulyp.ui.util.CssClass.CALL_TREE_TYPE_NAME;
+import static com.ulyp.ui.util.CssClass.*;
 
 public class RenderedCollection extends RenderedObject {
 
@@ -29,7 +28,7 @@ public class RenderedCollection extends RenderedObject {
             texts.add(StyledText.of(": ", CALL_TREE_PLAIN_TEXT));
         }
 
-        texts.add(StyledText.of("{", CALL_TREE_PLAIN_TEXT));
+        texts.add(StyledText.of("{", CALL_TREE_COLLECTION_BRACE));
 
         for (int i = 0; i < renderedObjects.size(); i++) {
             texts.add(renderedObjects.get(i));
@@ -42,7 +41,7 @@ public class RenderedCollection extends RenderedObject {
             texts.add(StyledText.of((representation.getLength() - renderedObjects.size()) + " more...", CALL_TREE_PLAIN_TEXT));
         }
 
-        texts.add(StyledText.of("}", CALL_TREE_PLAIN_TEXT));
+        texts.add(StyledText.of("}", CALL_TREE_COLLECTION_BRACE));
 
         super.getChildren().addAll(texts);
     }

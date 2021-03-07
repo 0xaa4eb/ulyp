@@ -9,6 +9,7 @@ public enum CssClass {
     CALL_TREE_STRING_LITERAL("ulyp-ctt", "ulyp-ctt-string"),
     CALL_TREE_NUMBER("ulyp-ctt", "ulyp-ctt-number"),
     CALL_TREE_PLAIN_TEXT("ulyp-ctt", "ulyp-ctt-sep"),
+    CALL_TREE_COLLECTION_BRACE("ulyp-ctt", "ulyp-ctt-brace"),
     CALL_TREE_IDENTITY_REPR("ulyp-ctt", "ulyp-ctt-identity"),
     CALL_TREE_METHOD_NAME("ulyp-ctt", "ulyp-ctt-method-name"),
     CALL_TREE_RETURN_VALUE("ulyp-ctt", "ulyp-ctt-return-value"),
