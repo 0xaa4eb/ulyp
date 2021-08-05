@@ -1,0 +1,94 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+    }
+}
+
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "io.freefair.lombok" version "6.0.0-m2"
+}
+
+repositories {
+    mavenCentral()
+}
+
+def grpcVersion = '1.27.0'
+def protobufVersion = '3.11.0'
+def protocVersion = protobufVersion
+
+dependencies {
+    compile project(':ulyp-core')
+    compile project(':ulyp-database')
+
+    compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
+    compile group: 'org.agrona', name: 'agrona', version: '0.9.22'
+
+    compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly "javax.annotation:javax.annotation-api:1.2"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    runtimeOnly "io.grpc:grpc-netty:${grpcVersion}"
+
+    testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+    testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', '../src/main/java']
+}
+
+compileJava {
+    options.debug = true
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+shadowJar {
+    relocate 'org.agrona', 'shadowed.org.agrona'
+    relocate 'it.unimi', 'shadowed.it.unimi'
+    relocate 'io', 'shadowed.io'
+    relocate 'com.google', 'shadowed.com.google'
+    relocate 'javax.annotation', 'shadowed.javax.annotation'
+    relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
+//    relocate 'org.apache', 'shadowed.org.apache'
+
+    archiveName = "${rootProject.name}-agent-classes-${rootProject.version}.jar"
+
+    mergeServiceFiles()
+
+    manifest {
+        attributes(
+                'Implementation-Title': "UlypAgent",
+                'Implementation-Version': rootProject.version,
+                'Built-By': 0xaa4eb,
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version')
+        )
+    }
+}
+
+assemble {
+    dependsOn('shadowJar')
+}
+
+test {
+    dependsOn(':ulyp-agent:shadowJar')
+}

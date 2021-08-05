@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?scenebuilder-stylesheet DarkTheme.css?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox fx:id="primaryPane" prefHeight="469.0" prefWidth="713.4" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ulyp.ui.PrimaryViewController">
+    <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                   <items>
+                      <MenuItem mnemonicParsing="false" onAction="#openRecordedDump" text="Open dump" />
+                      <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Close all recordings" />
+                   </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Tabs">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Clear all" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#changeAggregation" text="Aggregate by thread" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+      <SplitPane dividerPositions="0.5014044943820225" prefHeight="418.0" prefWidth="714.0" VBox.vgrow="ALWAYS">
+        <items>
+            <AnchorPane fx:id="processTabAnchorPane" maxHeight="1.7976931348623157E308"
+                        maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                        prefWidth="100.0"/>
+            <AnchorPane fx:id="sourceCodeViewAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0"
+                        prefWidth="100.0"/>
+        </items>
+      </SplitPane>
+    </children>
+</VBox>

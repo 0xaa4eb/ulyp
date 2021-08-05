@@ -1,0 +1,9 @@
+rootProject.name = 'ulyp'
+
+include 'ulyp-ui'
+include 'ulyp-benchmarks'
+include 'ulyp-core'
+include 'ulyp-agent'
+include 'ulyp-agent-classes'
+include 'ulyp-database'
+

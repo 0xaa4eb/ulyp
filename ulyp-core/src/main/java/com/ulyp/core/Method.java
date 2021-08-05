@@ -1,0 +1,129 @@
+package com.ulyp.core;
+
+import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.transport.*;
+import lombok.Builder;
+import org.agrona.MutableDirectBuffer;
+import org.agrona.concurrent.UnsafeBuffer;
+
+import java.util.Arrays;
+
+@Builder
+public class Method {
+
+    private final long id;
+    private final String name;
+    private final Type declaringType;
+    private final boolean isStatic;
+    private final boolean isConstructor;
+    private final boolean returnsSomething;
+    private final ObjectBinaryPrinter[] paramPrinters;
+    private final ObjectBinaryPrinter returnValuePrinter;
+
+    // If was dumped to the output file
+    @Builder.Default
+    private volatile boolean dumped = false;
+
+    public boolean wasDumped() {
+        return dumped;
+    }
+
+    public void markDumped() {
+        dumped = true;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public boolean isConstructor() {
+        return isConstructor;
+    }
+
+    public ObjectBinaryPrinter[] getParamPrinters() {
+        if (paramPrinters == null) {
+
+        }
+        return paramPrinters;
+    }
+
+    public ObjectBinaryPrinter getReturnValuePrinter() {
+        return returnValuePrinter;
+    }
+
+    public Type getDeclaringType() {
+        return declaringType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean returnsSomething() {
+        return returnsSomething;
+    }
+
+    public String toPrettyString() {
+        return declaringType.getName() + "." + name;
+    }
+
+    @Override
+    public String toString() {
+        return "MethodDescription{" +
+                "id=" + id +
+                ", methodName='" + name + '\'' +
+                ", declaringType=" + declaringType +
+                ", isStatic=" + isStatic +
+                ", returnsSomething=" + returnsSomething +
+                ", paramPrinters=" + Arrays.toString(paramPrinters) +
+                ", resultPrinter=" + returnValuePrinter +
+                '}';
+    }
+
+    public void serialize(BinaryMethodEncoder encoder) {
+        encoder.id(this.id);
+        encoder.returnsSomething(this.returnsSomething ? BooleanType.T : BooleanType.F);
+        encoder.staticFlag(this.isStatic ? BooleanType.T : BooleanType.F);
+        encoder.constructor(this.isConstructor ? BooleanType.T : BooleanType.F);
+        BinaryTypeEncoder binaryTypeEncoder = new BinaryTypeEncoder();
+
+        encoder.name(this.name);
+
+        // TODO move to some utils class
+        MutableDirectBuffer wrappedBuffer = encoder.buffer();
+        int headerLength = 4;
+        int limit = encoder.limit();
+
+        binaryTypeEncoder.wrap(wrappedBuffer, limit + headerLength);
+        declaringType.serialize(binaryTypeEncoder);
+
+        int typeSerializedLength = binaryTypeEncoder.encodedLength();
+
+        encoder.limit(limit + headerLength + typeSerializedLength);
+        wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
+    }
+
+    public static Method deserialize(BinaryMethodDecoder decoder) {
+
+        String name = decoder.name();
+
+        UnsafeBuffer buffer = new UnsafeBuffer();
+        decoder.wrapDeclaringTypeValue(buffer);
+        BinaryTypeDecoder typeDecoder = new BinaryTypeDecoder();
+        typeDecoder.wrap(buffer, 0, BinaryTypeEncoder.BLOCK_LENGTH, 0);
+        Type declaringType = Type.deserialize(typeDecoder);
+
+        return Method.builder()
+                .id(decoder.id())
+                .name(name)
+                .declaringType(declaringType)
+                .isStatic(decoder.staticFlag() == BooleanType.T)
+                .isConstructor(decoder.constructor() == BooleanType.T)
+                .returnsSomething(decoder.returnsSomething() == BooleanType.T)
+                .build();
+    }
+}

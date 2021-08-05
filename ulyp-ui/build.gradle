@@ -1,0 +1,88 @@
+buildscript {
+    repositories {
+
+        mavenCentral()
+        jcenter()
+
+        flatDir {
+            dirs 'ulyp-ui/fernflower.jar'
+        }
+    }
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'com.ulyp.ui.UIMain'
+
+repositories {
+    mavenCentral()
+}
+
+def grpcVersion = '1.27.0'
+def protobufVersion = '3.11.0'
+def protocVersion = protobufVersion
+
+dependencies {
+    compile project(':ulyp-database')
+
+    implementation files('libs/fernflower.jar')
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "javax.annotation:javax.annotation-api:1.3.2"
+
+    compile group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    compile group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
+    compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    compile group: 'org.agrona', name: 'agrona', version: '0.9.22'
+    compile group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
+
+    compile group: 'org.apache.logging.log4j', name: 'log4j', version: '2.13.1'
+    compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+    testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
+
+jar.baseName = 'ulyp-ui'
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', '../src/main/java']
+}
+
+jar {
+    mainClassName = 'com.ulyp.ui.UIMain'
+    archiveName = "ulyp-ui-${rootProject.version}.jar"
+
+    manifest {
+        attributes(
+                'Main-Class': 'com.ulyp.ui.UIMain',
+                'Implementation-Title': "Ulyp UI",
+                'Implementation-Version': rootProject.version,
+                'Built-By': 0xaa4eb,
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version')
+        )
+    }
+}
+
+compileJava {
+    options.debug = true
+}

@@ -1,0 +1,11 @@
+dist: xenial
+language: java
+
+script: ./gradlew ulyp-agent-classes:check -i
+
+jdk:
+  - openjdk8
+  - openjdk11
+
+install:
+  - true

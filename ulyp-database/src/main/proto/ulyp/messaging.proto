@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ulyp.transport";
+option java_outer_classname = "HelloWorldProto";
+
+package ulyp;
+
+service UiTransport {
+
+    rpc UploadCallGraph (TCallRecordLogUploadRequest) returns (TCallRecordLogUploadResponse) {}
+}
+
+message TStackTraceElement {
+    string declaringClass = 1;
+    string methodName = 2;
+    string fileName = 3;
+    int32 lineNumber = 4;
+}
+
+message TStackTrace {
+    repeated TStackTraceElement element = 1;
+}
+
+message TCallRecordLog {
+    bytes enterRecords = 2;
+    bytes exitRecords = 3;
+}
+
+message TClassDescription {
+    int64 id = 1;
+    string name = 2;
+}
+
+message TMethodDescriptionList {
+    bytes data = 1;
+}
+
+message ProcessInfo {
+    string mainClassName = 1;
+    repeated string classpath = 2;
+    int64 pid = 3;
+}
+
+message RecordingInfo {
+    ProcessInfo processInfo = 1;
+    int64 createEpochMillis = 2;
+    int64 lifetimeMillis = 3;
+    int64 recordingId = 4;
+    int64 chunkId = 7;
+    string threadName = 5;
+    int64 threadId = 8;
+    TStackTrace stackTrace = 6;
+}
+
+message TCallRecordLogUploadRequest {
+    TCallRecordLog recordLog = 1;
+    TMethodDescriptionList methodDescriptionList = 2;
+    repeated TClassDescription description = 6;
+    RecordingInfo recordingInfo = 7;
+}
+
+message TCallRecordLogUploadRequestList {
+    repeated TCallRecordLogUploadRequest request = 1;
+}
+
+message TCallRecordLogUploadResponse {
+
+}

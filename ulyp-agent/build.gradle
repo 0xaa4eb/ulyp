@@ -1,0 +1,85 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+    }
+}
+
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly project(':ulyp-agent-classes')
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+
+    testCompile project(':ulyp-agent-classes')
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', '../src/main/java']
+}
+
+compileJava {
+    options.debug = true
+}
+
+jar {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+shadowJar {
+    dependsOn(':ulyp-agent-classes:shadowJar')
+
+    relocate 'org.agrona', 'shadowed.org.agrona'
+    relocate 'it.unimi', 'shadowed.it.unimi'
+    relocate 'io', 'shadowed.io'
+    relocate 'com.google', 'shadowed.com.google'
+    relocate 'javax.annotation', 'shadowed.javax.annotation'
+    relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
+
+    archiveName = "${rootProject.name}-agent-${rootProject.version}.jar"
+
+    mergeServiceFiles()
+
+    manifest {
+        attributes(
+                'Main-Class': 'com.ulyp.agent.Main',
+                'Premain-Class': 'com.ulyp.agent.AgentBootstrap',
+                'Agent-Class': 'com.ulyp.agent.AgentBootstrap',
+                'Can-Redefine-Classes': 'true',
+                'Can-Retransform-Classes': 'true',
+                'Can-Set-Native-Method-Prefix': 'true',
+                'Implementation-Title': "UlypAgent",
+                'Implementation-Version': rootProject.version,
+                'Built-By': 0xaa4eb,
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version')
+        )
+    }
+}
+
+assemble {
+    dependsOn('shadowJar')
+}
+
+test {
+    dependsOn('shadowJar')
+}
