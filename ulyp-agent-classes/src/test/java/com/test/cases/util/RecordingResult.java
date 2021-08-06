@@ -9,7 +9,6 @@ import com.ulyp.database.DatabaseException;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.junit.Assert;
 
-import javax.xml.bind.DataBindingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
