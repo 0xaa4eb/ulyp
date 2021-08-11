@@ -1,7 +1,6 @@
 package com.ulyp.ui.util
 
 import javafx.scene.text.Text
-import java.util.ArrayList
 import java.util.function.Consumer
 
 class TextBuilder {

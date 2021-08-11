@@ -1,8 +1,6 @@
 package com.ulyp.ui.util
 
 import javafx.application.Platform
-import java.lang.Exception
-import java.lang.RuntimeException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
