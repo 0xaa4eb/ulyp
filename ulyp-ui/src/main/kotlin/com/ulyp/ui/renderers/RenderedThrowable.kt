@@ -8,8 +8,8 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedThrowable(representation: ThrowableRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(representation.type) {
+class RenderedThrowable(representation: ThrowableRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+
     init {
         val className =
             if (renderSettings.showTypes()) representation.type.name else toSimpleName(representation.type.name)

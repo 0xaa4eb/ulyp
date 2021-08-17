@@ -8,8 +8,8 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RenderedCollection(representation: CollectionRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(representation.type) {
+class RenderedCollection(representation: CollectionRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+
     init {
         val renderedObjects = representation.recordedItems
             .stream()

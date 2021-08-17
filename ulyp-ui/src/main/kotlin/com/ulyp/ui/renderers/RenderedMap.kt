@@ -8,8 +8,8 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RenderedMap(representation: MapRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(representation.type) {
+class RenderedMap(representation: MapRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+
     init {
         val entries = representation.entries
             .stream()

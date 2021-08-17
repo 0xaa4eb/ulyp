@@ -6,8 +6,8 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.text.Text
 
-class RenderedClassObject(classObject: ClassObjectRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(classObject.type) {
+class RenderedClassObject(classObject: ClassObjectRepresentation, renderSettings: RenderSettings) : RenderedObject(classObject.type) {
+
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(Class::class.java.name + ": ", CssClass.CALL_TREE_TYPE_NAME))

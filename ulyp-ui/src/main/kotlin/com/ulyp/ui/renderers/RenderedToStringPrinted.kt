@@ -7,8 +7,8 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedToStringPrinted(representation: ToStringPrintedRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(representation.type) {
+class RenderedToStringPrinted(representation: ToStringPrintedRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+
     init {
         val className =
             if (renderSettings.showTypes()) representation.type.name else toSimpleName(representation.type.name)

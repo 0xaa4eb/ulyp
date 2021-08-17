@@ -5,8 +5,8 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedBoolean(representation: BooleanRepresentation, renderSettings: RenderSettings) :
-    RenderedObject(representation.type) {
+class RenderedBoolean(representation: BooleanRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))

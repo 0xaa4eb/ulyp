@@ -5,11 +5,9 @@ import com.ulyp.core.printers.StringObjectRepresentation
 import com.ulyp.ui.RenderSettings
 import javafx.scene.text.Text
 
-class RenderedStringObject internal constructor(
-    representation: StringObjectRepresentation,
-    classDescription: Type?,
-    renderSettings: RenderSettings?
-) : RenderedObject(classDescription) {
+class RenderedStringObject internal constructor(representation: StringObjectRepresentation, classDescription: Type?, renderSettings: RenderSettings?)
+    : RenderedObject(classDescription) {
+
     init {
         val text: Text = MultilinedText("\"" + representation.value() + "\"")
         text.styleClass.add("ulyp-ctt-string")

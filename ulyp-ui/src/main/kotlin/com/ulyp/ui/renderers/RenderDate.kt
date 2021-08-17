@@ -6,6 +6,7 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
 class RenderDate(repr: DateRepresentation, renderSettings: RenderSettings) : RenderedObject(repr.type) {
+
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(repr.type.name, CssClass.CALL_TREE_TYPE_NAME))

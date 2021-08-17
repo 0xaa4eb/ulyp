@@ -5,6 +5,7 @@ import com.ulyp.ui.RenderSettings
 import javafx.scene.text.Text
 
 class RenderedNull internal constructor(renderSettings: RenderSettings?) : RenderedObject(Type.unknown()) {
+
     init {
         super.getChildren().add(Text("null"))
     }

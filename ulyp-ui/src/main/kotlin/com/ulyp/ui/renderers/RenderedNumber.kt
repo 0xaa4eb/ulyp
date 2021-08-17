@@ -6,11 +6,8 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedNumber(
-    numberObjectRepresentation: NumberObjectRepresentation,
-    type: Type,
-    renderSettings: RenderSettings
-) : RenderedObject(type) {
+class RenderedNumber(numberObjectRepresentation: NumberObjectRepresentation, type: Type, renderSettings: RenderSettings) : RenderedObject(type) {
+
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(type.name, CssClass.CALL_TREE_TYPE_NAME))

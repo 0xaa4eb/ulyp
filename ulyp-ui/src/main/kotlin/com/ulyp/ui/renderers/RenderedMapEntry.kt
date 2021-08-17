@@ -7,6 +7,7 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
 class RenderedMapEntry(entry: MapEntryRepresentation, renderSettings: RenderSettings?) : RenderedObject(entry.type) {
+
     init {
         val texts: MutableList<Node> = ArrayList()
         texts.add(of(entry.key, renderSettings))
