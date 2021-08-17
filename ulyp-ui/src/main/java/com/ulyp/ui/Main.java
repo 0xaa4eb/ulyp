@@ -12,7 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.io.InputStream;
 
-public class UIMain extends Application {
+public class Main extends Application {
 
     private ApplicationContext context;
 
@@ -20,7 +20,7 @@ public class UIMain extends Application {
     public void start(Stage stage) throws Exception {
         context = new AnnotationConfigApplicationContext(Configuration.class);
 
-        FXMLLoader loader = new FXMLLoader(UIMain.class.getClassLoader().getResource("PrimaryView.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getClassLoader().getResource("PrimaryView.fxml"));
         loader.setControllerFactory(cl -> {
             Object bean = context.getBean(cl);
             System.out.println(cl + " -> " + bean);
@@ -42,7 +42,7 @@ public class UIMain extends Application {
         stage.setMaximized(true);
         stage.setOnCloseRequest(event -> System.exit(0));
         stage.setTitle("ULYP");
-        InputStream iconStream = UIMain.class.getClassLoader().getResourceAsStream("icon.png");
+        InputStream iconStream = Main.class.getClassLoader().getResourceAsStream("icon.png");
         if (iconStream == null) {
             throw new RuntimeException("Icon not found");
         }

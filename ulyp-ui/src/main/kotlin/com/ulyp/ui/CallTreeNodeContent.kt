@@ -11,7 +11,7 @@ class CallTreeNodeContent(node: CallRecord, renderSettings: RenderSettings?, tot
         alignment = Pos.CENTER_LEFT
         children.addAll(
             CallRecordTreeNodeRelativeWeight(node, totalNodeCountInTree),
-            RenderedCallRecord(node, renderSettings)
+            RenderedCallRecord(node, renderSettings!!)
         )
     }
 }
