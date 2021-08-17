@@ -1,13 +1,10 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.StyledText.of
 import com.ulyp.core.printers.EnumRepresentation
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.renderers.RenderedObject
-import com.ulyp.ui.util.ClassNameUtils
-import com.ulyp.ui.util.StyledText
+import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText.of
 import java.util.*
 
 class RenderedEnum(representation: EnumRepresentation, renderSettings: RenderSettings) :

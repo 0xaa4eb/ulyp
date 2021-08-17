@@ -1,11 +1,10 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.StyledText.of
 import com.ulyp.core.printers.MapEntryRepresentation
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
-import java.util.ArrayList
 
 class RenderedMapEntry(entry: MapEntryRepresentation, renderSettings: RenderSettings?) : RenderedObject(entry.type) {
     init {

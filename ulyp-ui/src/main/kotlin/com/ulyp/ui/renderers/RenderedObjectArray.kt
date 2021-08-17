@@ -1,14 +1,11 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.StyledText.of
 import com.ulyp.core.printers.ObjectArrayRepresentation
-import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.renderers.RenderedObject
 import com.ulyp.core.printers.ObjectRepresentation
-import com.ulyp.ui.util.StyledText
+import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
-import java.util.ArrayList
 import java.util.stream.Collectors
 
 class RenderedObjectArray(arrayRepresentation: ObjectArrayRepresentation, renderSettings: RenderSettings?) :

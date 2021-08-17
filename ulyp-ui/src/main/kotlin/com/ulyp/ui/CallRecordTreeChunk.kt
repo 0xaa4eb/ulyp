@@ -1,8 +1,8 @@
 package com.ulyp.ui
 
 import com.ulyp.transport.ProcessInfo
-import com.ulyp.transport.TCallRecordLogUploadRequest
 import com.ulyp.transport.RecordingInfo
+import com.ulyp.transport.TCallRecordLogUploadRequest
 
 /**
  * Part of call record tree serialized by the agent

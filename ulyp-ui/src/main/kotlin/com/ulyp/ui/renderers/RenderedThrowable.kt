@@ -1,16 +1,12 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.StyledText.of
+import com.ulyp.core.printers.NullObjectRepresentation
 import com.ulyp.core.printers.ThrowableRepresentation
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.renderers.RenderedObject
-import com.ulyp.ui.util.ClassNameUtils
-import com.ulyp.ui.util.StyledText
+import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
-import com.ulyp.core.printers.NullObjectRepresentation
+import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
-import java.util.ArrayList
 
 class RenderedThrowable(representation: ThrowableRepresentation, renderSettings: RenderSettings) :
     RenderedObject(representation.type) {

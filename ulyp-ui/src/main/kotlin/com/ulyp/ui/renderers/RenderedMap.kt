@@ -1,14 +1,11 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.StyledText.of
+import com.ulyp.core.printers.MapEntryRepresentation
 import com.ulyp.core.printers.MapRepresentation
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.renderers.RenderedObject
-import com.ulyp.core.printers.MapEntryRepresentation
-import com.ulyp.ui.util.StyledText
 import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
-import java.util.ArrayList
 import java.util.stream.Collectors
 
 class RenderedMap(representation: MapRepresentation, renderSettings: RenderSettings) :

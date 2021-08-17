@@ -1,7 +1,6 @@
 package com.ulyp.ui.renderers
 
 import javafx.scene.text.Text
-import java.lang.StringBuilder
 
 class MultilinedText(value: String) : Text(trimText(value)) {
 

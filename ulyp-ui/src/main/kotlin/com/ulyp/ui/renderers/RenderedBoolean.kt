@@ -1,11 +1,9 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.ui.util.StyledText.of
 import com.ulyp.core.printers.BooleanRepresentation
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.renderers.RenderedObject
-import com.ulyp.ui.util.StyledText
 import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText.of
 
 class RenderedBoolean(representation: BooleanRepresentation, renderSettings: RenderSettings) :
     RenderedObject(representation.type) {
