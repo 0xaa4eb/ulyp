@@ -37,6 +37,7 @@ class PrimaryViewController : Initializable {
 
     @Autowired
     var fontSizeChanger: FontSizeChanger? = null
+
     private var aggregationStrategy: AggregationStrategy = ByRecordingIdAggregationStrategy()
     private val uploaderExecutorService = Executors.newFixedThreadPool(1)
 

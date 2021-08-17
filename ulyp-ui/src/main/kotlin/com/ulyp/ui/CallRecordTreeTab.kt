@@ -44,6 +44,7 @@ class CallRecordTreeTab(
     @Autowired
     private val fontSizeChanger: FontSizeChanger? = null
     private var initialized = false
+
     @Synchronized
     fun init() {
         if (initialized) {
@@ -56,7 +57,7 @@ class CallRecordTreeTab(
         treeView!!.selectionModel.selectedItemProperty()
             .addListener { observable: ObservableValue<out TreeItem<CallTreeNodeContent>?>?, oldValue: TreeItem<CallTreeNodeContent>?, newValue: TreeItem<CallTreeNodeContent>? ->
                 val selectedNode = newValue as CallRecordTreeNode?
-                if (selectedNode != null && selectedNode.callRecord != null) {
+                if (selectedNode?.callRecord != null) {
                     val sourceCodeFuture = sourceCodeFinder.find(
                         selectedNode.callRecord!!.className
                     )
@@ -121,7 +122,7 @@ class CallRecordTreeTab(
             return Tooltip(builder.toString())
         }
 
-    fun getSelected(): CallRecordTreeNode {
+    fun getSelected(): CallRecordTreeNode? {
         return treeView!!.selectionModel.selectedItem as CallRecordTreeNode
     }
 

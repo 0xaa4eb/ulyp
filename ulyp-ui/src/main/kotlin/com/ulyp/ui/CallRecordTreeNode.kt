@@ -15,10 +15,12 @@ class CallRecordTreeNode(database: CallRecordDatabase, callRecordId: Long, rende
             database.countAll()
         )
     ) {
+
     private val renderSettings: RenderSettings?
     private val databaseRef: WeakReference<CallRecordDatabase>
     private val callRecordId: Long
     private var loaded = false
+
     fun refresh() {
         val database = databaseRef.get() ?: return
         value = CallTreeNodeContent(database.find(callRecordId), renderSettings, database.countAll())

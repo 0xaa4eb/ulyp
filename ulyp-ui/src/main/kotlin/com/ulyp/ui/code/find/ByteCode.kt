@@ -10,6 +10,7 @@ import java.nio.file.Paths
 import java.util.stream.Collectors
 
 class ByteCode(private val className: String, private val bytecode: ByteArray) {
+
     fun decompile(): SourceCode {
         val classfile = TmpFile("$className.class")
         try {

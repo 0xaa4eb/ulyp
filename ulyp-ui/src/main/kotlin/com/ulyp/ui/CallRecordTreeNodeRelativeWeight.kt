@@ -10,7 +10,6 @@ class CallRecordTreeNodeRelativeWeight(node: CallRecord, totalNodeCountInTree: L
     init {
         val width = (600.0 * node.subtreeNodeCount / totalNodeCountInTree).toInt()
 
-        // TODO move this to CSS
         style = "-fx-background-color: black; " +
                 "-fx-border-style: solid; " +
                 "-fx-border-width: 2; " +

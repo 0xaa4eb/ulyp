@@ -24,6 +24,7 @@ class FileRecordingsTab internal constructor(val name: FileRecordingsTabName) : 
     private val methodInfoDatabase = MethodInfoDatabase()
     private val typeInfoDatabase = TypeInfoDatabase()
     private val tabsByRecordingId: MutableMap<CallRecordTreeTabId, CallRecordTreeTab> = ConcurrentHashMap()
+
     @PostConstruct
     fun init() {
         val tabPane = TabPane()
