@@ -1,12 +1,10 @@
-package com.ulyp.ui;
+package com.ulyp.ui
 
-import com.ulyp.core.CallRecordDatabase;
-import com.ulyp.core.MethodInfoDatabase;
-import com.ulyp.core.TypeInfoDatabase;
+import com.ulyp.core.CallRecordDatabase
+import com.ulyp.core.MethodInfoDatabase
+import com.ulyp.core.TypeInfoDatabase
 
-public interface AggregationStrategy {
-
-    CallRecordTreeTabId getId(CallRecordTreeChunk chunk);
-
-    CallRecordDatabase buildDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase);
+interface AggregationStrategy {
+    fun getId(chunk: CallRecordTreeChunk?): CallRecordTreeTabId
+    fun buildDatabase(methodInfoDatabase: MethodInfoDatabase?, typeInfoDatabase: TypeInfoDatabase?): CallRecordDatabase
 }

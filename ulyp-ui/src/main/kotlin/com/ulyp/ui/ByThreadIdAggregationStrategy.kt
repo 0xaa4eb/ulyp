@@ -13,16 +13,16 @@ class ByThreadIdAggregationStrategy : AggregationStrategy {
 
     private val idGen = AtomicLong(0L)
 
-    override fun getId(chunk: CallRecordTreeChunk): CallRecordTreeTabId {
-        return Key(chunk.recordingInfo.threadId, chunk.recordingInfo.threadName)
+    override fun getId(chunk: CallRecordTreeChunk?): CallRecordTreeTabId {
+        return Key(chunk!!.recordingInfo.threadId, chunk.recordingInfo.threadName)
     }
 
     override fun buildDatabase(
-        methodInfoDatabase: MethodInfoDatabase,
-        typeInfoDatabase: TypeInfoDatabase
+        methodInfoDatabase: MethodInfoDatabase?,
+        typeInfoDatabase: TypeInfoDatabase?
     ): CallRecordDatabase {
         val typeResolver: TypeResolver = SingleTypeReflectionBasedResolver(Int.MAX_VALUE.toLong(), Thread::class.java)
-        typeInfoDatabase.addAll(
+        typeInfoDatabase!!.addAll(
             listOf(
                 TClassDescription.newBuilder().setId(Int.MAX_VALUE.toLong()).setName(
                     Thread::class.java.name
@@ -39,7 +39,7 @@ class ByThreadIdAggregationStrategy : AggregationStrategy {
             .declaringType(typeResolver[Thread::class.java])
             .build()
         methodInfos.add(threadRunMethod)
-        methodInfoDatabase.addAll(methodInfos)
+        methodInfoDatabase!!.addAll(methodInfos)
         val database: CallRecordDatabase = FileBasedCallRecordDatabase(
             "" + idGen.incrementAndGet(),
             methodInfoDatabase,

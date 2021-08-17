@@ -10,13 +10,14 @@ import java.util.concurrent.atomic.AtomicLong
 
 class ByRecordingIdAggregationStrategy : AggregationStrategy {
     private val idGen = AtomicLong(0L)
-    override fun getId(chunk: CallRecordTreeChunk): CallRecordTreeTabId {
-        return Key(chunk.recordingId)
+
+    override fun getId(chunk: CallRecordTreeChunk?): CallRecordTreeTabId {
+        return Key(chunk!!.recordingId)
     }
 
     override fun buildDatabase(
-        methodInfoDatabase: MethodInfoDatabase,
-        typeInfoDatabase: TypeInfoDatabase
+        methodInfoDatabase: MethodInfoDatabase?,
+        typeInfoDatabase: TypeInfoDatabase?
     ): CallRecordDatabase {
         return FileBasedCallRecordDatabase(
             "" + idGen.incrementAndGet(),
