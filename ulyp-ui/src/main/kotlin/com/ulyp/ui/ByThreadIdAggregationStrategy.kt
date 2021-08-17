@@ -13,8 +13,8 @@ class ByThreadIdAggregationStrategy : AggregationStrategy {
 
     private val idGen = AtomicLong(0L)
 
-    override fun getId(chunk: CallRecordTreeChunk?): CallRecordTreeTabId {
-        return Key(chunk!!.recordingInfo.threadId, chunk.recordingInfo.threadName)
+    override fun getId(chunk: CallRecordTreeChunk): CallRecordTreeTabId {
+        return Key(chunk.recordingInfo.threadId, chunk.recordingInfo.threadName)
     }
 
     override fun buildDatabase(

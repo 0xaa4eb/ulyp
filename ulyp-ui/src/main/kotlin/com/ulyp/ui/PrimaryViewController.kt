@@ -71,23 +71,21 @@ class PrimaryViewController : Initializable {
         fontSizeChanger!!.downscale(primaryPane!!.scene)
         val file = fileChooser!!.get()
         uploaderExecutorService.submit {
-            if (file != null) {
-                try {
-                    BufferedInputStream(FileInputStream(file)).use { inputStream ->
-                        while (inputStream.available() > 0) {
-                            val request = TCallRecordLogUploadRequest.parseDelimitedFrom(inputStream)
-                            val chunk = CallRecordTreeChunk(request)
-                            val fileRecordingsTab =
-                                processTabPane!!.getOrCreateProcessTab(FileRecordingsTabName(file, chunk.processInfo))
-                            val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(aggregationStrategy, chunk)
-                            recordingTab.uploadChunk(chunk)
-                            Platform.runLater { recordingTab.refreshTreeView() }
-                        }
+            try {
+                BufferedInputStream(FileInputStream(file)).use { inputStream ->
+                    while (inputStream.available() > 0) {
+                        val request = TCallRecordLogUploadRequest.parseDelimitedFrom(inputStream)
+                        val chunk = CallRecordTreeChunk(request)
+                        val fileRecordingsTab =
+                            processTabPane!!.getOrCreateProcessTab(FileRecordingsTabName(file, chunk.processInfo))
+                        val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(aggregationStrategy, chunk)
+                        recordingTab.uploadChunk(chunk)
+                        Platform.runLater { recordingTab.refreshTreeView() }
                     }
-                } catch (e: Exception) {
-                    // TODO show error dialog
-                    e.printStackTrace()
                 }
+            } catch (e: Exception) {
+                // TODO show error dialog
+                e.printStackTrace()
             }
         }
     }

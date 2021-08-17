@@ -33,7 +33,7 @@ class FileRecordingsTab internal constructor(val name: FileRecordingsTabName) : 
 
     fun getOrCreateRecordingTab(
         aggregationStrategy: AggregationStrategy,
-        chunk: CallRecordTreeChunk?
+        chunk: CallRecordTreeChunk
     ): CallRecordTreeTab {
         val id = aggregationStrategy.getId(chunk)
         return execute {
