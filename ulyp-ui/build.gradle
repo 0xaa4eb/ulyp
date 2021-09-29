@@ -19,12 +19,19 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.21'
     id 'io.freefair.lombok' version '5.3.0'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
-mainClassName = 'com.ulyp.ui.UIMain'
+apply plugin: 'org.openjfx.javafxplugin'
+
+mainClassName = 'com.ulyp.ui.Main'
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing' ]
 }
 
 dependencies {
@@ -63,12 +70,12 @@ sourceSets {
 }
 
 jar {
-    mainClassName = 'com.ulyp.ui.UIMain'
+    mainClassName = 'com.ulyp.ui.Main'
     archiveName = "ulyp-ui-${rootProject.version}.jar"
 
     manifest {
         attributes(
-                'Main-Class': 'com.ulyp.ui.UIMain',
+                'Main-Class': 'com.ulyp.ui.Main',
                 'Implementation-Title': "Ulyp UI",
                 'Implementation-Version': rootProject.version,
                 'Built-By': 0xaa4eb,
