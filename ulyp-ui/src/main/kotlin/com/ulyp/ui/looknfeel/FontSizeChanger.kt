@@ -1,4 +1,4 @@
-package com.ulyp.ui.font
+package com.ulyp.ui.looknfeel
 
 import javafx.scene.Scene
 import javafx.scene.text.Font
