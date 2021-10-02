@@ -132,3 +132,12 @@
 .ulyp-ctt-class-name {
     -fx-text-fill: rgb(220, 220, 220);
 }
+
+.ulyp-ctt-call-node {
+    -fx-background-color: black;
+    -fx-border-style: solid;
+    -fx-border-width: 2;
+    -fx-border-color: rgb(50, 50, 50);
+    -fx-min-height: 20;
+    -fx-max-height: 20;
+}

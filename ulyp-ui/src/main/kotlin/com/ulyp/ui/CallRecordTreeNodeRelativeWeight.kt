@@ -10,11 +10,10 @@ class CallRecordTreeNodeRelativeWeight(node: CallRecord, totalNodeCountInTree: L
     init {
         val width = (600.0 * node.subtreeNodeCount / totalNodeCountInTree).toInt()
 
-        style = "-fx-background-color: black; " +
-                "-fx-border-style: solid; " +
-                "-fx-border-width: 2; " +
-                "-fx-border-color: rgb(50, 50, 50); " + String.format("-fx-min-width: %d; ", width) +
-                "-fx-min-height: 20; " + String.format("-fx-max-width: %d; ", width) +
-                "-fx-max-height: 20;"
+        styleClass.add("ulyp-ctt-call-node")
+
+        style = String.format("-fx-min-width: %d; ", width) +
+                "\n" +
+                String.format("-fx-max-width: %d; ", width)
     }
 }
