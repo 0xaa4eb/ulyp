@@ -14,7 +14,7 @@ enum class CssClass(vararg classes: String) {
         "ulyp-ctt",
         "ulyp-ctt-sep"
     ),
-    CALL_TREE_COLLECTION_BRACE("ulyp-ctt", "ulyp-ctt-brace"),
+    CALL_TREE_COLLECTION_BRACKET("ulyp-ctt", "ulyp-ctt-bracket"),
     CALL_TREE_IDENTITY_REPR(
         "ulyp-ctt",
         "ulyp-ctt-identity"

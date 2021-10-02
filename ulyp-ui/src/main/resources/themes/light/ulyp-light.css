@@ -1,0 +1,86 @@
+/* ULYP part */
+
+.tooltip {
+    -fx-font-size: 15px;
+}
+
+.ulyp-ctt.ulyp-ctt-string {
+    -fx-fill: rgb(0, 120, 0);
+}
+
+.ulyp-ctt.ulyp-ctt-bracket {
+    -fx-fill: rgb(255,140,0);
+    -fx-font-weight: bold;
+}
+
+.ulyp-ctt.ulyp-ctt-typename {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt.ulyp-ctt-typename.ulyp-ctt-callee {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt.ulyp-ctt-identity.ulyp-ctt-callee {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt.ulyp-ctt-number {
+    -fx-fill: rgb(74, 133, 186);
+}
+
+.ulyp-ctt-number {
+    -fx-fill: rgb(74, 133, 186);
+}
+
+.ulyp-ctt-object-value {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-return-value {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-return-value.ulyp-ctt-thrown {
+    -fx-fill: rgb(255, 84, 80);
+}
+
+.ulyp-ctt-method-name {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-method-name.ulyp-ctt-instance-method-name {
+}
+
+.ulyp-ctt-method-name.ulyp-ctt-static-method-name {
+    -fx-font-style: italic;
+}
+
+.ulyp-ctt-object-repr {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-arg-name {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-sep {
+    -fx-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-sep {
+    -fx-text-fill: white;
+}
+
+.ulyp-ctt-class-name {
+    -fx-text-fill: rgb(0, 0, 0);
+}
+
+.ulyp-ctt-call-node {
+    -fx-background-color: rgb(225, 225, 225);
+    -fx-border-style: solid;
+    -fx-border-width: 2;
+    -fx-border-color: rgb(225, 225, 225);
+    -fx-min-height: 20;
+    -fx-max-height: 20;
+}

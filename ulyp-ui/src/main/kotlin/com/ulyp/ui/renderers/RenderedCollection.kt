@@ -20,7 +20,7 @@ class RenderedCollection(representation: CollectionRepresentation, renderSetting
             texts.add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
             texts.add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
         }
-        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in renderedObjects.indices) {
             texts.add(renderedObjects[i])
             if (i != renderedObjects.size - 1 || renderedObjects.size < representation.length) {
@@ -35,7 +35,7 @@ class RenderedCollection(representation: CollectionRepresentation, renderSetting
                 )
             )
         }
-        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACKET))
         super.getChildren().addAll(texts)
     }
 }

@@ -23,6 +23,7 @@
                 <Menu mnemonicParsing="false" text="Settings">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#changeAggregation" text="Aggregate by thread" />
+                        <MenuItem mnemonicParsing="false" onAction="#changeTheme" text="Change theme" />
                     </items>
                 </Menu>
             </menus>

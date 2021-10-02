@@ -20,7 +20,7 @@ class RenderedMap(representation: MapRepresentation, renderSettings: RenderSetti
             texts.add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
             texts.add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
         }
-        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in entries.indices) {
             texts.add(entries[i])
             if (i != entries.size - 1 || entries.size < representation.size) {
@@ -30,7 +30,7 @@ class RenderedMap(representation: MapRepresentation, renderSettings: RenderSetti
         if (entries.size < representation.size) {
             texts.add(of((representation.size - entries.size).toString() + " more...", CssClass.CALL_TREE_PLAIN_TEXT))
         }
-        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACKET))
         super.getChildren().addAll(texts)
     }
 }

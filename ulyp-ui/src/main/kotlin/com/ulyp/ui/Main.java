@@ -1,5 +1,7 @@
 package com.ulyp.ui;
 
+import com.ulyp.ui.looknfeel.Theme;
+import com.ulyp.ui.looknfeel.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,7 +38,7 @@ public class Main extends Application {
         viewController.fileChooser = () -> fileChooser.showOpenDialog(stage);
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("modena.css");
+        context.getBean(ThemeManager.class).applyTheme(Theme.DARK, scene);
 
         stage.setScene(scene);
         stage.setMaximized(true);

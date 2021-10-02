@@ -49,9 +49,9 @@ class FontSizeChanger {
             Files.write(
                 path,
                 """.ulyp-ctt {
-    -fx-font-family: $fontFamily;
-    -fx-font-size: ${font}px;
-}""".toByteArray(StandardCharsets.UTF_8),
+                -fx-font-family: $fontFamily;
+                -fx-font-size: ${font}px;
+                }""".toByteArray(StandardCharsets.UTF_8),
                 StandardOpenOption.WRITE
             )
             var index: Int? = null
@@ -67,6 +67,7 @@ class FontSizeChanger {
                 scene.stylesheets.add(path.toFile().toURI().toString())
             }
         } catch (e: IOException) {
+            // TODO show error
             e.printStackTrace()
         }
     }

@@ -4,9 +4,7 @@ import javafx.scene.control.TabPane
 import org.springframework.stereotype.Component
 
 @Component
-class SourceCodeView : TabPane() {
-
-    private val mainTab: SourceCodeTab = SourceCodeTab()
+class SourceCodeView(private val mainTab: SourceCodeTab) : TabPane() {
 
     fun setText(code: SourceCode?, methodNameToScrollTo: String?) {
         mainTab.setText(code!!, methodNameToScrollTo)

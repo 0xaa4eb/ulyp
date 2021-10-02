@@ -5,7 +5,7 @@ import com.ulyp.transport.RecordingInfo
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
-import com.ulyp.ui.font.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
@@ -37,12 +37,11 @@ class CallRecordTreeTab(
 
     @Autowired
     private val sourceCodeView: SourceCodeView? = null
-
     @Autowired
     private val renderSettings: RenderSettings? = null
-
     @Autowired
     private val fontSizeChanger: FontSizeChanger? = null
+
     private var initialized = false
 
     @Synchronized

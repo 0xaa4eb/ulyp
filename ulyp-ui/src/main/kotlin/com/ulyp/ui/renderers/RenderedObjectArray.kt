@@ -16,7 +16,7 @@ class RenderedObjectArray(arrayRepresentation: ObjectArrayRepresentation, render
             .map { repr: ObjectRepresentation -> of(repr, renderSettings) }
             .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
-        texts.add(of("[", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("[", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in renderedObjects.indices) {
             texts.add(renderedObjects[i])
             if (i != renderedObjects.size - 1 || renderedObjects.size < arrayRepresentation.length) {
@@ -31,7 +31,7 @@ class RenderedObjectArray(arrayRepresentation: ObjectArrayRepresentation, render
                 )
             )
         }
-        texts.add(of("]", CssClass.CALL_TREE_COLLECTION_BRACE))
+        texts.add(of("]", CssClass.CALL_TREE_COLLECTION_BRACKET))
         super.getChildren().addAll(texts)
     }
 }

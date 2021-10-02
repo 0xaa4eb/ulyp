@@ -2,7 +2,9 @@ package com.ulyp.ui
 
 import com.ulyp.transport.TCallRecordLogUploadRequest
 import com.ulyp.ui.code.SourceCodeView
-import com.ulyp.ui.font.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.looknfeel.Theme
+import com.ulyp.ui.looknfeel.ThemeManager
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event
@@ -22,21 +24,18 @@ import java.util.function.Supplier
 class PrimaryViewController : Initializable {
     @FXML
     var primaryPane: VBox? = null
-
     @FXML
     var processTabAnchorPane: AnchorPane? = null
-
     @FXML
     var sourceCodeViewAnchorPane: AnchorPane? = null
-
     @Autowired
-    var sourceCodeView: SourceCodeView? = null
-
+    private var sourceCodeView: SourceCodeView? = null
     @Autowired
-    var processTabPane: ProcessTabPane? = null
-
+    private var processTabPane: ProcessTabPane? = null
     @Autowired
-    var fontSizeChanger: FontSizeChanger? = null
+    private var fontSizeChanger: FontSizeChanger? = null
+    @Autowired
+    private var themeManager: ThemeManager? = null
 
     private var aggregationStrategy: AggregationStrategy = ByRecordingIdAggregationStrategy()
     private val uploaderExecutorService = Executors.newFixedThreadPool(1)
@@ -64,6 +63,10 @@ class PrimaryViewController : Initializable {
     fun changeAggregation(event: Event?) {
         aggregationStrategy = ByThreadIdAggregationStrategy()
         // TODO maybe popup
+    }
+
+    fun changeTheme(event: Event?) {
+        themeManager!!.applyTheme(Theme.LIGHT, primaryPane!!.scene)
     }
 
     fun openRecordedDump(actionEvent: ActionEvent?) {

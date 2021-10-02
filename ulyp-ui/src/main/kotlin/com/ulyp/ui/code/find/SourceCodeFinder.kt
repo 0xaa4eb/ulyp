@@ -10,8 +10,10 @@ import java.util.function.Predicate
 import java.util.stream.Collectors
 
 class SourceCodeFinder(classpath: List<String?>) {
+
     private val jars: MutableList<JarFile>
     private val decompilingExecutorService = Executors.newFixedThreadPool(2)
+
     fun find(javaClassName: String?): CompletableFuture<SourceCode> {
         for (jar in jars) {
             val sourceCode = jar.findSourceByClassName(javaClassName!!)

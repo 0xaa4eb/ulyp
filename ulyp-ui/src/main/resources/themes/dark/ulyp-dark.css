@@ -65,7 +65,7 @@
     -fx-fill: rgb(0, 120, 0);
 }
 
-.ulyp-ctt.ulyp-ctt-brace {
+.ulyp-ctt.ulyp-ctt-bracket {
     -fx-fill: rgb(255,140,0);
     -fx-font-weight: bold;
 }
