@@ -18,17 +18,17 @@ class RenderedMap(representation: MapRepresentation, renderSettings: RenderSetti
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {
             texts.add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
-            texts.add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
+            texts.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
         }
         texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in entries.indices) {
             texts.add(entries[i])
             if (i != entries.size - 1 || entries.size < representation.size) {
-                texts.add(of(", ", CssClass.CALL_TREE_PLAIN_TEXT))
+                texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR))
             }
         }
         if (entries.size < representation.size) {
-            texts.add(of((representation.size - entries.size).toString() + " more...", CssClass.CALL_TREE_PLAIN_TEXT))
+            texts.add(of((representation.size - entries.size).toString() + " more...", CssClass.CALL_TREE_NODE_SEPARATOR))
         }
         texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACKET))
         super.getChildren().addAll(texts)

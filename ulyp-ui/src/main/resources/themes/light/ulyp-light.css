@@ -1,36 +1,39 @@
-/* ULYP part */
 
 .tooltip {
     -fx-font-size: 15px;
 }
 
-.ulyp-ctt.ulyp-ctt-string {
+.ulyp-ctt-string {
     -fx-fill: rgb(0, 120, 0);
 }
 
-.ulyp-ctt.ulyp-ctt-bracket {
+.ulyp-ctt-bracket {
     -fx-fill: rgb(255,140,0);
     -fx-font-weight: bold;
 }
 
-.ulyp-ctt.ulyp-ctt-typename {
+.ulyp-ctt-typename {
     -fx-fill: rgb(0, 0, 0);
 }
 
-.ulyp-ctt.ulyp-ctt-typename.ulyp-ctt-callee {
-    -fx-fill: rgb(0, 0, 0);
+.ulyp-ctt-typename.ulyp-ctt-callee {
+
 }
 
-.ulyp-ctt.ulyp-ctt-identity.ulyp-ctt-callee {
-    -fx-fill: rgb(0, 0, 0);
-}
+.ulyp-ctt-identity.ulyp-ctt-callee {
 
-.ulyp-ctt.ulyp-ctt-number {
-    -fx-fill: rgb(74, 133, 186);
 }
 
 .ulyp-ctt-number {
     -fx-fill: rgb(74, 133, 186);
+}
+
+.ulyp-ctt-null {
+    -fx-fill: rgb(255,140,0);
+}
+
+.ulyp-ctt-identity {
+    -fx-fill: rgb(0, 0, 0);
 }
 
 .ulyp-ctt-object-value {
@@ -38,7 +41,7 @@
 }
 
 .ulyp-ctt-return-value {
-    -fx-fill: rgb(0, 0, 0);
+
 }
 
 .ulyp-ctt-return-value.ulyp-ctt-thrown {
@@ -52,12 +55,8 @@
 .ulyp-ctt-method-name.ulyp-ctt-instance-method-name {
 }
 
-.ulyp-ctt-method-name.ulyp-ctt-static-method-name {
-    -fx-font-style: italic;
-}
-
 .ulyp-ctt-object-repr {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(169, 183, 198);
 }
 
 .ulyp-ctt-arg-name {

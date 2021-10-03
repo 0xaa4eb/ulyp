@@ -11,7 +11,7 @@ class RenderedMapEntry(entry: MapEntryRepresentation, renderSettings: RenderSett
     init {
         val texts: MutableList<Node> = ArrayList()
         texts.add(of(entry.key, renderSettings))
-        texts.add(of(" -> ", CssClass.CALL_TREE_PLAIN_TEXT))
+        texts.add(of(" -> ", CssClass.CALL_TREE_NODE_SEPARATOR))
         texts.add(of(entry.value, renderSettings))
         super.getChildren().addAll(texts)
     }

@@ -31,7 +31,6 @@ abstract class RenderedObject protected constructor(private val type: Type?) : T
             }
             objectValue.children.forEach(Consumer { node: Node ->
                 node.styleClass.add("ulyp-ctt")
-                node.styleClass.add("ulyp-ctt-object-repr")
             })
             return objectValue
         }

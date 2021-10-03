@@ -10,7 +10,7 @@ class RenderedBoolean(representation: BooleanRepresentation, renderSettings: Ren
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
-            super.getChildren().add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
+            super.getChildren().add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
         }
         super.getChildren().add(of(representation.value().toString(), CssClass.CALL_TREE_NUMBER))
     }

@@ -7,9 +7,6 @@
 -->
 <RSyntaxTheme version="1.0">
 
-    <!-- Omitting baseFont will use a system-appropriate monospaced. -->
-    <baseFont family="consolas" size="16"/>
-
     <!--  General editor colors. -->
     <background color="2B2B2B" />
     <caret color="BBBBBB" />

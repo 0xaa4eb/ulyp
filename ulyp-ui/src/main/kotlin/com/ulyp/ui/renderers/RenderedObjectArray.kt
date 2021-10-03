@@ -20,14 +20,14 @@ class RenderedObjectArray(arrayRepresentation: ObjectArrayRepresentation, render
         for (i in renderedObjects.indices) {
             texts.add(renderedObjects[i])
             if (i != renderedObjects.size - 1 || renderedObjects.size < arrayRepresentation.length) {
-                texts.add(of(", ", CssClass.CALL_TREE_PLAIN_TEXT))
+                texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR))
             }
         }
         if (renderedObjects.size < arrayRepresentation.length) {
             texts.add(
                 of(
                     (arrayRepresentation.length - renderedObjects.size).toString() + " more...",
-                    CssClass.CALL_TREE_PLAIN_TEXT
+                    CssClass.CALL_TREE_NODE_SEPARATOR
                 )
             )
         }

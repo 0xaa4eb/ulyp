@@ -21,14 +21,24 @@ class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : Tex
             return if (!node.isVoidMethod || node.hasThrown()) {
                 val output: MutableList<Node> = ArrayList()
                 var renderedObject = WithStylesPane(
-                    of(node.returnValue, renderSettings),
-                    CssClass.CALL_TREE_RETURN_VALUE
+                        of(node.returnValue, renderSettings),
+                        CssClass.CALL_TREE_ALL,
+                        CssClass.CALL_TREE_RETURN_VALUE
                 ).get()
                 if (node.hasThrown()) {
-                    renderedObject = WithStylesPane(renderedObject, CssClass.CALL_TREE_THROWN).get()
+                    renderedObject = WithStylesPane(
+                            renderedObject,
+                            CssClass.CALL_TREE_ALL,
+                            CssClass.CALL_TREE_THROWN
+                    ).get()
                 }
                 output.add(renderedObject)
-                output.add(text().text(" : ").style(CssClass.CALL_TREE_PLAIN_TEXT).build())
+                output.add(
+                        text().text(" : ")
+                                .style(CssClass.CALL_TREE_ALL)
+                                .style(CssClass.CALL_TREE_NODE_SEPARATOR)
+                                .build()
+                )
                 output
             } else {
                 emptyList()
@@ -39,35 +49,76 @@ class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : Tex
             val hasParameterNames = !node.parameterNames.isEmpty() && node.parameterNames.stream()
                 .noneMatch { name: String -> name.startsWith("arg") }
             val output: MutableList<Node> = ArrayList()
-            output.add(text().text("(").style(CssClass.CALL_TREE_PLAIN_TEXT).build())
+            output.add(text().text("(")
+                    .style(CssClass.CALL_TREE_ALL)
+                    .style(CssClass.CALL_TREE_NODE_SEPARATOR)
+                    .build()
+            )
             for (i in node.args.indices) {
                 val argValue = node.args[i]
                 if (hasParameterNames) {
-                    output.add(text().text(node.parameterNames[i]).style(CssClass.CALL_TREE_ARG_NAME).build())
-                    output.add(text().text(": ").style(CssClass.CALL_TREE_PLAIN_TEXT).build())
+                    output.add(text().text(node.parameterNames[i])
+                            .style(CssClass.CALL_TREE_ALL)
+                            .style(CssClass.CALL_TREE_ARG_NAME)
+                            .build()
+                    )
+                    output.add(text().text(": ")
+                            .style(CssClass.CALL_TREE_ALL)
+                            .style(CssClass.CALL_TREE_NODE_SEPARATOR)
+                            .build()
+                    )
                 }
                 output.add(of(argValue, renderSettings))
                 if (i < node.args.size - 1) {
-                    output.add(text().text(", ").style(CssClass.CALL_TREE_PLAIN_TEXT).build())
+                    output.add(text().text(", ")
+                            .style(CssClass.CALL_TREE_ALL)
+                            .style(CssClass.CALL_TREE_NODE_SEPARATOR)
+                            .build())
                 }
             }
-            output.add(text().text(")").style(CssClass.CALL_TREE_PLAIN_TEXT).build())
+            output.add(text().text(")")
+                    .style(CssClass.CALL_TREE_ALL)
+                    .style(CssClass.CALL_TREE_NODE_SEPARATOR)
+                    .build())
             return output
         }
 
-        private fun renderMethodName(node: CallRecord, renderSettings: RenderSettings): List<Node> {
+        private fun renderCallee(node: CallRecord, renderSettings: RenderSettings): List<Node> {
             val result: MutableList<Node> = ArrayList()
+
             if (node.isStatic || node.isConstructor) {
-                result.add(text().text(toSimpleName(node.className)).style(CssClass.CALL_TREE_METHOD_NAME).build())
+                result.add(
+                        text().text(toSimpleName(node.className))
+                                .style(CssClass.CALL_TREE_ALL)
+                                .style(CssClass.CALL_TREE_METHOD_NAME)
+                                .build()
+                )
             } else {
                 val callee = of(node.callee, renderSettings)
-                callee.children.forEach(Consumer { child: Node -> child.styleClass.addAll(CssClass.CALL_TREE_CALLEE.cssClasses) })
+                callee.children.forEach(
+                        Consumer { child: Node ->
+                            child.styleClass.addAll(CssClass.CALL_TREE_ALL.cssClasses)
+                            child.styleClass.addAll(CssClass.CALL_TREE_CALLEE.cssClasses)
+                        }
+                )
                 result.add(callee)
             }
-            result.add(text().text(".").style(CssClass.CALL_TREE_METHOD_NAME).build())
-            var methodNameBuilder = text().text(node.methodName).style(CssClass.CALL_TREE_METHOD_NAME)
+
+            result.add(
+                    text().text(".")
+                            .style(CssClass.CALL_TREE_ALL)
+                            .style(CssClass.CALL_TREE_METHOD_NAME)
+                            .build()
+            )
+
+            var methodNameBuilder = text().text(node.methodName)
+                    .style(CssClass.CALL_TREE_ALL)
+                    .style(CssClass.CALL_TREE_METHOD_NAME)
+
             if (node.isStatic) {
-                methodNameBuilder = methodNameBuilder.style(CssClass.CALL_TREE_METHOD_NAME)
+                methodNameBuilder = methodNameBuilder
+                        .style(CssClass.CALL_TREE_ALL)
+                        .style(CssClass.CALL_TREE_METHOD_NAME)
             }
             result.add(methodNameBuilder.build())
             return result
@@ -77,7 +128,7 @@ class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : Tex
     init {
         val text: MutableList<Node> = ArrayList()
         text.addAll(renderReturnValue(node, renderSettings))
-        text.addAll(renderMethodName(node, renderSettings))
+        text.addAll(renderCallee(node, renderSettings))
         text.addAll(renderArguments(node, renderSettings))
         children.addAll(text)
     }

@@ -60,7 +60,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
 
     public void run() throws Exception {
 
-        for (int id = 0; id < 10000; id++) {
+        for (int id = 0; id < 5; id++) {
             new Inserter(connection).insert(id);
         }
     }

@@ -14,7 +14,7 @@ class RenderedToStringPrinted(representation: ToStringPrintedRepresentation, ren
             if (renderSettings.showTypes()) representation.type.name else toSimpleName(representation.type.name)
         val nodes: MutableList<Node> = ArrayList()
         nodes.add(of(className, CssClass.CALL_TREE_TYPE_NAME))
-        nodes.add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
+        nodes.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
         nodes.add(of(representation.printed, renderSettings))
         if (renderSettings.showTypes()) {
             nodes.add(of("@", CssClass.CALL_TREE_IDENTITY_REPR))

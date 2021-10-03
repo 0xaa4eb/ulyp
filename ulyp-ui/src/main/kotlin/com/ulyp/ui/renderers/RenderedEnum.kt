@@ -15,8 +15,8 @@ class RenderedEnum(representation: EnumRepresentation, renderSettings: RenderSet
         super.getChildren().addAll(
             listOf(
                 of(className, CssClass.CALL_TREE_TYPE_NAME),
-                of(".", CssClass.CALL_TREE_PLAIN_TEXT),
-                of(representation.name, CssClass.CALL_TREE_PLAIN_TEXT)
+                of(".", CssClass.CALL_TREE_NODE_SEPARATOR),
+                of(representation.name, CssClass.CALL_TREE_NODE_SEPARATOR)
             )
         )
     }

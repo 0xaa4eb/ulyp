@@ -18,20 +18,20 @@ class RenderedCollection(representation: CollectionRepresentation, renderSetting
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {
             texts.add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
-            texts.add(of(": ", CssClass.CALL_TREE_PLAIN_TEXT))
+            texts.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
         }
         texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in renderedObjects.indices) {
             texts.add(renderedObjects[i])
             if (i != renderedObjects.size - 1 || renderedObjects.size < representation.length) {
-                texts.add(of(", ", CssClass.CALL_TREE_PLAIN_TEXT))
+                texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR))
             }
         }
         if (renderedObjects.size < representation.length) {
             texts.add(
                 of(
                     (representation.length - renderedObjects.size).toString() + " more...",
-                    CssClass.CALL_TREE_PLAIN_TEXT
+                    CssClass.CALL_TREE_NODE_SEPARATOR
                 )
             )
         }
