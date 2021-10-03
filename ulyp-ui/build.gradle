@@ -19,10 +19,12 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.21'
     id 'io.freefair.lombok' version '5.3.0'
-    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.openjfx.javafxplugin' version '0.0.10' apply false
 }
 
-apply plugin: 'org.openjfx.javafxplugin'
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
+    apply plugin: 'org.openjfx.javafxplugin'
+}
 
 mainClassName = 'com.ulyp.ui.Main'
 
@@ -30,8 +32,10 @@ repositories {
     mavenCentral()
 }
 
-javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing' ]
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
+    javafx {
+        modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing' ]
+    }
 }
 
 dependencies {
