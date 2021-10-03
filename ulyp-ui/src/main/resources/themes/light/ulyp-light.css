@@ -13,15 +13,15 @@
 }
 
 .ulyp-ctt-typename {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-typename.ulyp-ctt-callee {
-
+    -fx-fill: rgb(0, 0, 0);
 }
 
 .ulyp-ctt-identity.ulyp-ctt-callee {
-
+    -fx-fill: rgb(0, 0, 0);
 }
 
 .ulyp-ctt-number {
@@ -33,11 +33,11 @@
 }
 
 .ulyp-ctt-identity {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-object-value {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-return-value {
@@ -53,6 +53,7 @@
 }
 
 .ulyp-ctt-method-name.ulyp-ctt-instance-method-name {
+
 }
 
 .ulyp-ctt-object-repr {
@@ -60,11 +61,11 @@
 }
 
 .ulyp-ctt-arg-name {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-sep {
-    -fx-fill: rgb(0, 0, 0);
+    -fx-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-sep {
@@ -72,7 +73,7 @@
 }
 
 .ulyp-ctt-class-name {
-    -fx-text-fill: rgb(0, 0, 0);
+    -fx-text-fill: rgb(100, 100, 100);
 }
 
 .ulyp-ctt-call-node {
