@@ -21,6 +21,7 @@ class SourceCodeTab : Tab() {
         textArea.syntaxEditingStyle = SyntaxConstants.SYNTAX_STYLE_JAVA
         textArea.isCodeFoldingEnabled = true
         textArea.text = ""
+        setTheme(com.ulyp.ui.looknfeel.Theme.DARK.rsyntaxThemePath)
         textScrollPane = RTextScrollPane(textArea)
         val swingNode = SwingNode()
         swingNode.content = textScrollPane

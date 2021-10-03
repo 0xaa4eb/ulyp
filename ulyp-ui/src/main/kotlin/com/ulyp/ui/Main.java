@@ -39,6 +39,7 @@ public class Main extends Application {
         viewController.fileChooser = () -> fileChooser.showOpenDialog(stage);
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(Theme.DARK.getUlypCssPath());
 
         stage.setScene(scene);
         stage.setMaximized(true);
@@ -51,7 +52,6 @@ public class Main extends Application {
         stage.getIcons().add(new Image(iconStream));
 
         stage.show();
-        Platform.runLater(() -> context.getBean(ThemeManager.class).applyTheme(Theme.DARK, scene));
     }
 
     public static void main(String[] args) {
