@@ -3,6 +3,7 @@ package com.ulyp.ui;
 import com.ulyp.ui.looknfeel.Theme;
 import com.ulyp.ui.looknfeel.ThemeManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -38,7 +39,6 @@ public class Main extends Application {
         viewController.fileChooser = () -> fileChooser.showOpenDialog(stage);
 
         Scene scene = new Scene(root);
-        context.getBean(ThemeManager.class).applyTheme(Theme.DARK, scene);
 
         stage.setScene(scene);
         stage.setMaximized(true);
@@ -51,6 +51,7 @@ public class Main extends Application {
         stage.getIcons().add(new Image(iconStream));
 
         stage.show();
+        Platform.runLater(() -> context.getBean(ThemeManager.class).applyTheme(Theme.DARK, scene));
     }
 
     public static void main(String[] args) {
