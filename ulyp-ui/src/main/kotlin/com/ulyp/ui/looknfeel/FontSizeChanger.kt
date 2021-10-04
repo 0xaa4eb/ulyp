@@ -7,17 +7,11 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
-import javax.annotation.PostConstruct
 
 @Component
 class FontSizeChanger {
     private var currentFontSize = 14
-    private var fontFamily: String? = null
-
-    @PostConstruct
-    fun init() {
-        fontFamily = getFontFamily()
-    }
+    private var fontFamily: String = getFontFamily()
 
     private fun getFontFamily(): String {
         val families = Font.getFamilies()

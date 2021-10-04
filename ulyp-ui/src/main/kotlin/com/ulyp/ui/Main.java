@@ -1,42 +1,33 @@
 package com.ulyp.ui;
 
+import com.ulyp.ui.config.Configuration;
 import com.ulyp.ui.looknfeel.Theme;
-import com.ulyp.ui.looknfeel.ThemeManager;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.InputStream;
 
 public class Main extends Application {
 
-    private ApplicationContext context;
+    public static Stage stage;
+
+    private AnnotationConfigApplicationContext context;
 
     @Override
     public void start(Stage stage) throws Exception {
+        Main.stage = stage;
+
         context = new AnnotationConfigApplicationContext(Configuration.class);
 
         FXMLLoader loader = new FXMLLoader(Main.class.getClassLoader().getResource("PrimaryView.fxml"));
-        loader.setControllerFactory(cl -> {
-            Object bean = context.getBean(cl);
-            System.out.println(cl + " -> " + bean);
-            return bean;
-        });
+        loader.setControllerFactory(cl -> context.getBean(cl));
 
         Parent root = loader.load();
-
-        PrimaryViewController viewController = loader.getController();
-
-        FileChooser fileChooser = new FileChooser();
-
-        viewController.fileChooser = () -> fileChooser.showOpenDialog(stage);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Theme.DARK.getUlypCssPath());

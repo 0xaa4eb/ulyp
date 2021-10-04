@@ -21,27 +21,23 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.function.Supplier
 
-class PrimaryViewController : Initializable {
+class PrimaryViewController(
+        private val sourceCodeView: SourceCodeView,
+        private val processTabPane: ProcessTabPane,
+        private val fontSizeChanger: FontSizeChanger,
+        private val themeManager: ThemeManager,
+        private val fileChooser: Supplier<File>
+) : Initializable {
+
     @FXML
     var primaryPane: VBox? = null
     @FXML
     var processTabAnchorPane: AnchorPane? = null
     @FXML
     var sourceCodeViewAnchorPane: AnchorPane? = null
-    @Autowired
-    private var sourceCodeView: SourceCodeView? = null
-    @Autowired
-    private var processTabPane: ProcessTabPane? = null
-    @Autowired
-    private var fontSizeChanger: FontSizeChanger? = null
-    @Autowired
-    private var themeManager: ThemeManager? = null
 
     private var aggregationStrategy: AggregationStrategy = ByRecordingIdAggregationStrategy()
     private val uploaderExecutorService = Executors.newFixedThreadPool(1)
-
-    @JvmField
-    var fileChooser: Supplier<File>? = null
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         processTabAnchorPane!!.children.add(processTabPane)
@@ -57,7 +53,7 @@ class PrimaryViewController : Initializable {
     }
 
     fun clearAll(event: Event?) {
-        processTabPane!!.clear()
+        processTabPane.clear()
     }
 
     fun changeAggregation(event: Event?) {
@@ -66,13 +62,13 @@ class PrimaryViewController : Initializable {
     }
 
     fun changeTheme(event: Event?) {
-        themeManager!!.applyTheme(Theme.LIGHT, primaryPane!!.scene)
+        themeManager.applyTheme(Theme.LIGHT, primaryPane!!.scene)
     }
 
     fun openRecordedDump(actionEvent: ActionEvent?) {
         // Without those calls font style won't be applied until user changes font for the first time
-        fontSizeChanger!!.upscale(primaryPane!!.scene)
-        fontSizeChanger!!.downscale(primaryPane!!.scene)
+        fontSizeChanger.upscale(primaryPane!!.scene)
+        fontSizeChanger.downscale(primaryPane!!.scene)
         val file = fileChooser!!.get()
         uploaderExecutorService.submit {
             try {
