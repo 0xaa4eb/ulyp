@@ -21,9 +21,9 @@ public class Recorder {
     /**
      * Keeps current recording session count. Based on the fact that most of the time there is no
      * recording sessions and this counter is equal to 0, it's possible to make a small performance optimization.
-     * Advice code (see RecordingAdvice class) can first check if there are any recording sessions are active at all. If there are any,
+     * Advice code (see com.ulyp.agent.MethodCallRecordingAdvice) can first check if there are any recording sessions are active at all. If there are any,
      * then advice code will check thread local and know if there is recording session in this thread precisely.
-     * This helps minimizing thread local lookups in the advice code
+     * This helps minimizing unneeded thread local lookups in the advice code
      */
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
 

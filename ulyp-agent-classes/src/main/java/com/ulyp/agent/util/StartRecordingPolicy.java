@@ -3,7 +3,7 @@ package com.ulyp.agent.util;
 import java.time.Duration;
 
 /**
- * Strategy to define where recording can start
+ * Strategy to define when recording can start
  */
 public interface StartRecordingPolicy {
 
