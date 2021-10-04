@@ -69,15 +69,14 @@ class PrimaryViewController(
         // Without those calls font style won't be applied until user changes font for the first time
         fontSizeChanger.upscale(primaryPane!!.scene)
         fontSizeChanger.downscale(primaryPane!!.scene)
-        val file = fileChooser!!.get()
+        val file = fileChooser.get()
         uploaderExecutorService.submit {
             try {
                 BufferedInputStream(FileInputStream(file)).use { inputStream ->
                     while (inputStream.available() > 0) {
                         val request = TCallRecordLogUploadRequest.parseDelimitedFrom(inputStream)
                         val chunk = CallRecordTreeChunk(request)
-                        val fileRecordingsTab =
-                            processTabPane!!.getOrCreateProcessTab(FileRecordingsTabName(file, chunk.processInfo))
+                        val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, chunk.processInfo))
                         val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(aggregationStrategy, chunk)
                         recordingTab.uploadChunk(chunk)
                         Platform.runLater { recordingTab.refreshTreeView() }

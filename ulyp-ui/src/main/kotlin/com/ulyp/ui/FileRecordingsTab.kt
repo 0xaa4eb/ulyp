@@ -16,11 +16,12 @@ import javax.annotation.PostConstruct
 
 @Component
 @Scope(scopeName = "prototype")
-class FileRecordingsTab internal constructor(val name: FileRecordingsTabName) : Tab(name.toString()) {
+class FileRecordingsTab internal constructor(
+        val name: FileRecordingsTabName,
+        private val applicationContext: ApplicationContext
+        ) : Tab(name.toString()) {
     private var callTreeTabs: TabPane? = null
 
-    @Autowired
-    private val applicationContext: ApplicationContext? = null
     private val methodInfoDatabase = MethodInfoDatabase()
     private val typeInfoDatabase = TypeInfoDatabase()
     private val tabsByRecordingId: MutableMap<CallRecordTreeTabId, CallRecordTreeTab> = ConcurrentHashMap()

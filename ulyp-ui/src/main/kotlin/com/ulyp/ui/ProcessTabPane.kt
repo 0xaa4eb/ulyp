@@ -37,7 +37,7 @@ class ProcessTabPane : TabPane() {
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab
             } else {
-                val tab = context!!.getBean(FileRecordingsTab::class.java, name)
+                val tab = context!!.getBean(FileRecordingsTab::class.java, name, context)
                 tabs.add(tab)
                 return@execute tab
             }
