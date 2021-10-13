@@ -31,16 +31,17 @@ class CallRecordTreeTab(
     private val methodInfoDatabase: MethodInfoDatabase,
     private val typeInfoDatabase: TypeInfoDatabase
 ) : Tab() {
+
     private var root: CallRecord? = null
     private var recordingInfo: RecordingInfo? = null
     private var treeView: TreeView<CallTreeNodeContent>? = null
 
     @Autowired
-    private val sourceCodeView: SourceCodeView? = null
+    private lateinit var sourceCodeView: SourceCodeView
     @Autowired
-    private val renderSettings: RenderSettings? = null
+    private lateinit var renderSettings: RenderSettings
     @Autowired
-    private val fontSizeChanger: FontSizeChanger? = null
+    private lateinit var fontSizeChanger: FontSizeChanger
 
     private var initialized = false
 
@@ -65,7 +66,7 @@ class CallRecordTreeTab(
                             val currentlySelected = treeView!!.selectionModel.selectedItem
                             val currentlySelectedNode = currentlySelected as CallRecordTreeNode
                             if (selectedNode.callRecord!!.id == currentlySelectedNode.callRecord!!.id) {
-                                sourceCodeView!!.setText(sourceCode, currentlySelectedNode.callRecord!!.methodName)
+                                sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord!!.methodName)
                             }
                         }
                     }
@@ -73,10 +74,10 @@ class CallRecordTreeTab(
             }
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
-                fontSizeChanger!!.upscale(parent.scene)
+                fontSizeChanger.upscale(parent.scene)
             }
             if (key.code == KeyCode.MINUS) {
-                fontSizeChanger!!.downscale(parent.scene)
+                fontSizeChanger.downscale(parent.scene)
             }
         }
         text = tabName
