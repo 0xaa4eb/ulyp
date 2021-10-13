@@ -30,22 +30,22 @@ class PrimaryViewController(
 ) : Initializable {
 
     @FXML
-    var primaryPane: VBox? = null
+    lateinit var primaryPane: VBox
     @FXML
-    var processTabAnchorPane: AnchorPane? = null
+    lateinit var processTabAnchorPane: AnchorPane
     @FXML
-    var sourceCodeViewAnchorPane: AnchorPane? = null
+    lateinit var sourceCodeViewAnchorPane: AnchorPane
 
     private var aggregationStrategy: AggregationStrategy = ByRecordingIdAggregationStrategy()
     private val uploaderExecutorService = Executors.newFixedThreadPool(1)
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
-        processTabAnchorPane!!.children.add(processTabPane)
+        processTabAnchorPane.children.add(processTabPane)
         AnchorPane.setTopAnchor(processTabPane, 0.0)
         AnchorPane.setBottomAnchor(processTabPane, 0.0)
         AnchorPane.setRightAnchor(processTabPane, 0.0)
         AnchorPane.setLeftAnchor(processTabPane, 0.0)
-        sourceCodeViewAnchorPane!!.children.add(sourceCodeView)
+        sourceCodeViewAnchorPane.children.add(sourceCodeView)
         AnchorPane.setTopAnchor(sourceCodeView, 0.0)
         AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
         AnchorPane.setRightAnchor(sourceCodeView, 0.0)
@@ -62,13 +62,13 @@ class PrimaryViewController(
     }
 
     fun changeTheme(event: Event?) {
-        themeManager.applyTheme(Theme.LIGHT, primaryPane!!.scene)
+        themeManager.applyTheme(Theme.LIGHT, primaryPane.scene)
     }
 
     fun openRecordedDump(actionEvent: ActionEvent?) {
         // Without those calls font style won't be applied until user changes font for the first time
-        fontSizeChanger.upscale(primaryPane!!.scene)
-        fontSizeChanger.downscale(primaryPane!!.scene)
+        fontSizeChanger.upscale(primaryPane.scene)
+        fontSizeChanger.downscale(primaryPane.scene)
         val file = fileChooser.get()
         uploaderExecutorService.submit {
             try {

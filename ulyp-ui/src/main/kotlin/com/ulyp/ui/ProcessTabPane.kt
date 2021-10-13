@@ -12,11 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 
 class ProcessTabPane : TabPane() {
-    @Autowired
-    private val context: ApplicationContext? = null
 
     @Autowired
-    private val renderSettings: RenderSettings? = null
+    private lateinit var context: ApplicationContext
+    @Autowired
+    private lateinit var renderSettings: RenderSettings
+
     fun clear() {
         for (tab in tabs) {
             val fileRecordingsTab = tab as FileRecordingsTab
@@ -37,7 +38,7 @@ class ProcessTabPane : TabPane() {
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab
             } else {
-                val tab = context!!.getBean(FileRecordingsTab::class.java, name, context)
+                val tab = context.getBean(FileRecordingsTab::class.java, name, context)
                 tabs.add(tab)
                 return@execute tab
             }
@@ -48,7 +49,7 @@ class ProcessTabPane : TabPane() {
         if (event.code == KeyCode.SHIFT) {
             val selected = selectedTab.selectedTreeTab.getSelected()
             if (selected != null) {
-                renderSettings!!.setShowTypes(true)
+                renderSettings.setShowTypes(true)
                 selected.refresh()
             }
         } else {
@@ -73,7 +74,7 @@ class ProcessTabPane : TabPane() {
         if (event.code == KeyCode.SHIFT) {
             val selected = selectedTab.selectedTreeTab.getSelected()
             if (selected != null) {
-                renderSettings!!.setShowTypes(false)
+                renderSettings.setShowTypes(false)
                 selected.refresh()
             }
         }

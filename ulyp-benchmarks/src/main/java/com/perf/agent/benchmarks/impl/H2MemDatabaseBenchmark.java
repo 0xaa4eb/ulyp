@@ -90,5 +90,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
         benchmark.tearDown();
 
         System.out.println("Took: " + (System.currentTimeMillis() - start));
+
+        Thread.sleep(30 * 1000L);
     }
 }

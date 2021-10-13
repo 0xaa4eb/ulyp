@@ -20,7 +20,8 @@ class FileRecordingsTab internal constructor(
         val name: FileRecordingsTabName,
         private val applicationContext: ApplicationContext
         ) : Tab(name.toString()) {
-    private var callTreeTabs: TabPane? = null
+
+    private lateinit var callTreeTabs: TabPane
 
     private val methodInfoDatabase = MethodInfoDatabase()
     private val typeInfoDatabase = TypeInfoDatabase()
@@ -41,14 +42,14 @@ class FileRecordingsTab internal constructor(
         return execute {
             tabsByRecordingId.computeIfAbsent(id) { rId: CallRecordTreeTabId? ->
                 val callRecordDatabase = aggregationStrategy.buildDatabase(methodInfoDatabase, typeInfoDatabase)
-                val tab = applicationContext!!.getBean(
+                val tab = applicationContext.getBean(
                     CallRecordTreeTab::class.java,
                     callTreeTabs,
                     callRecordDatabase,
                     methodInfoDatabase,
                     typeInfoDatabase
                 )
-                callTreeTabs!!.tabs.add(tab)
+                callTreeTabs.tabs.add(tab)
                 tab.onClosed = EventHandler { ev: Event? -> tabsByRecordingId.remove(id) }
                 tab
             }
@@ -56,10 +57,10 @@ class FileRecordingsTab internal constructor(
     }
 
     val selectedTreeTab: CallRecordTreeTab
-        get() = callTreeTabs!!.selectionModel.selectedItem as CallRecordTreeTab
+        get() = callTreeTabs.selectionModel.selectedItem as CallRecordTreeTab
 
     fun dispose() {
-        for (tab in callTreeTabs!!.tabs) {
+        for (tab in callTreeTabs.tabs) {
             val fxCallRecordTreeTab = tab as CallRecordTreeTab
             fxCallRecordTreeTab.dispose()
         }
