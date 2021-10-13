@@ -27,7 +27,7 @@ import java.sql.Timestamp
 @Scope(value = "prototype")
 class CallRecordTreeTab(
     private val parent: Region,
-    private val database: CallRecordDatabase?,
+    private val database: CallRecordDatabase,
     private val methodInfoDatabase: MethodInfoDatabase,
     private val typeInfoDatabase: TypeInfoDatabase
 ) : Tab() {
@@ -49,7 +49,7 @@ class CallRecordTreeTab(
         if (initialized) {
             return
         }
-        treeView = TreeView(CallRecordTreeNode(database!!, root!!.id, renderSettings))
+        treeView = TreeView(CallRecordTreeNode(database, root!!.id, renderSettings))
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
         val sourceCodeFinder = SourceCodeFinder(recordingInfo!!.processInfo.classpathList)
@@ -88,7 +88,7 @@ class CallRecordTreeTab(
 
     @get:Synchronized
     val tabName: String
-        get() = if (root == null || recordingInfo == null || database == null) {
+        get() = if (root == null || recordingInfo == null) {
             "?"
         } else recordingInfo!!.threadName + " " +
                 toSimpleName(root!!.className) + "." + root!!.methodName + "(" + recordingInfo!!.lifetimeMillis + " ms, " + database.countAll() + ")"
@@ -96,7 +96,7 @@ class CallRecordTreeTab(
     @get:Synchronized
     private val tooltipText: Tooltip
         private get() {
-            if (root == null || recordingInfo == null || database == null) {
+            if (root == null || recordingInfo == null) {
                 return Tooltip("")
             }
             val builder = StringBuilder()
@@ -126,7 +126,7 @@ class CallRecordTreeTab(
     }
 
     fun dispose() {
-        database!!.close()
+        database.close()
     }
 
     @Synchronized
@@ -145,7 +145,7 @@ class CallRecordTreeTab(
             }
             methodInfoDatabase.addAll(MethodInfoList(chunk.request.methodDescriptionList.data))
             typeInfoDatabase.addAll(chunk.request.descriptionList)
-            database!!.persistBatch(
+            database.persistBatch(
                 CallEnterRecordList(chunk.request.recordLog.enterRecords),
                 CallExitRecordList(chunk.request.recordLog.exitRecords)
             )
