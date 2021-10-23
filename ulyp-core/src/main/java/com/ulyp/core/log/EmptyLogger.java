@@ -3,7 +3,7 @@ package com.ulyp.core.log;
 public class EmptyLogger implements Logger {
 
     @Override
-    public void error(String msg, Exception e) {
+    public void error(String msg, Throwable e) {
 
     }
 

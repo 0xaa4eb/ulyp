@@ -2,12 +2,17 @@ package com.ulyp.core.log;
 
 import java.util.Date;
 
+// TODO replace with simple logger slf4j
 public class SysOutLogger implements Logger {
 
     @Override
-    public void error(String msg, Exception e) {
-        System.out.println("ULYP " + new Date() + " | " + Thread.currentThread().getName() + " | ERROR | " + msg + ", exception msg: " + e.getMessage());
-        e.printStackTrace();
+    public void error(String msg, Throwable e) {
+        if (LoggingSettings.IS_ERROR_TURNED_ON) {
+            synchronized (System.out) {
+                System.out.println("ULYP " + new Date() + " | " + Thread.currentThread().getName() + " | ERROR | " + msg + ", exception msg: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

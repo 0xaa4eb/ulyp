@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.log.LogLevel;
 import com.ulyp.core.log.LoggingSettings;
 import com.ulyp.core.printers.CollectionPrinter;
@@ -14,8 +15,10 @@ import com.ulyp.core.util.PackageList;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.utility.JavaModule;
 
 import java.lang.instrument.Instrumentation;
 
@@ -125,7 +128,10 @@ public class Agent {
 
         if (LoggingSettings.LOG_LEVEL == LogLevel.TRACE) {
             agent = agent.with(AgentBuilder.Listener.StreamWriting.toSystemOut());
+        } else {
+            agent = agent.with(new ErrorLoggingInstrumentationListener());
         }
+
         agent.installOn(instrumentation);
     }
 }
