@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class InstrumentationPackagesTest extends AbstractInstrumentationTest {
+public class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldInstrumentAndTraceAllClasses() {
