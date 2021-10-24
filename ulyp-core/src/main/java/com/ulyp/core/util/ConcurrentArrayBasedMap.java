@@ -5,13 +5,19 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class ConcurrentArrayBasedMap<V> {
 
-    private static final int CHUNK_SIZE_BITS = 15;
-    private static final int CHUNK_SIZE = 1 << CHUNK_SIZE_BITS;
+    private static final int CHUNK_SIZE_BITS;
+    private static final int CHUNK_SIZE;
 
-    private final AtomicReferenceArray<Chunk<V>> chunks = new AtomicReferenceArray<>(100000);
+    static {
+        CHUNK_SIZE_BITS = Integer.parseInt(System.getProperty("ConcurrentArrayBasedMap.BITS", "15"));
+        CHUNK_SIZE = 1 << CHUNK_SIZE_BITS;
+    }
+
+    private final AtomicReferenceArray<Chunk<V>> chunks;
     private final AtomicInteger chunksCount = new AtomicInteger(1);
 
-    {
+    public ConcurrentArrayBasedMap(int chunksCapacity) {
+        chunks = new AtomicReferenceArray<>(chunksCapacity);
         chunks.set(0, new Chunk<>());
     }
 
