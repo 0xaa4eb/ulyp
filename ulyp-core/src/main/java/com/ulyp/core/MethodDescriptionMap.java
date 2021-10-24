@@ -1,10 +1,15 @@
 package com.ulyp.core;
 
+import com.ulyp.core.util.ConcurrentArrayBasedMap;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+/**
+ * Comment
+ */
 public class MethodDescriptionMap {
 
     private static final MethodDescriptionMap INSTANCE = new MethodDescriptionMap();
@@ -13,22 +18,18 @@ public class MethodDescriptionMap {
         return INSTANCE;
     }
 
-    private static final AtomicInteger continueRecordingCounter = new AtomicInteger(0);
-    private static final AtomicInteger startOrContinueRecordingCounter = new AtomicInteger(0);
-
-    // TODO make maps
-    private final AtomicReferenceArray<Method> continueRecordingMethods = new AtomicReferenceArray<>(4_000_000);
-    private final AtomicReferenceArray<Method> startRecordingMethods = new AtomicReferenceArray<>(32_000);
+    private final ConcurrentArrayBasedMap<Method> continueRecordingMethods = new ConcurrentArrayBasedMap<>(64_000);
+    private final ConcurrentArrayBasedMap<Method> startRecordingMethods = new ConcurrentArrayBasedMap<>(64_000);
 
     private MethodDescriptionMap() {
-    }
-
-    public static boolean shouldStartRecording(long id) {
-        return id < 0;
+        // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
+        // or "continue recording only" bucket
+        continueRecordingMethods.put(null);
+        startRecordingMethods.put(null);
     }
 
     public Method get(int id) {
-        if (id >= 0) {
+        if (id > 0) {
             return continueRecordingMethods.get(id);
         } else {
            return startRecordingMethods.get(-id);
@@ -36,15 +37,11 @@ public class MethodDescriptionMap {
     }
 
     public int putAndGetId(Method method, boolean shouldStartRecording) {
-        int id;
         if (shouldStartRecording) {
-            id = startOrContinueRecordingCounter.decrementAndGet();
-            startRecordingMethods.set(-id, method);
+            return -startRecordingMethods.put(method);
         } else {
-            id = continueRecordingCounter.incrementAndGet();
-            continueRecordingMethods.set(id, method);
+            return continueRecordingMethods.put(method);
         }
-        return id;
     }
 
     public Collection<Method> values() {
