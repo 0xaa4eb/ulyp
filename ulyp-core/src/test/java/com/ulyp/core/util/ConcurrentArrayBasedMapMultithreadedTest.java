@@ -24,13 +24,13 @@ public class ConcurrentArrayBasedMapMultithreadedTest {
         );
         CountDownLatch countDownLatch = new CountDownLatch(threads + 1);
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
-        List<Future<long[]>> futures = new ArrayList<>();
+        List<Future<int[]>> futures = new ArrayList<>();
 
         for (int i = 0; i < threads; i++) {
             int threadOffset = i;
             futures.add(executorService.submit(
                     () -> {
-                        long[] keys = new long[puts];
+                        int[] keys = new int[puts];
 
                         countDownLatch.countDown();
                         try {
@@ -53,8 +53,8 @@ public class ConcurrentArrayBasedMapMultithreadedTest {
 
         for (int threadOffset = 0; threadOffset < futures.size(); threadOffset++) {
             try {
-                Future<long[]> future = futures.get(threadOffset);
-                long[] keys = future.get();
+                Future<int[]> future = futures.get(threadOffset);
+                int[] keys = future.get();
 
                 for (int j = 0; j < keys.length; j++) {
                     int actualValue = map.get(keys[j]);

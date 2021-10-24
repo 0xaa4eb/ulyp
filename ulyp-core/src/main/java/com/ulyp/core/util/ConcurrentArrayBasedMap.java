@@ -41,9 +41,9 @@ public class ConcurrentArrayBasedMap<V> {
         }
     }
 
-    public V get(long key) {
-        int chunkIndex = (int) (key >> CHUNK_SIZE_BITS);
-        int slot = (int) (key & (CHUNK_SIZE - 1));
+    public V get(int key) {
+        int chunkIndex = key >> CHUNK_SIZE_BITS;
+        int slot = key & (CHUNK_SIZE - 1);
 
         Chunk<V> chunk = chunks.get(chunkIndex);
         if (chunk == null) {
@@ -53,7 +53,7 @@ public class ConcurrentArrayBasedMap<V> {
         }
     }
 
-    public long put(V value) {
+    public int put(V value) {
 
         for (;;) {
             int currentChunkIndex = chunksCount.get() - 1;
@@ -63,7 +63,7 @@ public class ConcurrentArrayBasedMap<V> {
             int slotTaken = chunk.tryPut(value);
             if (slotTaken >= 0) {
 
-                return ((long) currentChunkIndex << CHUNK_SIZE_BITS) | slotTaken;
+                return (currentChunkIndex << CHUNK_SIZE_BITS) | slotTaken;
             } else {
 
                 // try allocate a new chunk
