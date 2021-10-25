@@ -5,8 +5,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class ConcurrentArrayBasedMap<V> {
 
-    private static final int CHUNK_SIZE_BITS;
-    private static final int CHUNK_SIZE;
+    static final int CHUNK_SIZE_BITS;
+    static final int CHUNK_SIZE;
 
     static {
         CHUNK_SIZE_BITS = Integer.parseInt(System.getProperty("ConcurrentArrayBasedMap.BITS", "15"));
@@ -38,6 +38,11 @@ public class ConcurrentArrayBasedMap<V> {
 
         public V get(int key) {
             return values.get(key);
+        }
+
+        public int size() {
+            int elementsTaken = nextSlot.get() + 1;
+            return Math.min(elementsTaken, CHUNK_SIZE);
         }
     }
 
@@ -85,6 +90,16 @@ public class ConcurrentArrayBasedMap<V> {
                         break;
                     }
                 }
+            }
+        }
+    }
+
+    public int size() {
+        for (;;) {
+            int currentChunkIndex = chunksCount.get() - 1;
+            Chunk<V> currentChunk = chunks.get(currentChunkIndex);
+            if (currentChunk != null) {
+                return currentChunkIndex * CHUNK_SIZE + currentChunk.size();
             }
         }
     }

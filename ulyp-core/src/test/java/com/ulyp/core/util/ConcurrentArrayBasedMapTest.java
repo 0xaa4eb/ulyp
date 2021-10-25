@@ -12,28 +12,56 @@ public class ConcurrentArrayBasedMapTest {
     }
 
     @Test
-    public void testPutAndGetSingleChunk() {
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(10);
+    public void testSizeMethod() {
+        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
+
+        assertEquals(0, map.size());
 
         for (int i = 0; i < 10; i++) {
             map.put(i);
         }
 
+        assertEquals(10, map.size());
+
         for (int i = 0; i < 10; i++) {
-            Assert.assertEquals((Integer) i, map.get(i));
+            assertEquals((Integer) i, map.get(i));
         }
+
+    }
+
+    @Test
+    public void testPutAndGetSingleChunk() {
+        int items = ConcurrentArrayBasedMap.CHUNK_SIZE / 2;
+        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
+
+        for (int i = 0; i < items; i++) {
+            map.put(i);
+        }
+
+        assertEquals(items, map.size());
+
+        for (int i = 0; i < items; i++) {
+            assertEquals((Integer) i, map.get(i));
+        }
+
+        assertEquals(items, map.size());
     }
 
     @Test
     public void testPutAndGetMultipleChunks() {
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(10);
+        int items = ConcurrentArrayBasedMap.CHUNK_SIZE * 10;
+        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < items; i++) {
             map.put(i);
         }
 
-        for (int i = 0; i < 100000; i++) {
-            Assert.assertEquals((Integer) i, map.get(i));
+        assertEquals(items, map.size());
+
+        for (int i = 0; i < items; i++) {
+            assertEquals((Integer) i, map.get(i));
         }
+
+        assertEquals(items, map.size());
     }
 }

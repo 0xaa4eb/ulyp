@@ -46,20 +46,16 @@ public class MethodDescriptionMap {
 
     public Collection<Method> values() {
         Collection<Method> values = new ArrayList<>();
-        for (int i = 1; i < startRecordingMethods.length(); i++) {
+        for (int i = 1; i < startRecordingMethods.size(); i++) {
             Method method = startRecordingMethods.get(i);
-            if (method != null) {
+            if (method != null && !method.wasDumped()) {
                 values.add(method);
-            } else {
-                break;
             }
         }
-        for (int i = 1; i < continueRecordingMethods.length(); i++) {
+        for (int i = 1; i < continueRecordingMethods.size(); i++) {
             Method method = continueRecordingMethods.get(i);
-            if (method != null) {
+            if (method != null && !method.wasDumped()) {
                 values.add(method);
-            } else {
-                break;
             }
         }
 
