@@ -22,14 +22,14 @@ public class Method {
 
     // If was dumped to the output file
     @Builder.Default
-    private volatile boolean dumped = false;
+    private volatile boolean writtenToFile = false;
 
-    public boolean wasDumped() {
-        return dumped;
+    public boolean wasWrittenToFile() {
+        return writtenToFile;
     }
 
-    public void markDumped() {
-        dumped = true;
+    public void setWrittenToFile() {
+        writtenToFile = true;
     }
 
     public long getId() {

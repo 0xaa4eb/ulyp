@@ -22,9 +22,9 @@ public class RequestConverter {
 
         MethodInfoList methodInfoList = new MethodInfoList();
         for (Method description : request.getMethods()) {
-            if (!description.wasDumped()) {
+            if (!description.wasWrittenToFile()) {
                 methodInfoList.add(description);
-                description.markDumped();
+                description.setWrittenToFile();
             }
         }
 
