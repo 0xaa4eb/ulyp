@@ -1,11 +1,10 @@
 package com.ulyp.core.util;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ConcurrentArrayBasedMapTest {
+public class ConcurrentArrayListTest {
 
     static {
         System.setProperty("ConcurrentArrayBasedMap.BITS", "3");
@@ -13,12 +12,12 @@ public class ConcurrentArrayBasedMapTest {
 
     @Test
     public void testSizeMethod() {
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
+        ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
         assertEquals(0, map.size());
 
         for (int i = 0; i < 10; i++) {
-            map.put(i);
+            map.add(i);
         }
 
         assertEquals(10, map.size());
@@ -31,11 +30,11 @@ public class ConcurrentArrayBasedMapTest {
 
     @Test
     public void testPutAndGetSingleChunk() {
-        int items = ConcurrentArrayBasedMap.CHUNK_SIZE / 2;
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
+        int items = ConcurrentArrayList.CHUNK_SIZE / 2;
+        ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
         for (int i = 0; i < items; i++) {
-            map.put(i);
+            map.add(i);
         }
 
         assertEquals(items, map.size());
@@ -49,11 +48,11 @@ public class ConcurrentArrayBasedMapTest {
 
     @Test
     public void testPutAndGetMultipleChunks() {
-        int items = ConcurrentArrayBasedMap.CHUNK_SIZE * 10;
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(100000);
+        int items = ConcurrentArrayList.CHUNK_SIZE * 10;
+        ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
         for (int i = 0; i < items; i++) {
-            map.put(i);
+            map.add(i);
         }
 
         assertEquals(items, map.size());

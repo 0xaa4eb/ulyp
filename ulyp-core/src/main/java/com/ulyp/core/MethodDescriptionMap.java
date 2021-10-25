@@ -1,11 +1,9 @@
 package com.ulyp.core;
 
-import com.ulyp.core.util.ConcurrentArrayBasedMap;
+import com.ulyp.core.util.ConcurrentArrayList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Comment
@@ -18,14 +16,14 @@ public class MethodDescriptionMap {
         return INSTANCE;
     }
 
-    private final ConcurrentArrayBasedMap<Method> continueRecordingMethods = new ConcurrentArrayBasedMap<>(64_000);
-    private final ConcurrentArrayBasedMap<Method> startRecordingMethods = new ConcurrentArrayBasedMap<>(64_000);
+    private final ConcurrentArrayList<Method> continueRecordingMethods = new ConcurrentArrayList<>(64_000);
+    private final ConcurrentArrayList<Method> startRecordingMethods = new ConcurrentArrayList<>(64_000);
 
     private MethodDescriptionMap() {
         // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
         // or "continue recording only" bucket
-        continueRecordingMethods.put(null);
-        startRecordingMethods.put(null);
+        continueRecordingMethods.add(null);
+        startRecordingMethods.add(null);
     }
 
     public Method get(int id) {
@@ -38,9 +36,9 @@ public class MethodDescriptionMap {
 
     public int putAndGetId(Method method, boolean shouldStartRecording) {
         if (shouldStartRecording) {
-            return -startRecordingMethods.put(method);
+            return -startRecordingMethods.add(method);
         } else {
-            return continueRecordingMethods.put(method);
+            return continueRecordingMethods.add(method);
         }
     }
 

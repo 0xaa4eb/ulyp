@@ -4,12 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
-public class ConcurrentArrayBasedMapMultithreadedTest {
+public class ConcurrentArrayListMultithreadedTest {
 
     static {
         System.setProperty("ConcurrentArrayBasedMap.BITS", "3");
@@ -19,7 +17,7 @@ public class ConcurrentArrayBasedMapMultithreadedTest {
     public void testPutAndGetSingleChunk() throws InterruptedException {
         int threads = 4;
         int puts = 1_000_000;
-        ConcurrentArrayBasedMap<Integer> map = new ConcurrentArrayBasedMap<>(
+        ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(
                 (threads + 1) * puts / 8
         );
         CountDownLatch countDownLatch = new CountDownLatch(threads + 1);
@@ -41,7 +39,7 @@ public class ConcurrentArrayBasedMapMultithreadedTest {
 
                         for (int j = 0; j < puts; j++) {
                             int value = j * (threads + 1) + threadOffset;
-                            keys[j] = map.put(value);
+                            keys[j] = map.add(value);
                         }
 
                         return keys;

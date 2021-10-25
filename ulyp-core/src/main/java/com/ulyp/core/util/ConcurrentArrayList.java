@@ -3,7 +3,7 @@ package com.ulyp.core.util;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-public class ConcurrentArrayBasedMap<V> {
+public class ConcurrentArrayList<V> {
 
     static final int CHUNK_SIZE_BITS;
     static final int CHUNK_SIZE;
@@ -16,7 +16,7 @@ public class ConcurrentArrayBasedMap<V> {
     private final AtomicReferenceArray<Chunk<V>> chunks;
     private final AtomicInteger chunksCount = new AtomicInteger(1);
 
-    public ConcurrentArrayBasedMap(int chunksCapacity) {
+    public ConcurrentArrayList(int chunksCapacity) {
         chunks = new AtomicReferenceArray<>(chunksCapacity);
         chunks.set(0, new Chunk<>());
     }
@@ -25,7 +25,7 @@ public class ConcurrentArrayBasedMap<V> {
         private final AtomicReferenceArray<V> values = new AtomicReferenceArray<>(CHUNK_SIZE);
         private final AtomicInteger nextSlot = new AtomicInteger(-1);
 
-        public int tryPut(V value) {
+        public int tryAdd(V value) {
             int slot = this.nextSlot.incrementAndGet();
 
             if (slot >= 0 && slot < CHUNK_SIZE) {
@@ -36,8 +36,8 @@ public class ConcurrentArrayBasedMap<V> {
             }
         }
 
-        public V get(int key) {
-            return values.get(key);
+        public V get(int index) {
+            return values.get(index);
         }
 
         public int size() {
@@ -46,9 +46,9 @@ public class ConcurrentArrayBasedMap<V> {
         }
     }
 
-    public V get(int key) {
-        int chunkIndex = key >> CHUNK_SIZE_BITS;
-        int slot = key & (CHUNK_SIZE - 1);
+    public V get(int index) {
+        int chunkIndex = index >> CHUNK_SIZE_BITS;
+        int slot = index & (CHUNK_SIZE - 1);
 
         Chunk<V> chunk = chunks.get(chunkIndex);
         if (chunk == null) {
@@ -58,14 +58,14 @@ public class ConcurrentArrayBasedMap<V> {
         }
     }
 
-    public int put(V value) {
+    public int add(V value) {
 
         for (;;) {
             int currentChunkIndex = chunksCount.get() - 1;
 
             Chunk<V> chunk = chunks.get(currentChunkIndex);
 
-            int slotTaken = chunk.tryPut(value);
+            int slotTaken = chunk.tryAdd(value);
             if (slotTaken >= 0) {
 
                 return (currentChunkIndex << CHUNK_SIZE_BITS) | slotTaken;
@@ -102,10 +102,5 @@ public class ConcurrentArrayBasedMap<V> {
                 return currentChunkIndex * CHUNK_SIZE + currentChunk.size();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(CHUNK_SIZE);
-        System.out.println(CHUNK_SIZE_BITS);
     }
 }
