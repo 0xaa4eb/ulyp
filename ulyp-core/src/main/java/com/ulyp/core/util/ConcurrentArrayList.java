@@ -9,7 +9,7 @@ public class ConcurrentArrayList<V> {
     static final int CHUNK_SIZE;
 
     static {
-        CHUNK_SIZE_BITS = Integer.parseInt(System.getProperty("ConcurrentArrayBasedMap.BITS", "15"));
+        CHUNK_SIZE_BITS = Integer.parseInt(System.getProperty("ConcurrentArrayList.BITS", "15"));
         CHUNK_SIZE = 1 << CHUNK_SIZE_BITS;
     }
 

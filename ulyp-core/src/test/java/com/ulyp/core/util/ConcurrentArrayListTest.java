@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class ConcurrentArrayListTest {
 
     static {
-        System.setProperty("ConcurrentArrayBasedMap.BITS", "3");
+        System.setProperty("ConcurrentArrayList.BITS", "3");
     }
 
     @Test

@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public class ConcurrentArrayListMultithreadedTest {
 
     static {
-        System.setProperty("ConcurrentArrayBasedMap.BITS", "3");
+        System.setProperty("ConcurrentArrayList.BITS", "3");
     }
 
     @Test
