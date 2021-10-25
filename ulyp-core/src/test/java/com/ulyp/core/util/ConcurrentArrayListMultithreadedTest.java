@@ -16,9 +16,9 @@ public class ConcurrentArrayListMultithreadedTest {
     @Test
     public void testPutAndGetSingleChunk() throws InterruptedException {
         int threads = 4;
-        int puts = 1_000_000;
-        ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(
-                (threads + 1) * puts / 8
+        int putsPerThread = 1_000_000;
+        ConcurrentArrayList<Integer> list = new ConcurrentArrayList<>(
+                (threads + 1) * putsPerThread / 8
         );
         CountDownLatch countDownLatch = new CountDownLatch(threads + 1);
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
@@ -28,7 +28,7 @@ public class ConcurrentArrayListMultithreadedTest {
             int threadOffset = i;
             futures.add(executorService.submit(
                     () -> {
-                        int[] keys = new int[puts];
+                        int[] keys = new int[putsPerThread];
 
                         countDownLatch.countDown();
                         try {
@@ -37,9 +37,9 @@ public class ConcurrentArrayListMultithreadedTest {
                             // NOP
                         }
 
-                        for (int j = 0; j < puts; j++) {
+                        for (int j = 0; j < putsPerThread; j++) {
                             int value = j * (threads + 1) + threadOffset;
-                            keys[j] = map.add(value);
+                            keys[j] = list.add(value);
                         }
 
                         return keys;
@@ -55,7 +55,7 @@ public class ConcurrentArrayListMultithreadedTest {
                 int[] keys = future.get();
 
                 for (int j = 0; j < keys.length; j++) {
-                    int actualValue = map.get(keys[j]);
+                    int actualValue = list.get(keys[j]);
                     int expectedValue = j * (threads + 1) + threadOffset;
                     Assert.assertEquals(expectedValue, actualValue);
                 }
@@ -63,6 +63,8 @@ public class ConcurrentArrayListMultithreadedTest {
                 Assert.fail("Test failed: " + e.getMessage());
             }
         }
+
+        Assert.assertEquals(putsPerThread * threads, list.size());
 
         executorService.shutdownNow();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
