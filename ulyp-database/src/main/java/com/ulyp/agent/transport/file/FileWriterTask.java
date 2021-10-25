@@ -75,7 +75,7 @@ public class FileWriterTask implements Runnable {
     }
 
     private void write(OutputStream outputStream, TCallRecordLogUploadRequest request) throws IOException {
-        LOGGER.debug("Writing request: recording id = " + request.getRecordingInfo().getRecordingId() +
+        LOGGER.info("Writing request: recording id = " + request.getRecordingInfo().getRecordingId() +
                 ", chunk id = " + request.getRecordingInfo().getChunkId() +
                 ", enter records = " + new CallEnterRecordList(request.getRecordLog().getEnterRecords()).size() +
                 ", exit records = " + new CallExitRecordList(request.getRecordLog().getExitRecords()).size());
