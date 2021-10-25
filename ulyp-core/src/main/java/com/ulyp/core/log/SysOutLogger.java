@@ -2,7 +2,6 @@ package com.ulyp.core.log;
 
 import java.util.Date;
 
-// TODO replace with simple logger slf4j
 public class SysOutLogger implements Logger {
 
     @Override
