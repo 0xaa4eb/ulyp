@@ -1,15 +1,13 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.core.log.AgentLogManager;
-import com.ulyp.core.log.Logger;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
 
+@Slf4j
 public class ErrorLoggingInstrumentationListener implements AgentBuilder.Listener {
-
-    private static final Logger LOGGER = AgentLogManager.getLogger(ErrorLoggingInstrumentationListener.class);
 
     @Override
     public void onDiscovery(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded) {
@@ -28,7 +26,7 @@ public class ErrorLoggingInstrumentationListener implements AgentBuilder.Listene
 
     @Override
     public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-        LOGGER.error("Failed to instrument " + typeName, throwable);
+        log.error("Failed to instrument " + typeName, throwable);
     }
 
     @Override

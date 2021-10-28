@@ -44,7 +44,6 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         BOXED_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Byte.class));
     }
 
-    private static final Logger LOGGER = AgentLogManager.getLogger(ByteBuddyTypeResolver.class);
     private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
 
     private static class InstanceHolder {

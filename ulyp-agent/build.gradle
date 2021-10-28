@@ -9,6 +9,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'io.freefair.lombok' version '5.3.0'
     id "com.github.johnrengelman.shadow" version "2.0.4"
 }
 
@@ -19,6 +20,9 @@ repositories {
 dependencies {
     compileOnly project(':ulyp-agent-classes')
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testCompile project(':ulyp-agent-classes')
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
@@ -49,6 +53,7 @@ shadowJar {
     dependsOn(':ulyp-agent-classes:shadowJar')
 
     relocate 'org.agrona', 'shadowed.org.agrona'
+    relocate 'org.slf4j', 'ulyp.org.slf4j'
     relocate 'it.unimi', 'shadowed.it.unimi'
     relocate 'io', 'shadowed.io'
     relocate 'com.google', 'shadowed.com.google'

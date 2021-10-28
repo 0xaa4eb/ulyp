@@ -6,30 +6,30 @@ public class SysOutLogger implements Logger {
 
     @Override
     public void error(String msg, Throwable e) {
-        if (LoggingSettings.IS_ERROR_TURNED_ON) {
+        if (LoggingSettings.ERROR_ENABLED) {
             synchronized (System.out) {
                 System.out.println("ULYP " + new Date() + " | " + Thread.currentThread().getName() + " | ERROR | " + msg + ", exception msg: " + e.getMessage());
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }
 
     @Override
     public void info(String msg) {
-        if (LoggingSettings.IS_INFO_TURNED_ON) {
+        if (LoggingSettings.INFO_ENABLED) {
             System.out.println("ULYP " + new Date() + " | " + Thread.currentThread().getName() + " | INFO | " + msg);
         }
     }
 
     @Override
     public void debug(String msg) {
-        if (LoggingSettings.IS_DEBUG_TURNED_ON) {
+        if (LoggingSettings.DEBUG_ENABLED) {
             System.out.println("ULYP " + new Date() + " | " + Thread.currentThread().getName() + " | DEBUG | " + msg);
         }
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return LoggingSettings.IS_DEBUG_TURNED_ON;
+        return LoggingSettings.DEBUG_ENABLED;
     }
 }

@@ -5,6 +5,7 @@ import com.ulyp.core.CallExitRecordList;
 import com.ulyp.core.log.AgentLogManager;
 import com.ulyp.core.log.Logger;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -15,9 +16,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class FileWriterTask implements Runnable {
 
-    private static final Logger LOGGER = AgentLogManager.getLogger(FileWriterTask.class);
     private static final TCallRecordLogUploadRequest POISON_PILL = TCallRecordLogUploadRequest.newBuilder().build();
     private final BlockingQueue<TCallRecordLogUploadRequest> requestQueue = new LinkedBlockingQueue<>();
     private final Path filePath;
@@ -32,7 +33,7 @@ public class FileWriterTask implements Runnable {
     }
 
     void shutdownAndWaitForTasksToComplete(long time, TimeUnit timeUnit) throws InterruptedException {
-        LOGGER.info("Shutting down file writing...");
+        log.info("Shutting down file writing...");
         requestQueue.add(POISON_PILL);
 
         long deadline = System.currentTimeMillis() + timeUnit.toMillis(time);
@@ -41,7 +42,7 @@ public class FileWriterTask implements Runnable {
             Thread.sleep(100);
         }
 
-        LOGGER.info("Shut down file writing");
+        log.info("Shut down file writing");
     }
 
     @Override
@@ -54,7 +55,7 @@ public class FileWriterTask implements Runnable {
                     TCallRecordLogUploadRequest request = requestQueue.poll(1, TimeUnit.SECONDS);
                     if (request != null) {
                         if (request == POISON_PILL) {
-                            LOGGER.info("Got poison pill, won't write any chunks to file, queue stil got " + requestQueue.size() + " requests in it");
+                            log.info("Got poison pill, won't write any chunks to file, queue stil got " + requestQueue.size() + " requests in it");
                             return;
                         } else {
 
@@ -75,7 +76,7 @@ public class FileWriterTask implements Runnable {
     }
 
     private void write(OutputStream outputStream, TCallRecordLogUploadRequest request) throws IOException {
-        LOGGER.info("Writing request: recording id = " + request.getRecordingInfo().getRecordingId() +
+        log.info("Writing request: recording id = " + request.getRecordingInfo().getRecordingId() +
                 ", chunk id = " + request.getRecordingInfo().getChunkId() +
                 ", enter records = " + new CallEnterRecordList(request.getRecordLog().getEnterRecords()).size() +
                 ", exit records = " + new CallExitRecordList(request.getRecordLog().getExitRecords()).size());

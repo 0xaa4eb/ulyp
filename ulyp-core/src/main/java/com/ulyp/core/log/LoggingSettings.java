@@ -1,20 +1,35 @@
 package com.ulyp.core.log;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Provides instant access to enabled logging levels
+ */
 @SuppressWarnings("all")
 public class LoggingSettings {
 
-    public static final boolean IS_DEBUG_TURNED_ON;
-    public static final boolean IS_TRACE_TURNED_ON;
-    public static final boolean IS_INFO_TURNED_ON;
-    public static final boolean IS_ERROR_TURNED_ON;
-
-    public static final String LOG_LEVEL_PROPERTY = "ulyp.log";
-    public static final LogLevel LOG_LEVEL = LogLevel.valueOf(System.getProperty(LOG_LEVEL_PROPERTY, LogLevel.ERROR.name()));
+    public static final String LOG_LEVEL_PROPERTY = "ulyp.org.slf4j.simpleLogger.defaultLogLevel";
+    public static final boolean TRACE_ENABLED;
+    public static final boolean DEBUG_ENABLED;
+    public static final boolean INFO_ENABLED;
+    public static final boolean ERROR_ENABLED;
 
     static {
-        IS_TRACE_TURNED_ON = LOG_LEVEL == LogLevel.TRACE;
-        IS_DEBUG_TURNED_ON = LOG_LEVEL == LogLevel.DEBUG || IS_TRACE_TURNED_ON;
-        IS_INFO_TURNED_ON = LOG_LEVEL == LogLevel.INFO || IS_DEBUG_TURNED_ON;
-        IS_ERROR_TURNED_ON = LOG_LEVEL == LogLevel.ERROR || IS_INFO_TURNED_ON;
+        if (System.getProperty(LOG_LEVEL_PROPERTY) == null) {
+            System.setProperty(LOG_LEVEL_PROPERTY, "OFF");
+        }
+
+        Logger logger = LoggerFactory.getLogger(LoggingSettings.class);
+
+        TRACE_ENABLED = logger.isTraceEnabled();
+        DEBUG_ENABLED = logger.isDebugEnabled();
+        INFO_ENABLED = logger.isInfoEnabled();
+        ERROR_ENABLED = logger.isErrorEnabled();
+    }
+
+    public static String getLoggingLevel() {
+        return System.getProperty("ulyp.org.slf4j.simpleLogger.defaultLogLevel");
     }
 }

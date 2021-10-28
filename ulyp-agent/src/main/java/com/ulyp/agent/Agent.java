@@ -15,10 +15,10 @@ import com.ulyp.core.util.PackageList;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.utility.JavaModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 
@@ -34,12 +34,14 @@ public class Agent {
 
     public static void start(String args, Instrumentation instrumentation) {
 
+        // Touch first and initialize shadowed slf4j
+        String logLevel = LoggingSettings.getLoggingLevel();
+
         if (AgentContext.isLoaded()) {
             return;
         }
         AgentContext.load();
 
-        String logLevel = LoggingSettings.LOG_LEVEL.name();
         AgentContext instance = AgentContext.getInstance();
 
         Settings settings = Settings.fromSystemProperties();
@@ -126,7 +128,7 @@ public class Agent {
         AgentBuilder agent = agentBuilder.with(AgentBuilder.TypeStrategy.Default.REDEFINE);
         // .with(AgentBuilder.LambdaInstrumentationStrategy.ENABLED);
 
-        if (LoggingSettings.LOG_LEVEL == LogLevel.TRACE) {
+        if (LoggingSettings.TRACE_ENABLED) {
             agent = agent.with(AgentBuilder.Listener.StreamWriting.toSystemOut());
         } else {
             agent = agent.with(new ErrorLoggingInstrumentationListener());

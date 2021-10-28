@@ -6,16 +6,18 @@ import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.log.AgentLogManager;
 import com.ulyp.core.log.Logger;
+import com.ulyp.core.log.LoggingSettings;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("unused")
+@Slf4j
 @ThreadSafe
 public class Recorder {
 
-    private static final Logger LOGGER = AgentLogManager.getLogger(Recorder.class);
     private static final Recorder instance = new Recorder(AgentContext.getInstance());
 
     /**
@@ -48,10 +50,12 @@ public class Recorder {
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog log = new CallRecordLog(typeResolver, callIdThreadLocal.get() + 1);
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get() + 1);
                 currentRecordingSessionCount.incrementAndGet();
-                LOGGER.info("Started recording " + log.getRecordingId() + " at method " + method.toPrettyString());
-                return log;
+                if (LoggingSettings.INFO_ENABLED) {
+                    log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toPrettyString());
+                }
+                return callRecordLog;
             });
         }
 
@@ -61,10 +65,10 @@ public class Recorder {
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog log = new CallRecordLog(typeResolver, callIdThreadLocal.get());
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get());
                 currentRecordingSessionCount.incrementAndGet();
-                LOGGER.info("Started recording " + log.getRecordingId() + " at method " + method.toPrettyString());
-                return log;
+                log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toPrettyString());
+                return callRecordLog;
             });
         }
 
@@ -78,7 +82,10 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            LOGGER.info("Finished recording " + recordLog.getRecordingId() + ", recorded " + recordLog.getCallsRecorded() + " calls");
+            if (LoggingSettings.INFO_ENABLED) {
+                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
+            }
+
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             recordLog,
@@ -98,7 +105,9 @@ public class Recorder {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
             callIdThreadLocal.set(recordLog.getLastCallId() + 1);
-            LOGGER.info("Finished recording " + recordLog.getRecordingId() + ", recorded " + recordLog.getCallsRecorded() + " calls");
+            if (LoggingSettings.INFO_ENABLED) {
+                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
+            }
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             recordLog,
