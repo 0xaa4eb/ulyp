@@ -51,7 +51,7 @@ public class Recorder {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get() + 1);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toPrettyString());
+                    log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -65,7 +65,7 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get());
                 currentRecordingSessionCount.incrementAndGet();
-                log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toPrettyString());
+                log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toShortString());
                 return callRecordLog;
             });
         }

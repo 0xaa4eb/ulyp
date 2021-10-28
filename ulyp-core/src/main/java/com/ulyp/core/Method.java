@@ -69,7 +69,7 @@ public class Method {
         return returnsSomething;
     }
 
-    public String toPrettyString() {
+    public String toShortString() {
         return declaringType.getName() + "." + name;
     }
 
