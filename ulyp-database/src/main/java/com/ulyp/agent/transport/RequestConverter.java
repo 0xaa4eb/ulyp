@@ -31,11 +31,11 @@ public class RequestConverter {
         TCallRecordLogUploadRequest.Builder requestBuilder = TCallRecordLogUploadRequest.newBuilder();
 
         for (Type type : request.getTypes()) {
-            if (!type.wasDumped()) {
+            if (!type.wasWrittenToFile()) {
                 requestBuilder.addDescription(
                         TClassDescription.newBuilder().setId(type.getId()).setName(type.getName()).build()
                 );
-                type.markDumped();
+                type.setWrittenToFile();
             }
         }
 
