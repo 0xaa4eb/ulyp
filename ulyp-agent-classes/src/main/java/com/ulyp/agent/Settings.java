@@ -1,6 +1,5 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.transport.UiAddress;
 import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.agent.transport.file.FileUiTransport;
 import com.ulyp.agent.transport.nop.DevNullStore;

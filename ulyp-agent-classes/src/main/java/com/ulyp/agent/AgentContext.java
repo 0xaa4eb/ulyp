@@ -9,13 +9,13 @@ public class AgentContext {
 
     private static final AgentContext instance = new AgentContext();
 
-    private static boolean agentLoaded = false;
+    private static volatile boolean agentLoaded = false;
 
-    public static synchronized boolean isLoaded() {
+    public static boolean isLoaded() {
         return agentLoaded;
     }
 
-    public static synchronized void load() {
+    public static void setLoaded() {
         agentLoaded = true;
     }
 
@@ -23,14 +23,14 @@ public class AgentContext {
         return instance;
     }
 
-    private final Settings sysPropsSettings;
+    private final Settings settings;
     private final UiTransport transport;
     private final ProcessInfo processInfo;
 
     private AgentContext() {
-        this.sysPropsSettings = Settings.fromSystemProperties();
+        this.settings = Settings.fromSystemProperties();
         this.processInfo = new ProcessInfo();
-        this.transport = sysPropsSettings.buildUiTransport();
+        this.transport = settings.buildUiTransport();
 
         Thread shutdown = new Thread(
                 () -> {
@@ -52,7 +52,7 @@ public class AgentContext {
         return transport;
     }
 
-    public Settings getSysPropsSettings() {
-        return sysPropsSettings;
+    public Settings getSettings() {
+        return settings;
     }
 }

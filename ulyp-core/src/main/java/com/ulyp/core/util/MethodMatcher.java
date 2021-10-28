@@ -4,7 +4,14 @@ import com.ulyp.core.Method;
 
 /**
  * User provided matcher for the method where recording should start.
- * A user specifies it in the following format as string: SimpleClassName.foo
+ * A user should specify it in the following format as string: <simple class name>.<method name>
+ * Examples:
+ *  Runnable.run
+ *  SpringApplication.main
+ *
+ * Wildcards are also supported:
+ *  Runnable.*
+ *  *.*
  */
 public class MethodMatcher {
 

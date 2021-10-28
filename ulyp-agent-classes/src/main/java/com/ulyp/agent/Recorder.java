@@ -38,7 +38,7 @@ public class Recorder {
 
     public Recorder(AgentContext context) {
         this.context = context;
-        this.startRecordingPolicy = context.getSysPropsSettings().getStartRecordingPolicy();
+        this.startRecordingPolicy = context.getSettings().getStartRecordingPolicy();
     }
 
     public boolean recordingIsActiveInCurrentThread() {

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * All methods specified by the user where recording shoud start
+ * All methods specified by the user where recording should start
  */
 public class RecordMethodList {
 

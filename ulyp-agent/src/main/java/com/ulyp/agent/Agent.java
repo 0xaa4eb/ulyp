@@ -37,7 +37,7 @@ public class Agent {
         if (AgentContext.isLoaded()) {
             return;
         }
-        AgentContext.load();
+        AgentContext.setLoaded();
 
         AgentContext instance = AgentContext.getInstance();
 
