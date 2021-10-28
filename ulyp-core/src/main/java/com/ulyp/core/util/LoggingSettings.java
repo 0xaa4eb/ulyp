@@ -1,4 +1,4 @@
-package com.ulyp.core.log;
+package com.ulyp.core.util;
 
 
 import org.slf4j.Logger;

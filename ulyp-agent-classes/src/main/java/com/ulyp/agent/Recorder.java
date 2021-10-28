@@ -4,7 +4,7 @@ import com.ulyp.agent.transport.CallRecordTreeRequest;
 import com.ulyp.agent.util.EnhancedThreadLocal;
 import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.*;
-import com.ulyp.core.log.LoggingSettings;
+import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;

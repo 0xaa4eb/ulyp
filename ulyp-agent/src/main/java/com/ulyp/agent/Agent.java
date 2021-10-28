@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.log.LoggingSettings;
+import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.printers.CollectionPrinter;
 import com.ulyp.core.printers.MapPrinter;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;

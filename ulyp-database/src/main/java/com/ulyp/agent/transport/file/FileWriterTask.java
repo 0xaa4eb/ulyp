@@ -2,8 +2,6 @@ package com.ulyp.agent.transport.file;
 
 import com.ulyp.core.CallEnterRecordList;
 import com.ulyp.core.CallExitRecordList;
-import com.ulyp.core.log.AgentLogManager;
-import com.ulyp.core.log.Logger;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import lombok.extern.slf4j.Slf4j;
 

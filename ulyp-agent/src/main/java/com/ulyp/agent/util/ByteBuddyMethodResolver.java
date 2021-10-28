@@ -2,7 +2,7 @@ package com.ulyp.agent.util;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
-import com.ulyp.core.log.LoggingSettings;
+import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.printers.ObjectBinaryPrinter;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.Printers;

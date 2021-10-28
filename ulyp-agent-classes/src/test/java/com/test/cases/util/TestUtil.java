@@ -1,6 +1,6 @@
 package com.test.cases.util;
 
-import com.ulyp.core.log.LoggingSettings;
+import com.ulyp.core.util.LoggingSettings;
 import org.buildobjects.process.ProcBuilder;
 import org.buildobjects.process.ProcResult;
 import org.junit.Assert;
