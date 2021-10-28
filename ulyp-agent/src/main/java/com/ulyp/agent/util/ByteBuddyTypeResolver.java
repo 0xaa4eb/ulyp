@@ -212,7 +212,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
 
     @NotNull
     @Override
-    public Collection<Type> getAllKnownTypes() {
+    public Collection<Type> getAllResolved() {
         return types.values();
     }
 }

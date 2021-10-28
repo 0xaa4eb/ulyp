@@ -22,7 +22,7 @@ public class TestTypeResolver implements TypeResolver {
     }
 
     @Override
-    public @NotNull Collection<Type> getAllKnownTypes() {
+    public @NotNull Collection<Type> getAllResolved() {
         return types.values();
     }
 }

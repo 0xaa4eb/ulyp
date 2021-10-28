@@ -4,8 +4,6 @@ import com.ulyp.agent.transport.CallRecordTreeRequest;
 import com.ulyp.agent.util.EnhancedThreadLocal;
 import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.*;
-import com.ulyp.core.log.AgentLogManager;
-import com.ulyp.core.log.Logger;
 import com.ulyp.core.log.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,7 +88,7 @@ public class Recorder {
                     new CallRecordTreeRequest(
                             recordLog,
                             MethodDescriptionMap.getInstance().values(),
-                            typeResolver.getAllKnownTypes(),
+                            typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )
             );
@@ -112,7 +110,7 @@ public class Recorder {
                     new CallRecordTreeRequest(
                             recordLog,
                             MethodDescriptionMap.getInstance().values(),
-                            typeResolver.getAllKnownTypes(),
+                            typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )
             );
@@ -148,7 +146,7 @@ public class Recorder {
                     new CallRecordTreeRequest(
                             currentRecordLog,
                             MethodDescriptionMap.getInstance().values(),
-                            typeResolver.getAllKnownTypes(),
+                            typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )
             );

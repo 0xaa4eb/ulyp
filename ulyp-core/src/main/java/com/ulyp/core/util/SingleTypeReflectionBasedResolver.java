@@ -37,7 +37,7 @@ public class SingleTypeReflectionBasedResolver implements TypeResolver, ByIdType
     }
 
     @Override
-    public @NotNull Collection<Type> getAllKnownTypes() {
+    public @NotNull Collection<Type> getAllResolved() {
         return Collections.singletonList(ulypType);
     }
 

@@ -13,5 +13,5 @@ public interface TypeResolver {
     Type get(Class<?> clazz);
 
     @NotNull
-    Collection<Type> getAllKnownTypes();
+    Collection<Type> getAllResolved();
 }

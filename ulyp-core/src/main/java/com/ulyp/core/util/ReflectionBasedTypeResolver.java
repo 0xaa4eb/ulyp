@@ -40,7 +40,7 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
     }
 
     @Override
-    public @NotNull Collection<Type> getAllKnownTypes() {
+    public @NotNull Collection<Type> getAllResolved() {
         return map.values();
     }
 
