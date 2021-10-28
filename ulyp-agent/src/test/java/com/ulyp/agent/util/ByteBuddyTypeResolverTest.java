@@ -147,9 +147,9 @@ public class ByteBuddyTypeResolverTest {
     @Test
     public void testNumberTypeTraits() {
 
-        assertThat(typeResolver.resolve(Integer.class).getTraits(), hasItem(TypeTrait.NUMBER));
+        assertThat(typeResolver.get(Integer.class).getTraits(), hasItem(TypeTrait.NUMBER));
 
-        assertThat(typeResolver.resolve(Long.class).getTraits(), hasItem(TypeTrait.NUMBER));
+        assertThat(typeResolver.get(Long.class).getTraits(), hasItem(TypeTrait.NUMBER));
     }
 
     @Test

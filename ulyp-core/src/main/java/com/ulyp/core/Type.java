@@ -6,6 +6,7 @@ import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.ToString;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
+@ToString
 public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();
@@ -108,10 +110,6 @@ public class Type {
 
     public boolean hasToStringMethod() {
         return hasToStringMethod;
-    }
-
-    public String toString() {
-        return "TypeInfo{" +"name=" + getName() + '}';
     }
 
     public void serialize(BinaryTypeEncoder encoder) {
