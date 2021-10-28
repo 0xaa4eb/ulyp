@@ -3,12 +3,14 @@ package com.ulyp.core;
 import com.ulyp.core.printers.ObjectBinaryPrinter;
 import com.ulyp.transport.*;
 import lombok.Builder;
+import lombok.ToString;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.util.Arrays;
 
 @Builder
+@ToString
 public class Method {
 
     private final long id;
@@ -69,19 +71,6 @@ public class Method {
 
     public String toPrettyString() {
         return declaringType.getName() + "." + name;
-    }
-
-    @Override
-    public String toString() {
-        return "MethodDescription{" +
-                "id=" + id +
-                ", methodName='" + name + '\'' +
-                ", declaringType=" + declaringType +
-                ", isStatic=" + isStatic +
-                ", returnsSomething=" + returnsSomething +
-                ", paramPrinters=" + Arrays.toString(paramPrinters) +
-                ", resultPrinter=" + returnValuePrinter +
-                '}';
     }
 
     public void serialize(BinaryMethodEncoder encoder) {
