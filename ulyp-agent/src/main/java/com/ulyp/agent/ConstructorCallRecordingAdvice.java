@@ -1,14 +1,14 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
-import com.ulyp.core.MethodDescriptionMap;
+import com.ulyp.core.MethodStore;
 import net.bytebuddy.asm.Advice;
 
 public class ConstructorCallRecordingAdvice {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
-     *                 {@link MethodFactory} class.
+     *                 {@link MethodIdFactory} class.
      */
     @SuppressWarnings("UnusedAssignment")
     @Advice.OnMethodEnter
@@ -20,19 +20,19 @@ public class ConstructorCallRecordingAdvice {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    MethodDescriptionMap.getInstance().get(methodId),
+                    MethodStore.getInstance().get(methodId),
                     arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                callId = Recorder.getInstance().onConstructorEnter(MethodDescriptionMap.getInstance().get(methodId), arguments);
+                callId = Recorder.getInstance().onConstructorEnter(MethodStore.getInstance().get(methodId), arguments);
             }
         }
     }
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
-     *                 {@link MethodFactory} class. Guaranteed to be the same
+     *                 {@link MethodIdFactory} class. Guaranteed to be the same
      *                 as for enter advice
      */
     @Advice.OnMethodExit
@@ -45,7 +45,7 @@ public class ConstructorCallRecordingAdvice {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnConstructorExit(
                         ByteBuddyTypeResolver.getInstance(),
-                        MethodDescriptionMap.getInstance().get(methodId),
+                        MethodStore.getInstance().get(methodId),
                         callId,
                         returnValue
                 );
@@ -53,7 +53,7 @@ public class ConstructorCallRecordingAdvice {
                 if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                     Recorder.getInstance().onConstructorExit(
                             ByteBuddyTypeResolver.getInstance(),
-                            MethodDescriptionMap.getInstance().get(methodId),
+                            MethodStore.getInstance().get(methodId),
                             returnValue,
                             callId
                     );

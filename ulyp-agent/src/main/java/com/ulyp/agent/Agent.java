@@ -1,7 +1,6 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.log.LogLevel;
 import com.ulyp.core.log.LoggingSettings;
 import com.ulyp.core.printers.CollectionPrinter;
 import com.ulyp.core.printers.MapPrinter;
@@ -17,8 +16,6 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 
@@ -101,13 +98,13 @@ public class Agent {
             finalMatcher = finalMatcher.and(tracingMatcher);
         }
 
-        MethodFactory methodFactory = new MethodFactory(recordMethodList);
+        MethodIdFactory methodIdFactory = new MethodIdFactory(recordMethodList);
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
                 .type(finalMatcher)
                 .transform((builder, typeDescription, classLoader, module) -> builder.visit(
                         Advice.withCustomMapping()
-                                .bind(methodFactory)
+                                .bind(methodIdFactory)
                                 .to(MethodCallRecordingAdvice.class)
                                 .on(ElementMatchers
                                         .isMethod()
@@ -119,7 +116,7 @@ public class Agent {
         if (settings.shouldRecordConstructors()) {
             agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module) -> builder.visit(
                     Advice.withCustomMapping()
-                            .bind(methodFactory)
+                            .bind(methodIdFactory)
                             .to(ConstructorCallRecordingAdvice.class)
                             .on(ElementMatchers.isConstructor())
             ));

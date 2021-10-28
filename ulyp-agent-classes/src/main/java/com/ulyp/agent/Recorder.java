@@ -87,7 +87,7 @@ public class Recorder {
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             recordLog,
-                            MethodDescriptionMap.getInstance().values(),
+                            MethodStore.getInstance().values(),
                             typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )
@@ -109,7 +109,7 @@ public class Recorder {
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             recordLog,
-                            MethodDescriptionMap.getInstance().values(),
+                            MethodStore.getInstance().values(),
                             typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )
@@ -145,7 +145,7 @@ public class Recorder {
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             currentRecordLog,
-                            MethodDescriptionMap.getInstance().values(),
+                            MethodStore.getInstance().values(),
                             typeResolver.getAllResolved(),
                             context.getProcessInfo()
                     )

@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
-import com.ulyp.core.MethodDescriptionMap;
+import com.ulyp.core.MethodStore;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
@@ -9,7 +9,7 @@ public class MethodCallRecordingAdvice {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
-     *                 {@link MethodFactory} class.
+     *                 {@link MethodIdFactory} class.
      */
     @Advice.OnMethodEnter
     static void enter(
@@ -20,20 +20,20 @@ public class MethodCallRecordingAdvice {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    MethodDescriptionMap.getInstance().get(methodId),
+                    MethodStore.getInstance().get(methodId),
                     callee,
                     arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                callId = Recorder.getInstance().onMethodEnter(MethodDescriptionMap.getInstance().get(methodId), callee, arguments);
+                callId = Recorder.getInstance().onMethodEnter(MethodStore.getInstance().get(methodId), callee, arguments);
             }
         }
     }
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
-     *                 {@link MethodFactory} class. Guaranteed to be the same
+     *                 {@link MethodIdFactory} class. Guaranteed to be the same
      *                 as for enter advice
      */
     @Advice.OnMethodExit(onThrowable = Throwable.class)
@@ -46,7 +46,7 @@ public class MethodCallRecordingAdvice {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnMethodExit(
                         ByteBuddyTypeResolver.getInstance(),
-                        MethodDescriptionMap.getInstance().get(methodId),
+                        MethodStore.getInstance().get(methodId),
                         returnValue,
                         throwable,
                         callId
@@ -55,7 +55,7 @@ public class MethodCallRecordingAdvice {
                 if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                     Recorder.getInstance().onMethodExit(
                             ByteBuddyTypeResolver.getInstance(),
-                            MethodDescriptionMap.getInstance().get(methodId),
+                            MethodStore.getInstance().get(methodId),
                             returnValue,
                             throwable,
                             callId

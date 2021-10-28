@@ -8,18 +8,18 @@ import java.util.Collection;
 /**
  * Comment
  */
-public class MethodDescriptionMap {
+public class MethodStore {
 
-    private static final MethodDescriptionMap INSTANCE = new MethodDescriptionMap();
+    private static final MethodStore INSTANCE = new MethodStore();
 
-    public static MethodDescriptionMap getInstance() {
+    public static MethodStore getInstance() {
         return INSTANCE;
     }
 
     private final ConcurrentArrayList<Method> continueRecordingMethods = new ConcurrentArrayList<>(64_000);
     private final ConcurrentArrayList<Method> startRecordingMethods = new ConcurrentArrayList<>(64_000);
 
-    private MethodDescriptionMap() {
+    private MethodStore() {
         // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
         // or "continue recording only" bucket
         continueRecordingMethods.add(null);
