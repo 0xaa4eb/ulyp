@@ -16,9 +16,11 @@ import com.ulyp.core.printers.bytes.BinaryOutput;
 public abstract class ObjectBinaryPrinter {
 
     private final byte id;
+    protected final String simpleClassName;
 
     protected ObjectBinaryPrinter(byte id) {
         this.id = id;
+        this.simpleClassName = getClass().getSimpleName();
     }
 
     public final byte getId() {
@@ -36,5 +38,10 @@ public abstract class ObjectBinaryPrinter {
 
     public void write(Object obj, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         write(obj, typeResolver.get(obj), out, typeResolver);
+    }
+
+    @Override
+    public String toString() {
+        return simpleClassName + "{}";
     }
 }
