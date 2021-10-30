@@ -27,9 +27,6 @@ public abstract class ObjectBinaryPrinter {
         return id;
     }
 
-    /**
-     * @return if this
-     */
     abstract boolean supports(Type type);
 
     public abstract ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);

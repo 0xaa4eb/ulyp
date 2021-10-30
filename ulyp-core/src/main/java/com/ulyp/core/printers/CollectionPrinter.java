@@ -7,21 +7,22 @@ import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 import com.ulyp.core.printers.bytes.Checkpoint;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+@Slf4j
 public class CollectionPrinter extends ObjectBinaryPrinter {
+
+    public static final int MAX_ITEMS_TO_RECORD = 3;
+    private static final int RECORDED_ITEMS_FLAG = 1;
+    private static final int RECORDED_IDENTITY_FLAG = 0;
 
     private volatile boolean active = true;
     private CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
-
-    public static final int MAX_ITEMS_TO_RECORD = 3;
-
-    private static final int RECORDED_ITEMS = 1;
-    private static final int RECORDED_IDENTITY_ONLY = 0;
 
     protected CollectionPrinter(byte id) {
         super(id);
@@ -34,13 +35,14 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
 
     public void setMode(CollectionsRecordingMode mode) {
         this.mode = mode;
+        log.info("Set collection recording mode to {}", mode);
     }
 
     @Override
     public ObjectRepresentation read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
-        if (recordedItems == RECORDED_ITEMS) {
+        if (recordedItems == RECORDED_ITEMS_FLAG) {
             int collectionSize = input.readInt();
             List<ObjectRepresentation> items = new ArrayList<>();
             int recordedItemsCount = input.readInt();
@@ -59,11 +61,12 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
+            // TODO per type statistics
             if (active) {
-                appender.append(RECORDED_ITEMS);
+                appender.append(RECORDED_ITEMS_FLAG);
                 Checkpoint checkpoint = appender.checkpoint();
                 try {
                     Collection<?> collection = (Collection<?>) object;
@@ -79,6 +82,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
                         recorded++;
                     }
                 } catch (Throwable throwable) {
+                    log.info("Collection items will not be recorded as error occurred while recording", throwable);
                     checkpoint.rollback();
                     active = false;
                     writeIdentity(object, out, typeResolver);
@@ -91,7 +95,7 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
 
     private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
-            appender.append(RECORDED_IDENTITY_ONLY);
+            appender.append(RECORDED_IDENTITY_FLAG);
             ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, runtime);
         }
     }
