@@ -8,7 +8,7 @@ public enum ObjectBinaryPrinterType {
     DYNAMIC_OBJECT_PRINTER(new DynamicObjectBinaryPrinter((byte) 7), 100),
     INTEGRAL_PRINTER(new IntegralPrinter((byte) 12), 0),
     BOOLEAN_PRINTER(new BooleanPrinter((byte) 100), 1),
-    ANY_NUMBER_PRINTER(new AnyNumbersPrinter((byte) 8), 1),
+    ANY_NUMBER_PRINTER(new NumbersPrinter((byte) 8), 1),
     OBJECT_ARRAY_PRINTER(new ObjectArrayDebugPrinter((byte) 11), 1),
     COLLECTION_DEBUG_PRINTER(new CollectionPrinter((byte) 10), 1),
     MAP_PRINTER(new MapPrinter((byte) 13), 1),

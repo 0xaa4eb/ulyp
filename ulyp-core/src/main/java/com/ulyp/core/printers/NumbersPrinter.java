@@ -7,9 +7,12 @@ import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class AnyNumbersPrinter extends ObjectBinaryPrinter {
+/**
+ * Currently supports both primitive and boxed numbers
+ */
+public class NumbersPrinter extends ObjectBinaryPrinter {
 
-    protected AnyNumbersPrinter(byte id) {
+    protected NumbersPrinter(byte id) {
         super(id);
     }
 
