@@ -49,6 +49,8 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
     compile group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
+    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '6.20.3'
+
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 

@@ -35,8 +35,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     compileOnly "io.grpc:grpc-netty:${grpcVersion}"
 
-    // https://mvnrepository.com/artifact/org.rocksdb/rocksdbjni
-    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '6.20.3'
+    compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '6.20.3'
 
     compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
