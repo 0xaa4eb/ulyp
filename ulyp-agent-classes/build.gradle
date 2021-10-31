@@ -71,7 +71,6 @@ shadowJar {
     relocate 'com.google', 'shadowed.com.google'
     relocate 'javax.annotation', 'shadowed.javax.annotation'
     relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
-//    relocate 'org.apache', 'shadowed.org.apache'
 
     archiveName = "${rootProject.name}-agent-classes-${rootProject.version}.jar"
 
@@ -88,8 +87,18 @@ shadowJar {
     }
 }
 
-assemble {
+tasks.register('copyShadowJar', Copy) {
+    from layout.buildDirectory.file('libs/ulyp-agent-classes-0.2.jar')
+    into layout.buildDirectory.file('libs')
+    rename { String fileName ->
+        fileName = fileName.replace("-$project.version", "")
+        fileName + "r"
+    }
     dependsOn('shadowJar')
+}
+
+assemble {
+    dependsOn('shadowJar', 'copyShadowJar')
 }
 
 test {
