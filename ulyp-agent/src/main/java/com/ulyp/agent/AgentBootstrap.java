@@ -54,10 +54,10 @@ public class AgentBootstrap {
                 OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tmpJarFile.toFile(), false))
         ) {
             outputStream.write(new StreamDrainer().drain(inputStream));
-            File f = tmpJarFile.toFile();
-            System.out.println("**** " + f);
-            f.deleteOnExit();
-            return f;
+            File classesJar = tmpJarFile.toFile();
+            System.out.println("Unpacking ulyp-agent-classes jar file to " + classesJar);
+            classesJar.deleteOnExit();
+            return classesJar;
         } catch (IOException e) {
             throw new RuntimeException("Could not copy classpath resource " + AGENT_CLASSES_JAR_RESOURCE_NAME, e);
         }
