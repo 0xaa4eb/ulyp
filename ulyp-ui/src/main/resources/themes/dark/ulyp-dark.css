@@ -61,6 +61,10 @@
     -fx-font-size: 15px;
 }
 
+.ulyp-ctt {
+    -fx-fill: rgb(169, 183, 198);
+}
+
 .ulyp-ctt-string {
     -fx-fill: rgb(0, 120, 0);
 }
