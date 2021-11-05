@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Prints out total bytes serialized by each printer
  */
-public class PrinterMetricsBenchmarksMain {
+public class RecorderMetricsBenchmarksMain {
 
     public static void main(String[] args) throws Exception {
 
