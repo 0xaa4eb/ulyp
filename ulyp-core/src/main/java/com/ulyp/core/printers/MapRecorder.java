@@ -11,7 +11,7 @@ import com.ulyp.core.printers.bytes.Checkpoint;
 
 import java.util.*;
 
-public class MapRecorder extends ObjectBinaryRecorder {
+public class MapRecorder extends ObjectRecorder {
 
     private CollectionsRecordingMode mode;
     private volatile boolean active = true;

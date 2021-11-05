@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.util.ClassUtils;
 
 import java.util.Set;
@@ -31,7 +31,7 @@ public interface TypeInfo {
 
     Set<String> getInterfacesClassesNames();
 
-    ObjectBinaryRecorder getSuggestedPrinter();
+    ObjectRecorder getSuggestedPrinter();
 
     default Set<String> getSuperClassesSimpleNames() {
         return getSuperClassesNames().stream().map(ClassUtils::getSimpleNameFromName).collect(Collectors.toSet());

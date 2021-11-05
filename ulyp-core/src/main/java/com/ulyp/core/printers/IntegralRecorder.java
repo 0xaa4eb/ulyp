@@ -8,7 +8,7 @@ import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
 // Handles everything including byte/short/int/long
-public class IntegralRecorder extends ObjectBinaryRecorder {
+public class IntegralRecorder extends ObjectRecorder {
 
     protected IntegralRecorder(byte id) {
         super(id);

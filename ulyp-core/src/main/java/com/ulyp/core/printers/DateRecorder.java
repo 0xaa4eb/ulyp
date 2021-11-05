@@ -8,7 +8,7 @@ import com.ulyp.core.printers.bytes.BinaryOutput;
 
 import java.util.Date;
 
-public class DateRecorder extends ObjectBinaryRecorder {
+public class DateRecorder extends ObjectRecorder {
 
     private static final String JAVA_UTIL_DATE_CLASS_NAME = Date.class.getName();
 

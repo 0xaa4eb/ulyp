@@ -10,7 +10,7 @@ import com.ulyp.core.printers.bytes.BinaryOutput;
 /**
  * Currently supports both primitive and boxed numbers
  */
-public class NumbersRecorder extends ObjectBinaryRecorder {
+public class NumbersRecorder extends ObjectRecorder {
 
     protected NumbersRecorder(byte id) {
         super(id);

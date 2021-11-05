@@ -7,9 +7,9 @@ import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 
-public class DynamicObjectBinaryRecorder extends ObjectBinaryRecorder {
+public class DynamicObjectRecorder extends ObjectRecorder {
 
-    protected DynamicObjectBinaryRecorder(byte id) {
+    protected DynamicObjectRecorder(byte id) {
         super(id);
     }
 
@@ -26,7 +26,7 @@ public class DynamicObjectBinaryRecorder extends ObjectBinaryRecorder {
 
     @Override
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        ObjectBinaryRecorder printer = objectType.getSuggestedPrinter();
+        ObjectRecorder printer = objectType.getSuggestedPrinter();
         if (printer.getId() == getId()) {
             printer = ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance();
         }

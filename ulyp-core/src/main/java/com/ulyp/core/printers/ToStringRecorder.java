@@ -11,7 +11,7 @@ import com.ulyp.core.util.ClassMatcher;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ToStringRecorder extends ObjectBinaryRecorder {
+public class ToStringRecorder extends ObjectRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;

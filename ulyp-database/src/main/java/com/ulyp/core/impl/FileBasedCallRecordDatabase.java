@@ -3,7 +3,7 @@ package com.ulyp.core.impl;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import com.ulyp.core.*;
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.ObjectRepresentation;
 import com.ulyp.core.Type;
@@ -213,7 +213,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
 
         UnsafeBuffer returnValueBuffer = new UnsafeBuffer();
         exitRecordDecoder.wrapReturnValue(returnValueBuffer);
-        ObjectBinaryRecorder printer = ObjectBinaryPrinterType.printerForId(exitRecordDecoder.returnPrinterId());
+        ObjectRecorder printer = ObjectBinaryPrinterType.printerForId(exitRecordDecoder.returnPrinterId());
         ObjectRepresentation returnValue = printer.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
         boolean thrown = exitRecordDecoder.thrown() == BooleanType.T;
 

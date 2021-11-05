@@ -5,7 +5,7 @@ public enum ObjectBinaryPrinterType {
     STRING_PRINTER(new StringRecorder((byte) 2), 0),
     THROWABLE_PRINTER(new ThrowableRecorder((byte) 5), 20),
     ENUM_PRINTER(new EnumRecorder((byte) 6), 5),
-    DYNAMIC_OBJECT_PRINTER(new DynamicObjectBinaryRecorder((byte) 7), 100),
+    DYNAMIC_OBJECT_PRINTER(new DynamicObjectRecorder((byte) 7), 100),
     INTEGRAL_PRINTER(new IntegralRecorder((byte) 12), 0),
     BOOLEAN_PRINTER(new BooleanRecorder((byte) 100), 1),
     ANY_NUMBER_PRINTER(new NumbersRecorder((byte) 8), 1),
@@ -20,7 +20,7 @@ public enum ObjectBinaryPrinterType {
 
     NULL_PRINTER(new NullObjectRecorder((byte) 9), Integer.MAX_VALUE);
 
-    public static final ObjectBinaryRecorder[] printers = new ObjectBinaryRecorder[256];
+    public static final ObjectRecorder[] printers = new ObjectRecorder[256];
 
     static {
         for (ObjectBinaryPrinterType printerType : values()) {
@@ -31,19 +31,19 @@ public enum ObjectBinaryPrinterType {
         }
     }
 
-    public static ObjectBinaryRecorder printerForId(byte id) {
+    public static ObjectRecorder printerForId(byte id) {
         return printers[id];
     }
 
-    private final ObjectBinaryRecorder instance;
+    private final ObjectRecorder instance;
     private final int order;
 
-    ObjectBinaryPrinterType(ObjectBinaryRecorder instance, int order) {
+    ObjectBinaryPrinterType(ObjectRecorder instance, int order) {
         this.instance = instance;
         this.order = order;
     }
 
-    public ObjectBinaryRecorder getInstance() {
+    public ObjectRecorder getInstance() {
         return instance;
     }
 

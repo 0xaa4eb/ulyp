@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
-public class CollectionRecorder extends ObjectBinaryRecorder {
+public class CollectionRecorder extends ObjectRecorder {
 
     public static final int MAX_ITEMS_TO_RECORD = 3;
     private static final int RECORDED_ITEMS_FLAG = 1;

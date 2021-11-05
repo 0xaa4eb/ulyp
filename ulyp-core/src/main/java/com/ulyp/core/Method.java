@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.transport.*;
 import lombok.Builder;
 import lombok.ToString;
@@ -17,8 +17,8 @@ public class Method {
     private final boolean isStatic;
     private final boolean isConstructor;
     private final boolean returnsSomething;
-    private final ObjectBinaryRecorder[] paramPrinters;
-    private final ObjectBinaryRecorder returnValuePrinter;
+    private final ObjectRecorder[] paramPrinters;
+    private final ObjectRecorder returnValuePrinter;
 
     // If was dumped to the output file
     @Builder.Default
@@ -44,14 +44,14 @@ public class Method {
         return isConstructor;
     }
 
-    public ObjectBinaryRecorder[] getParamPrinters() {
+    public ObjectRecorder[] getParamPrinters() {
         if (paramPrinters == null) {
 
         }
         return paramPrinters;
     }
 
-    public ObjectBinaryRecorder getReturnValuePrinter() {
+    public ObjectRecorder getReturnValuePrinter() {
         return returnValuePrinter;
     }
 

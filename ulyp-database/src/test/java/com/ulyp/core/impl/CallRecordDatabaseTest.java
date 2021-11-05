@@ -44,7 +44,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -69,7 +69,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -77,7 +77,7 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -107,7 +107,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -115,7 +115,7 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -123,7 +123,7 @@ public abstract class CallRecordDatabaseTest {
                 2,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -158,7 +158,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -166,7 +166,7 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -174,7 +174,7 @@ public abstract class CallRecordDatabaseTest {
                 2,
                 100,
                 typeResolver,
-                new ObjectBinaryRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                new ObjectRecorder[] {ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                 this,
                 new Object[]{}
         );

@@ -2,7 +2,7 @@ package com.test.cases.util;
 
 import com.ulyp.core.*;
 import com.ulyp.core.impl.FileBasedCallRecordDatabase;
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.database.DatabaseException;
@@ -53,7 +53,7 @@ public class RecordingResult {
                                     0,
                                     threadRunMethod.getId(),
                                     typeResolver,
-                                    new ObjectBinaryRecorder[] { ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                                    new ObjectRecorder[] { ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
                                     Thread.currentThread(),
                                     new Object[]{}
                             );

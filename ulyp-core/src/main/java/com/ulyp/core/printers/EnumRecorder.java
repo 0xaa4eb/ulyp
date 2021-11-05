@@ -6,7 +6,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class EnumRecorder extends ObjectBinaryRecorder {
+public class EnumRecorder extends ObjectRecorder {
 
     protected EnumRecorder(byte id) {
         super(id);

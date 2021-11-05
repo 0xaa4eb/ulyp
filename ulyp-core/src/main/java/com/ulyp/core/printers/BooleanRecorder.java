@@ -7,7 +7,7 @@ import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class BooleanRecorder extends ObjectBinaryRecorder {
+public class BooleanRecorder extends ObjectRecorder {
 
     protected BooleanRecorder(byte id) {
         super(id);

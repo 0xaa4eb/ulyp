@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,7 +90,7 @@ public class CallRecordLog {
         }
     }
 
-    public void onMethodExit(long methodId, ObjectBinaryRecorder resultPrinter, Object returnValue, Throwable thrown, long callId) {
+    public void onMethodExit(long methodId, ObjectRecorder resultPrinter, Object returnValue, Throwable thrown, long callId) {
         if (!inProcessOfRecording) {
             return;
         }

@@ -8,7 +8,7 @@ import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 
-public class ThrowableRecorder extends ObjectBinaryRecorder {
+public class ThrowableRecorder extends ObjectRecorder {
 
     protected ThrowableRecorder(byte id) {
         super(id);

@@ -6,7 +6,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class NullObjectRecorder extends ObjectBinaryRecorder {
+public class NullObjectRecorder extends ObjectRecorder {
 
     protected NullObjectRecorder(byte id) {
         super(id);

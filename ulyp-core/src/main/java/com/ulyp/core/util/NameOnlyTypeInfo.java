@@ -2,7 +2,7 @@ package com.ulyp.core.util;
 
 import com.ulyp.core.TypeInfo;
 import com.ulyp.core.TypeTrait;
-import com.ulyp.core.printers.ObjectBinaryRecorder;
+import com.ulyp.core.printers.ObjectRecorder;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -54,7 +54,7 @@ public class NameOnlyTypeInfo implements TypeInfo {
     }
 
     @Override
-    public ObjectBinaryRecorder getSuggestedPrinter() {
+    public ObjectRecorder getSuggestedPrinter() {
         return null;
     }
 
