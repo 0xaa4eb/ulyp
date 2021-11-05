@@ -3,27 +3,29 @@ package com.ulyp.core.printers;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class StringPrinter extends ObjectBinaryPrinter {
+public class BooleanRecorder extends ObjectBinaryRecorder {
 
-    protected StringPrinter(byte id) {
+    protected BooleanRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return type.isExactlyJavaLangString();
+        return type.getTraits().contains(TypeTrait.BOOLEAN);
     }
 
     @Override
     public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new StringObjectRepresentation(objectType, input.readString());
+        return new BooleanRepresentation(objectType, input.readBoolean());
     }
 
     @Override
-    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString((String) object);
+    public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+        Boolean value = (Boolean) object;
+        out.writeBool(value);
     }
 }

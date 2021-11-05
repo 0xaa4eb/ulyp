@@ -6,27 +6,24 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class ClassObjectPrinter extends ObjectBinaryPrinter {
+public class StringRecorder extends ObjectBinaryRecorder {
 
-    protected ClassObjectPrinter(byte id) {
+    protected StringRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return type.isClassObject();
+        return type.isExactlyJavaLangString();
     }
 
     @Override
     public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-
-        return new ClassObjectRepresentation(objectType, typeResolver.getType(input.readInt()));
+        return new StringObjectRepresentation(objectType, input.readString());
     }
 
     @Override
-    public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        Class<?> clazz = (Class<?>) object;
-
-        out.writeLong(typeResolver.get(clazz).getId());
+    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+        out.writeString((String) object);
     }
 }

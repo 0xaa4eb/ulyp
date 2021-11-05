@@ -1,7 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
@@ -30,7 +30,7 @@ public class MethodCallListTest {
                 .id(5L)
                 .name("convert")
                 .declaringType(type)
-                .paramPrinters(new ObjectBinaryPrinter[]{ObjectBinaryPrinterType.ANY_NUMBER_PRINTER.getInstance()})
+                .paramPrinters(new ObjectBinaryRecorder[]{ObjectBinaryPrinterType.ANY_NUMBER_PRINTER.getInstance()})
                 .returnValuePrinter(ObjectBinaryPrinterType.STRING_PRINTER.getInstance())
                 .build();
 

@@ -3,31 +3,30 @@ package com.ulyp.core.printers;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-import java.util.Date;
+// Handles everything including byte/short/int/long
+public class IntegralRecorder extends ObjectBinaryRecorder {
 
-public class DatePrinter extends ObjectBinaryPrinter {
-
-    private static final String JAVA_UTIL_DATE_CLASS_NAME = Date.class.getName();
-
-    protected DatePrinter(byte id) {
+    protected IntegralRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return type.getName().equals(JAVA_UTIL_DATE_CLASS_NAME);
+        return type.getTraits().contains(TypeTrait.INTEGRAL);
     }
 
     @Override
     public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new DateRepresentation(objectType, input.readString());
+        return new NumberObjectRepresentation(objectType, String.valueOf(input.readLong()));
     }
 
     @Override
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(object.toString());
+        Number number = (Number) object;
+        out.writeLong(number.longValue());
     }
 }

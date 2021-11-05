@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.Printers;
 import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
@@ -30,13 +30,13 @@ public class Type {
     @Builder.Default
     private final Set<String> superTypeSimpleNames = new HashSet<>();
 
-    private volatile ObjectBinaryPrinter suggestedPrinter;
+    private volatile ObjectBinaryRecorder suggestedPrinter;
     // If was dumped to the output file
     @Builder.Default
     private volatile boolean writtenToFile = false;
 
-    public ObjectBinaryPrinter getSuggestedPrinter() {
-        ObjectBinaryPrinter printer = suggestedPrinter;
+    public ObjectBinaryRecorder getSuggestedPrinter() {
+        ObjectBinaryRecorder printer = suggestedPrinter;
         if (printer != null) {
             return printer;
         } else {

@@ -3,57 +3,54 @@ package com.ulyp.core.printers;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 import com.ulyp.core.printers.bytes.Checkpoint;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-@Slf4j
-public class CollectionPrinter extends ObjectBinaryPrinter {
+public class MapRecorder extends ObjectBinaryRecorder {
+
+    private CollectionsRecordingMode mode;
+    private volatile boolean active = true;
 
     public static final int MAX_ITEMS_TO_RECORD = 3;
-    private static final int RECORDED_ITEMS_FLAG = 1;
-    private static final int RECORDED_IDENTITY_FLAG = 0;
 
-    private volatile boolean active = true;
-    private CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
+    private static final int RECORDED_ITEMS = 1;
+    private static final int RECORDED_IDENTITY_ONLY = 0;
 
-    protected CollectionPrinter(byte id) {
+    protected MapRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return mode.supports(type) && type.isCollection();
+        return type.getTraits().contains(TypeTrait.MAP) && mode.supports(type);
     }
 
-    public void setMode(CollectionsRecordingMode mode) {
-        this.mode = mode;
-        log.info("Set collection recording mode to {}", mode);
+    public void setMode(CollectionsRecordingMode collectionsRecordingMode) {
+        this.mode = collectionsRecordingMode;
     }
 
     @Override
     public ObjectRepresentation read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
-        if (recordedItems == RECORDED_ITEMS_FLAG) {
+        if (recordedItems == RECORDED_ITEMS) {
             int collectionSize = input.readInt();
-            List<ObjectRepresentation> items = new ArrayList<>();
             int recordedItemsCount = input.readInt();
-
+            List<MapEntryRepresentation> entries = new ArrayList<>();
             for (int i = 0; i < recordedItemsCount; i++) {
-                items.add(input.readObject(typeResolver));
+                ObjectRepresentation key = input.readObject(typeResolver);
+                ObjectRepresentation value = input.readObject(typeResolver);
+                entries.add(new MapEntryRepresentation(Type.unknown(), key, value));
             }
-            return new CollectionRepresentation(
+            return new MapRepresentation(
                     classDescription,
                     collectionSize,
-                    items
+                    entries
             );
         } else {
             return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(classDescription, input, typeResolver);
@@ -61,41 +58,41 @@ public class CollectionPrinter extends ObjectBinaryPrinter {
     }
 
     @Override
-    public void write(Object object, Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
-            // TODO per type statistics
             if (active) {
-                appender.append(RECORDED_ITEMS_FLAG);
+                appender.append(RECORDED_ITEMS);
                 Checkpoint checkpoint = appender.checkpoint();
                 try {
-                    Collection<?> collection = (Collection<?>) object;
+                    Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
                     appender.append(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
                     appender.append(itemsToRecord);
-                    Iterator<?> iterator = collection.iterator();
+                    Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
-                        appender.append(iterator.next(), typeResolver);
+                        Map.Entry<?, ?> entry = iterator.next();
+                        appender.append(entry.getKey(), typeResolver);
+                        appender.append(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
-                    log.info("Collection items will not be recorded as error occurred while recording", throwable);
                     checkpoint.rollback();
                     active = false;
-                    writeIdentity(object, out, typeResolver);
+                    writeMapIdentity(object, out, typeResolver);
                 }
             } else {
-                writeIdentity(object, out, typeResolver);
+                writeMapIdentity(object, out, typeResolver);
             }
         }
     }
 
-    private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
+    private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
-            appender.append(RECORDED_IDENTITY_FLAG);
+            appender.append(RECORDED_IDENTITY_ONLY);
             ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().write(object, appender, runtime);
         }
     }

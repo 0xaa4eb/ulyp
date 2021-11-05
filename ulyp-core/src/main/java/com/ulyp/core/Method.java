@@ -1,13 +1,11 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.transport.*;
 import lombok.Builder;
 import lombok.ToString;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
-
-import java.util.Arrays;
 
 @Builder
 @ToString
@@ -19,8 +17,8 @@ public class Method {
     private final boolean isStatic;
     private final boolean isConstructor;
     private final boolean returnsSomething;
-    private final ObjectBinaryPrinter[] paramPrinters;
-    private final ObjectBinaryPrinter returnValuePrinter;
+    private final ObjectBinaryRecorder[] paramPrinters;
+    private final ObjectBinaryRecorder returnValuePrinter;
 
     // If was dumped to the output file
     @Builder.Default
@@ -46,14 +44,14 @@ public class Method {
         return isConstructor;
     }
 
-    public ObjectBinaryPrinter[] getParamPrinters() {
+    public ObjectBinaryRecorder[] getParamPrinters() {
         if (paramPrinters == null) {
 
         }
         return paramPrinters;
     }
 
-    public ObjectBinaryPrinter getReturnValuePrinter() {
+    public ObjectBinaryRecorder getReturnValuePrinter() {
         return returnValuePrinter;
     }
 

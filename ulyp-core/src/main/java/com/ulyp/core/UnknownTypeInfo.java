@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -52,7 +52,7 @@ public class UnknownTypeInfo implements TypeInfo {
     }
 
     @Override
-    public ObjectBinaryPrinter getSuggestedPrinter() {
+    public ObjectBinaryRecorder getSuggestedPrinter() {
         return null;
     }
 

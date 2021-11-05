@@ -13,12 +13,12 @@ import com.ulyp.core.printers.bytes.BinaryOutput;
  * Depending on the particular implementation used for serialization
  * some amount of information may (and for some data types certainly will) be lost.
  */
-public abstract class ObjectBinaryPrinter {
+public abstract class ObjectBinaryRecorder {
 
     private final byte id;
     protected final String simpleClassName;
 
-    protected ObjectBinaryPrinter(byte id) {
+    protected ObjectBinaryRecorder(byte id) {
         this.id = id;
         this.simpleClassName = getClass().getSimpleName();
     }

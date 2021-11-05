@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.google.protobuf.ByteString;
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.bytes.BinaryOutputForExitRecordImpl;
 import com.ulyp.transport.BooleanType;
@@ -27,7 +27,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             long methodId,
             TypeResolver typeResolver,
             boolean thrown,
-            ObjectBinaryPrinter returnValuePrinter,
+            ObjectBinaryRecorder returnValuePrinter,
             Object returnValue)
     {
         super.add(encoder -> {
@@ -37,7 +37,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             Type classDescription = typeResolver.get(returnValue);
             encoder.returnTypeId(classDescription.getId());
 
-            ObjectBinaryPrinter printer = returnValue != null ?
+            ObjectBinaryRecorder printer = returnValue != null ?
                     returnValuePrinter :
                     ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 

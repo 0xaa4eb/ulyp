@@ -8,9 +8,9 @@ import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 
-public class ThrowablePrinter extends ObjectBinaryPrinter {
+public class ThrowableRecorder extends ObjectBinaryRecorder {
 
-    protected ThrowablePrinter(byte id) {
+    protected ThrowableRecorder(byte id) {
         super(id);
     }
 

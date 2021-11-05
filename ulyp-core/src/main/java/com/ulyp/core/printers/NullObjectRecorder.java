@@ -6,25 +6,26 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-public class IdentityPrinter extends ObjectBinaryPrinter {
+public class NullObjectRecorder extends ObjectBinaryRecorder {
 
-    protected IdentityPrinter(byte id) {
+    protected NullObjectRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return true;
+        return false;
     }
 
     @Override
     public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        int identityHashCode = input.readInt();
-        return new IdentityObjectRepresentation(objectType, identityHashCode);
+        // still need to read as this printer may be used inside another printer
+        input.readBoolean();
+        return NullObjectRepresentation.getInstance();
     }
 
     @Override
-    public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeInt(System.identityHashCode(object));
+    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+        out.writeBool(false);
     }
 }

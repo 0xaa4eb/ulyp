@@ -3,30 +3,30 @@ package com.ulyp.core.printers;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
 import com.ulyp.core.printers.bytes.BinaryInput;
 import com.ulyp.core.printers.bytes.BinaryOutput;
 
-// Handles everything including byte/short/int/long
-public class IntegralPrinter extends ObjectBinaryPrinter {
+public class ClassObjectRecorder extends ObjectBinaryRecorder {
 
-    protected IntegralPrinter(byte id) {
+    protected ClassObjectRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        return type.getTraits().contains(TypeTrait.INTEGRAL);
+        return type.isClassObject();
     }
 
     @Override
     public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new NumberObjectRepresentation(objectType, String.valueOf(input.readLong()));
+
+        return new ClassObjectRepresentation(objectType, typeResolver.getType(input.readInt()));
     }
 
     @Override
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        Number number = (Number) object;
-        out.writeLong(number.longValue());
+        Class<?> clazz = (Class<?>) object;
+
+        out.writeLong(typeResolver.get(clazz).getId());
     }
 }

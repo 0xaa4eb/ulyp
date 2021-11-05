@@ -3,7 +3,7 @@ package com.ulyp.agent.util;
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.Printers;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +30,8 @@ public class ByteBuddyMethodResolver {
         Type returnType = typeResolver.resolve(description.getReturnType());
         Type declaringType = typeResolver.resolve(description.getDeclaringType().asGenericType());
 
-        ObjectBinaryPrinter[] paramPrinters = Printers.getInstance().determinePrintersForParameterTypes(parameters);
-        ObjectBinaryPrinter returnValuePrinter = description.isConstructor() ?
+        ObjectBinaryRecorder[] paramPrinters = Printers.getInstance().determinePrintersForParameterTypes(parameters);
+        ObjectBinaryRecorder returnValuePrinter = description.isConstructor() ?
                 ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() :
                 Printers.getInstance().determinePrinterForReturnType(returnType);
 

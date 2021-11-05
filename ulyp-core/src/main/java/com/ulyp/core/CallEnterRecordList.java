@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.google.protobuf.ByteString;
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.bytes.BinaryOutputForEnterRecordImpl;
 import com.ulyp.transport.TCallEnterRecordDecoder;
@@ -25,7 +25,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             long callId,
             long methodId,
             TypeResolver typeResolver,
-            ObjectBinaryPrinter[] printers,
+            ObjectBinaryRecorder[] printers,
             Object callee,
             Object[] args)
     {
@@ -36,7 +36,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             TCallEnterRecordEncoder.ArgumentsEncoder argumentsEncoder = encoder.argumentsCount(args.length);
 
             for (int i = 0; i < args.length; i++) {
-                ObjectBinaryPrinter printer = args[i] != null ? printers[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                ObjectBinaryRecorder printer = args[i] != null ? printers[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
                 Type argType = typeResolver.get(args[i]);
 
@@ -51,7 +51,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
                 }
             }
 
-            ObjectBinaryPrinter printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+            ObjectBinaryRecorder printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
             encoder.calleeTypeId(typeResolver.get(callee).getId());
             encoder.calleePrinterId(printer.getId());

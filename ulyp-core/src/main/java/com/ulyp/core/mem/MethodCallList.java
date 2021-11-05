@@ -1,7 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.printers.ObjectBinaryPrinter;
+import com.ulyp.core.printers.ObjectBinaryRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
 import com.ulyp.core.printers.bytes.BinaryOutputForEnterRecordImpl2;
 import com.ulyp.core.printers.bytes.BinaryOutputForExitRecordImpl2;
@@ -54,7 +54,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                     Type classDescription = typeResolver.get(returnValue);
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
 
-                    ObjectBinaryPrinter printer = returnValue != null ?
+                    ObjectBinaryRecorder printer = returnValue != null ?
                             method.getReturnValuePrinter() :
                             ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
@@ -92,12 +92,12 @@ public class MethodCallList implements Iterable<MethodCall> {
 
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
-                    ObjectBinaryPrinter[] paramPrinters = method.getParamPrinters();
+                    ObjectBinaryRecorder[] paramPrinters = method.getParamPrinters();
 
                     BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectBinaryPrinter printer = args[i] != null ? paramPrinters[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                        ObjectBinaryRecorder printer = args[i] != null ? paramPrinters[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
                         Type argType = typeResolver.get(args[i]);
 
@@ -112,7 +112,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                         }
                     }
 
-                    ObjectBinaryPrinter printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                    ObjectBinaryRecorder printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
                     enterMethodCallEncoder.calleePrinterId(printer.getId());

@@ -10,9 +10,9 @@ import com.ulyp.core.printers.bytes.BinaryOutputAppender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectArrayDebugPrinter extends ObjectBinaryPrinter {
+public class ObjectArrayDebugRecorder extends ObjectBinaryRecorder {
 
-    protected ObjectArrayDebugPrinter(byte id) {
+    protected ObjectArrayDebugRecorder(byte id) {
         super(id);
     }
 

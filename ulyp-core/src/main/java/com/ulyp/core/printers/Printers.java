@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentMap;
 public class Printers {
 
     private static final Printers instance = new Printers();
-    private static final ObjectBinaryPrinter[] empty = new ObjectBinaryPrinter[0];
-    private static final ObjectBinaryPrinter[] printers;
+    private static final ObjectBinaryRecorder[] empty = new ObjectBinaryRecorder[0];
+    private static final ObjectBinaryRecorder[] printers;
 
     static {
-        printers = new ObjectBinaryPrinter[ObjectBinaryPrinterType.values().length];
+        printers = new ObjectBinaryRecorder[ObjectBinaryPrinterType.values().length];
 
         List<ObjectBinaryPrinterType> printerTypes = new ArrayList<>();
         printerTypes.addAll(Arrays.asList(ObjectBinaryPrinterType.values()));
@@ -31,12 +31,12 @@ public class Printers {
         return instance;
     }
 
-    public ObjectBinaryPrinter[] determinePrintersForParameterTypes(List<Type> paramsTypes) {
+    public ObjectBinaryRecorder[] determinePrintersForParameterTypes(List<Type> paramsTypes) {
         try {
             if (paramsTypes.isEmpty()) {
                 return empty;
             }
-            ObjectBinaryPrinter[] convs = new ObjectBinaryPrinter[paramsTypes.size()];
+            ObjectBinaryRecorder[] convs = new ObjectBinaryRecorder[paramsTypes.size()];
             for (int i = 0; i < convs.length; i++) {
                 convs[i] = determinePrinterForType(paramsTypes.get(i));
             }
@@ -46,7 +46,7 @@ public class Printers {
         }
     }
 
-    public ObjectBinaryPrinter determinePrinterForReturnType(Type returnType) {
+    public ObjectBinaryRecorder determinePrinterForReturnType(Type returnType) {
         try {
             return determinePrinterForType(returnType);
         } catch (Exception e) {
@@ -54,9 +54,9 @@ public class Printers {
         }
     }
 
-    private static final ConcurrentMap<Type, ObjectBinaryPrinter> cache = new ConcurrentHashMap<>(1024);
+    private static final ConcurrentMap<Type, ObjectBinaryRecorder> cache = new ConcurrentHashMap<>(1024);
 
-    public ObjectBinaryPrinter determinePrinterForType(Type type) {
+    public ObjectBinaryRecorder determinePrinterForType(Type type) {
 //        return cache.computeIfAbsent(
 //                type, t -> {
 //                    for (ObjectBinaryPrinter printer : printers) {
@@ -67,7 +67,7 @@ public class Printers {
 //                    throw new RuntimeException("Could not find a suitable printer for type " + type);
 //                }
 //        );
-        for (ObjectBinaryPrinter printer : printers) {
+        for (ObjectBinaryRecorder printer : printers) {
             if (printer.supports(type)) {
                 return printer;
             }

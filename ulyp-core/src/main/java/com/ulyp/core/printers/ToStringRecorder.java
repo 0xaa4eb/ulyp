@@ -11,14 +11,14 @@ import com.ulyp.core.util.ClassMatcher;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ToStringPrinter extends ObjectBinaryPrinter {
+public class ToStringRecorder extends ObjectBinaryRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
     private final Set<ClassMatcher> classesToPrintWithToString = new HashSet<>();
 
-    protected ToStringPrinter(byte id) {
+    protected ToStringRecorder(byte id) {
         super(id);
     }
 
