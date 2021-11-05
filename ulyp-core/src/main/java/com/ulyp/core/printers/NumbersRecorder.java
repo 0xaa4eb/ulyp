@@ -22,8 +22,8 @@ public class NumbersRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new NumberObjectRepresentation(objectType, input.readString());
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new NumberObjectRecord(objectType, input.readString());
     }
 
     @Override

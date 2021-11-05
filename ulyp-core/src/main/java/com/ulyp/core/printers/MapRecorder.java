@@ -35,19 +35,19 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {
             int collectionSize = input.readInt();
             int recordedItemsCount = input.readInt();
-            List<MapEntryRepresentation> entries = new ArrayList<>();
+            List<MapEntryRecord> entries = new ArrayList<>();
             for (int i = 0; i < recordedItemsCount; i++) {
-                ObjectRepresentation key = input.readObject(typeResolver);
-                ObjectRepresentation value = input.readObject(typeResolver);
-                entries.add(new MapEntryRepresentation(Type.unknown(), key, value));
+                ObjectRecord key = input.readObject(typeResolver);
+                ObjectRecord value = input.readObject(typeResolver);
+                entries.add(new MapEntryRecord(Type.unknown(), key, value));
             }
-            return new MapRepresentation(
+            return new MapRecord(
                     classDescription,
                     collectionSize,
                     entries

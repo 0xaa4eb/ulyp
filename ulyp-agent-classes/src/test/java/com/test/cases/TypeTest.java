@@ -2,8 +2,8 @@ package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.NumberObjectRepresentation;
-import com.ulyp.core.printers.ObjectRepresentation;
+import com.ulyp.core.printers.NumberObjectRecord;
+import com.ulyp.core.printers.ObjectRecord;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,16 +22,16 @@ public class TypeTest extends AbstractInstrumentationTest {
         );
 
 
-        NumberObjectRepresentation firstArg = (NumberObjectRepresentation) root.getArgs().get(0);
+        NumberObjectRecord firstArg = (NumberObjectRecord) root.getArgs().get(0);
         assertThat(firstArg.getNumberPrintedText(), is("2"));
         assertThat(firstArg.getType().getName(), is("java.util.concurrent.atomic.AtomicInteger"));
 
-        NumberObjectRepresentation secondArg = (NumberObjectRepresentation) root.getArgs().get(1);
+        NumberObjectRecord secondArg = (NumberObjectRecord) root.getArgs().get(1);
 
         assertThat(secondArg.getNumberPrintedText(), is("3"));
         assertThat(secondArg.getType().getName(), is("java.util.concurrent.atomic.AtomicLong"));
 
-        ObjectRepresentation returnValue = root.getReturnValue();
+        ObjectRecord returnValue = root.getReturnValue();
         assertThat(returnValue.getType().getName(), is("java.lang.String"));
     }
 

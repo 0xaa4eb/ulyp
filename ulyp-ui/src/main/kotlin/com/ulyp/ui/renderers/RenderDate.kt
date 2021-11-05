@@ -1,11 +1,11 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.DateRepresentation
+import com.ulyp.core.printers.DateRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderDate(repr: DateRepresentation, renderSettings: RenderSettings) : RenderedObject(repr.type) {
+class RenderDate(repr: DateRecord, renderSettings: RenderSettings) : RenderedObject(repr.type) {
 
     init {
         if (renderSettings.showTypes()) {

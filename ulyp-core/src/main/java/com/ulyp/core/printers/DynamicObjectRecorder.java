@@ -19,7 +19,7 @@ public class DynamicObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         byte printerId = input.readByte();
         return ObjectBinaryPrinterType.printerForId(printerId).read(objectType, input, typeResolver);
     }

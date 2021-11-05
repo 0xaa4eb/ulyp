@@ -18,8 +18,8 @@ public class EnumRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new EnumRepresentation(type, input.readString());
+    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new EnumRecord(type, input.readString());
     }
 
     @Override

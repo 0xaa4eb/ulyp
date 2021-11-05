@@ -22,8 +22,8 @@ public class DateRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new DateRepresentation(objectType, input.readString());
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new DateRecord(objectType, input.readString());
     }
 
     @Override

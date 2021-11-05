@@ -1,12 +1,12 @@
 package com.ulyp.ui.renderers
 
 import com.ulyp.core.Type
-import com.ulyp.core.printers.NumberObjectRepresentation
+import com.ulyp.core.printers.NumberObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText
 
-class RenderedNumber(numberObjectRepresentation: NumberObjectRepresentation, type: Type, renderSettings: RenderSettings) : RenderedObject(type) {
+class RenderedNumber(numberObjectRepresentation: NumberObjectRecord, type: Type, renderSettings: RenderSettings) : RenderedObject(type) {
 
     init {
         if (renderSettings.showTypes()) {

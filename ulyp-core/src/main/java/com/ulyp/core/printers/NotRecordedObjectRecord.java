@@ -8,15 +8,15 @@ import com.ulyp.core.Type;
  * Recordins are sent through almost fixed size chunks, meaning at some point of time
  * there could be no return value at all (i.e. not recorded yet)
  */
-public class NotRecordedObjectRepresentation extends ObjectRepresentation {
+public class NotRecordedObjectRecord extends ObjectRecord {
 
-    private static final ObjectRepresentation INSTANCE = new NotRecordedObjectRepresentation(Type.unknown());
+    private static final ObjectRecord INSTANCE = new NotRecordedObjectRecord(Type.unknown());
 
-    public static ObjectRepresentation getInstance() {
+    public static ObjectRecord getInstance() {
         return INSTANCE;
     }
 
-    private NotRecordedObjectRepresentation(Type type) {
+    private NotRecordedObjectRecord(Type type) {
         super(type);
     }
 }

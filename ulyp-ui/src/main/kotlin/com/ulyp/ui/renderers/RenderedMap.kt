@@ -1,19 +1,19 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.MapEntryRepresentation
-import com.ulyp.core.printers.MapRepresentation
+import com.ulyp.core.printers.MapEntryRecord
+import com.ulyp.core.printers.MapRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RenderedMap(representation: MapRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedMap(representation: MapRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
 
     init {
         val entries = representation.entries
             .stream()
-            .map { repr: MapEntryRepresentation -> of(repr, renderSettings) }
+            .map { repr: MapEntryRecord -> of(repr, renderSettings) }
             .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {

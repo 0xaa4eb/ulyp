@@ -3,7 +3,7 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.StringObjectRepresentation;
+import com.ulyp.core.printers.StringObjectRecord;
 import com.ulyp.core.util.MethodMatcher;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class GenericsTest extends AbstractInstrumentationTest {
                         .setMethodToRecord(MethodMatcher.parse("Box.get"))
         );
 
-        StringObjectRepresentation returnValue = (StringObjectRepresentation) root.getReturnValue();
+        StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();
 
         assertThat(returnValue.value(), is("abc"));
     }

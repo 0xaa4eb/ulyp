@@ -32,12 +32,12 @@ public class ToStringRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         int result = input.readInt();
         if (result == TO_STRING_CALL_SUCCESS) {
             int identityHashCode = input.readInt();
-            ObjectRepresentation printed = input.readObject(typeResolver);
-            return new ToStringPrintedRepresentation(printed, objectType, identityHashCode);
+            ObjectRecord printed = input.readObject(typeResolver);
+            return new ToStringPrintedRecord(printed, objectType, identityHashCode);
         } else {
             return ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance().read(objectType, input, typeResolver);
         }

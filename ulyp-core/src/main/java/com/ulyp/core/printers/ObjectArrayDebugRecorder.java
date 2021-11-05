@@ -23,14 +23,14 @@ public class ObjectArrayDebugRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readInt();
-        List<ObjectRepresentation> items = new ArrayList<>();
+        List<ObjectRecord> items = new ArrayList<>();
         int recordedItemsCount = input.readInt();
         for (int i = 0; i < recordedItemsCount; i++) {
             items.add(input.readObject(typeResolver));
         }
-        return new ObjectArrayRepresentation(
+        return new ObjectArrayRecord(
                 type,
                 arrayLength,
                 items

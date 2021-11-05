@@ -18,8 +18,8 @@ public class StringRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new StringObjectRepresentation(objectType, input.readString());
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new StringObjectRecord(objectType, input.readString());
     }
 
     @Override

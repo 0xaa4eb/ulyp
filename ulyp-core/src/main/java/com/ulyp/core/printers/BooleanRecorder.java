@@ -19,8 +19,8 @@ public class BooleanRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new BooleanRepresentation(objectType, input.readBoolean());
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new BooleanRecord(objectType, input.readBoolean());
     }
 
     @Override

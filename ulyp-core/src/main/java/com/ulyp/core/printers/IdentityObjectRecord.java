@@ -2,11 +2,11 @@ package com.ulyp.core.printers;
 
 import com.ulyp.core.Type;
 
-public class IdentityObjectRepresentation extends ObjectRepresentation {
+public class IdentityObjectRecord extends ObjectRecord {
 
     private final int hashCode;
 
-    public IdentityObjectRepresentation(Type type, int hashCode) {
+    public IdentityObjectRecord(Type type, int hashCode) {
         super(type);
         this.hashCode = hashCode;
     }

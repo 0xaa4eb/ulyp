@@ -5,7 +5,7 @@ import com.google.common.collect.PeekingIterator;
 import com.ulyp.core.*;
 import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
-import com.ulyp.core.printers.ObjectRepresentation;
+import com.ulyp.core.printers.ObjectRecord;
 import com.ulyp.core.Type;
 import com.ulyp.core.printers.bytes.BinaryInputImpl;
 import com.ulyp.database.DatabaseException;
@@ -165,7 +165,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
         int blockLength = unsafeBuffer.getInt(Integer.BYTES);
         enterRecordDecoder.wrap(unsafeBuffer, RECORD_HEADER_LENGTH, blockLength, 0);
 
-        List<ObjectRepresentation> args = new ArrayList<>();
+        List<ObjectRecord> args = new ArrayList<>();
 
         TCallEnterRecordDecoder.ArgumentsDecoder arguments = enterRecordDecoder.arguments();
         while (arguments.hasNext()) {
@@ -184,7 +184,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
 
         Type calleeType = typeInfoDatabase.find(enterRecordDecoder.calleeTypeId());
 
-        ObjectRepresentation callee = ObjectBinaryPrinterType.printerForId(enterRecordDecoder.calleePrinterId()).read(
+        ObjectRecord callee = ObjectBinaryPrinterType.printerForId(enterRecordDecoder.calleePrinterId()).read(
                 calleeType,
                 new BinaryInputImpl(buffer),
                 decodingContext
@@ -214,7 +214,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
         UnsafeBuffer returnValueBuffer = new UnsafeBuffer();
         exitRecordDecoder.wrapReturnValue(returnValueBuffer);
         ObjectRecorder printer = ObjectBinaryPrinterType.printerForId(exitRecordDecoder.returnPrinterId());
-        ObjectRepresentation returnValue = printer.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
+        ObjectRecord returnValue = printer.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
         boolean thrown = exitRecordDecoder.thrown() == BooleanType.T;
 
         callRecord.setReturnValue(returnValue);

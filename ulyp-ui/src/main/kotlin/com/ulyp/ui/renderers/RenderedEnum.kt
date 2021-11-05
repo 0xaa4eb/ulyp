@@ -1,12 +1,12 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.EnumRepresentation
+import com.ulyp.core.printers.EnumRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedEnum(representation: EnumRepresentation, renderSettings: RenderSettings) :
+class RenderedEnum(representation: EnumRecord, renderSettings: RenderSettings) :
     RenderedObject(representation.type) {
     init {
 

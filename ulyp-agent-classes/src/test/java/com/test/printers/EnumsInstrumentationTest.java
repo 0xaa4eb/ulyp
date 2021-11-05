@@ -4,7 +4,7 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.EnumRepresentation;
+import com.ulyp.core.printers.EnumRecord;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -26,8 +26,8 @@ public class EnumsInstrumentationTest extends AbstractInstrumentationTest {
 
         assertThat(root.getArgs(), Matchers.hasSize(3));
 
-        EnumRepresentation arg2 = (EnumRepresentation) root.getArgs().get(1);
-        EnumRepresentation arg3 = (EnumRepresentation) root.getArgs().get(2);
+        EnumRecord arg2 = (EnumRecord) root.getArgs().get(1);
+        EnumRecord arg3 = (EnumRecord) root.getArgs().get(2);
 
         assertThat(arg2.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
         assertThat(arg2.getName(), is("T1"));

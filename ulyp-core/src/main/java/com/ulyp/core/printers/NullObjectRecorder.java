@@ -18,10 +18,10 @@ public class NullObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         // still need to read as this printer may be used inside another printer
         input.readBoolean();
-        return NullObjectRepresentation.getInstance();
+        return NullObjectRecord.getInstance();
     }
 
     @Override

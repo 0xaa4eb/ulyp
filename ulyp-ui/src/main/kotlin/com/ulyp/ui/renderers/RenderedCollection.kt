@@ -1,19 +1,19 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.CollectionRepresentation
-import com.ulyp.core.printers.ObjectRepresentation
+import com.ulyp.core.printers.CollectionRecord
+import com.ulyp.core.printers.ObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RenderedCollection(representation: CollectionRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedCollection(representation: CollectionRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
 
     init {
         val renderedObjects = representation.recordedItems
             .stream()
-            .map { repr: ObjectRepresentation -> of(repr, renderSettings) }
+            .map { repr: ObjectRecord -> of(repr, renderSettings) }
             .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {

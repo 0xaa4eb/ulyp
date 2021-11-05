@@ -39,18 +39,18 @@ public class CollectionRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS_FLAG) {
             int collectionSize = input.readInt();
-            List<ObjectRepresentation> items = new ArrayList<>();
+            List<ObjectRecord> items = new ArrayList<>();
             int recordedItemsCount = input.readInt();
 
             for (int i = 0; i < recordedItemsCount; i++) {
                 items.add(input.readObject(typeResolver));
             }
-            return new CollectionRepresentation(
+            return new CollectionRecord(
                     classDescription,
                     collectionSize,
                     items

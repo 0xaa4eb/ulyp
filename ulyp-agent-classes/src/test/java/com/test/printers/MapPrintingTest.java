@@ -22,15 +22,15 @@ public class MapPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        MapRepresentation collection = (MapRepresentation) root.getReturnValue();
+        MapRecord collection = (MapRecord) root.getReturnValue();
 
         Assert.assertEquals(2, collection.getSize());
 
-        List<MapEntryRepresentation> entries = collection.getEntries();
-        MapEntryRepresentation firstEntry = entries.get(0);
-        StringObjectRepresentation key = (StringObjectRepresentation) firstEntry.getKey();
+        List<MapEntryRecord> entries = collection.getEntries();
+        MapEntryRecord firstEntry = entries.get(0);
+        StringObjectRecord key = (StringObjectRecord) firstEntry.getKey();
         Assert.assertEquals("a", key.value());
-        StringObjectRepresentation value = (StringObjectRepresentation) firstEntry.getValue();
+        StringObjectRecord value = (StringObjectRecord) firstEntry.getValue();
         Assert.assertEquals("b", value.value());
     }
 
@@ -44,7 +44,7 @@ public class MapPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class MapPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     static class TestCase {

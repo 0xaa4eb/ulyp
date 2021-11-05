@@ -1,13 +1,13 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.ToStringPrintedRepresentation
+import com.ulyp.core.printers.ToStringPrintedRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedToStringPrinted(representation: ToStringPrintedRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedToStringPrinted(representation: ToStringPrintedRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
 
     init {
         val className =

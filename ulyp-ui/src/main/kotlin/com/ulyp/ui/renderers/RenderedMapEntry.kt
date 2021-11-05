@@ -1,12 +1,12 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.MapEntryRepresentation
+import com.ulyp.core.printers.MapEntryRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedMapEntry(entry: MapEntryRepresentation, renderSettings: RenderSettings?) : RenderedObject(entry.type) {
+class RenderedMapEntry(entry: MapEntryRecord, renderSettings: RenderSettings?) : RenderedObject(entry.type) {
 
     init {
         val texts: MutableList<Node> = ArrayList()

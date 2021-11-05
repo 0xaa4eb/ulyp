@@ -20,8 +20,8 @@ public class ThrowableRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new ThrowableRepresentation(type, input.readObject(typeResolver));
+    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+        return new ThrowableRecord(type, input.readObject(typeResolver));
     }
 
     @Override

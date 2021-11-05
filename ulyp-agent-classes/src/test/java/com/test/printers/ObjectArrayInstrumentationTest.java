@@ -34,7 +34,7 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         );
 
 
-        ObjectArrayRepresentation objectRepresentation = (ObjectArrayRepresentation) root.getArgs().get(0);
+        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
 
 
         assertThat(objectRepresentation.getLength(), is(0));
@@ -64,22 +64,22 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         );
 
 
-        ObjectArrayRepresentation objectRepresentation = (ObjectArrayRepresentation) root.getArgs().get(0);
+        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
 
 
         assertThat(objectRepresentation.getLength(), is(3));
 
-        List<ObjectRepresentation> items = objectRepresentation.getRecordedItems();
+        List<ObjectRecord> items = objectRepresentation.getRecordedItems();
 
         assertThat(items, Matchers.hasSize(3));
 
-        StringObjectRepresentation str0 = (StringObjectRepresentation) items.get(0);
+        StringObjectRecord str0 = (StringObjectRecord) items.get(0);
         assertEquals(str0.value(), "sddsad");
 
-        StringObjectRepresentation str1 = (StringObjectRepresentation) items.get(1);
+        StringObjectRecord str1 = (StringObjectRecord) items.get(1);
         assertEquals(str1.value(), "zx");
 
-        StringObjectRepresentation str2 = (StringObjectRepresentation) items.get(2);
+        StringObjectRecord str2 = (StringObjectRecord) items.get(2);
         assertEquals(str2.value(), "sdsd");
     }
 
@@ -113,16 +113,16 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         );
 
 
-        ObjectArrayRepresentation objectRepresentation = (ObjectArrayRepresentation) root.getArgs().get(0);
+        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
 
         assertThat(objectRepresentation.getLength(), is(5));
 
-        List<ObjectRepresentation> items = objectRepresentation.getRecordedItems();
+        List<ObjectRecord> items = objectRepresentation.getRecordedItems();
 
-        IdentityObjectRepresentation arg0 = (IdentityObjectRepresentation) items.get(0);
+        IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
         assertThat(arg0.getType().getName(), Matchers.is(X.class.getName()));
 
-        NumberObjectRepresentation arg1 = (NumberObjectRepresentation) items.get(1);
+        NumberObjectRecord arg1 = (NumberObjectRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
     }
 }

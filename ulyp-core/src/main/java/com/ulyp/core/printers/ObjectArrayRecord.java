@@ -4,13 +4,13 @@ import com.ulyp.core.Type;
 
 import java.util.List;
 
-public class ObjectArrayRepresentation extends ObjectRepresentation {
+public class ObjectArrayRecord extends ObjectRecord {
 
     private final int length;
-    private final List<ObjectRepresentation> recordedItems;
+    private final List<ObjectRecord> recordedItems;
 
     // Not all elements are recorded, therefore objectsRepresentations.size() != length
-    protected ObjectArrayRepresentation(Type type, int length, List<ObjectRepresentation> recordedItems) {
+    protected ObjectArrayRecord(Type type, int length, List<ObjectRecord> recordedItems) {
         super(type);
 
         this.length = length;
@@ -21,7 +21,7 @@ public class ObjectArrayRepresentation extends ObjectRepresentation {
         return length;
     }
 
-    public List<ObjectRepresentation> getRecordedItems() {
+    public List<ObjectRecord> getRecordedItems() {
         return recordedItems;
     }
 }

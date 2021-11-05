@@ -3,11 +3,11 @@ package com.ulyp.core.printers;
 import com.ulyp.core.Type;
 
 // TODO rename
-public class StringObjectRepresentation extends ObjectRepresentation {
+public class StringObjectRecord extends ObjectRecord {
 
     private final String value;
 
-    public StringObjectRepresentation(Type classDescription, String value) {
+    public StringObjectRecord(Type classDescription, String value) {
         super(classDescription);
         this.value = value;
     }

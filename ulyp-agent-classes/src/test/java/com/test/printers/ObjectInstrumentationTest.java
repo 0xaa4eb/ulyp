@@ -4,10 +4,10 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.IdentityObjectRepresentation;
-import com.ulyp.core.printers.NullObjectRepresentation;
-import com.ulyp.core.printers.NumberObjectRepresentation;
-import com.ulyp.core.printers.StringObjectRepresentation;
+import com.ulyp.core.printers.IdentityObjectRecord;
+import com.ulyp.core.printers.NullObjectRecord;
+import com.ulyp.core.printers.NumberObjectRecord;
+import com.ulyp.core.printers.StringObjectRecord;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -24,8 +24,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
         );
 
         assertThat(root.getArgs(), hasSize(2));
-        assertThat(root.getArgs().get(0), instanceOf(IdentityObjectRepresentation.class));
-        assertThat(root.getArgs().get(1), instanceOf(IdentityObjectRepresentation.class));
+        assertThat(root.getArgs().get(0), instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getArgs().get(1), instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
@@ -37,8 +37,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
         );
 
         assertThat(root.getArgs(), hasSize(2));
-        assertThat(root.getArgs().get(0), instanceOf(StringObjectRepresentation.class));
-        assertThat(root.getArgs().get(1), instanceOf(NumberObjectRepresentation.class));
+        assertThat(root.getArgs().get(0), instanceOf(StringObjectRecord.class));
+        assertThat(root.getArgs().get(1), instanceOf(NumberObjectRecord.class));
     }
 
     @Test
@@ -50,8 +50,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
         );
 
         assertThat(root.getArgs(), hasSize(2));
-        assertThat(root.getArgs().get(0), instanceOf(NullObjectRepresentation.class));
-        assertThat(root.getArgs().get(1), instanceOf(NullObjectRepresentation.class));
+        assertThat(root.getArgs().get(0), instanceOf(NullObjectRecord.class));
+        assertThat(root.getArgs().get(1), instanceOf(NullObjectRecord.class));
     }
 
     public static class ObjectTestCases {

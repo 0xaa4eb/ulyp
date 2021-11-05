@@ -1,11 +1,11 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.BooleanRepresentation
+import com.ulyp.core.printers.BooleanRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedBoolean(representation: BooleanRepresentation, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedBoolean(representation: BooleanRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
 
     init {
         if (renderSettings.showTypes()) {

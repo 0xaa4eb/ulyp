@@ -2,11 +2,11 @@ package com.ulyp.core.printers;
 
 import com.ulyp.core.Type;
 
-public class ClassObjectRepresentation extends ObjectRepresentation {
+public class ClassObjectRecord extends ObjectRecord {
 
     private final Type carriedType;
 
-    protected ClassObjectRepresentation(Type type, Type carriedType) {
+    protected ClassObjectRecord(Type type, Type carriedType) {
         super(type);
 
         if (!type.getName().equals(Class.class.getName())) {

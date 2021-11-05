@@ -1,13 +1,12 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.IdentityObjectRepresentation
+import com.ulyp.core.printers.IdentityObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
-import java.util.*
 
-class RenderedIdentityObject(repr: IdentityObjectRepresentation, renderSettings: RenderSettings) : RenderedObject(repr.type) {
+class RenderedIdentityObject(repr: IdentityObjectRecord, renderSettings: RenderSettings) : RenderedObject(repr.type) {
 
     init {
         val className = if (renderSettings.showTypes()) repr.type.name else toSimpleName(repr.type.name)

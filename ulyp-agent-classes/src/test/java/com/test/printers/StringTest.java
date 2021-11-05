@@ -4,7 +4,7 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.StringObjectRepresentation;
+import com.ulyp.core.printers.StringObjectRecord;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.lessThan;
@@ -33,7 +33,7 @@ public class StringTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder().setMainClassName(TestCases.class).setMethodToRecord("returnLongString")
         );
 
-        StringObjectRepresentation returnValue = (StringObjectRepresentation) root.getReturnValue();
+        StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();
         assertThat(returnValue.value().length(), lessThan(1000));
     }
 }

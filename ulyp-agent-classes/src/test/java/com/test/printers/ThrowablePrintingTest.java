@@ -4,9 +4,9 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.NullObjectRepresentation;
-import com.ulyp.core.printers.StringObjectRepresentation;
-import com.ulyp.core.printers.ThrowableRepresentation;
+import com.ulyp.core.printers.NullObjectRecord;
+import com.ulyp.core.printers.StringObjectRecord;
+import com.ulyp.core.printers.ThrowableRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,8 +20,8 @@ public class ThrowablePrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("throwsRuntimeException")
         );
 
-        ThrowableRepresentation returnValue = (ThrowableRepresentation) root.getReturnValue();
-        StringObjectRepresentation representation = (StringObjectRepresentation) returnValue.getMessage();
+        ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();
+        StringObjectRecord representation = (StringObjectRecord) returnValue.getMessage();
         Assert.assertEquals("some exception message", representation.value());
     }
 
@@ -33,8 +33,8 @@ public class ThrowablePrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("throwsNullPointerException")
         );
 
-        ThrowableRepresentation returnValue = (ThrowableRepresentation) root.getReturnValue();
-        NullObjectRepresentation representation = (NullObjectRepresentation) returnValue.getMessage();
+        ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();
+        NullObjectRecord representation = (NullObjectRecord) returnValue.getMessage();
         Assert.assertNotNull(representation);
     }
 

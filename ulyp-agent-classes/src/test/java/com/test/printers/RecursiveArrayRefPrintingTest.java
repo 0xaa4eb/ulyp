@@ -3,8 +3,8 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.IdentityObjectRepresentation;
-import com.ulyp.core.printers.ObjectArrayRepresentation;
+import com.ulyp.core.printers.IdentityObjectRecord;
+import com.ulyp.core.printers.ObjectArrayRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,15 +21,15 @@ public class RecursiveArrayRefPrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("returnArray")
         );
 
-        ObjectArrayRepresentation repr = (ObjectArrayRepresentation) root.getReturnValue();
+        ObjectArrayRecord repr = (ObjectArrayRecord) root.getReturnValue();
 
         Assert.assertThat(repr.getLength(), is(1));
 
-        ObjectArrayRepresentation item = (ObjectArrayRepresentation) repr.getRecordedItems().get(0);
+        ObjectArrayRecord item = (ObjectArrayRecord) repr.getRecordedItems().get(0);
 
-        ObjectArrayRepresentation itemOfItem = (ObjectArrayRepresentation) item.getRecordedItems().get(0);
+        ObjectArrayRecord itemOfItem = (ObjectArrayRecord) item.getRecordedItems().get(0);
 
-        IdentityObjectRepresentation itemOfItemOfItem = (IdentityObjectRepresentation) itemOfItem.getRecordedItems().get(0);
+        IdentityObjectRecord itemOfItemOfItem = (IdentityObjectRecord) itemOfItem.getRecordedItems().get(0);
     }
 
     static class TestCase {

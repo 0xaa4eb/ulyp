@@ -1,12 +1,12 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.ClassObjectRepresentation
+import com.ulyp.core.printers.ClassObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.text.Text
 
-class RenderedClassObject(classObject: ClassObjectRepresentation, renderSettings: RenderSettings) : RenderedObject(classObject.type) {
+class RenderedClassObject(classObject: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject(classObject.type) {
 
     init {
         if (renderSettings.showTypes()) {

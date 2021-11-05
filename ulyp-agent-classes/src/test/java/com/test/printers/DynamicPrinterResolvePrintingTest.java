@@ -3,8 +3,8 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.BooleanRepresentation;
-import com.ulyp.core.printers.StringObjectRepresentation;
+import com.ulyp.core.printers.BooleanRecord;
+import com.ulyp.core.printers.StringObjectRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class DynamicPrinterResolvePrintingTest extends AbstractInstrumentationTe
                         .setMethodToRecord("passBoolean")
         );
 
-        BooleanRepresentation repr = (BooleanRepresentation) root.getArgs().get(0);
+        BooleanRecord repr = (BooleanRecord) root.getArgs().get(0);
 
         Assert.assertTrue(repr.value());
     }
@@ -33,7 +33,7 @@ public class DynamicPrinterResolvePrintingTest extends AbstractInstrumentationTe
                         .setMethodToRecord("passString")
         );
 
-        StringObjectRepresentation objectRepresentation = (StringObjectRepresentation) root.getArgs().get(0);
+        StringObjectRecord objectRepresentation = (StringObjectRecord) root.getArgs().get(0);
 
         Assert.assertEquals("ABC", objectRepresentation.value());
     }

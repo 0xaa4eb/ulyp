@@ -94,7 +94,7 @@ public abstract class CallRecordDatabaseTest {
 
         CallRecord secondCall = firstCall.getChildren().get(0);
 
-        StringObjectRepresentation returnValue = (StringObjectRepresentation) secondCall.getReturnValue();
+        StringObjectRecord returnValue = (StringObjectRecord) secondCall.getReturnValue();
         assertEquals("zzzxzxzx", returnValue.value());
     }
 
@@ -143,8 +143,8 @@ public abstract class CallRecordDatabaseTest {
         assertTrue(root.getParameterNames().isEmpty());
         assertThat(root.getMethodName(), Matchers.is("toString"));
 
-        ObjectRepresentation returnValue = root.getReturnValue();
-        assertThat(returnValue, Matchers.instanceOf(IdentityObjectRepresentation.class));
+        ObjectRecord returnValue = root.getReturnValue();
+        assertThat(returnValue, Matchers.instanceOf(IdentityObjectRecord.class));
 
         assertEquals(1, root.getChildren().size());
     }

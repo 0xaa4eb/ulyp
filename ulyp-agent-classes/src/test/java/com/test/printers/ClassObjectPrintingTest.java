@@ -3,7 +3,7 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.ClassObjectRepresentation;
+import com.ulyp.core.printers.ClassObjectRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +19,7 @@ public class ClassObjectPrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("returnClass")
         );
 
-        ClassObjectRepresentation arg = (ClassObjectRepresentation) root.getReturnValue();
+        ClassObjectRecord arg = (ClassObjectRecord) root.getReturnValue();
 
         assertEquals(X.class.getName(), arg.getCarriedType().getName());
     }
@@ -33,7 +33,7 @@ public class ClassObjectPrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("pass")
         );
 
-        ClassObjectRepresentation arg = (ClassObjectRepresentation) root.getArgs().get(0);
+        ClassObjectRecord arg = (ClassObjectRecord) root.getArgs().get(0);
 
         assertEquals(X.class.getName(), arg.getCarriedType().getName());
     }

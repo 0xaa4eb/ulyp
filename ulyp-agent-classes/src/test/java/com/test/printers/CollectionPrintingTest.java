@@ -26,14 +26,14 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        CollectionRepresentation collection = (CollectionRepresentation) root.getReturnValue();
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
 
-        List<ObjectRepresentation> items = collection.getRecordedItems();
+        List<ObjectRecord> items = collection.getRecordedItems();
 
-        StringObjectRepresentation firstItemRepr = (StringObjectRepresentation) items.get(0);
+        StringObjectRecord firstItemRepr = (StringObjectRecord) items.get(0);
         Assert.assertEquals("a", firstItemRepr.value());
 
-        StringObjectRepresentation secondItemRepr = (StringObjectRepresentation) items.get(1);
+        StringObjectRecord secondItemRepr = (StringObjectRecord) items.get(1);
         Assert.assertEquals("b", secondItemRepr.value());
     }
 
@@ -47,7 +47,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class CollectionPrintingTest extends AbstractInstrumentationTest {
                         .recordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRepresentation.class));
+        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     static class TestCase {

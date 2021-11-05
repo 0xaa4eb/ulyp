@@ -18,9 +18,9 @@ public class IdentityRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRepresentation read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         int identityHashCode = input.readInt();
-        return new IdentityObjectRepresentation(objectType, identityHashCode);
+        return new IdentityObjectRecord(objectType, identityHashCode);
     }
 
     @Override

@@ -4,13 +4,13 @@ import com.ulyp.core.Type;
 
 import java.util.List;
 
-public class MapRepresentation extends ObjectRepresentation {
+public class MapRecord extends ObjectRecord {
 
     private final int size;
-    private final List<MapEntryRepresentation> entries;
+    private final List<MapEntryRecord> entries;
 
     // Not all elements are recorded, therefore objectsRepresentations.size() != length
-    protected MapRepresentation(Type type, int size, List<MapEntryRepresentation> entries) {
+    protected MapRecord(Type type, int size, List<MapEntryRecord> entries) {
         super(type);
 
         this.size = size;
@@ -21,7 +21,7 @@ public class MapRepresentation extends ObjectRepresentation {
         return size;
     }
 
-    public List<MapEntryRepresentation> getEntries() {
+    public List<MapEntryRecord> getEntries() {
         return entries;
     }
 }

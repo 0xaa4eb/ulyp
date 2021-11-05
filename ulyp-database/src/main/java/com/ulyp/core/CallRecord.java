@@ -1,14 +1,13 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.NotRecordedObjectRepresentation;
-import com.ulyp.core.printers.ObjectRepresentation;
+import com.ulyp.core.printers.NotRecordedObjectRecord;
+import com.ulyp.core.printers.ObjectRecord;
 import com.ulyp.database.DatabaseException;
 import com.ulyp.transport.BooleanType;
 import com.ulyp.transport.TMethodInfoDecoder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Method call record which was deserialized from binary format into POJO. Stands for a particular
@@ -44,18 +43,18 @@ public class CallRecord {
     private final boolean isConstructor;
     private final List<String> parameterNames;
 
-    private final ObjectRepresentation callee;
-    private final List<ObjectRepresentation> args;
+    private final ObjectRecord callee;
+    private final List<ObjectRecord> args;
 
-    private ObjectRepresentation returnValue = NotRecordedObjectRepresentation.getInstance();
+    private ObjectRecord returnValue = NotRecordedObjectRecord.getInstance();
     private boolean thrown;
 
     private final CallRecordDatabase database;
 
     public CallRecord(
             long id,
-            ObjectRepresentation callee,
-            List<ObjectRepresentation> args,
+            ObjectRecord callee,
+            List<ObjectRecord> args,
             TMethodInfoDecoder methodDescription,
             CallRecordDatabase database)
     {
@@ -79,7 +78,7 @@ public class CallRecord {
         this.database = database;
     }
 
-    public ObjectRepresentation getCallee() {
+    public ObjectRecord getCallee() {
         return callee;
     }
 
@@ -111,7 +110,7 @@ public class CallRecord {
         return methodName;
     }
 
-    public List<ObjectRepresentation> getArgs() {
+    public List<ObjectRecord> getArgs() {
         return args;
     }
 
@@ -119,7 +118,7 @@ public class CallRecord {
         return parameterNames;
     }
 
-    public ObjectRepresentation getReturnValue() {
+    public ObjectRecord getReturnValue() {
         return returnValue;
     }
 
@@ -131,7 +130,7 @@ public class CallRecord {
         return database.getChildren(this.id);
     }
 
-    public void setReturnValue(ObjectRepresentation returnValue) {
+    public void setReturnValue(ObjectRecord returnValue) {
         this.returnValue = returnValue;
     }
 
@@ -148,6 +147,6 @@ public class CallRecord {
     }
 
     public boolean isComplete() {
-        return returnValue != NotRecordedObjectRepresentation.getInstance();
+        return returnValue != NotRecordedObjectRecord.getInstance();
     }
 }

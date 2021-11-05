@@ -1,7 +1,7 @@
 package com.ulyp.core.printers.bytes;
 
 import com.ulyp.core.ByIdTypeResolver;
-import com.ulyp.core.printers.ObjectRepresentation;
+import com.ulyp.core.printers.ObjectRecord;
 
 public interface BinaryInput {
 
@@ -17,7 +17,7 @@ public interface BinaryInput {
 
     long readLong();
 
-    ObjectRepresentation readObject(ByIdTypeResolver typeResolver);
+    ObjectRecord readObject(ByIdTypeResolver typeResolver);
 
     String readString();
 }
