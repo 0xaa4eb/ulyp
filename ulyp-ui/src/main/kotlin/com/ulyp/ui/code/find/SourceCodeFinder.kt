@@ -14,6 +14,34 @@ class SourceCodeFinder(classpath: List<String?>) {
     private val jars: MutableList<JarFile>
     private val decompilingExecutorService = Executors.newFixedThreadPool(2)
 
+    init {
+        jars = classpath.stream()
+                .filter { x: String? -> File(x).exists() }
+                .filter { x: String? -> File(x).name.endsWith(".jar") }
+                .filter { x: String? -> !File(x).isDirectory }
+                .map { x: String? ->
+                    try {
+                        return@map JarFile(Paths.get(x).toFile())
+                    } catch (e: Exception) {
+                        return@map null
+                    }
+                }
+                .filter(Predicate { obj: JarFile? -> Objects.nonNull(obj) })
+                .collect(Collectors.toList())
+        val sourcesJars: MutableList<JarFile> = ArrayList()
+        for (jarFile in jars) {
+            try {
+                val sourcesJar = jarFile.deriveSourcesJar()
+                if (sourcesJar != null) {
+                    sourcesJars.add(sourcesJar)
+                }
+            } catch (e: Exception) {
+                println("Could not open derive sources jar for $jarFile")
+            }
+        }
+        jars.addAll(0, sourcesJars)
+    }
+
     fun find(javaClassName: String?): CompletableFuture<SourceCode> {
         for (jar in jars) {
             val sourceCode = jar.findSourceByClassName(javaClassName!!)
@@ -35,33 +63,5 @@ class SourceCodeFinder(classpath: List<String?>) {
             result.complete(SourceCode("", ""))
         }
         return result
-    }
-
-    init {
-        jars = classpath.stream()
-            .filter { x: String? -> File(x).exists() }
-            .filter { x: String? -> File(x).name.endsWith(".jar") }
-            .filter { x: String? -> !File(x).isDirectory }
-            .map { x: String? ->
-                try {
-                    return@map JarFile(Paths.get(x).toFile())
-                } catch (e: Exception) {
-                    return@map null
-                }
-            }
-            .filter(Predicate { obj: JarFile? -> Objects.nonNull(obj) })
-            .collect(Collectors.toList())
-        val sourcesJars: MutableList<JarFile> = ArrayList()
-        for (jarFile in jars) {
-            try {
-                val sourcesJar = jarFile.deriveSourcesJar()
-                if (sourcesJar != null) {
-                    sourcesJars.add(sourcesJar)
-                }
-            } catch (e: Exception) {
-                println("Could not open derive sources jar for $jarFile")
-            }
-        }
-        jars.addAll(0, sourcesJars)
     }
 }

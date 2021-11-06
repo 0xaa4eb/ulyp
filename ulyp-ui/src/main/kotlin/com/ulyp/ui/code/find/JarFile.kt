@@ -5,16 +5,28 @@ import com.ulyp.ui.util.StreamDrainer
 import java.io.File
 import java.io.IOException
 
-open class JarFile(file: File) {
-    private var file: File? = null
-    private var jarFile: java.util.jar.JarFile? = null
+open class JarFile(private val file: File) {
+    private var jarFile: java.util.jar.JarFile
+
+    companion object {
+        private const val CLASS_FILE_EXTENSION = ".class"
+        private const val CLASS_SOURCE_FILE_EXTENSION = ".java"
+    }
+
+    init {
+        try {
+            jarFile = java.util.jar.JarFile(file.absolutePath)
+        } catch (e: IOException) {
+            throw RuntimeException("Could not find jar file: $file", e)
+        }
+    }
 
     /**
      * For maven/gradle jar files it's possible to locate jar file with source code
      * @return jar file with source if possible to locate or null otherwise
      */
     fun deriveSourcesJar(): JarFile? {
-        val libFolder = file!!.toPath().parent.parent
+        val libFolder = file.toPath().parent.parent
         for (p in libFolder.toFile().listFiles()) {
             if (p.isDirectory) {
                 for (jarFile in p.listFiles()) {
@@ -28,12 +40,12 @@ open class JarFile(file: File) {
     }
 
     fun findSourceByClassName(className: String): SourceCode? {
-        val zipEntry = jarFile!!.getEntry(className.replace('.', '/') + CLASS_SOURCE_FILE_EXTENSION)
+        val zipEntry = jarFile.getEntry(className.replace('.', '/') + CLASS_SOURCE_FILE_EXTENSION)
         if (zipEntry == null) {
             return null
         } else {
             try {
-                jarFile!!.getInputStream(zipEntry).use { inputStream ->
+                jarFile.getInputStream(zipEntry).use { inputStream ->
                     return SourceCode(
                         className,
                         String(StreamDrainer.DEFAULT.drain(inputStream))
@@ -46,12 +58,12 @@ open class JarFile(file: File) {
     }
 
     fun findByteCodeByClassName(className: String): ByteCode? {
-        val zipEntry = jarFile!!.getEntry(className.replace('.', '/') + CLASS_FILE_EXTENSION)
+        val zipEntry = jarFile.getEntry(className.replace('.', '/') + CLASS_FILE_EXTENSION)
         if (zipEntry == null) {
             return null
         } else {
             try {
-                jarFile!!.getInputStream(zipEntry)
+                jarFile.getInputStream(zipEntry)
                     .use { inputStream -> return ByteCode(className, StreamDrainer.DEFAULT.drain(inputStream)) }
             } catch (e: IOException) {
                 throw RuntimeException("Could not read jar file: " + e.message, e)
@@ -60,19 +72,5 @@ open class JarFile(file: File) {
     }
 
     val absolutePath: String
-        get() = file!!.absolutePath
-
-    companion object {
-        private const val CLASS_FILE_EXTENSION = ".class"
-        private const val CLASS_SOURCE_FILE_EXTENSION = ".java"
-    }
-
-    init {
-        try {
-            this.file = file
-            jarFile = java.util.jar.JarFile(file.absolutePath)
-        } catch (e: IOException) {
-            throw RuntimeException("Could not find jar file: $file", e)
-        }
-    }
+        get() = file.absolutePath
 }
