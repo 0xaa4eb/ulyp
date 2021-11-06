@@ -2,7 +2,7 @@ package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.Type;
 import org.agrona.DirectBuffer;
@@ -53,7 +53,7 @@ public class BinaryInputImpl implements BinaryInput {
     @Override
     public ObjectRecord readObject(ByIdTypeResolver typeResolver) {
         Type itemClassType = typeResolver.getType(readLong());
-        ObjectRecorder printer = ObjectBinaryPrinterType.printerForId(readByte());
+        ObjectRecorder printer = RecorderType.printerForId(readByte());
         return printer.read(itemClassType, this, typeResolver);
     }
 

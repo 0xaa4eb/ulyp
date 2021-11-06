@@ -2,7 +2,7 @@ package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class MethodCallListTest {
                 .id(5L)
                 .name("convert")
                 .declaringType(type)
-                .paramPrinters(new ObjectRecorder[]{ObjectBinaryPrinterType.ANY_NUMBER_PRINTER.getInstance()})
-                .returnValuePrinter(ObjectBinaryPrinterType.STRING_PRINTER.getInstance())
+                .paramPrinters(new ObjectRecorder[]{RecorderType.ANY_NUMBER_RECORDER.getInstance()})
+                .returnValuePrinter(RecorderType.STRING_RECORDER.getInstance())
                 .build();
 
         list.addEnterMethodCall(

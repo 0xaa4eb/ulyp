@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -101,7 +101,7 @@ public class CallRecordLog {
                 if (thrown == null) {
                     exitRecords.add(callId, methodId, typeResolver, false, resultPrinter, returnValue);
                 } else {
-                    exitRecords.add(callId, methodId, typeResolver, true, ObjectBinaryPrinterType.THROWABLE_PRINTER.getInstance(), thrown);
+                    exitRecords.add(callId, methodId, typeResolver, true, RecorderType.THROWABLE_RECORDER.getInstance(), thrown);
                 }
                 lastExitCallId = callId;
             }

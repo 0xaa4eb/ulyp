@@ -2,7 +2,7 @@ package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.Type;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -74,9 +74,9 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
         ObjectRecorder printer;
         if (object != null) {
             // Simply stop recursively write objects if it's too deep
-            printer = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedPrinter() : ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance();
+            printer = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedPrinter() : RecorderType.IDENTITY_RECORDER.getInstance();
         } else {
-            printer = ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+            printer = RecorderType.NULL_RECORDER.getInstance();
         }
         append(printer.getId());
         printer.write(object, itemType, this, typeResolver);

@@ -3,7 +3,7 @@ package com.test.cases.util;
 import com.ulyp.core.*;
 import com.ulyp.core.impl.FileBasedCallRecordDatabase;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.database.DatabaseException;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
@@ -53,7 +53,7 @@ public class RecordingResult {
                                     0,
                                     threadRunMethod.getId(),
                                     typeResolver,
-                                    new ObjectRecorder[] { ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance()},
+                                    new ObjectRecorder[] { RecorderType.IDENTITY_RECORDER.getInstance()},
                                     Thread.currentThread(),
                                     new Object[]{}
                             );

@@ -19,11 +19,11 @@ public class RecorderChooser {
     private static final ObjectRecorder[] allRecorders;
 
     static {
-        allRecorders = new ObjectRecorder[ObjectBinaryPrinterType.values().length];
+        allRecorders = new ObjectRecorder[RecorderType.values().length];
 
-        List<ObjectBinaryPrinterType> printerTypes = new ArrayList<>();
-        printerTypes.addAll(Arrays.asList(ObjectBinaryPrinterType.values()));
-        printerTypes.sort(Comparator.comparing(ObjectBinaryPrinterType::getOrder));
+        List<RecorderType> printerTypes = new ArrayList<>();
+        printerTypes.addAll(Arrays.asList(RecorderType.values()));
+        printerTypes.sort(Comparator.comparing(RecorderType::getOrder));
 
         for (int i = 0; i < printerTypes.size(); i++) {
             allRecorders[i] = printerTypes.get(i).getInstance();

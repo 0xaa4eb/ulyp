@@ -4,7 +4,7 @@ import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.recorders.CollectionRecorder;
 import com.ulyp.core.recorders.MapRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.recorders.ToStringRecorder;
 import com.ulyp.core.process.ProcessInfo;
 import com.ulyp.core.util.ClassMatcher;
@@ -58,13 +58,13 @@ public class Agent {
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
 
-        CollectionRecorder printer = (CollectionRecorder) ObjectBinaryPrinterType.COLLECTION_DEBUG_PRINTER.getInstance();
+        CollectionRecorder printer = (CollectionRecorder) RecorderType.COLLECTION_DEBUG_RECORDER.getInstance();
         printer.setMode(settings.getCollectionsRecordingMode());
 
-        MapRecorder mapPrinter = (MapRecorder) ObjectBinaryPrinterType.MAP_PRINTER.getInstance();
+        MapRecorder mapPrinter = (MapRecorder) RecorderType.MAP_RECORDER.getInstance();
         mapPrinter.setMode(settings.getCollectionsRecordingMode());
 
-        ToStringRecorder toStringPrinter = (ToStringRecorder) (ObjectBinaryPrinterType.TO_STRING_PRINTER.getInstance());
+        ToStringRecorder toStringPrinter = (ToStringRecorder) (RecorderType.TO_STRING_RECORDER.getInstance());
         toStringPrinter.addClassNamesSupportPrinting(settings.getClassesToPrintWithToString());
 
         ElementMatcher.Junction<TypeDescription> tracingMatcher = null;

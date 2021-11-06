@@ -2,7 +2,7 @@ package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl2;
 import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl2;
 import com.ulyp.transport.*;
@@ -56,7 +56,7 @@ public class MethodCallList implements Iterable<MethodCall> {
 
                     ObjectRecorder printer = returnValue != null ?
                             method.getReturnValuePrinter() :
-                            ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                            RecorderType.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValuePrinterId(printer.getId());
                     exitRecordBinaryOutput.wrap(exitMethodCallEncoder);
@@ -97,7 +97,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                     BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectRecorder printer = args[i] != null ? paramPrinters[i] : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                        ObjectRecorder printer = args[i] != null ? paramPrinters[i] : RecorderType.NULL_RECORDER.getInstance();
 
                         Type argType = typeResolver.get(args[i]);
 
@@ -112,7 +112,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                         }
                     }
 
-                    ObjectRecorder printer = callee != null ? ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() : ObjectBinaryPrinterType.NULL_PRINTER.getInstance();
+                    ObjectRecorder printer = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
                     enterMethodCallEncoder.calleePrinterId(printer.getId());
