@@ -1,9 +1,9 @@
 package com.ulyp.core;
 
 import com.google.protobuf.ByteString;
-import com.ulyp.core.printers.ObjectRecorder;
-import com.ulyp.core.printers.ObjectBinaryPrinterType;
-import com.ulyp.core.printers.bytes.BinaryOutputForEnterRecordImpl;
+import com.ulyp.core.recorders.ObjectRecorder;
+import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallEnterRecordEncoder;
 

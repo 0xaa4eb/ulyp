@@ -1,7 +1,7 @@
 package com.ulyp.core.impl;
 
 import com.ulyp.core.*;
-import com.ulyp.core.printers.*;
+import com.ulyp.core.recorders.*;
 import com.ulyp.database.DatabaseException;
 import org.hamcrest.Matchers;
 import org.junit.Before;

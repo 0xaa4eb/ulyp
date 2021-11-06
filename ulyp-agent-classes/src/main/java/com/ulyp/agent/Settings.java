@@ -4,7 +4,7 @@ import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.agent.transport.file.FileUiTransport;
 import com.ulyp.agent.transport.nop.DevNullStore;
 import com.ulyp.agent.util.StartRecordingPolicy;
-import com.ulyp.core.printers.CollectionsRecordingMode;
+import com.ulyp.core.recorders.CollectionsRecordingMode;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;

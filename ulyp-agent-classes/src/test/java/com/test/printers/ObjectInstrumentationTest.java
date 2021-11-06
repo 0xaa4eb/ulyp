@@ -4,10 +4,10 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.IdentityObjectRecord;
-import com.ulyp.core.printers.NullObjectRecord;
-import com.ulyp.core.printers.NumberRecord;
-import com.ulyp.core.printers.StringObjectRecord;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.NullObjectRecord;
+import com.ulyp.core.recorders.NumberRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;

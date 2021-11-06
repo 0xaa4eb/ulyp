@@ -4,9 +4,9 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.NullObjectRecord;
-import com.ulyp.core.printers.StringObjectRecord;
-import com.ulyp.core.printers.ThrowableRecord;
+import com.ulyp.core.recorders.NullObjectRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
+import com.ulyp.core.recorders.ThrowableRecord;
 import org.junit.Assert;
 import org.junit.Test;
 

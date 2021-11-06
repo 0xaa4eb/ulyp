@@ -1,6 +1,6 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.MapEntryRecord
+import com.ulyp.core.recorders.MapEntryRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of

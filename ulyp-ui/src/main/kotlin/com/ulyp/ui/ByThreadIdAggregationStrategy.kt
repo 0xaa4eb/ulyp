@@ -3,7 +3,7 @@ package com.ulyp.ui
 import com.ulyp.core.*
 import com.ulyp.core.impl.FileBasedCallRecordDatabase
 import com.ulyp.core.impl.RocksdbIndex
-import com.ulyp.core.printers.ObjectBinaryPrinterType
+import com.ulyp.core.recorders.ObjectBinaryPrinterType
 import com.ulyp.core.util.SingleTypeReflectionBasedResolver
 import com.ulyp.transport.TClassDescription
 import lombok.Value

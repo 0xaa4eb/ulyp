@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectRecorder;
-import com.ulyp.core.printers.RecorderChooser;
+import com.ulyp.core.recorders.ObjectRecorder;
+import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.AllArgsConstructor;

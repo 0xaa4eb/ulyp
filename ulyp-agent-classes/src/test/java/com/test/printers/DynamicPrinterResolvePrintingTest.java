@@ -3,8 +3,8 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.BooleanRecord;
-import com.ulyp.core.printers.StringObjectRecord;
+import com.ulyp.core.recorders.BooleanRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import org.junit.Assert;
 import org.junit.Test;
 

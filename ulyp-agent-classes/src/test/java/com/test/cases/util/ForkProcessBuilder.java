@@ -1,7 +1,7 @@
 package com.test.cases.util;
 
 import com.ulyp.agent.Settings;
-import com.ulyp.core.printers.CollectionsRecordingMode;
+import com.ulyp.core.recorders.CollectionsRecordingMode;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 

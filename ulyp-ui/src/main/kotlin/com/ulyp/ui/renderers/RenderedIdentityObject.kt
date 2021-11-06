@@ -1,6 +1,6 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.IdentityObjectRecord
+import com.ulyp.core.recorders.IdentityObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass

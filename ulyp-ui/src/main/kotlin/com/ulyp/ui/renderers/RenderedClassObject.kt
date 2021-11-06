@@ -1,6 +1,6 @@
 package com.ulyp.ui.renderers
 
-import com.ulyp.core.printers.ClassObjectRecord
+import com.ulyp.core.recorders.ClassObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of

@@ -3,7 +3,7 @@ package com.perf.agent.benchmarks;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.ulyp.core.CallEnterRecordList;
-import com.ulyp.core.printers.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.ObjectBinaryPrinterType;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.HdrHistogram.Histogram;

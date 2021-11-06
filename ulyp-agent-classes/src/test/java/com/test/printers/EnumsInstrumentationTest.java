@@ -4,7 +4,7 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.EnumRecord;
+import com.ulyp.core.recorders.EnumRecord;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 

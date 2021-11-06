@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectRecorder;
+import com.ulyp.core.recorders.ObjectRecorder;
 
 import java.util.Collections;
 import java.util.EnumSet;

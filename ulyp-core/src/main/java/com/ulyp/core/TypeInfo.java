@@ -1,6 +1,6 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.ObjectRecorder;
+import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.util.ClassUtils;
 
 import java.util.Set;

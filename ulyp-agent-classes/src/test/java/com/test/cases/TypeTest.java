@@ -2,8 +2,8 @@ package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.NumberRecord;
-import com.ulyp.core.printers.ObjectRecord;
+import com.ulyp.core.recorders.NumberRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;

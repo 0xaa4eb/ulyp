@@ -3,7 +3,7 @@ package com.test.printers;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.ClassObjectRecord;
+import com.ulyp.core.recorders.ClassObjectRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

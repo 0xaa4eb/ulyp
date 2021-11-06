@@ -1,8 +1,8 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.printers.ObjectRecorder;
-import com.ulyp.core.printers.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.ObjectRecorder;
+import com.ulyp.core.recorders.ObjectBinaryPrinterType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
 import org.junit.Test;

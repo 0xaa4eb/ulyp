@@ -2,10 +2,10 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.printers.CollectionRecorder;
-import com.ulyp.core.printers.MapRecorder;
-import com.ulyp.core.printers.ObjectBinaryPrinterType;
-import com.ulyp.core.printers.ToStringRecorder;
+import com.ulyp.core.recorders.CollectionRecorder;
+import com.ulyp.core.recorders.MapRecorder;
+import com.ulyp.core.recorders.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.ToStringRecorder;
 import com.ulyp.core.process.ProcessInfo;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.ClassUtils;

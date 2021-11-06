@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
-import com.ulyp.core.printers.NotRecordedObjectRecord;
-import com.ulyp.core.printers.ObjectRecord;
+import com.ulyp.core.recorders.NotRecordedObjectRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.database.DatabaseException;
 import com.ulyp.transport.BooleanType;
 import com.ulyp.transport.TMethodInfoDecoder;

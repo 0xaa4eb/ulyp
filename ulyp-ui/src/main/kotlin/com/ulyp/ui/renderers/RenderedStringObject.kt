@@ -1,7 +1,7 @@
 package com.ulyp.ui.renderers
 
 import com.ulyp.core.Type
-import com.ulyp.core.printers.StringObjectRecord
+import com.ulyp.core.recorders.StringObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText

@@ -1,7 +1,7 @@
 package com.ulyp.ui.renderers
 
 import com.ulyp.core.Type
-import com.ulyp.core.printers.*
+import com.ulyp.core.recorders.*
 import com.ulyp.ui.RenderSettings
 import javafx.scene.Node
 import javafx.scene.text.TextFlow

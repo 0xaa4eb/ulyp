@@ -2,8 +2,8 @@ package com.test.cases.util;
 
 import com.ulyp.core.*;
 import com.ulyp.core.impl.FileBasedCallRecordDatabase;
-import com.ulyp.core.printers.ObjectRecorder;
-import com.ulyp.core.printers.ObjectBinaryPrinterType;
+import com.ulyp.core.recorders.ObjectRecorder;
+import com.ulyp.core.recorders.ObjectBinaryPrinterType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.database.DatabaseException;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
