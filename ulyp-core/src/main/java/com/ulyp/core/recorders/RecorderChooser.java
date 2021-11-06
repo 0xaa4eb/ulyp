@@ -34,14 +34,14 @@ public class RecorderChooser {
         return instance;
     }
 
-    public ObjectRecorder[] chooseRecordersForParameterTypes(List<Type> paramsTypes) {
+    public ObjectRecorder[] chooseForTypes(List<Type> paramsTypes) {
         try {
             if (paramsTypes.isEmpty()) {
                 return empty;
             }
             ObjectRecorder[] convs = new ObjectRecorder[paramsTypes.size()];
             for (int i = 0; i < convs.length; i++) {
-                convs[i] = chooseRecorderForType(paramsTypes.get(i));
+                convs[i] = chooseForType(paramsTypes.get(i));
             }
             return convs;
         } catch (Exception e) {
@@ -49,32 +49,14 @@ public class RecorderChooser {
         }
     }
 
-    public ObjectRecorder chooseRecordersForReturnType(Type returnType) {
-        try {
-            return chooseRecorderForType(returnType);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not prepare converters for method params " + returnType, e);
-        }
-    }
-
-    private static final ConcurrentMap<Type, ObjectRecorder> cache = new ConcurrentHashMap<>(1024);
-
-    public ObjectRecorder chooseRecorderForType(Type type) {
-//        return cache.computeIfAbsent(
-//                type, t -> {
-//                    for (ObjectBinaryPrinter printer : printers) {
-//                        if (printer.supports(t)) {
-//                            return printer;
-//                        }
-//                    }
-//                    throw new RuntimeException("Could not find a suitable printer for type " + type);
-//                }
-//        );
+    public ObjectRecorder chooseForType(Type type) {
         for (ObjectRecorder recorder : allRecorders) {
             if (recorder.supports(type)) {
                 return recorder;
             }
         }
+
+        // Should never happen
         throw new RuntimeException("Could not find a suitable printer for type " + type);
     }
 }

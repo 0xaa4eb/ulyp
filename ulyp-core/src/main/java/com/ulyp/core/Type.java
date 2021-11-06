@@ -30,17 +30,17 @@ public class Type {
     @Builder.Default
     private final Set<String> superTypeSimpleNames = new HashSet<>();
 
-    private volatile ObjectRecorder suggestedPrinter;
+    private volatile ObjectRecorder suggestedRecorder;
     // If was dumped to the output file
     @Builder.Default
     private volatile boolean writtenToFile = false;
 
-    public ObjectRecorder getSuggestedPrinter() {
-        ObjectRecorder printer = suggestedPrinter;
+    public ObjectRecorder getSuggestedRecorder() {
+        ObjectRecorder printer = suggestedRecorder;
         if (printer != null) {
             return printer;
         } else {
-            return suggestedPrinter = RecorderChooser.getInstance().chooseRecordersForReturnType(this);
+            return suggestedRecorder = RecorderChooser.getInstance().chooseForType(this);
         }
     }
 

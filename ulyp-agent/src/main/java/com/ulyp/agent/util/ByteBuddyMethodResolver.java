@@ -30,10 +30,10 @@ public class ByteBuddyMethodResolver {
         Type returnType = typeResolver.resolve(description.getReturnType());
         Type declaringType = typeResolver.resolve(description.getDeclaringType().asGenericType());
 
-        ObjectRecorder[] paramPrinters = RecorderChooser.getInstance().chooseRecordersForParameterTypes(parameters);
+        ObjectRecorder[] paramPrinters = RecorderChooser.getInstance().chooseForTypes(parameters);
         ObjectRecorder returnValuePrinter = description.isConstructor() ?
                 RecorderType.IDENTITY_RECORDER.getInstance() :
-                RecorderChooser.getInstance().chooseRecordersForReturnType(returnType);
+                RecorderChooser.getInstance().chooseForType(returnType);
 
         Method resolved = Method.builder()
                 .id(idGenerator.incrementAndGet())
