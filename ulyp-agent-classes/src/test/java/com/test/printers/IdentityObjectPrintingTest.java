@@ -4,7 +4,7 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.printers.IdentityObjectRecord;
-import com.ulyp.core.printers.NumberObjectRecord;
+import com.ulyp.core.printers.NumberRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +20,7 @@ public class IdentityObjectPrintingTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("pass")
         );
 
-        NumberObjectRecord objectRepresentation = (NumberObjectRecord) root.getReturnValue();
+        NumberRecord objectRepresentation = (NumberRecord) root.getReturnValue();
 
         int hashCode = Integer.parseInt(objectRepresentation.getNumberPrintedText());
 

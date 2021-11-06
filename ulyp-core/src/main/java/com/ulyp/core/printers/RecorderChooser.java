@@ -9,36 +9,39 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Printers {
+/**
+ * Finds {@link ObjectRecorder} that best matches for any given {@link Type}
+ */
+public class RecorderChooser {
 
-    private static final Printers instance = new Printers();
+    private static final RecorderChooser instance = new RecorderChooser();
     private static final ObjectRecorder[] empty = new ObjectRecorder[0];
-    private static final ObjectRecorder[] printers;
+    private static final ObjectRecorder[] allRecorders;
 
     static {
-        printers = new ObjectRecorder[ObjectBinaryPrinterType.values().length];
+        allRecorders = new ObjectRecorder[ObjectBinaryPrinterType.values().length];
 
         List<ObjectBinaryPrinterType> printerTypes = new ArrayList<>();
         printerTypes.addAll(Arrays.asList(ObjectBinaryPrinterType.values()));
         printerTypes.sort(Comparator.comparing(ObjectBinaryPrinterType::getOrder));
 
         for (int i = 0; i < printerTypes.size(); i++) {
-            printers[i] = printerTypes.get(i).getInstance();
+            allRecorders[i] = printerTypes.get(i).getInstance();
         }
     }
 
-    public static Printers getInstance() {
+    public static RecorderChooser getInstance() {
         return instance;
     }
 
-    public ObjectRecorder[] determinePrintersForParameterTypes(List<Type> paramsTypes) {
+    public ObjectRecorder[] chooseRecordersForParameterTypes(List<Type> paramsTypes) {
         try {
             if (paramsTypes.isEmpty()) {
                 return empty;
             }
             ObjectRecorder[] convs = new ObjectRecorder[paramsTypes.size()];
             for (int i = 0; i < convs.length; i++) {
-                convs[i] = determinePrinterForType(paramsTypes.get(i));
+                convs[i] = chooseRecorderForType(paramsTypes.get(i));
             }
             return convs;
         } catch (Exception e) {
@@ -46,9 +49,9 @@ public class Printers {
         }
     }
 
-    public ObjectRecorder determinePrinterForReturnType(Type returnType) {
+    public ObjectRecorder chooseRecordersForReturnType(Type returnType) {
         try {
-            return determinePrinterForType(returnType);
+            return chooseRecorderForType(returnType);
         } catch (Exception e) {
             throw new RuntimeException("Could not prepare converters for method params " + returnType, e);
         }
@@ -56,7 +59,7 @@ public class Printers {
 
     private static final ConcurrentMap<Type, ObjectRecorder> cache = new ConcurrentHashMap<>(1024);
 
-    public ObjectRecorder determinePrinterForType(Type type) {
+    public ObjectRecorder chooseRecorderForType(Type type) {
 //        return cache.computeIfAbsent(
 //                type, t -> {
 //                    for (ObjectBinaryPrinter printer : printers) {
@@ -67,9 +70,9 @@ public class Printers {
 //                    throw new RuntimeException("Could not find a suitable printer for type " + type);
 //                }
 //        );
-        for (ObjectRecorder printer : printers) {
-            if (printer.supports(type)) {
-                return printer;
+        for (ObjectRecorder recorder : allRecorders) {
+            if (recorder.supports(type)) {
+                return recorder;
             }
         }
         throw new RuntimeException("Could not find a suitable printer for type " + type);

@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.printers.ObjectRecorder;
-import com.ulyp.core.printers.Printers;
+import com.ulyp.core.printers.RecorderChooser;
 import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.AllArgsConstructor;
@@ -40,7 +40,7 @@ public class Type {
         if (printer != null) {
             return printer;
         } else {
-            return suggestedPrinter = Printers.getInstance().determinePrinterForReturnType(this);
+            return suggestedPrinter = RecorderChooser.getInstance().chooseRecordersForReturnType(this);
         }
     }
 

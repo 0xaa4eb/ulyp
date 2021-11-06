@@ -23,7 +23,7 @@ public class NumbersRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new NumberObjectRecord(objectType, input.readString());
+        return new NumberRecord(objectType, input.readString());
     }
 
     @Override

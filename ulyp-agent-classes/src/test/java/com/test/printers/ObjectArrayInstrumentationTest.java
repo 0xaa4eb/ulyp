@@ -122,7 +122,7 @@ public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest 
         IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
         assertThat(arg0.getType().getName(), Matchers.is(X.class.getName()));
 
-        NumberObjectRecord arg1 = (NumberObjectRecord) items.get(1);
+        NumberRecord arg1 = (NumberRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
     }
 }

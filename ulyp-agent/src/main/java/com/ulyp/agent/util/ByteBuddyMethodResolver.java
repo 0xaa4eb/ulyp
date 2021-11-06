@@ -5,7 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.printers.ObjectRecorder;
 import com.ulyp.core.printers.ObjectBinaryPrinterType;
-import com.ulyp.core.printers.Printers;
+import com.ulyp.core.printers.RecorderChooser;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
@@ -30,10 +30,10 @@ public class ByteBuddyMethodResolver {
         Type returnType = typeResolver.resolve(description.getReturnType());
         Type declaringType = typeResolver.resolve(description.getDeclaringType().asGenericType());
 
-        ObjectRecorder[] paramPrinters = Printers.getInstance().determinePrintersForParameterTypes(parameters);
+        ObjectRecorder[] paramPrinters = RecorderChooser.getInstance().chooseRecordersForParameterTypes(parameters);
         ObjectRecorder returnValuePrinter = description.isConstructor() ?
                 ObjectBinaryPrinterType.IDENTITY_PRINTER.getInstance() :
-                Printers.getInstance().determinePrinterForReturnType(returnType);
+                RecorderChooser.getInstance().chooseRecordersForReturnType(returnType);
 
         Method resolved = Method.builder()
                 .id(idGenerator.incrementAndGet())

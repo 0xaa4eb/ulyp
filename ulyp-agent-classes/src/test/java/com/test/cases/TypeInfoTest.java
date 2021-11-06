@@ -2,7 +2,7 @@ package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
-import com.ulyp.core.printers.NumberObjectRecord;
+import com.ulyp.core.printers.NumberRecord;
 import com.ulyp.core.printers.ObjectRecord;
 import org.junit.Test;
 
@@ -22,11 +22,11 @@ public class TypeInfoTest extends AbstractInstrumentationTest {
         );
 
 
-        NumberObjectRecord firstArg = (NumberObjectRecord) root.getArgs().get(0);
+        NumberRecord firstArg = (NumberRecord) root.getArgs().get(0);
         assertThat(firstArg.getNumberPrintedText(), is("2"));
         assertThat(firstArg.getType().getName(), is("java.util.concurrent.atomic.AtomicInteger"));
 
-        NumberObjectRecord secondArg = (NumberObjectRecord) root.getArgs().get(1);
+        NumberRecord secondArg = (NumberRecord) root.getArgs().get(1);
 
         assertThat(secondArg.getNumberPrintedText(), is("3"));
         assertThat(secondArg.getType().getName(), is("java.util.concurrent.atomic.AtomicLong"));

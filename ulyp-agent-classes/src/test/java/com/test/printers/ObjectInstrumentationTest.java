@@ -6,7 +6,7 @@ import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.printers.IdentityObjectRecord;
 import com.ulyp.core.printers.NullObjectRecord;
-import com.ulyp.core.printers.NumberObjectRecord;
+import com.ulyp.core.printers.NumberRecord;
 import com.ulyp.core.printers.StringObjectRecord;
 import org.junit.Test;
 
@@ -38,7 +38,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
         assertThat(root.getArgs(), hasSize(2));
         assertThat(root.getArgs().get(0), instanceOf(StringObjectRecord.class));
-        assertThat(root.getArgs().get(1), instanceOf(NumberObjectRecord.class));
+        assertThat(root.getArgs().get(1), instanceOf(NumberRecord.class));
     }
 
     @Test

@@ -23,7 +23,7 @@ public class IntegralRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new NumberObjectRecord(objectType, String.valueOf(input.readLong()));
+        return new NumberRecord(objectType, String.valueOf(input.readLong()));
     }
 
     @Override
