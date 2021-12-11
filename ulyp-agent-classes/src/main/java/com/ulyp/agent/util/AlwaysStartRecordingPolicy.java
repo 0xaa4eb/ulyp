@@ -9,6 +9,6 @@ public class AlwaysStartRecordingPolicy implements StartRecordingPolicy {
 
     @Override
     public String toString() {
-        return "Any time";
+        return "Can start recording any time";
     }
 }
