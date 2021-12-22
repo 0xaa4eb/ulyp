@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class RecordedObject {
 
-    private final byte printerId;
+    private final byte recorderId;
     private final long typeId;
     private final byte[] value;
 }

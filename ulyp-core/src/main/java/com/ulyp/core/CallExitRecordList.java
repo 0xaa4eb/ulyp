@@ -27,7 +27,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             long methodId,
             TypeResolver typeResolver,
             boolean thrown,
-            ObjectRecorder returnValuePrinter,
+            ObjectRecorder returnValueRecorder,
             Object returnValue)
     {
         super.add(encoder -> {
@@ -37,14 +37,14 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
             Type classDescription = typeResolver.get(returnValue);
             encoder.returnTypeId(classDescription.getId());
 
-            ObjectRecorder printer = returnValue != null ?
-                    returnValuePrinter :
+            ObjectRecorder recorder = returnValue != null ?
+                    returnValueRecorder :
                     RecorderType.NULL_RECORDER.getInstance();
 
-            encoder.returnPrinterId(printer.getId());
+            encoder.returnPrinterId(recorder.getId());
             binaryOutput.wrap(encoder);
             try {
-                printer.write(returnValue, binaryOutput, typeResolver);
+                recorder.write(returnValue, binaryOutput, typeResolver);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

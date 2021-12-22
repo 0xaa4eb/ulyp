@@ -55,7 +55,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
 
                     ObjectRecorder printer = returnValue != null ?
-                            method.getReturnValuePrinter() :
+                            method.getReturnValueRecorder() :
                             RecorderType.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValuePrinterId(printer.getId());
@@ -97,28 +97,28 @@ public class MethodCallList implements Iterable<MethodCall> {
                     BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectRecorder printer = args[i] != null ? paramPrinters[i] : RecorderType.NULL_RECORDER.getInstance();
+                        ObjectRecorder recorder = args[i] != null ? paramPrinters[i] : RecorderType.NULL_RECORDER.getInstance();
 
                         Type argType = typeResolver.get(args[i]);
 
                         argumentsEncoder = argumentsEncoder.next();
                         argumentsEncoder.typeId(argType.getId());
-                        argumentsEncoder.printerId(printer.getId());
+                        argumentsEncoder.printerId(recorder.getId());
                         enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
                         try {
-                            printer.write(args[i], enterRecordBinaryOutput, typeResolver);
+                            recorder.write(args[i], enterRecordBinaryOutput, typeResolver);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
 
-                    ObjectRecorder printer = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
+                    ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
-                    enterMethodCallEncoder.calleePrinterId(printer.getId());
+                    enterMethodCallEncoder.calleePrinterId(recorder.getId());
                     enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
                     try {
-                        printer.write(callee, enterRecordBinaryOutput, typeResolver);
+                        recorder.write(callee, enterRecordBinaryOutput, typeResolver);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

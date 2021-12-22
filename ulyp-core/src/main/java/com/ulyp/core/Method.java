@@ -18,7 +18,7 @@ public class Method {
     private final boolean isConstructor;
     private final boolean returnsSomething;
     private final ObjectRecorder[] parameterRecorders;
-    private final ObjectRecorder returnValuePrinter;
+    private final ObjectRecorder returnValueRecorder;
 
     // If was dumped to the output file
     @Builder.Default
@@ -48,8 +48,8 @@ public class Method {
         return parameterRecorders;
     }
 
-    public ObjectRecorder getReturnValuePrinter() {
-        return returnValuePrinter;
+    public ObjectRecorder getReturnValueRecorder() {
+        return returnValueRecorder;
     }
 
     public Type getDeclaringType() {

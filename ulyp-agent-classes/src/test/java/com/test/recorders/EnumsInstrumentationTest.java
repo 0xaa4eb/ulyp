@@ -29,9 +29,9 @@ public class EnumsInstrumentationTest extends AbstractInstrumentationTest {
         EnumRecord arg2 = (EnumRecord) root.getArgs().get(1);
         EnumRecord arg3 = (EnumRecord) root.getArgs().get(2);
 
-        assertThat(arg2.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
+        assertThat(arg2.getType().getName(), is("com.test.recorders.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
         assertThat(arg2.getName(), is("T1"));
-        assertThat(arg3.getType().getName(), is("com.test.printers.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
+        assertThat(arg3.getType().getName(), is("com.test.recorders.EnumsInstrumentationTest$EnumTestCases$TestEnum"));
         assertThat(arg3.getName(), is("T2"));
     }
 

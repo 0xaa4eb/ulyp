@@ -136,7 +136,7 @@ public class Recorder {
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
         CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
         if (currentRecordLog == null) return;
-        currentRecordLog.onMethodExit(method.getId(), method.getReturnValuePrinter(), result, thrown, callId);
+        currentRecordLog.onMethodExit(method.getId(), method.getReturnValueRecorder(), result, thrown, callId);
 
         if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getEpochMillisCreatedTime()) > 100) {
             CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();

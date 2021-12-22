@@ -20,7 +20,7 @@ public class EnterMethodCall extends MethodCall {
                 argumentsDecoder -> {
                     byte[] bytes = new byte[argumentsDecoder.bytesLength()];
                     argumentsDecoder.getBytes(bytes, 0, bytes.length);
-                    arguments.add(RecordedObject.builder().value(bytes).typeId(argumentsDecoder.typeId()).printerId(argumentsDecoder.printerId()).build());
+                    arguments.add(RecordedObject.builder().value(bytes).typeId(argumentsDecoder.typeId()).recorderId(argumentsDecoder.printerId()).build());
                 }
         );
 

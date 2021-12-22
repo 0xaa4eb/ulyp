@@ -31,7 +31,7 @@ public class MethodCallListTest {
                 .name("convert")
                 .declaringType(type)
                 .parameterRecorders(new ObjectRecorder[]{RecorderType.ANY_NUMBER_RECORDER.getInstance()})
-                .returnValuePrinter(RecorderType.STRING_RECORDER.getInstance())
+                .returnValueRecorder(RecorderType.STRING_RECORDER.getInstance())
                 .build();
 
         list.addEnterMethodCall(

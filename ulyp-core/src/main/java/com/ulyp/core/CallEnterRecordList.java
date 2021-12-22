@@ -25,7 +25,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             long callId,
             long methodId,
             TypeResolver typeResolver,
-            ObjectRecorder[] printers,
+            ObjectRecorder[] recorders,
             Object callee,
             Object[] args)
     {
@@ -36,28 +36,28 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             TCallEnterRecordEncoder.ArgumentsEncoder argumentsEncoder = encoder.argumentsCount(args.length);
 
             for (int i = 0; i < args.length; i++) {
-                ObjectRecorder printer = args[i] != null ? printers[i] : RecorderType.NULL_RECORDER.getInstance();
+                ObjectRecorder recorder = args[i] != null ? recorders[i] : RecorderType.NULL_RECORDER.getInstance();
 
                 Type argType = typeResolver.get(args[i]);
 
                 argumentsEncoder = argumentsEncoder.next();
                 argumentsEncoder.typeId(argType.getId());
-                argumentsEncoder.printerId(printer.getId());
+                argumentsEncoder.printerId(recorder.getId());
                 binaryOutput.wrap(encoder);
                 try {
-                    printer.write(args[i], binaryOutput, typeResolver);
+                    recorder.write(args[i], binaryOutput, typeResolver);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
 
-            ObjectRecorder printer = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
+            ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
 
             encoder.calleeTypeId(typeResolver.get(callee).getId());
-            encoder.calleePrinterId(printer.getId());
+            encoder.calleePrinterId(recorder.getId());
             binaryOutput.wrap(encoder);
             try {
-                printer.write(callee, binaryOutput, typeResolver);
+                recorder.write(callee, binaryOutput, typeResolver);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
