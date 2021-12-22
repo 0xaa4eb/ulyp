@@ -42,7 +42,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
 
                 argumentsEncoder = argumentsEncoder.next();
                 argumentsEncoder.typeId(argType.getId());
-                argumentsEncoder.printerId(recorder.getId());
+                argumentsEncoder.recorderId(recorder.getId());
                 binaryOutput.wrap(encoder);
                 try {
                     recorder.write(args[i], binaryOutput, typeResolver);
@@ -54,7 +54,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
 
             encoder.calleeTypeId(typeResolver.get(callee).getId());
-            encoder.calleePrinterId(recorder.getId());
+            encoder.calleeRecorderId(recorder.getId());
             binaryOutput.wrap(encoder);
             try {
                 recorder.write(callee, binaryOutput, typeResolver);

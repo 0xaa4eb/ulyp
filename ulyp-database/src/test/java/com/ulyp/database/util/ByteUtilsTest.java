@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import org.junit.Assert;
 import org.junit.Test;
-import org.rocksdb.util.ByteUtil;
 
 import static org.junit.Assert.*;
 

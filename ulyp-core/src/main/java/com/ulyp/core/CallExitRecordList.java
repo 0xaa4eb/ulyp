@@ -41,7 +41,7 @@ public class CallExitRecordList extends AbstractBinaryEncodedList<TCallExitRecor
                     returnValueRecorder :
                     RecorderType.NULL_RECORDER.getInstance();
 
-            encoder.returnPrinterId(recorder.getId());
+            encoder.returnRecorderId(recorder.getId());
             binaryOutput.wrap(encoder);
             try {
                 recorder.write(returnValue, binaryOutput, typeResolver);

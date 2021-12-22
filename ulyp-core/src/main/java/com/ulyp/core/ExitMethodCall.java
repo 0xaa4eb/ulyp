@@ -19,7 +19,7 @@ public class ExitMethodCall extends  MethodCall {
         return ExitMethodCall.builder()
                 .returnValue(
                         RecordedObject.builder()
-                                .recorderId(decoder.returnValuePrinterId())
+                                .recorderId(decoder.returnValueRecorderId())
                                 .typeId(decoder.returnValueTypeId())
                                 .value(returnValueBytes)
                                 .build()

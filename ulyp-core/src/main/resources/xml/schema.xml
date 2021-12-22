@@ -40,10 +40,10 @@
         <field name="methodId" id="1" type="int64"/>
         <field name="callId" id="2" type="int64"/>
         <field name="calleeTypeId" id="16" type="int64"/>
-        <field name="calleePrinterId" id="17" type="int8"/>
+        <field name="calleeRecorderId" id="17" type="int8"/>
         <group name="arguments" id="10" dimensionType="groupSizeEncoding">
             <field name="typeId" id="11" type="int64"/>
-            <field name="printerId" id="13" type="int8"/>
+            <field name="recorderId" id="13" type="int8"/>
             <data name="value" id="12" type="varStringEncoding"/>
         </group>
         <data name="callee" id="15" type="varStringEncoding"/>
@@ -54,7 +54,7 @@
         <field name="callId" id="2" type="int64"/>
         <field name="thrown" id="3" type="BooleanType"/>
         <field name="returnTypeId" id="11" type="int64"/>
-        <field name="returnPrinterId" id="13" type="int8"/>
+        <field name="returnRecorderId" id="13" type="int8"/>
         <data name="returnValue" id="12" type="varStringEncoding"/>
     </sbe:message>
 
@@ -93,10 +93,10 @@
         <field name="methodId" id="1" type="int64"/>
         <field name="callId" id="2" type="int64"/>
         <field name="calleeTypeId" id="16" type="int64"/>
-        <field name="calleePrinterId" id="17" type="int8"/>
+        <field name="calleeRecorderId" id="17" type="int8"/>
         <group name="arguments" id="10" dimensionType="groupSizeEncoding">
             <field name="typeId" id="11" type="int64"/>
-            <field name="printerId" id="13" type="int8"/>
+            <field name="recorderId" id="13" type="int8"/>
             <data name="bytes" id="12" type="varDataEncoding"/>
         </group>
         <data name="calleeBytes" id="15" type="varDataEncoding"/>
@@ -107,7 +107,7 @@
         <field name="callId" id="2" type="int64"/>
         <field name="thrown" id="3" type="BooleanType"/>
         <field name="returnValueTypeId" id="11" type="int64"/>
-        <field name="returnValuePrinterId" id="13" type="int8"/>
+        <field name="returnValueRecorderId" id="13" type="int8"/>
         <data name="returnValueBytes" id="12" type="varDataEncoding"/>
     </sbe:message>
 

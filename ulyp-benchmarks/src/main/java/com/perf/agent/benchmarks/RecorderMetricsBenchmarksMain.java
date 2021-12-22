@@ -47,8 +47,8 @@ public class RecorderMetricsBenchmarksMain {
                     UnsafeBuffer buffer = new UnsafeBuffer();
                     arguments.wrapValue(buffer);
 
-                    sizeMap.put(arguments.printerId(), sizeMap.getOrDefault(arguments.printerId(), 0L) + buffer.capacity());
-                    countMap.put(arguments.printerId(), countMap.getOrDefault(arguments.printerId(), 0L) + 1);
+                    sizeMap.put(arguments.recorderId(), sizeMap.getOrDefault(arguments.recorderId(), 0L) + buffer.capacity());
+                    countMap.put(arguments.recorderId(), countMap.getOrDefault(arguments.recorderId(), 0L) + 1);
                 }
             }
 

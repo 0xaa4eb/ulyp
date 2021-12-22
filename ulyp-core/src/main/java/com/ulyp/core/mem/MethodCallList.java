@@ -58,7 +58,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                             method.getReturnValueRecorder() :
                             RecorderType.NULL_RECORDER.getInstance();
 
-                    exitMethodCallEncoder.returnValuePrinterId(printer.getId());
+                    exitMethodCallEncoder.returnValueRecorderId(printer.getId());
                     exitRecordBinaryOutput.wrap(exitMethodCallEncoder);
                     try {
                         printer.write(returnValue, exitRecordBinaryOutput, typeResolver);
@@ -103,7 +103,7 @@ public class MethodCallList implements Iterable<MethodCall> {
 
                         argumentsEncoder = argumentsEncoder.next();
                         argumentsEncoder.typeId(argType.getId());
-                        argumentsEncoder.printerId(recorder.getId());
+                        argumentsEncoder.recorderId(recorder.getId());
                         enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
                         try {
                             recorder.write(args[i], enterRecordBinaryOutput, typeResolver);
@@ -115,7 +115,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                     ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
-                    enterMethodCallEncoder.calleePrinterId(recorder.getId());
+                    enterMethodCallEncoder.calleeRecorderId(recorder.getId());
                     enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
                     try {
                         recorder.write(callee, enterRecordBinaryOutput, typeResolver);
