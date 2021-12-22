@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class CollectionPrintingTest extends AbstractInstrumentationTest {
+public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordSimpleItemsProperly() {

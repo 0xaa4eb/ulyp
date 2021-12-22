@@ -172,7 +172,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
             arguments = arguments.next();
             UnsafeBuffer buffer = new UnsafeBuffer();
             arguments.wrapValue(buffer);
-            args.add(RecorderType.printerForId(arguments.printerId()).read(
+            args.add(RecorderType.recorderForId(arguments.printerId()).read(
                     typeInfoDatabase.find(arguments.typeId()),
                     new BinaryInputImpl(buffer),
                     decodingContext)
@@ -184,7 +184,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
 
         Type calleeType = typeInfoDatabase.find(enterRecordDecoder.calleeTypeId());
 
-        ObjectRecord callee = RecorderType.printerForId(enterRecordDecoder.calleePrinterId()).read(
+        ObjectRecord callee = RecorderType.recorderForId(enterRecordDecoder.calleePrinterId()).read(
                 calleeType,
                 new BinaryInputImpl(buffer),
                 decodingContext
@@ -213,8 +213,8 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
 
         UnsafeBuffer returnValueBuffer = new UnsafeBuffer();
         exitRecordDecoder.wrapReturnValue(returnValueBuffer);
-        ObjectRecorder printer = RecorderType.printerForId(exitRecordDecoder.returnPrinterId());
-        ObjectRecord returnValue = printer.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
+        ObjectRecorder recorder = RecorderType.recorderForId(exitRecordDecoder.returnPrinterId());
+        ObjectRecord returnValue = recorder.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
         boolean thrown = exitRecordDecoder.thrown() == BooleanType.T;
 
         callRecord.setReturnValue(returnValue);

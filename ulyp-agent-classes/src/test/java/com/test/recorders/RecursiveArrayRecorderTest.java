@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
 
-public class RecursiveArrayRefPrintingTest extends AbstractInstrumentationTest {
+public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldStopRecordingInfiniteRecursionAtSomeLevel() {

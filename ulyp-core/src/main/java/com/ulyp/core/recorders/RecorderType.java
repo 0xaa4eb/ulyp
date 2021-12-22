@@ -28,7 +28,7 @@ public enum RecorderType {
         }
     }
 
-    public static ObjectRecorder printerForId(byte id) {
+    public static ObjectRecorder recorderForId(byte id) {
         return recorderInstances[id];
     }
 

@@ -61,11 +61,11 @@ public class Agent {
         CollectionRecorder recorder = (CollectionRecorder) RecorderType.COLLECTION_DEBUG_RECORDER.getInstance();
         recorder.setMode(settings.getCollectionsRecordingMode());
 
-        MapRecorder mapPrinter = (MapRecorder) RecorderType.MAP_RECORDER.getInstance();
-        mapPrinter.setMode(settings.getCollectionsRecordingMode());
+        MapRecorder mapRecorder = (MapRecorder) RecorderType.MAP_RECORDER.getInstance();
+        mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
-        ToStringRecorder toStringPrinter = (ToStringRecorder) (RecorderType.TO_STRING_RECORDER.getInstance());
-        toStringPrinter.addClassNamesSupportPrinting(settings.getClassesToPrintWithToString());
+        ToStringRecorder toStringRecorder = (ToStringRecorder) (RecorderType.TO_STRING_RECORDER.getInstance());
+        toStringRecorder.addClassNamesSupportPrinting(settings.getClassesToPrintWithToString());
 
         ElementMatcher.Junction<TypeDescription> tracingMatcher = null;
 

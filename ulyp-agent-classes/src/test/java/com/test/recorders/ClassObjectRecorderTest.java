@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ClassObjectPrintingTest extends AbstractInstrumentationTest {
+public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testClassTypeReturning() {

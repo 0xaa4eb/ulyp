@@ -8,7 +8,7 @@ import com.ulyp.core.recorders.StringObjectRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DynamicPrinterResolvePrintingTest extends AbstractInstrumentationTest {
+public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldUseBooleanPrinterIfBooleanIsPassed() {

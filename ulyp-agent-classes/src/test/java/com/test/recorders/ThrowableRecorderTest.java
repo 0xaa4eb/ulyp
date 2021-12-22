@@ -10,7 +10,7 @@ import com.ulyp.core.recorders.ThrowableRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ThrowablePrintingTest extends AbstractInstrumentationTest {
+public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordThrowableWithMessage() {

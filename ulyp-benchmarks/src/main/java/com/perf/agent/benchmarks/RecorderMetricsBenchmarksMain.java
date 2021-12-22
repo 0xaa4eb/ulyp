@@ -58,7 +58,7 @@ public class RecorderMetricsBenchmarksMain {
                         long count = countMap.getOrDefault(k, 0L);
 
                         System.out.println(
-                                RecorderType.printerForId(k).toString() + "    ->    " +
+                                RecorderType.recorderForId(k).toString() + "    ->    " +
                                         "total size = " + totalSizeDivided + " / count = " + countMap.get(k) +
                                         " ~ avg " + (v * 1.0 / count));
                     }

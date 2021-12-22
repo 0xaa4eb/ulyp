@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class BoxedNumbersTest extends AbstractInstrumentationTest {
+public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
 
     public static class BoxedNumbersTestCases {
 

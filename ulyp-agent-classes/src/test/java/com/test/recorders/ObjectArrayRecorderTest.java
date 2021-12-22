@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class ObjectArrayInstrumentationTest extends AbstractInstrumentationTest {
+public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     public static class TakesEmptyObjectArray {
 

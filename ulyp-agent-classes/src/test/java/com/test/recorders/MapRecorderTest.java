@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class MapPrintingTest extends AbstractInstrumentationTest {
+public class MapRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordSimpleMap() {
