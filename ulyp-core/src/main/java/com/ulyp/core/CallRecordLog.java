@@ -90,7 +90,7 @@ public class CallRecordLog {
         }
     }
 
-    public void onMethodExit(long methodId, ObjectRecorder resultPrinter, Object returnValue, Throwable thrown, long callId) {
+    public void onMethodExit(long methodId, ObjectRecorder resultRecorder, Object returnValue, Throwable thrown, long callId) {
         if (!inProcessOfRecording) {
             return;
         }
@@ -99,7 +99,7 @@ public class CallRecordLog {
         try {
             if (callId >= 0) {
                 if (thrown == null) {
-                    exitRecords.add(callId, methodId, typeResolver, false, resultPrinter, returnValue);
+                    exitRecords.add(callId, methodId, typeResolver, false, resultRecorder, returnValue);
                 } else {
                     exitRecords.add(callId, methodId, typeResolver, true, RecorderType.THROWABLE_RECORDER.getInstance(), thrown);
                 }
