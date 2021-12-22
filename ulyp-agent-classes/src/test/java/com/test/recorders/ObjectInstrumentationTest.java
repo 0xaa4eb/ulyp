@@ -1,4 +1,4 @@
-package com.test.printers;
+package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.SafeCaller;

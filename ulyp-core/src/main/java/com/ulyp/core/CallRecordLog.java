@@ -83,7 +83,7 @@ public class CallRecordLog {
 
             long callId = callIdCounter++;
             callsRecorded++;
-            enterRecords.add(callId, method.getId(), typeResolver, method.getParamPrinters(), callee, args);
+            enterRecords.add(callId, method.getId(), typeResolver, method.getParameterRecorders(), callee, args);
             return callId;
         } finally {
             inProcessOfRecording = true;

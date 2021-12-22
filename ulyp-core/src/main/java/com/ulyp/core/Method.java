@@ -17,7 +17,7 @@ public class Method {
     private final boolean isStatic;
     private final boolean isConstructor;
     private final boolean returnsSomething;
-    private final ObjectRecorder[] paramPrinters;
+    private final ObjectRecorder[] parameterRecorders;
     private final ObjectRecorder returnValuePrinter;
 
     // If was dumped to the output file
@@ -44,11 +44,8 @@ public class Method {
         return isConstructor;
     }
 
-    public ObjectRecorder[] getParamPrinters() {
-        if (paramPrinters == null) {
-
-        }
-        return paramPrinters;
+    public ObjectRecorder[] getParameterRecorders() {
+        return parameterRecorders;
     }
 
     public ObjectRecorder getReturnValuePrinter() {

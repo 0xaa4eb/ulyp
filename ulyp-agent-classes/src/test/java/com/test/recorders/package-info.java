@@ -1,4 +1,4 @@
 /**
  * Various tests for printers
  */
-package com.test.printers;
+package com.test.recorders;

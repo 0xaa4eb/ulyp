@@ -41,7 +41,7 @@ public class ByteBuddyMethodResolver {
                 .isConstructor(description.isConstructor())
                 .isStatic(description.isStatic())
                 .returnsSomething(returns)
-                .paramPrinters(paramPrinters)
+                .parameterRecorders(paramPrinters)
                 .returnValuePrinter(returnValuePrinter)
                 .declaringType(declaringType)
                 .build();

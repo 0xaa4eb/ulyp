@@ -30,7 +30,7 @@ public class MethodCallListTest {
                 .id(5L)
                 .name("convert")
                 .declaringType(type)
-                .paramPrinters(new ObjectRecorder[]{RecorderType.ANY_NUMBER_RECORDER.getInstance()})
+                .parameterRecorders(new ObjectRecorder[]{RecorderType.ANY_NUMBER_RECORDER.getInstance()})
                 .returnValuePrinter(RecorderType.STRING_RECORDER.getInstance())
                 .build();
 

@@ -53,8 +53,8 @@ public class BinaryInputImpl implements BinaryInput {
     @Override
     public ObjectRecord readObject(ByIdTypeResolver typeResolver) {
         Type itemClassType = typeResolver.getType(readLong());
-        ObjectRecorder printer = RecorderType.printerForId(readByte());
-        return printer.read(itemClassType, this, typeResolver);
+        ObjectRecorder recorder = RecorderType.printerForId(readByte());
+        return recorder.read(itemClassType, this, typeResolver);
     }
 
     @Override

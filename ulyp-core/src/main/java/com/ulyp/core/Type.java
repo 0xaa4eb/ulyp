@@ -36,9 +36,9 @@ public class Type {
     private volatile boolean writtenToFile = false;
 
     public ObjectRecorder getSuggestedRecorder() {
-        ObjectRecorder printer = suggestedRecorder;
-        if (printer != null) {
-            return printer;
+        ObjectRecorder recorder = suggestedRecorder;
+        if (recorder != null) {
+            return recorder;
         } else {
             return suggestedRecorder = RecorderChooser.getInstance().chooseForType(this);
         }

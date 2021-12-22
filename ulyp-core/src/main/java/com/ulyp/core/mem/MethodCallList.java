@@ -92,7 +92,7 @@ public class MethodCallList implements Iterable<MethodCall> {
 
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
-                    ObjectRecorder[] paramPrinters = method.getParamPrinters();
+                    ObjectRecorder[] paramPrinters = method.getParameterRecorders();
 
                     BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 

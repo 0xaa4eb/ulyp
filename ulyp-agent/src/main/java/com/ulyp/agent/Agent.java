@@ -58,8 +58,8 @@ public class Agent {
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
 
-        CollectionRecorder printer = (CollectionRecorder) RecorderType.COLLECTION_DEBUG_RECORDER.getInstance();
-        printer.setMode(settings.getCollectionsRecordingMode());
+        CollectionRecorder recorder = (CollectionRecorder) RecorderType.COLLECTION_DEBUG_RECORDER.getInstance();
+        recorder.setMode(settings.getCollectionsRecordingMode());
 
         MapRecorder mapPrinter = (MapRecorder) RecorderType.MAP_RECORDER.getInstance();
         mapPrinter.setMode(settings.getCollectionsRecordingMode());
