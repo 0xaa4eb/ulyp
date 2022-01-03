@@ -1,7 +1,8 @@
-package com.ulyp.database.flat;
+package com.ulyp.storage.impl;
 
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.database.DatabaseException;
+import com.ulyp.database.flat.BinaryListWithId;
 
 import java.io.File;
 import java.io.IOException;

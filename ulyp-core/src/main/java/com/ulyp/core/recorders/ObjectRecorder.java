@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 
 /**
- * Object printer which essentially encodes some java object at recording time into bytes which
+ * Object recorder which essentially encodes some java object at recording time into bytes which
  * can later be read and decoded. The decoded value is some implementation of {@link ObjectRecord}.
  *
  * Depending on the particular implementation used for serialization

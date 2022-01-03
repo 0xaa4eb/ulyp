@@ -1,5 +1,7 @@
 package com.ulyp.database.flat;
 
+import com.ulyp.storage.impl.FlatFileReader;
+import com.ulyp.storage.impl.WithAddressOutputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;

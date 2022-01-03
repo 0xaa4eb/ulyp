@@ -10,15 +10,14 @@ import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectArrayDebugRecorder extends ObjectRecorder {
+public class ObjectArrayRecorder extends ObjectRecorder {
 
-    protected ObjectArrayDebugRecorder(byte id) {
+    protected ObjectArrayRecorder(byte id) {
         super(id);
     }
 
     @Override
     boolean supports(Type type) {
-        // used manually by ObjectArrayPrinter
         return type.isNonPrimitveArray();
     }
 

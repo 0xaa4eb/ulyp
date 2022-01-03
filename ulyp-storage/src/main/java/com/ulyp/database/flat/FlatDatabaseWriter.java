@@ -4,6 +4,8 @@ import com.ulyp.core.mem.MethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.database.DatabaseWriter;
+import com.ulyp.storage.impl.ByAddressFileWriter;
+import com.ulyp.storage.impl.WithAddressOutputStream;
 
 import java.io.File;
 import java.io.IOException;

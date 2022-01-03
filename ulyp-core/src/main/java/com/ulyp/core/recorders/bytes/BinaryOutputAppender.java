@@ -71,15 +71,15 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     public void append(Object object, TypeResolver typeResolver) throws Exception {
         Type itemType = typeResolver.get(object);
         append(itemType.getId());
-        ObjectRecorder printer;
+        ObjectRecorder recorder;
         if (object != null) {
             // Simply stop recursively write objects if it's too deep
-            printer = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedRecorder() : RecorderType.IDENTITY_RECORDER.getInstance();
+            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedRecorder() : RecorderType.IDENTITY_RECORDER.getInstance();
         } else {
-            printer = RecorderType.NULL_RECORDER.getInstance();
+            recorder = RecorderType.NULL_RECORDER.getInstance();
         }
-        append(printer.getId());
-        printer.write(object, itemType, this, typeResolver);
+        append(recorder.getId());
+        recorder.write(object, itemType, this, typeResolver);
     }
 
     @Override

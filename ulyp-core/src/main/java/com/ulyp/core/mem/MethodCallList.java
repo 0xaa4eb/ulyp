@@ -54,14 +54,14 @@ public class MethodCallList implements Iterable<MethodCall> {
                     Type classDescription = typeResolver.get(returnValue);
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
 
-                    ObjectRecorder printer = returnValue != null ?
+                    ObjectRecorder recorder = returnValue != null ?
                             method.getReturnValueRecorder() :
                             RecorderType.NULL_RECORDER.getInstance();
 
-                    exitMethodCallEncoder.returnValueRecorderId(printer.getId());
+                    exitMethodCallEncoder.returnValueRecorderId(recorder.getId());
                     exitRecordBinaryOutput.wrap(exitMethodCallEncoder);
                     try {
-                        printer.write(returnValue, exitRecordBinaryOutput, typeResolver);
+                        recorder.write(returnValue, exitRecordBinaryOutput, typeResolver);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -92,12 +92,12 @@ public class MethodCallList implements Iterable<MethodCall> {
 
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
-                    ObjectRecorder[] paramPrinters = method.getParameterRecorders();
+                    ObjectRecorder[] paramRecorders = method.getParameterRecorders();
 
                     BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectRecorder recorder = args[i] != null ? paramPrinters[i] : RecorderType.NULL_RECORDER.getInstance();
+                        ObjectRecorder recorder = args[i] != null ? paramRecorders[i] : RecorderType.NULL_RECORDER.getInstance();
 
                         Type argType = typeResolver.get(args[i]);
 

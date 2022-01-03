@@ -39,7 +39,7 @@ if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
 }
 
 dependencies {
-    compile project(':ulyp-database')
+    compile project(':ulyp-storage')
 
     implementation files('libs/fernflower.jar')
     implementation "javax.annotation:javax.annotation-api:1.3.2"

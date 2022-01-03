@@ -29,7 +29,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldChooseValidPrinterForJavaLangObjectAtRuntime() {
+    public void shouldChooseValidRecorderForJavaLangObjectAtRuntime() {
         CallRecord root = runForkWithUi(
                 new ForkProcessBuilder()
                         .setMainClassName(ObjectTestCases.class)

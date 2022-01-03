@@ -21,12 +21,12 @@ public class RecorderChooser {
     static {
         allRecorders = new ObjectRecorder[RecorderType.values().length];
 
-        List<RecorderType> printerTypes = new ArrayList<>();
-        printerTypes.addAll(Arrays.asList(RecorderType.values()));
-        printerTypes.sort(Comparator.comparing(RecorderType::getOrder));
+        List<RecorderType> recorderTypes = new ArrayList<>();
+        recorderTypes.addAll(Arrays.asList(RecorderType.values()));
+        recorderTypes.sort(Comparator.comparing(RecorderType::getOrder));
 
-        for (int i = 0; i < printerTypes.size(); i++) {
-            allRecorders[i] = printerTypes.get(i).getInstance();
+        for (int i = 0; i < recorderTypes.size(); i++) {
+            allRecorders[i] = recorderTypes.get(i).getInstance();
         }
     }
 
@@ -57,6 +57,6 @@ public class RecorderChooser {
         }
 
         // Should never happen
-        throw new RuntimeException("Could not find a suitable printer for type " + type);
+        throw new RuntimeException("Could not find a suitable recorder for type " + type);
     }
 }

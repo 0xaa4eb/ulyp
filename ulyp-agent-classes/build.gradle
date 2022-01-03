@@ -23,7 +23,7 @@ def protocVersion = protobufVersion
 
 dependencies {
     compile project(':ulyp-core')
-    compile project(':ulyp-database')
+    compile project(':ulyp-storage')
 
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     compile group: 'org.agrona', name: 'agrona', version: '0.9.22'

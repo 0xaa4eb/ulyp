@@ -5,5 +5,5 @@ include 'ulyp-benchmarks'
 include 'ulyp-core'
 include 'ulyp-agent'
 include 'ulyp-agent-classes'
-include 'ulyp-database'
+include 'ulyp-storage'
 

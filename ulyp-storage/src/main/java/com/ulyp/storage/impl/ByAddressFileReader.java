@@ -1,4 +1,4 @@
-package com.ulyp.database.flat;
+package com.ulyp.storage.impl;
 
 import java.io.File;
 import java.io.IOException;

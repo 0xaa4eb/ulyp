@@ -9,7 +9,7 @@ public enum RecorderType {
     INTEGRAL_RECORDER(new IntegralRecorder((byte) 12), 0),
     BOOLEAN_RECORDER(new BooleanRecorder((byte) 100), 1),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 1),
-    OBJECT_ARRAY_RECORDER(new ObjectArrayDebugRecorder((byte) 11), 1),
+    OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
     COLLECTION_DEBUG_RECORDER(new CollectionRecorder((byte) 10), 1),
     MAP_RECORDER(new MapRecorder((byte) 13), 1),
     DATE_RECORDER(new DateRecorder((byte) 20), 90),

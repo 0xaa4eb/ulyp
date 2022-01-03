@@ -1,4 +1,4 @@
-package com.ulyp.database.flat;
+package com.ulyp.storage.impl;
 
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.database.util.ByteUtils;

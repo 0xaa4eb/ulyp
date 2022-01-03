@@ -11,7 +11,7 @@ import org.junit.Test;
 public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldUseBooleanPrinterIfBooleanIsPassed() {
+    public void shouldUseBooleanRecorderIfBooleanIsPassed() {
 
         CallRecord root = runForkWithUi(
                 new ForkProcessBuilder()
@@ -25,7 +25,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldUseStringPrinterIfBooleanIsPassed() {
+    public void shouldUseStringRecorderIfBooleanIsPassed() {
 
         CallRecord root = runForkWithUi(
                 new ForkProcessBuilder()

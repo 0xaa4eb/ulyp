@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Prints out total bytes serialized by each printer
+ * Prints out total bytes serialized by each recorder
  */
 public class RecorderMetricsBenchmarksMain {
 
