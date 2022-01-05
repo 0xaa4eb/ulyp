@@ -20,7 +20,12 @@ import java.util.function.Consumer;
 public class BinaryList implements Iterable<BinaryDataDecoder> {
 
     private static final int MAGIC = Integer.MAX_VALUE / 3;
-    private static final int LIST_HEADER_LENGTH = 3 * Integer.BYTES;
+    private static final int MAGIC_OFFSET = 0;
+    private static final int SIZE_OFFSET = Integer.BYTES;
+    private static final int BYTES_LENGTH_OFFSET = SIZE_OFFSET + Integer.BYTES;
+    private static final int ID_OFFSET = BYTES_LENGTH_OFFSET + Integer.BYTES;
+
+    private static final int LIST_HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
     private static final int RECORD_HEADER_LENGTH = 2 * Integer.BYTES;
 
     private final BinaryDataEncoder encoder = new BinaryDataEncoder();
@@ -34,15 +39,16 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         }
     }
 
-    public BinaryList() {
+    public BinaryList(int id) {
         buffer = new ExpandableDirectByteBuffer(64 * 1024);
         setMagic(MAGIC);
         setSize(0);
-        setLength(LIST_HEADER_LENGTH);
+        setId(id);
+        setByteLength(LIST_HEADER_LENGTH);
     }
 
     protected void add(Consumer<BinaryDataEncoder> writer) {
-        int recordHeaderAddr = length();
+        int recordHeaderAddr = byteLength();
         int recordAddr = recordHeaderAddr + RECORD_HEADER_LENGTH;
         encoder.wrap(buffer, recordAddr);
         writer.accept(encoder);
@@ -54,10 +60,19 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
     }
 
     public void writeTo(OutputStream outputStream) throws IOException {
-        int length = length();
+        int length = byteLength();
         for (int i = 0; i < length; i++) {
             outputStream.write(buffer.getByte(i));
         }
+    }
+
+    public byte[] toByteArray() {
+        int length = byteLength();
+        byte[] output = new byte[length];
+        for (int i = 0; i < length; i++) {
+            output[i] = buffer.getByte(i);
+        }
+        return output;
     }
 
     public MutableDirectBuffer getBuffer() {
@@ -68,32 +83,40 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         return buffer.getInt(4);
     }
 
-    protected void incSize() {
+    private void incSize() {
         setSize(size() + 1);
     }
 
     private int getMagic() {
-        return buffer.getInt(0);
+        return buffer.getInt(MAGIC_OFFSET);
     }
 
     private void setMagic(int value) {
-        buffer.putInt(0, value);
+        buffer.putInt(MAGIC_OFFSET, value);
+    }
+
+    public int getId() {
+        return buffer.getInt(ID_OFFSET);
+    }
+
+    private void setId(int value) {
+        buffer.putInt(ID_OFFSET, value);
     }
 
     private void setSize(int value) {
         buffer.putInt(4, value);
     }
 
-    public int length() {
-        return buffer.getInt(8);
+    public int byteLength() {
+        return buffer.getInt(BYTES_LENGTH_OFFSET);
     }
 
-    private void setLength(int value) {
-        buffer.putInt(8, value);
+    private void setByteLength(int value) {
+        buffer.putInt(BYTES_LENGTH_OFFSET, value);
     }
 
     private void addToLength(int delta) {
-        setLength(length() + delta);
+        setByteLength(byteLength() + delta);
     }
 
     @Override
@@ -108,7 +131,7 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
 
         @Override
         public boolean hasNext() {
-            return recordAddress < length() && buffer.getInt(recordAddress) > 0;
+            return recordAddress < byteLength() && buffer.getInt(recordAddress) > 0;
         }
 
         @Override

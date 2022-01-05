@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class MethodList implements Iterable<Method> {
 
+    public static final int ID = 3;
+
     private final BinaryMethodEncoder methodEncoder = new BinaryMethodEncoder();
-    private BinaryList bytes = new BinaryList();
+    private BinaryList bytes = new BinaryList(ID);
 
     public void add(Method method) {
         bytes.add(

@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypeList implements Iterable<Type> {
 
+    public static final int ID = 1;
+
     private final BinaryTypeEncoder binaryTypeEncoder = new BinaryTypeEncoder();
-    private BinaryList bytes = new BinaryList();
+    private final BinaryList bytes = new BinaryList(ID);
 
     public void add(Type type) {
         bytes.add(

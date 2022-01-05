@@ -6,19 +6,23 @@ import com.ulyp.transport.BinaryDataEncoder;
 import org.agrona.MutableDirectBuffer;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
 
 public class BinaryListTest {
 
-    private final BinaryList binaryList = new BinaryList();
+    private final BinaryList binaryList = new BinaryList(777);
     private final MutableDirectBuffer underlyingBuffer = binaryList.getBuffer();
     private final byte[] buf = new byte[1024];
 
     @Test
     public void testListAddAndIterate() {
         assertEquals(0, binaryList.size());
+        assertEquals(777, binaryList.getId());
 
         binaryList.add(
                 encoder -> {

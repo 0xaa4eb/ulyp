@@ -17,6 +17,8 @@ import java.util.stream.StreamSupport;
 
 public class MethodCallList implements Iterable<MethodCall> {
 
+    public static final int ID = 2;
+
     private final BinaryOutputForEnterRecordImpl2 enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl2();
     private final BinaryOutputForExitRecordImpl2 exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl2();
     private final BinaryEnterMethodCallEncoder enterMethodCallEncoder = new BinaryEnterMethodCallEncoder();
@@ -24,7 +26,7 @@ public class MethodCallList implements Iterable<MethodCall> {
     private final BinaryList bytes;
 
     public MethodCallList() {
-        bytes = new BinaryList();
+        bytes = new BinaryList(ID);
     }
 
     public MethodCallList(BinaryList bytes) {
