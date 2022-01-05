@@ -5,7 +5,7 @@ import com.ulyp.core.impl.FileBasedCallRecordDatabase;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.database.DatabaseException;
+import com.ulyp.storage.StoreException;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.junit.Assert;
 
@@ -21,7 +21,7 @@ public class RecordingResult {
         this.requests = requests;
     }
 
-    public Map<Long, CallRecordDatabase> aggregateByThread() throws DatabaseException {
+    public Map<Long, CallRecordDatabase> aggregateByThread() throws StoreException {
         Map<Long, CallRecordDatabase> recordingIdToRequest = new HashMap<>();
 
         MethodInfoDatabase methodInfoDatabase = new MethodInfoDatabase();
@@ -60,7 +60,7 @@ public class RecordingResult {
                             CallExitRecordList exitRecords = new CallExitRecordList();
                             newDatabase.persistBatch(enterRecords, exitRecords);
                             return newDatabase;
-                        } catch (DatabaseException e) {
+                        } catch (StoreException e) {
                             throw new RuntimeException(e);
                         }
                     }

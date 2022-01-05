@@ -1,7 +1,6 @@
 package com.ulyp.core.impl;
 
-import com.ulyp.database.DatabaseException;
-import it.unimi.dsi.fastutil.ints.*;
+import com.ulyp.storage.StoreException;
 import it.unimi.dsi.fastutil.longs.*;
 
 @SuppressWarnings("unused")
@@ -26,7 +25,7 @@ public class InMemoryIndex implements Index {
     }
 
     @Override
-    public void setSubtreeCount(long callId, long count) throws DatabaseException {
+    public void setSubtreeCount(long callId, long count) throws StoreException {
         idToSubtreeCountMap.put(callId, count);
     }
 
@@ -41,7 +40,7 @@ public class InMemoryIndex implements Index {
     }
 
     @Override
-    public void setChildren(long callId, LongList children) throws DatabaseException {
+    public void setChildren(long callId, LongList children) throws StoreException {
         if (!children.isEmpty()) {
             this.children.put(callId, new LongArrayList(children));
         }

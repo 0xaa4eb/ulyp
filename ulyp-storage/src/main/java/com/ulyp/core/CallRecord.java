@@ -2,7 +2,7 @@ package com.ulyp.core;
 
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.database.DatabaseException;
+import com.ulyp.storage.StoreException;
 import com.ulyp.transport.BooleanType;
 import com.ulyp.transport.TMethodInfoDecoder;
 
@@ -98,7 +98,7 @@ public class CallRecord {
         return isStatic;
     }
 
-    public long getSubtreeNodeCount() throws DatabaseException {
+    public long getSubtreeNodeCount() throws StoreException {
         return database.getSubtreeCount(id);
     }
 
@@ -126,7 +126,7 @@ public class CallRecord {
         return thrown;
     }
 
-    public List<CallRecord> getChildren() throws DatabaseException {
+    public List<CallRecord> getChildren() throws StoreException {
         return database.getChildren(this.id);
     }
 

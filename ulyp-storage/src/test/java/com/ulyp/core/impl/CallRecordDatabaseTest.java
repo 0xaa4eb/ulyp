@@ -2,7 +2,7 @@ package com.ulyp.core.impl;
 
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.*;
-import com.ulyp.database.DatabaseException;
+import com.ulyp.storage.StoreException;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public abstract class CallRecordDatabaseTest {
 
-    protected abstract CallRecordDatabase build(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws DatabaseException;
+    protected abstract CallRecordDatabase build(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException;
 
     private final MethodInfoDatabase methodInfoDatabase = new MethodInfoDatabase();
     private final TypeInfoDatabase typeInfoDatabase = new TypeInfoDatabase();
@@ -36,7 +36,7 @@ public abstract class CallRecordDatabaseTest {
     }
 
     @Test
-    public void testRecordsSaving() throws DatabaseException {
+    public void testRecordsSaving() throws StoreException {
         CallEnterRecordList enterRecords = new CallEnterRecordList();
         CallExitRecordList exitRecords = new CallExitRecordList();
 
@@ -61,7 +61,7 @@ public abstract class CallRecordDatabaseTest {
     }
 
     @Test
-    public void testFieldsSavingWithTwoCallRecords() throws DatabaseException {
+    public void testFieldsSavingWithTwoCallRecords() throws StoreException {
         CallEnterRecordList enterRecords = new CallEnterRecordList();
         CallExitRecordList exitRecords = new CallExitRecordList();
 
@@ -99,7 +99,7 @@ public abstract class CallRecordDatabaseTest {
     }
 
     @Test
-    public void testSavingAsWholeChunk() throws DatabaseException {
+    public void testSavingAsWholeChunk() throws StoreException {
         CallEnterRecordList enterRecords = new CallEnterRecordList();
         CallExitRecordList exitRecords = new CallExitRecordList();
 
@@ -150,7 +150,7 @@ public abstract class CallRecordDatabaseTest {
     }
 
     @Test
-    public void testSavingPartialChunk() throws DatabaseException {
+    public void testSavingPartialChunk() throws StoreException {
         CallEnterRecordList enterRecords = new CallEnterRecordList();
         CallExitRecordList exitRecords = new CallExitRecordList();
 

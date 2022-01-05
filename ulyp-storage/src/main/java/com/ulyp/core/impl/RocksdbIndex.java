@@ -1,7 +1,7 @@
 package com.ulyp.core.impl;
 
-import com.ulyp.database.DatabaseException;
-import com.ulyp.database.util.ByteUtils;
+import com.ulyp.storage.StoreException;
+import com.ulyp.storage.util.ByteUtils;
 import it.unimi.dsi.fastutil.longs.*;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
@@ -18,7 +18,7 @@ public class RocksdbIndex implements Index {
 
     private final RocksDB db;
 
-    public RocksdbIndex() throws DatabaseException {
+    public RocksdbIndex() throws StoreException {
         try {
             Path ulyp = Files.createTempDirectory("ulyp");
 
@@ -27,12 +27,12 @@ public class RocksdbIndex implements Index {
 
             db = RocksDB.open(options, ulyp.toAbsolutePath().toString());
         } catch (RocksDBException | IOException ioException) {
-            throw new DatabaseException(ioException);
+            throw new StoreException(ioException);
         }
     }
 
     @Override
-    public long getSubtreeCount(long callId) throws DatabaseException {
+    public long getSubtreeCount(long callId) throws StoreException {
         try {
             byte[] bytes = db.get(("c:" + callId).getBytes(StandardCharsets.UTF_8));
             if (bytes != null) {
@@ -41,21 +41,21 @@ public class RocksdbIndex implements Index {
                 return 0;
             }
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public void setSubtreeCount(long callId, long count) throws DatabaseException {
+    public void setSubtreeCount(long callId, long count) throws StoreException {
         try {
             db.put(("c:" + callId).getBytes(StandardCharsets.UTF_8), ByteUtils.longToBytes(count));
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public long getEnterCallAddress(long callId) throws DatabaseException {
+    public long getEnterCallAddress(long callId) throws StoreException {
         try {
             byte[] bytes = db.get(("e:" + callId).getBytes(StandardCharsets.UTF_8));
             if (bytes == null) {
@@ -64,12 +64,12 @@ public class RocksdbIndex implements Index {
                 return ByteUtils.bytesToLong(bytes);
             }
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public long getExitCallAddress(long callId) throws DatabaseException {
+    public long getExitCallAddress(long callId) throws StoreException {
         try {
             byte[] bytes = db.get(("z:" + callId).getBytes(StandardCharsets.UTF_8));
             if (bytes == null) {
@@ -78,24 +78,24 @@ public class RocksdbIndex implements Index {
                 return ByteUtils.bytesToLong(bytes);
             }
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public void setChildren(long callId, LongList children) throws DatabaseException {
+    public void setChildren(long callId, LongList children) throws StoreException {
         try {
             db.put(
                     ("ch:" + callId).getBytes(StandardCharsets.UTF_8),
                     ByteUtils.longsToBytes(children)
             );
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public LongList getChildren(long callId) throws DatabaseException {
+    public LongList getChildren(long callId) throws StoreException {
         try {
             byte[] bytes = db.get(("ch:" + callId).getBytes(StandardCharsets.UTF_8));
             if (bytes == null) {
@@ -104,25 +104,25 @@ public class RocksdbIndex implements Index {
                 return ByteUtils.bytesToLongs(bytes);
             }
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public void updateEnterCallAddress(long callId, long address) throws DatabaseException {
+    public void updateEnterCallAddress(long callId, long address) throws StoreException {
         try {
             db.put(("e:" + callId).getBytes(StandardCharsets.UTF_8), ByteUtils.longToBytes(address));
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 
     @Override
-    public void updateExitCallAddress(long callId, long address) throws DatabaseException {
+    public void updateExitCallAddress(long callId, long address) throws StoreException {
         try {
             db.put(("z:" + callId).getBytes(StandardCharsets.UTF_8), ByteUtils.longToBytes(address));
         } catch (RocksDBException e) {
-            throw new DatabaseException(e);
+            throw new StoreException(e);
         }
     }
 }

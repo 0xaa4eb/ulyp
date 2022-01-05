@@ -19,14 +19,23 @@ import java.util.function.Consumer;
  */
 public class BinaryList implements Iterable<BinaryDataDecoder> {
 
+    // TODO move to BinaryListHeader
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int MAGIC_OFFSET = 0;
     private static final int SIZE_OFFSET = Integer.BYTES;
     private static final int BYTES_LENGTH_OFFSET = SIZE_OFFSET + Integer.BYTES;
     private static final int ID_OFFSET = BYTES_LENGTH_OFFSET + Integer.BYTES;
 
-    private static final int LIST_HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
+    public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
     private static final int RECORD_HEADER_LENGTH = 2 * Integer.BYTES;
+
+    public static BinaryList of(int id, byte[]... data) {
+        BinaryList list = new BinaryList(id);
+        for (byte[] v : data) {
+            list.add(v);
+        }
+        return list;
+    }
 
     private final BinaryDataEncoder encoder = new BinaryDataEncoder();
 
@@ -39,15 +48,26 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         }
     }
 
+    public BinaryList(byte[] buf, int offset) {
+        buffer = new UnsafeBuffer(buf, offset, buf.length - offset);
+        if (getMagic() != MAGIC) {
+            throw new RuntimeException("Magic is " + getMagic());
+        }
+    }
+
     public BinaryList(int id) {
         buffer = new ExpandableDirectByteBuffer(64 * 1024);
         setMagic(MAGIC);
         setSize(0);
         setId(id);
-        setByteLength(LIST_HEADER_LENGTH);
+        setByteLength(HEADER_LENGTH);
     }
 
-    protected void add(Consumer<BinaryDataEncoder> writer) {
+    public void add(byte[] data) {
+        add(encoder -> encoder.putValue(data, 0, data.length));
+    }
+
+    public void add(Consumer<BinaryDataEncoder> writer) {
         int recordHeaderAddr = byteLength();
         int recordAddr = recordHeaderAddr + RECORD_HEADER_LENGTH;
         encoder.wrap(buffer, recordAddr);
@@ -56,7 +76,7 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         buffer.putInt(recordHeaderAddr + Integer.BYTES, encoder.sbeBlockLength());
 
         addToLength(RECORD_HEADER_LENGTH + encoder.encodedLength());
-        incSize();
+        incrementSize();
     }
 
     public void writeTo(OutputStream outputStream) throws IOException {
@@ -83,7 +103,7 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         return buffer.getInt(4);
     }
 
-    private void incSize() {
+    private void incrementSize() {
         setSize(size() + 1);
     }
 
@@ -95,7 +115,7 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         buffer.putInt(MAGIC_OFFSET, value);
     }
 
-    public int getId() {
+    public int id() {
         return buffer.getInt(ID_OFFSET);
     }
 
@@ -126,7 +146,7 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
 
     private class Iterator implements AddressableItemIterator<BinaryDataDecoder> {
 
-        private int recordAddress = LIST_HEADER_LENGTH;
+        private int recordAddress = HEADER_LENGTH;
         private int currentRecordAddress = -1;
 
         @Override
@@ -155,4 +175,36 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryList that = (BinaryList) o;
+        int thisByteLength = byteLength();
+        int thatByteLength = that.byteLength();
+        if (thisByteLength != thatByteLength) {
+            return false;
+        }
+        for (int i = 0; i < thisByteLength; i++) {
+            if (this.buffer.getByte(i) != that.buffer.getByte(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hc = 13;
+        int length = byteLength();
+        for (int i = 0; i < length; i++) {
+            hc = hc * 13 + buffer.getByte(i);
+        }
+        return hc;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryList{byteLength=" + byteLength() + ", size=" + size() + ", id=" + id() + "}";
+    }
 }

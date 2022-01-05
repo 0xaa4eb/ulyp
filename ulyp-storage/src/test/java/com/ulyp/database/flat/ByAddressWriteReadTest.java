@@ -27,12 +27,12 @@ public class ByAddressWriteReadTest {
     @Test
     public void testWritingLongAtAddress() throws IOException {
 
-        writer.writeAt(50, 5423423L);
+        writer.writeAt(50, (byte) 0);
 
-        Assert.assertEquals(5423423L, reader.readLongAt(50));
+        Assert.assertEquals(0, reader.readByte(50));
 
-        writer.writeAt(1024, Long.MIN_VALUE + 99);
+        writer.writeAt(1024, (byte) 13);
 
-        Assert.assertEquals(Long.MIN_VALUE + 99, reader.readLongAt(1024));
+        Assert.assertEquals(13, reader.readByte(1024));
     }
 }

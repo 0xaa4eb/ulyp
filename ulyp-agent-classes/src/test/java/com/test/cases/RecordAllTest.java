@@ -5,8 +5,7 @@ import com.test.cases.util.RecordingResult;
 import com.ulyp.core.CallRecord;
 import com.ulyp.core.CallRecordDatabase;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.database.DatabaseException;
-import org.hamcrest.Matchers;
+import com.ulyp.storage.StoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -108,7 +107,7 @@ public class RecordAllTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldAggregateByThread() throws DatabaseException {
+    public void shouldAggregateByThread() throws StoreException {
 
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()

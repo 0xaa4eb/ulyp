@@ -23,8 +23,8 @@ public class ByAddressFileReader {
         return buf;
     }
 
-    public long readLongAt(long address) throws IOException {
+    public byte readByte(long address) throws IOException {
         randomAccessFile.seek(address);
-        return randomAccessFile.readLong();
+        return randomAccessFile.readByte();
     }
 }

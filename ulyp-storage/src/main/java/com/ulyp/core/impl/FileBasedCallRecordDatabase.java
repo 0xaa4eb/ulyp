@@ -8,7 +8,7 @@ import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.bytes.BinaryInputImpl;
-import com.ulyp.database.DatabaseException;
+import com.ulyp.storage.StoreException;
 import com.ulyp.transport.BooleanType;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallExitRecordDecoder;
@@ -42,15 +42,15 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     private final byte[] tmpBuf = new byte[512 * 1024];
     private long rootId = -1;
 
-    public FileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws DatabaseException {
+    public FileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
         this("", methodInfoDatabase, typeInfoDatabase);
     }
 
-    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws DatabaseException {
+    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
         this(name, methodInfoDatabase, typeInfoDatabase, new InMemoryIndex());
     }
 
-    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws DatabaseException {
+    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws StoreException {
         this.methodInfoDatabase = methodInfoDatabase;
         this.typeInfoDatabase = typeInfoDatabase;
         this.decodingContext = new DecodingContext(typeInfoDatabase);
@@ -66,7 +66,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
         this.index = index;
     }
 
-    public synchronized void persistBatch(CallEnterRecordList enterRecords, CallExitRecordList exitRecords) throws DatabaseException {
+    public synchronized void persistBatch(CallEnterRecordList enterRecords, CallExitRecordList exitRecords) throws StoreException {
         checkOpen();
 
         Long2LongMap enterRecordPosCache = new Long2LongOpenHashMap();
@@ -99,7 +99,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public CallRecord getRoot() throws DatabaseException {
+    public CallRecord getRoot() throws StoreException {
         return find(rootId);
     }
 
@@ -107,7 +107,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
             CallEnterRecordList enterRecords,
             CallExitRecordList exitRecords,
             Long2LongMap enterRecordPosCache,
-            Long2LongMap exitRecordPosCache) throws DatabaseException
+            Long2LongMap exitRecordPosCache) throws StoreException
     {
         checkOpen();
 
@@ -144,7 +144,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public synchronized CallRecord find(long callId) throws DatabaseException {
+    public synchronized CallRecord find(long callId) throws StoreException {
         checkOpen();
 
         CallRecordIndexMetadata callRecordIndexMetadata = memCache.find(callId);
@@ -224,7 +224,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public synchronized LongList getChildrenIds(long id) throws DatabaseException {
+    public synchronized LongList getChildrenIds(long id) throws StoreException {
         CallRecordIndexMetadata state = memCache.find(id);
         if (state != null) {
             return new LongArrayList(state.getChildren());
@@ -239,7 +239,7 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public long getSubtreeCount(long callId) throws DatabaseException {
+    public long getSubtreeCount(long callId) throws StoreException {
 
         CallRecordIndexMetadata callRecordIndexMetadata = memCache.find(callId);
         if (callRecordIndexMetadata != null) {
