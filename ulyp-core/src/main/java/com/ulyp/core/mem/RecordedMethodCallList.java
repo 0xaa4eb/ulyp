@@ -15,21 +15,21 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class MethodCallList implements Iterable<MethodCall> {
+public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     public static final int ID = 2;
 
     private final BinaryOutputForEnterRecordImpl2 enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl2();
     private final BinaryOutputForExitRecordImpl2 exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl2();
-    private final BinaryEnterMethodCallEncoder enterMethodCallEncoder = new BinaryEnterMethodCallEncoder();
-    private final BinaryExitMethodCallEncoder exitMethodCallEncoder = new BinaryExitMethodCallEncoder();
+    private final BinaryRecordedEnterMethodCallEncoder enterMethodCallEncoder = new BinaryRecordedEnterMethodCallEncoder();
+    private final BinaryRecordedExitMethodCallEncoder exitMethodCallEncoder = new BinaryRecordedExitMethodCallEncoder();
     private final BinaryList bytes;
 
-    public MethodCallList() {
+    public RecordedMethodCallList() {
         bytes = new BinaryList(ID);
     }
 
-    public MethodCallList(BinaryList bytes) {
+    public RecordedMethodCallList(BinaryList bytes) {
         this.bytes = bytes;
     }
 
@@ -43,7 +43,7 @@ public class MethodCallList implements Iterable<MethodCall> {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                    encoder.id(BinaryExitMethodCallEncoder.TEMPLATE_ID);
+                    encoder.id(BinaryRecordedExitMethodCallEncoder.TEMPLATE_ID);
 
                     int headerLength = 4;
                     int limit = encoder.limit();
@@ -85,7 +85,7 @@ public class MethodCallList implements Iterable<MethodCall> {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                    encoder.id(BinaryEnterMethodCallEncoder.TEMPLATE_ID);
+                    encoder.id(BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID);
 
                     int headerLength = 4;
                     int limit = encoder.limit();
@@ -96,7 +96,7 @@ public class MethodCallList implements Iterable<MethodCall> {
                     enterMethodCallEncoder.methodId(method.getId());
                     ObjectRecorder[] paramRecorders = method.getParameterRecorders();
 
-                    BinaryEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
+                    BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
                         ObjectRecorder recorder = args[i] != null ? paramRecorders[i] : RecorderType.NULL_RECORDER.getInstance();
@@ -144,15 +144,15 @@ public class MethodCallList implements Iterable<MethodCall> {
         return bytes.iterator();
     }
 
-    public Stream<MethodCall> stream() {
+    public Stream<RecordedMethodCall> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED), false);
     }
 
     @NotNull
     @Override
-    public AddressableItemIterator<MethodCall> iterator() {
+    public AddressableItemIterator<RecordedMethodCall> iterator() {
         AddressableItemIterator<BinaryDataDecoder> iterator = bytes.iterator();
-        return new AddressableItemIterator<MethodCall>() {
+        return new AddressableItemIterator<RecordedMethodCall>() {
             @Override
             public long address() {
                 return iterator.address();
@@ -164,18 +164,18 @@ public class MethodCallList implements Iterable<MethodCall> {
             }
 
             @Override
-            public MethodCall next() {
+            public RecordedMethodCall next() {
                 BinaryDataDecoder decoder = iterator.next();
                 UnsafeBuffer buffer = new UnsafeBuffer();
                 decoder.wrapValue(buffer);
-                if (decoder.id() == BinaryEnterMethodCallEncoder.TEMPLATE_ID) {
-                    BinaryEnterMethodCallDecoder enterMethodCallDecoder = new BinaryEnterMethodCallDecoder();
-                    enterMethodCallDecoder.wrap(buffer, 0, BinaryEnterMethodCallEncoder.BLOCK_LENGTH, 0);
-                    return EnterMethodCall.deserialize(enterMethodCallDecoder);
+                if (decoder.id() == BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID) {
+                    BinaryRecordedEnterMethodCallDecoder enterMethodCallDecoder = new BinaryRecordedEnterMethodCallDecoder();
+                    enterMethodCallDecoder.wrap(buffer, 0, BinaryRecordedEnterMethodCallEncoder.BLOCK_LENGTH, 0);
+                    return RecordedEnterMethodCall.deserialize(enterMethodCallDecoder);
                 } else {
-                    BinaryExitMethodCallDecoder exitMethodCallDecoder = new BinaryExitMethodCallDecoder();
-                    exitMethodCallDecoder.wrap(buffer, 0, BinaryExitMethodCallDecoder.BLOCK_LENGTH, 0);
-                    return ExitMethodCall.deserialize(exitMethodCallDecoder);
+                    BinaryRecordedExitMethodCallDecoder exitMethodCallDecoder = new BinaryRecordedExitMethodCallDecoder();
+                    exitMethodCallDecoder.wrap(buffer, 0, BinaryRecordedExitMethodCallDecoder.BLOCK_LENGTH, 0);
+                    return RecordedExitMethodCall.deserialize(exitMethodCallDecoder);
                 }
             }
         };

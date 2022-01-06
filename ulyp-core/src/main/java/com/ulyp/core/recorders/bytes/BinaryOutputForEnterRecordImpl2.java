@@ -1,13 +1,13 @@
 package com.ulyp.core.recorders.bytes;
 
-import com.ulyp.transport.BinaryEnterMethodCallEncoder;
+import com.ulyp.transport.BinaryRecordedEnterMethodCallEncoder;
 import org.agrona.concurrent.UnsafeBuffer;
 
 public class BinaryOutputForEnterRecordImpl2 extends AbstractBinaryOutput {
 
-    private BinaryEnterMethodCallEncoder encoder;
+    private BinaryRecordedEnterMethodCallEncoder encoder;
 
-    public void wrap(BinaryEnterMethodCallEncoder encoder) {
+    public void wrap(BinaryRecordedEnterMethodCallEncoder encoder) {
         this.encoder = encoder;
     }
 

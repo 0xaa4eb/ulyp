@@ -1,18 +1,18 @@
 package com.ulyp.core;
 
-import com.ulyp.transport.BinaryEnterMethodCallDecoder;
+import com.ulyp.transport.BinaryRecordedEnterMethodCallDecoder;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuperBuilder
-public class EnterMethodCall extends MethodCall {
+public class RecordedEnterMethodCall extends RecordedMethodCall {
 
     private final RecordedObject callee;
     private final List<RecordedObject> arguments;
 
-    public static MethodCall deserialize(BinaryEnterMethodCallDecoder decoder) {
+    public static RecordedMethodCall deserialize(BinaryRecordedEnterMethodCallDecoder decoder) {
 
         List<RecordedObject> arguments = new ArrayList<>();
 
@@ -28,7 +28,7 @@ public class EnterMethodCall extends MethodCall {
         decoder.getCalleeBytes(returnValueBytes, 0, returnValueBytes.length);
         RecordedObject callee = RecordedObject.builder().build();
 
-        return EnterMethodCall.builder()
+        return RecordedEnterMethodCall.builder()
                 .callId(decoder.callId())
                 .methodId(decoder.methodId())
                 .callee(callee)

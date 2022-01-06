@@ -1,7 +1,7 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.mem.MethodCallList;
+import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.process.ProcessInfo;
@@ -37,7 +37,7 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(MethodCallList callRecords) throws IOException {
+    public void store(RecordedMethodCallList callRecords) throws IOException {
         writer.append(callRecords.getRawBytes());
     }
 

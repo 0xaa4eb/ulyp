@@ -89,7 +89,7 @@
         <data name="declaringTypeValue" id="40" type="varStringEncoding"/>
     </sbe:message>
 
-    <sbe:message name="BinaryEnterMethodCall" id="50">
+    <sbe:message name="BinaryRecordedEnterMethodCall" id="50">
         <field name="methodId" id="1" type="int64"/>
         <field name="callId" id="2" type="int64"/>
         <field name="calleeTypeId" id="16" type="int64"/>
@@ -102,7 +102,7 @@
         <data name="calleeBytes" id="15" type="varDataEncoding"/>
     </sbe:message>
 
-    <sbe:message name="BinaryExitMethodCall" id="51">
+    <sbe:message name="BinaryRecordedExitMethodCall" id="51">
         <field name="methodId" id="1" type="int64"/>
         <field name="callId" id="2" type="int64"/>
         <field name="thrown" id="3" type="BooleanType"/>

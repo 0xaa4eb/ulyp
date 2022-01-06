@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @Getter
-public abstract class MethodCall {
+public abstract class RecordedMethodCall {
     private final long methodId;
     private final long callId;
 }

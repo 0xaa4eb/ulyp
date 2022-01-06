@@ -1,6 +1,6 @@
 package com.ulyp.storage;
 
-import com.ulyp.core.mem.MethodCallList;
+import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.process.ProcessInfo;
@@ -14,7 +14,7 @@ public interface StorageWriter {
 
     void store(TypeList types) throws IOException;
 
-    void store(MethodCallList callRecords) throws IOException;
+    void store(RecordedMethodCallList callRecords) throws IOException;
 
     void store(MethodList methods) throws IOException;
 }

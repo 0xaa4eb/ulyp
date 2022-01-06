@@ -1,13 +1,13 @@
 package com.ulyp.core.recorders.bytes;
 
-import com.ulyp.transport.BinaryExitMethodCallEncoder;
+import com.ulyp.transport.BinaryRecordedExitMethodCallEncoder;
 import org.agrona.concurrent.UnsafeBuffer;
 
 public class BinaryOutputForExitRecordImpl2 extends AbstractBinaryOutput {
 
-    private BinaryExitMethodCallEncoder encoder;
+    private BinaryRecordedExitMethodCallEncoder encoder;
 
-    public void wrap(BinaryExitMethodCallEncoder encoder) {
+    public void wrap(BinaryRecordedExitMethodCallEncoder encoder) {
         this.encoder = encoder;
     }
 

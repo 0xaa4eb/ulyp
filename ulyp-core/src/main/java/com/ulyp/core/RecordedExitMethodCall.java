@@ -1,22 +1,22 @@
 package com.ulyp.core;
 
-import com.ulyp.transport.BinaryExitMethodCallDecoder;
+import com.ulyp.transport.BinaryRecordedExitMethodCallDecoder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Getter
-public class ExitMethodCall extends  MethodCall {
+public class RecordedExitMethodCall extends RecordedMethodCall {
 
     private final RecordedObject returnValue;
     private final boolean thrown;
 
-    public static MethodCall deserialize(BinaryExitMethodCallDecoder decoder) {
+    public static RecordedMethodCall deserialize(BinaryRecordedExitMethodCallDecoder decoder) {
 
         byte[] returnValueBytes = new byte[decoder.returnValueBytesLength()];
         decoder.getReturnValueBytes(returnValueBytes, 0, returnValueBytes.length);
 
-        return ExitMethodCall.builder()
+        return RecordedExitMethodCall.builder()
                 .returnValue(
                         RecordedObject.builder()
                                 .recorderId(decoder.returnValueRecorderId())

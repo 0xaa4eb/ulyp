@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodCallListTest {
+public class RecordedMethodCallListTest {
 
     public static class A {
         public String convert(int x) {
@@ -18,7 +18,7 @@ public class MethodCallListTest {
         }
     }
 
-    private final MethodCallList list = new MethodCallList();
+    private final RecordedMethodCallList list = new RecordedMethodCallList();
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     @Test
@@ -51,14 +51,14 @@ public class MethodCallListTest {
         );
 
 
-        List<MethodCall> calls = list.stream().collect(Collectors.toList());
+        List<RecordedMethodCall> calls = list.stream().collect(Collectors.toList());
 
-        EnterMethodCall enterMethodCall = (EnterMethodCall) calls.get(0);
+        RecordedEnterMethodCall recordedEnterMethodCall = (RecordedEnterMethodCall) calls.get(0);
 
-        Assert.assertEquals(134L, enterMethodCall.getCallId());
+        Assert.assertEquals(134L, recordedEnterMethodCall.getCallId());
 
-        ExitMethodCall exitMethodCall = (ExitMethodCall) calls.get(1);
+        RecordedExitMethodCall recordedExitMethodCall = (RecordedExitMethodCall) calls.get(1);
 
-        Assert.assertEquals(134L, exitMethodCall.getCallId());
+        Assert.assertEquals(134L, recordedExitMethodCall.getCallId());
     }
 }
