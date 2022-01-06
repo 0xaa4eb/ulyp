@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 
 public class ConcurrentReaderWriterBinaryListTest {
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     private File file;
 
     @Before
