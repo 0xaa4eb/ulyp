@@ -52,4 +52,19 @@ public class BinaryListFileWriterTest {
         Assert.assertEquals(list2, reader.read(Duration.ofSeconds(5)));
         Assert.assertNull(reader.read(Duration.ofSeconds(1)));
     }
+
+    @Test
+    public void shouldReadMultipleListsOneAfterAnother() throws IOException, InterruptedException {
+        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
+        writer.append(list1);
+
+        Assert.assertEquals(list1, reader.read(Duration.ofSeconds(5)));
+
+        BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
+        writer.append(list2);
+
+        Assert.assertEquals(list2, reader.read(Duration.ofSeconds(5)));
+
+        Assert.assertNull(reader.read(Duration.ofSeconds(1)));
+    }
 }
