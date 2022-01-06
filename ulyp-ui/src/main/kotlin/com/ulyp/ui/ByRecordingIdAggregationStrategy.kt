@@ -3,7 +3,7 @@ package com.ulyp.ui
 import com.ulyp.core.CallRecordDatabase
 import com.ulyp.core.MethodInfoDatabase
 import com.ulyp.core.TypeInfoDatabase
-import com.ulyp.core.impl.FileBasedCallRecordDatabase
+import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase
 import com.ulyp.core.impl.RocksdbIndex
 import lombok.Value
 import java.util.concurrent.atomic.AtomicLong
@@ -19,11 +19,11 @@ class ByRecordingIdAggregationStrategy : AggregationStrategy {
         methodInfoDatabase: MethodInfoDatabase?,
         typeInfoDatabase: TypeInfoDatabase?
     ): CallRecordDatabase {
-        return FileBasedCallRecordDatabase(
-            "" + idGen.incrementAndGet(),
-            methodInfoDatabase,
-            typeInfoDatabase,
-            RocksdbIndex()
+        return LegacyFileBasedCallRecordDatabase(
+                "" + idGen.incrementAndGet(),
+                methodInfoDatabase,
+                typeInfoDatabase,
+                RocksdbIndex()
         )
     }
 

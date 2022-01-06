@@ -9,6 +9,6 @@ public class FileBasedWithInMemoryIndexDatabaseTest extends CallRecordDatabaseTe
 
     @Override
     protected CallRecordDatabase build(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
-        return new FileBasedCallRecordDatabase(FileBasedWithInMemoryIndexDatabaseTest.class.getSimpleName(), methodInfoDatabase, typeInfoDatabase, new InMemoryIndex());
+        return new LegacyFileBasedCallRecordDatabase(FileBasedWithInMemoryIndexDatabaseTest.class.getSimpleName(), methodInfoDatabase, typeInfoDatabase, new InMemoryIndex());
     }
 }

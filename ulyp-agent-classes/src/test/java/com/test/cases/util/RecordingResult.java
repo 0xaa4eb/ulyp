@@ -1,7 +1,7 @@
 package com.test.cases.util;
 
 import com.ulyp.core.*;
-import com.ulyp.core.impl.FileBasedCallRecordDatabase;
+import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
@@ -46,7 +46,7 @@ public class RecordingResult {
                     id -> {
                         CallRecordDatabase newDatabase = null;
                         try {
-                            newDatabase = new FileBasedCallRecordDatabase(methodInfoDatabase, typeInfoDatabase);
+                            newDatabase = new LegacyFileBasedCallRecordDatabase(methodInfoDatabase, typeInfoDatabase);
 
                             CallEnterRecordList enterRecords = new CallEnterRecordList();
                             enterRecords.add(
@@ -85,7 +85,7 @@ public class RecordingResult {
             CallRecordDatabase database = recordingIdToRequest.computeIfAbsent(
                     request.getRecordingInfo().getRecordingId(),
                     id -> {
-                        return new FileBasedCallRecordDatabase(methodInfoDatabase, typeInfoDatabase);
+                        return new LegacyFileBasedCallRecordDatabase(methodInfoDatabase, typeInfoDatabase);
                     }
             );
 

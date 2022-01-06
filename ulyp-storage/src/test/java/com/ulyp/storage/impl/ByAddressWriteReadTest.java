@@ -1,4 +1,4 @@
-package com.ulyp.database.flat;
+package com.ulyp.storage.impl;
 
 import com.ulyp.storage.impl.ByAddressFileReader;
 import com.ulyp.storage.impl.ByAddressFileWriter;

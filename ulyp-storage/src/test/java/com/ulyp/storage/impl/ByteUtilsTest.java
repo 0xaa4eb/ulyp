@@ -1,4 +1,4 @@
-package com.ulyp.database.util;
+package com.ulyp.storage.impl;
 
 import com.ulyp.storage.util.ByteUtils;
 import it.unimi.dsi.fastutil.longs.LongArrayList;

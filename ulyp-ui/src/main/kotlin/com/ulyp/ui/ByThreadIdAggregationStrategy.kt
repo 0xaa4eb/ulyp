@@ -1,7 +1,7 @@
 package com.ulyp.ui
 
 import com.ulyp.core.*
-import com.ulyp.core.impl.FileBasedCallRecordDatabase
+import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase
 import com.ulyp.core.impl.RocksdbIndex
 import com.ulyp.core.recorders.RecorderType
 import com.ulyp.core.util.SingleTypeReflectionBasedResolver
@@ -40,11 +40,11 @@ class ByThreadIdAggregationStrategy : AggregationStrategy {
             .build()
         methodInfos.add(threadRunMethod)
         methodInfoDatabase!!.addAll(methodInfos)
-        val database: CallRecordDatabase = FileBasedCallRecordDatabase(
-            "" + idGen.incrementAndGet(),
-            methodInfoDatabase,
-            typeInfoDatabase,
-            RocksdbIndex()
+        val database: CallRecordDatabase = LegacyFileBasedCallRecordDatabase(
+                "" + idGen.incrementAndGet(),
+                methodInfoDatabase,
+                typeInfoDatabase,
+                RocksdbIndex()
         )
         val enterRecords = CallEnterRecordList()
         val exitRecords = CallExitRecordList()

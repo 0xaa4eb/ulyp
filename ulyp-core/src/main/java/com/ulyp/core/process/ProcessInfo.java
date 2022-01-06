@@ -2,6 +2,8 @@ package com.ulyp.core.process;
 
 public class ProcessInfo {
 
+    public static final int ID = 10;
+
     private final String mainClassName;
     private final Classpath classpath;
 

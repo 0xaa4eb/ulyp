@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FileBasedCallRecordDatabase implements CallRecordDatabase {
+public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
 
     private static final int RECORD_HEADER_LENGTH = 2 * Integer.BYTES;
 
@@ -42,15 +42,15 @@ public class FileBasedCallRecordDatabase implements CallRecordDatabase {
     private final byte[] tmpBuf = new byte[512 * 1024];
     private long rootId = -1;
 
-    public FileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
         this("", methodInfoDatabase, typeInfoDatabase);
     }
 
-    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
         this(name, methodInfoDatabase, typeInfoDatabase, new InMemoryIndex());
     }
 
-    public FileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws StoreException {
         this.methodInfoDatabase = methodInfoDatabase;
         this.typeInfoDatabase = typeInfoDatabase;
         this.decodingContext = new DecodingContext(typeInfoDatabase);

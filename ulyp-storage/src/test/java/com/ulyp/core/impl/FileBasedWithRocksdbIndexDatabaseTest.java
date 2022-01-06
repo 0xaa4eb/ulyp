@@ -9,6 +9,6 @@ public class FileBasedWithRocksdbIndexDatabaseTest extends CallRecordDatabaseTes
 
     @Override
     protected CallRecordDatabase build(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
-        return new FileBasedCallRecordDatabase(FileBasedWithRocksdbIndexDatabaseTest.class.getSimpleName(), methodInfoDatabase, typeInfoDatabase, new RocksdbIndex());
+        return new LegacyFileBasedCallRecordDatabase(FileBasedWithRocksdbIndexDatabaseTest.class.getSimpleName(), methodInfoDatabase, typeInfoDatabase, new RocksdbIndex());
     }
 }
