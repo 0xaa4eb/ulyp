@@ -54,16 +54,16 @@ public class RequestConverter {
                                 )
                                 .build()
                 )
-                .setThreadName(recordLog.getThreadName())
-                .setThreadId(recordLog.getThreadId())
+                .setThreadName(recordLog.getRecordingMetadata().getThreadName())
+                .setThreadId(recordLog.getRecordingMetadata().getThreadId())
                 .setProcessInfo(com.ulyp.transport.ProcessInfo.newBuilder()
                         .setMainClassName(request.getProcessInfo().getMainClassName())
                         .addAllClasspath(request.getProcessInfo().getClasspath().toList())
                         .build())
-                .setRecordingId(request.getRecordLog().getRecordingId())
-                .setChunkId(request.getRecordLog().getChunkId())
-                .setCreateEpochMillis(recordLog.getEpochMillisCreatedTime())
-                .setLifetimeMillis(request.getEndLifetimeEpochMillis() - recordLog.getEpochMillisCreatedTime())
+                .setRecordingId(request.getRecordLog().getRecordingMetadata().getId())
+                .setChunkId(0)
+                .setCreateEpochMillis(recordLog.getRecordingMetadata().getCreateEpochMillis())
+                .setLifetimeMillis(request.getEndLifetimeEpochMillis() - recordLog.getRecordingMetadata().getCreateEpochMillis())
                 .build();
 
         return requestBuilder

@@ -1,5 +1,6 @@
 package com.ulyp.storage;
 
+import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
@@ -11,6 +12,8 @@ public interface StorageWriter {
 
     // TODO move to sbe
     void store(ProcessInfo processInfo) throws IOException;
+
+    void store(RecordingMetadata recordingMetadata) throws IOException;
 
     void store(TypeList types) throws IOException;
 

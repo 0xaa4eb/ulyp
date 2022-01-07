@@ -11,63 +11,53 @@ public class CallRecordLog {
 
     public static final AtomicLong idGenerator = new AtomicLong(-1L);
 
-    private final long recordingId;
-    private final long chunkId;
+    private final RecordingMetadata recordingMetadata;
     private final TypeResolver typeResolver;
     private final CallEnterRecordList enterRecords = new CallEnterRecordList();
     private final CallExitRecordList exitRecords = new CallExitRecordList();
-    private final long epochMillisCreatedTime = System.currentTimeMillis();
-    private final String threadName;
-    private final long threadId;
     private final StackTraceElement[] stackTrace;
 
     private boolean inProcessOfRecording = true;
-    private long callsRecorded = 0;
+
     private long lastExitCallId = -1;
     private long rootCallId;
     private long callIdCounter;
 
     public CallRecordLog(TypeResolver typeResolver, long callIdInitialValue) {
-        this.chunkId = 0;
-        this.recordingId = idGenerator.incrementAndGet();
+        this.recordingMetadata = RecordingMetadata.builder()
+                .id(idGenerator.incrementAndGet())
+                .createEpochMillis(System.currentTimeMillis())
+                .threadId(Thread.currentThread().getId())
+                .threadName(Thread.currentThread().getName())
+                .build();
+
         this.typeResolver = typeResolver;
         this.callIdCounter = callIdInitialValue;
         this.rootCallId = callIdInitialValue;
 
         StackTraceElement[] wholeStackTrace = new Exception().getStackTrace();
-
         // If code changed, there should be a readjustement
         this.stackTrace = Arrays.copyOfRange(wholeStackTrace, 4, wholeStackTrace.length);
-        this.threadName = Thread.currentThread().getName();
-        this.threadId = Thread.currentThread().getId();
     }
 
     private CallRecordLog(
-            long chunkId,
-            long recordingId,
+            RecordingMetadata recordingMetadata,
             TypeResolver typeResolver,
-            String threadName,
-            long threadId,
             StackTraceElement[] stackTrace,
             boolean inProcessOfRecording,
             long callIdCounter,
-            long rootCallId,
-            long callsRecorded)
+            long rootCallId)
     {
-        this.chunkId = chunkId;
-        this.recordingId = recordingId;
+        this.recordingMetadata = recordingMetadata;
         this.typeResolver = typeResolver;
-        this.threadName = threadName;
-        this.threadId = threadId;
         this.stackTrace = stackTrace;
         this.inProcessOfRecording = inProcessOfRecording;
         this.callIdCounter = callIdCounter;
         this.rootCallId = rootCallId;
-        this.callsRecorded = callsRecorded;
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.chunkId + 1, this.recordingId, this.typeResolver, this.threadName, this.threadId, this.stackTrace, this.inProcessOfRecording, this.callIdCounter, rootCallId, callsRecorded);
+        return new CallRecordLog(recordingMetadata, this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.callIdCounter, rootCallId);
     }
 
     public long estimateBytesSize() {
@@ -82,7 +72,6 @@ public class CallRecordLog {
         try {
 
             long callId = callIdCounter++;
-            callsRecorded++;
             enterRecords.add(callId, method.getId(), typeResolver, method.getParameterRecorders(), callee, args);
             return callId;
         } finally {
@@ -118,20 +107,12 @@ public class CallRecordLog {
         return enterRecords.size();
     }
 
-    public long getChunkId() {
-        return chunkId;
-    }
-
-    public String getThreadName() {
-        return threadName;
-    }
-
-    public long getThreadId() {
-        return threadId;
-    }
-
     public long getLastCallId() {
         return callIdCounter;
+    }
+
+    public RecordingMetadata getRecordingMetadata() {
+        return recordingMetadata;
     }
 
     public StackTraceElement[] getStackTrace() {
@@ -146,21 +127,8 @@ public class CallRecordLog {
         return exitRecords;
     }
 
-    public long getRecordingId() {
-        return recordingId;
-    }
-
-    public long getEpochMillisCreatedTime() {
-        return epochMillisCreatedTime;
-    }
-
-    public long getCallsRecorded() {
-        return callsRecorded;
-    }
-
     @Override
     public String toString() {
-        return "CallRecordLog{" +
-                "id=" + recordingId + '}';
+        return "CallRecordLog{id=" + recordingMetadata + '}';
     }
 }

@@ -51,7 +51,7 @@ public class Recorder {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get() + 1);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toShortString());
+                    log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -65,7 +65,7 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get());
                 currentRecordingSessionCount.incrementAndGet();
-                log.info("Started recording {} at method {}", callRecordLog.getRecordingId(), method.toShortString());
+                log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 return callRecordLog;
             });
         }
@@ -80,9 +80,9 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
-            }
+//            if (LoggingSettings.INFO_ENABLED) {
+//              log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
+//            }
 
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
@@ -103,9 +103,9 @@ public class Recorder {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
             callIdThreadLocal.set(recordLog.getLastCallId() + 1);
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
-            }
+//            if (LoggingSettings.INFO_ENABLED) {
+//                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
+//            }
             context.getTransport().uploadAsync(
                     new CallRecordTreeRequest(
                             recordLog,
@@ -138,7 +138,7 @@ public class Recorder {
         if (currentRecordLog == null) return;
         currentRecordLog.onMethodExit(method.getId(), method.getReturnValueRecorder(), result, thrown, callId);
 
-        if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getEpochMillisCreatedTime()) > 100) {
+        if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100) {
             CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
             threadLocalRecordsLog.set(newRecordLog);
 
