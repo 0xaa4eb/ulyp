@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class RecordingMetadata {
 
-    private final long id;
+    private final int id;
     private final long createEpochMillis;
     private final long lifetimeMillis;
     private final String threadName;

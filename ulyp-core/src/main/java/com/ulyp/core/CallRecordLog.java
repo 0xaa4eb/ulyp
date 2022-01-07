@@ -5,11 +5,11 @@ import com.ulyp.core.recorders.RecorderType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CallRecordLog {
 
-    public static final AtomicLong idGenerator = new AtomicLong(-1L);
+    public static final AtomicInteger idGenerator = new AtomicInteger(-1);
 
     private final RecordingMetadata recordingMetadata;
     private final TypeResolver typeResolver;
