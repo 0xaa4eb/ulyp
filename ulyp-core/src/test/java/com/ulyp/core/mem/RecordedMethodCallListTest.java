@@ -35,6 +35,7 @@ public class RecordedMethodCallListTest {
                 .build();
 
         list.addEnterMethodCall(
+                5,
                 134L,
                 method,
                 typeResolver,
@@ -43,6 +44,7 @@ public class RecordedMethodCallListTest {
         );
 
         list.addExitMethodCall(
+                5,
                 134L,
                 method,
                 typeResolver,
@@ -55,10 +57,12 @@ public class RecordedMethodCallListTest {
 
         RecordedEnterMethodCall recordedEnterMethodCall = (RecordedEnterMethodCall) calls.get(0);
 
+        Assert.assertEquals(5, recordedEnterMethodCall.getRecordingId());
         Assert.assertEquals(134L, recordedEnterMethodCall.getCallId());
 
         RecordedExitMethodCall recordedExitMethodCall = (RecordedExitMethodCall) calls.get(1);
 
+        Assert.assertEquals(5, recordedExitMethodCall.getRecordingId());
         Assert.assertEquals(134L, recordedExitMethodCall.getCallId());
     }
 }

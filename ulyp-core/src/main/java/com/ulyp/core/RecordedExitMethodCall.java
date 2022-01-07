@@ -24,6 +24,7 @@ public class RecordedExitMethodCall extends RecordedMethodCall {
                                 .value(returnValueBytes)
                                 .build()
                 )
+                .recordingId(decoder.recordingId())
                 .callId(decoder.callId())
                 .methodId(decoder.methodId())
                 .build();

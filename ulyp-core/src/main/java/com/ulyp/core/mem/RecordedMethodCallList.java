@@ -34,6 +34,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     }
 
     public void addExitMethodCall(
+            int recordingId,
             long callId,
             Method method,
             TypeResolver typeResolver,
@@ -50,6 +51,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     exitMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
+                    exitMethodCallEncoder.recordingId(recordingId);
                     exitMethodCallEncoder.callId(callId);
                     exitMethodCallEncoder.methodId(method.getId());
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
@@ -76,6 +78,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     }
 
     public void addEnterMethodCall(
+            int recordingId,
             long callId,
             Method method,
             TypeResolver typeResolver,
@@ -92,6 +95,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
+                    enterMethodCallEncoder.recordingId(recordingId);
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
                     ObjectRecorder[] paramRecorders = method.getParameterRecorders();

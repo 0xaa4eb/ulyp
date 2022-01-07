@@ -29,6 +29,7 @@ public class RecordedEnterMethodCall extends RecordedMethodCall {
         RecordedObject callee = RecordedObject.builder().build();
 
         return RecordedEnterMethodCall.builder()
+                .recordingId(decoder.recordingId())
                 .callId(decoder.callId())
                 .methodId(decoder.methodId())
                 .callee(callee)
