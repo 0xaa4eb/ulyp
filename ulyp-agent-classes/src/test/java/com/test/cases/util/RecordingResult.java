@@ -5,7 +5,7 @@ import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.StoreException;
+import com.ulyp.storage.StorageException;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.junit.Assert;
 
@@ -21,7 +21,7 @@ public class RecordingResult {
         this.requests = requests;
     }
 
-    public Map<Long, CallRecordDatabase> aggregateByThread() throws StoreException {
+    public Map<Long, CallRecordDatabase> aggregateByThread() throws StorageException {
         Map<Long, CallRecordDatabase> recordingIdToRequest = new HashMap<>();
 
         MethodInfoDatabase methodInfoDatabase = new MethodInfoDatabase();
@@ -60,7 +60,7 @@ public class RecordingResult {
                             CallExitRecordList exitRecords = new CallExitRecordList();
                             newDatabase.persistBatch(enterRecords, exitRecords);
                             return newDatabase;
-                        } catch (StoreException e) {
+                        } catch (StorageException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -98,7 +98,7 @@ public class RecordingResult {
         return recordingIdToRequest;
     }
 
-    public CallRecord getSingleRoot() {
+    public CallRecord getSingleRoot() throws StorageException {
         assertSingleRecordingSession();
 
         return aggregateByRecordings().entrySet().iterator().next().getValue().getRoot();

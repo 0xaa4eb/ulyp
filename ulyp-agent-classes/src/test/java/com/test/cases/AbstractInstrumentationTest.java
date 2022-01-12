@@ -3,6 +3,7 @@ package com.test.cases;
 import com.test.cases.util.*;
 import com.ulyp.core.CallRecord;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
+import junit.framework.AssertionFailedError;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
@@ -15,7 +16,11 @@ public class AbstractInstrumentationTest {
 
     @NotNull
     protected CallRecord runForkWithUi(ForkProcessBuilder settings) {
-        return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
+        try {
+            return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
+        } catch (Exception e) {
+            throw new AssertionFailedError(e.getMessage());
+        }
     }
 
     @NotNull

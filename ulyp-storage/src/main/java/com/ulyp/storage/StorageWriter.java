@@ -8,7 +8,7 @@ import com.ulyp.core.process.ProcessInfo;
 
 import java.io.IOException;
 
-public interface StorageWriter {
+public interface StorageWriter extends AutoCloseable {
 
     // TODO move to sbe
     void store(ProcessInfo processInfo) throws IOException;
@@ -20,4 +20,6 @@ public interface StorageWriter {
     void store(RecordedMethodCallList callRecords) throws IOException;
 
     void store(MethodList methods) throws IOException;
+
+    void close() throws StorageException;
 }

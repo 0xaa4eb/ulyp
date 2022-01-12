@@ -8,7 +8,7 @@ import com.ulyp.core.recorders.RecorderType;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.bytes.BinaryInputImpl;
-import com.ulyp.storage.StoreException;
+import com.ulyp.storage.StorageException;
 import com.ulyp.transport.BooleanType;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallExitRecordDecoder;
@@ -42,15 +42,15 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
     private final byte[] tmpBuf = new byte[512 * 1024];
     private long rootId = -1;
 
-    public LegacyFileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StorageException {
         this("", methodInfoDatabase, typeInfoDatabase);
     }
 
-    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase) throws StorageException {
         this(name, methodInfoDatabase, typeInfoDatabase, new InMemoryIndex());
     }
 
-    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws StoreException {
+    public LegacyFileBasedCallRecordDatabase(String name, MethodInfoDatabase methodInfoDatabase, TypeInfoDatabase typeInfoDatabase, Index index) throws StorageException {
         this.methodInfoDatabase = methodInfoDatabase;
         this.typeInfoDatabase = typeInfoDatabase;
         this.decodingContext = new DecodingContext(typeInfoDatabase);
@@ -66,7 +66,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
         this.index = index;
     }
 
-    public synchronized void persistBatch(CallEnterRecordList enterRecords, CallExitRecordList exitRecords) throws StoreException {
+    public synchronized void persistBatch(CallEnterRecordList enterRecords, CallExitRecordList exitRecords) throws StorageException {
         checkOpen();
 
         Long2LongMap enterRecordPosCache = new Long2LongOpenHashMap();
@@ -99,7 +99,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public CallRecord getRoot() throws StoreException {
+    public CallRecord getRoot() throws StorageException {
         return find(rootId);
     }
 
@@ -107,7 +107,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
             CallEnterRecordList enterRecords,
             CallExitRecordList exitRecords,
             Long2LongMap enterRecordPosCache,
-            Long2LongMap exitRecordPosCache) throws StoreException
+            Long2LongMap exitRecordPosCache) throws StorageException
     {
         checkOpen();
 
@@ -144,7 +144,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public synchronized CallRecord find(long callId) throws StoreException {
+    public synchronized CallRecord find(long callId) throws StorageException {
         checkOpen();
 
         CallRecordIndexMetadata callRecordIndexMetadata = memCache.find(callId);
@@ -224,7 +224,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public synchronized LongList getChildrenIds(long id) throws StoreException {
+    public synchronized LongList getChildrenIds(long id) throws StorageException {
         CallRecordIndexMetadata state = memCache.find(id);
         if (state != null) {
             return new LongArrayList(state.getChildren());
@@ -239,7 +239,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
     }
 
     @Override
-    public long getSubtreeCount(long callId) throws StoreException {
+    public long getSubtreeCount(long callId) throws StorageException {
 
         CallRecordIndexMetadata callRecordIndexMetadata = memCache.find(callId);
         if (callRecordIndexMetadata != null) {

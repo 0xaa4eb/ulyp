@@ -1,6 +1,11 @@
 package com.ulyp.storage;
 
-public interface StorageReader {
 
+import java.util.List;
 
+public interface StorageReader extends AutoCloseable {
+
+    List<Recording> availableRecordings();
+
+    void close() throws StorageException;
 }

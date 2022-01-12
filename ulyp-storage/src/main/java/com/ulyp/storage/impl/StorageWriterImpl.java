@@ -6,6 +6,7 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.process.ProcessInfo;
+import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import org.agrona.MutableDirectBuffer;
@@ -36,7 +37,7 @@ public class StorageWriterImpl implements StorageWriter {
 
     @Override
     public void store(RecordingMetadata recordingMetadata) throws IOException {
-        BinaryList binaryList = new BinaryList(ProcessInfo.ID);
+        BinaryList binaryList = new BinaryList(RecordingMetadata.WIRE_ID);
         binaryList.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -66,5 +67,14 @@ public class StorageWriterImpl implements StorageWriter {
     @Override
     public void store(MethodList methods) throws IOException {
         writer.append(methods.getRawBytes());
+    }
+
+    @Override
+    public void close() throws StorageException {
+        try {
+            writer.close();
+        } catch (IOException ie) {
+            throw new StorageException("Error while closing storage writer", ie);
+        }
     }
 }

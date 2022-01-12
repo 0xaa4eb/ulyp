@@ -32,6 +32,7 @@ public class BinaryListFileReader implements AutoCloseable {
             randomAccessFile.read(buf);
 
             if (buf[0] == 0) {
+                // TODO make arg
                 Thread.sleep(50);
                 continue;
             }

@@ -9,8 +9,11 @@ import lombok.Getter;
 @Getter
 public class RecordingMetadata {
 
+    public static final int WIRE_ID = 7;
+
     private final int id;
     private final long createEpochMillis;
+    // TODO lifetimeMillis can't be here
     private final long lifetimeMillis;
     private final String threadName;
     private final long threadId;
