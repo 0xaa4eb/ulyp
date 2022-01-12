@@ -35,7 +35,7 @@ public class StorageReadWriteTest {
     }
 
     @Test
-    public void testReadWriteRecordingWithNoData() throws IOException {
+    public void testReadWriteRecordingWithNoData() {
 
         writer.store(
                 RecordingMetadata.builder()

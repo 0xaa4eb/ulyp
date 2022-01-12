@@ -23,7 +23,7 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(ProcessInfo processInfo) throws IOException {
+    public void store(ProcessInfo processInfo) {
         BinaryList binaryList = new BinaryList(ProcessInfo.ID);
         binaryList.add(
                 com.ulyp.transport.ProcessInfo.newBuilder()
@@ -36,7 +36,7 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(RecordingMetadata recordingMetadata) throws IOException {
+    public void store(RecordingMetadata recordingMetadata) {
         BinaryList binaryList = new BinaryList(RecordingMetadata.WIRE_ID);
         binaryList.add(
                 encoder -> {
@@ -55,26 +55,22 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(TypeList types) throws IOException {
+    public void store(TypeList types) {
         writer.append(types.getRawBytes());
     }
 
     @Override
-    public void store(RecordedMethodCallList callRecords) throws IOException {
+    public void store(RecordedMethodCallList callRecords) {
         writer.append(callRecords.getRawBytes());
     }
 
     @Override
-    public void store(MethodList methods) throws IOException {
+    public void store(MethodList methods) {
         writer.append(methods.getRawBytes());
     }
 
     @Override
-    public void close() throws StorageException {
-        try {
-            writer.close();
-        } catch (IOException ie) {
-            throw new StorageException("Error while closing storage writer", ie);
-        }
+    public void close() {
+        writer.close();
     }
 }
