@@ -11,15 +11,15 @@ import java.io.IOException;
 public interface StorageWriter extends AutoCloseable {
 
     // TODO move to sbe
-    void store(ProcessInfo processInfo) throws StorageException;
+    void write(ProcessInfo processInfo) throws StorageException;
 
-    void store(RecordingMetadata recordingMetadata) throws StorageException;
+    void write(RecordingMetadata recordingMetadata) throws StorageException;
 
-    void store(TypeList types) throws StorageException;
+    void write(TypeList types) throws StorageException;
 
-    void store(RecordedMethodCallList callRecords) throws StorageException;
+    void write(RecordedMethodCallList callRecords) throws StorageException;
 
-    void store(MethodList methods) throws StorageException;
+    void write(MethodList methods) throws StorageException;
 
     void close() throws StorageException;
 }

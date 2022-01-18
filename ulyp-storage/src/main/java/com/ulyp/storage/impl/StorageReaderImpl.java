@@ -2,13 +2,17 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.agent.transport.NamedThreadFactory;
 import com.ulyp.core.Method;
+import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.RecordingMetadata;
+import com.ulyp.core.Type;
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.util.LockGuard;
+import com.ulyp.core.mem.MethodList;
+import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.Recording;
+import com.ulyp.storage.Repository;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
-import com.ulyp.transport.BinaryMethodDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -21,24 +25,26 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class StorageReaderImpl implements StorageReader {
 
+    private final File file;
     private final ExecutorService executorService;
-    private final Lock lock = new ReentrantLock();
 
-    private final List<Recording> recordings = new ArrayList<>();
+    private final Repository<Type> types = new InMemoryRepository<>();
+    private final Repository<RecordingState> recordingStates = new InMemoryRepository<>();
+    private final Repository<Method> methods = new InMemoryRepository<>();
 
     public StorageReaderImpl(File file) {
-        executorService = Executors.newFixedThreadPool(
+        this.file = file;
+        this.executorService = Executors.newFixedThreadPool(
                 1,
                 new NamedThreadFactory("Reader-" + file.toString(), false)
         );
+
         try {
             Runnable task = new StorageReaderTask(file);
-            executorService.submit(task);
+            this.executorService.submit(task);
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
         }
@@ -57,18 +63,27 @@ public class StorageReaderImpl implements StorageReader {
             while (!Thread.currentThread().isInterrupted()) {
 
                 try {
-                    BinaryList data  = this.reader.read(Duration.ofSeconds(1));
+                    BinaryListWithAddress data  = this.reader.readWithAddress(Duration.ofSeconds(1));
 
                     if (data == null) {
                         continue;
                     }
 
-                    switch(data.id()) {
+                    switch(data.getBytes().id()) {
                         case RecordingMetadata.WIRE_ID:
-                            onRecordingMetadata(data);
+                            onRecordingMetadata(data.getBytes());
+                            break;
+                        case TypeList.WIRE_ID:
+                            onTypes(data.getBytes());
+                            break;
+                        case MethodList.WIRE_ID:
+                            onMethods(data.getBytes());
+                            break;
+                        case RecordedMethodCallList.WIRE_ID:
+                            onRecordedCalls(data);
                             break;
                         default:
-                            throw new StorageException("Unknown binary data id " + data.id());
+                            throw new StorageException("Unknown binary data id " + data.getBytes().id());
                     }
                 } catch (Exception e) {
 
@@ -85,22 +100,41 @@ public class StorageReaderImpl implements StorageReader {
         }
 
         private void onRecordingMetadata(BinaryList data) {
-            try (LockGuard guard = new LockGuard(lock)) {
-                UnsafeBuffer buffer = new UnsafeBuffer();
-                data.iterator().next().wrapValue(buffer);
-                BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
-                decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
-                RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
-                recordings.add(Recording.builder().id(metadata.getId()).build());
+            UnsafeBuffer buffer = new UnsafeBuffer();
+            data.iterator().next().wrapValue(buffer);
+            BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
+            decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
+            RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
+        }
+
+        private void onTypes(BinaryList data) {
+            new TypeList(data).forEach(type -> types.store(type.getId(), type));
+        }
+
+        private void onRecordedCalls(BinaryListWithAddress data) {
+            RecordedMethodCallList recordedMethodCalls = new RecordedMethodCallList(data.getBytes());
+            if (recordedMethodCalls.isEmpty()) {
+                return;
             }
+            RecordedMethodCall first = recordedMethodCalls.iterator().next();
+            RecordingState recordingState = recordingStates.computeIfAbsent(
+                    first.getRecordingId(),
+                    () -> new RecordingState(new ByAddressFileReader(file))
+            );
+            recordingState.onRecordedCalls(recordedMethodCalls);
+        }
+
+        private void onMethods(BinaryList data) {
+            new MethodList(data).forEach(type -> methods.store(type.getId(), type));
         }
     }
 
     @Override
     public List<Recording> availableRecordings() {
-        try (LockGuard guard = new LockGuard(lock)) {
-            return new ArrayList<>(recordings);
-        }
+        return new ArrayList<>(
+                recordingStates.values()
+                        .stream()
+        );
     }
 
     @Override

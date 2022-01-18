@@ -23,7 +23,7 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(ProcessInfo processInfo) {
+    public void write(ProcessInfo processInfo) {
         BinaryList binaryList = new BinaryList(ProcessInfo.ID);
         binaryList.add(
                 com.ulyp.transport.ProcessInfo.newBuilder()
@@ -36,7 +36,7 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(RecordingMetadata recordingMetadata) {
+    public void write(RecordingMetadata recordingMetadata) {
         BinaryList binaryList = new BinaryList(RecordingMetadata.WIRE_ID);
         binaryList.add(
                 encoder -> {
@@ -55,17 +55,17 @@ public class StorageWriterImpl implements StorageWriter {
     }
 
     @Override
-    public void store(TypeList types) {
+    public void write(TypeList types) {
         writer.append(types.getRawBytes());
     }
 
     @Override
-    public void store(RecordedMethodCallList callRecords) {
+    public void write(RecordedMethodCallList callRecords) {
         writer.append(callRecords.getRawBytes());
     }
 
     @Override
-    public void store(MethodList methods) {
+    public void write(MethodList methods) {
         writer.append(methods.getRawBytes());
     }
 

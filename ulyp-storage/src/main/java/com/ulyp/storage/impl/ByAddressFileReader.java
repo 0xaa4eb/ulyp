@@ -1,6 +1,9 @@
 package com.ulyp.storage.impl;
 
+import com.ulyp.storage.StorageException;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -8,8 +11,12 @@ public class ByAddressFileReader {
 
     private final RandomAccessFile randomAccessFile;
 
-    public ByAddressFileReader(File file) throws IOException {
-        this.randomAccessFile = new RandomAccessFile(file, "r");
+    public ByAddressFileReader(File file) {
+        try {
+            this.randomAccessFile = new RandomAccessFile(file, "r");
+        } catch (FileNotFoundException e) {
+            throw new StorageException(e);
+        }
     }
 
     public long getLength() throws IOException {

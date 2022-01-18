@@ -1,5 +1,6 @@
 package com.ulyp.core.mem;
 
+import com.google.common.base.Preconditions;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderType;
@@ -17,7 +18,7 @@ import java.util.stream.StreamSupport;
 
 public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
-    public static final int ID = 2;
+    public static final int WIRE_ID = 2;
 
     private final BinaryOutputForEnterRecordImpl2 enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl2();
     private final BinaryOutputForExitRecordImpl2 exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl2();
@@ -26,10 +27,11 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     private final BinaryList bytes;
 
     public RecordedMethodCallList() {
-        bytes = new BinaryList(ID);
+        bytes = new BinaryList(WIRE_ID);
     }
 
     public RecordedMethodCallList(BinaryList bytes) {
+        Preconditions.checkArgument(bytes.id() == WIRE_ID, "Invalid binary list passed");
         this.bytes = bytes;
     }
 
@@ -134,6 +136,10 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
                 }
         );
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
     public int size() {

@@ -43,6 +43,7 @@ def protocVersion = protobufVersion
 dependencies {
     compileOnly "javax.annotation:javax.annotation-api:1.2"
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile group: 'com.google.guava', name: 'guava', version: '28.1-android'
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     compile group: 'org.agrona', name: 'agrona', version: '1.4.0'
     compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'

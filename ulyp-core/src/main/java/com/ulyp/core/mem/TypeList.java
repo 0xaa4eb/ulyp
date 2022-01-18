@@ -1,5 +1,6 @@
 package com.ulyp.core.mem;
 
+import com.google.common.base.Preconditions;
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.Type;
 import com.ulyp.transport.BinaryDataDecoder;
@@ -11,10 +12,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class TypeList implements Iterable<Type> {
 
-    public static final int ID = 1;
+    public static final int WIRE_ID = 1;
 
     private final BinaryTypeEncoder binaryTypeEncoder = new BinaryTypeEncoder();
-    private final BinaryList bytes = new BinaryList(ID);
+    private final BinaryList bytes;
+
+    public TypeList() {
+        bytes = new BinaryList(WIRE_ID);
+    }
+
+    public TypeList(BinaryList bytes) {
+        Preconditions.checkArgument(bytes.id() == WIRE_ID, "Invalid binary list passed");
+        this.bytes = bytes;
+    }
 
     public void add(Type type) {
         bytes.add(

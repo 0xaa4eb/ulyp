@@ -15,10 +15,11 @@ public class BinaryListFileReader implements AutoCloseable {
 
     public BinaryListFileReader(File file) throws IOException {
         this.inputStream = new BufferedInputStream(new FileInputStream(file));
+        // TODO read only permission
         this.randomAccessFile = new RandomAccessFile(file, "rw");
     }
 
-    public BinaryList read(Duration timeout) throws IOException, InterruptedException {
+    public BinaryListWithAddress readWithAddress(Duration timeout) throws IOException, InterruptedException {
         long desired = address + 1 + BinaryList.HEADER_LENGTH;
         if (randomAccessFile.length() < desired) {
             return null;
@@ -40,7 +41,8 @@ public class BinaryListFileReader implements AutoCloseable {
             BinaryList binaryList = new BinaryList(buf, 1);
             long length = binaryList.byteLength();
             int bytesToRead = (int) (length + 1);
-            randomAccessFile.seek(address);
+            long binaryListAddress = address;
+            randomAccessFile.seek(binaryListAddress);
             byte[] data = new byte[bytesToRead];
             int bytesRead = randomAccessFile.read(data);
             Preconditions.checkState(
@@ -49,10 +51,15 @@ public class BinaryListFileReader implements AutoCloseable {
                             " bytes. Read " + bytesRead + " bytes");
             BinaryList result = new BinaryList(data, 1);
             address += bytesRead;
-            return result;
+            return BinaryListWithAddress.builder().address(binaryListAddress).bytes(result).build();
         }
 
         return null;
+    }
+
+    public BinaryList read(Duration timeout) throws IOException, InterruptedException {
+        BinaryListWithAddress data = readWithAddress(timeout);
+        return data != null ? data.getBytes() : null;
     }
 
     public void close() throws IOException {
