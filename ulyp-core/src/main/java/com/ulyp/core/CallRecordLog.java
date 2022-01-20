@@ -107,10 +107,6 @@ public class CallRecordLog {
         return enterRecords.size();
     }
 
-    public long getLastCallId() {
-        return callIdCounter;
-    }
-
     public RecordingMetadata getRecordingMetadata() {
         return recordingMetadata;
     }

@@ -24,10 +24,12 @@ public class AgentContext {
     }
 
     private final Settings settings;
+    private final CallIdGenerator callIdGenerator;
     private final UiTransport transport;
     private final ProcessInfo processInfo;
 
     private AgentContext() {
+        this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
         this.processInfo = new ProcessInfo();
         this.transport = settings.buildUiTransport();
@@ -42,6 +44,10 @@ public class AgentContext {
                 }
         );
         Runtime.getRuntime().addShutdownHook(shutdown);
+    }
+
+    public CallIdGenerator getCallIdGenerator() {
+        return callIdGenerator;
     }
 
     public ProcessInfo getProcessInfo() {

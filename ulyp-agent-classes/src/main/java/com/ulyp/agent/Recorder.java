@@ -32,13 +32,14 @@ public class Recorder {
     }
 
     private final EnhancedThreadLocal<CallRecordLog> threadLocalRecordsLog = new EnhancedThreadLocal<>();
-    private final ThreadLocal<Long> callIdThreadLocal = ThreadLocal.withInitial(() -> 1L);
+    private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final AgentContext context;
 
     public Recorder(AgentContext context) {
         this.context = context;
         this.startRecordingPolicy = context.getSettings().getStartRecordingPolicy();
+        this.initialCallIdGenerator = context.getCallIdGenerator();
     }
 
     public boolean recordingIsActiveInCurrentThread() {
@@ -48,7 +49,7 @@ public class Recorder {
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get() + 1);
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.generateCallId());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
@@ -63,7 +64,7 @@ public class Recorder {
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, callIdThreadLocal.get());
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.generateCallId());
                 currentRecordingSessionCount.incrementAndGet();
                 log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 return callRecordLog;
@@ -102,7 +103,6 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            callIdThreadLocal.set(recordLog.getLastCallId() + 1);
 //            if (LoggingSettings.INFO_ENABLED) {
 //                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
 //            }
