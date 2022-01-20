@@ -13,14 +13,15 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.IOException;
 
-class RecordingState {
+public class RecordingState {
 
     private final int id;
     private final ByAddressFileReader reader;
     private final Repository<RecordedCallState> index = new InMemoryRepository<>();
     private final MemCallStack memCallStack = new MemCallStack();
+    private long rootCallId = -1;
 
-    RecordingState(int id, ByAddressFileReader input) {
+    public RecordingState(int id, ByAddressFileReader input) {
         this.id = id;
         this.reader = input;
     }
@@ -32,6 +33,9 @@ class RecordingState {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
             if (value instanceof RecordedEnterMethodCall) {
+                if (rootCallId < 0) {
+                    rootCallId = value.getCallId();
+                }
                 RecordedCallState callState = new RecordedCallState(
                         value.getCallId(),
                         fileAddr + relativeAddress
@@ -46,12 +50,16 @@ class RecordingState {
         }
     }
 
-    RecordedCallState getState(long callId) {
+    public RecordedCallState getState(long callId) {
         RecordedCallState callState = memCallStack.get(callId);
         if (callState != null) {
             return index.get(callId);
         }
         return null;
+    }
+
+    public long getRootCallId() {
+        return rootCallId;
     }
 
     private void test(long addr) {

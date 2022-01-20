@@ -1,11 +1,15 @@
 package com.ulyp.storage;
 
-import lombok.Builder;
-import lombok.Value;
+import com.ulyp.core.CallRecord;
+import com.ulyp.storage.impl.RecordingState;
 
-@Builder
-@Value
 public class Recording {
 
-    int id;
+    public Recording(RecordingState recordingState) {
+
+    }
+
+    public CallRecord getRoot() {
+        ;
+    }
 }
