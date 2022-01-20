@@ -51,7 +51,10 @@ public class BinaryListFileReader implements AutoCloseable {
                             " bytes. Read " + bytesRead + " bytes");
             BinaryList result = new BinaryList(data, 1);
             address += bytesRead;
-            return BinaryListWithAddress.builder().address(binaryListAddress).bytes(result).build();
+            return BinaryListWithAddress.builder()
+                    .address(binaryListAddress + 1)
+                    .bytes(result)
+                    .build();
         }
 
         return null;

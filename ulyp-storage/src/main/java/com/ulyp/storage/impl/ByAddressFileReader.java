@@ -1,6 +1,7 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.storage.StorageException;
+import org.agrona.DirectBuffer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,7 +27,7 @@ public class ByAddressFileReader {
     public byte[] readBytes(long address, int bytesCount) throws IOException {
         randomAccessFile.seek(address);
         byte[] buf = new byte[bytesCount];
-        randomAccessFile.readFully(buf);
+        randomAccessFile.read(buf);
         return buf;
     }
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class StorageReaderImpl implements StorageReader {
 
@@ -105,6 +106,14 @@ public class StorageReaderImpl implements StorageReader {
             BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
             decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
             RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
+            RecordingState recordingState = recordingStates.computeIfAbsent(
+                    metadata.getId(),
+                    () -> new RecordingState(
+                            metadata.getId(),
+                            new ByAddressFileReader(file)
+                    )
+            );
+            recordingState.update(metadata);
         }
 
         private void onTypes(BinaryList data) {
@@ -119,9 +128,12 @@ public class StorageReaderImpl implements StorageReader {
             RecordedMethodCall first = recordedMethodCalls.iterator().next();
             RecordingState recordingState = recordingStates.computeIfAbsent(
                     first.getRecordingId(),
-                    () -> new RecordingState(new ByAddressFileReader(file))
+                    () -> new RecordingState(
+                            first.getRecordingId(),
+                            new ByAddressFileReader(file)
+                    )
             );
-            recordingState.onRecordedCalls(recordedMethodCalls);
+            recordingState.onRecordedCalls(data.getAddress(), recordedMethodCalls);
         }
 
         private void onMethods(BinaryList data) {
@@ -134,6 +146,8 @@ public class StorageReaderImpl implements StorageReader {
         return new ArrayList<>(
                 recordingStates.values()
                         .stream()
+                        .map(d -> Recording.builder().id(d.getId()).build())
+                        .collect(Collectors.toList())
         );
     }
 
