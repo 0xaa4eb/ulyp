@@ -17,7 +17,7 @@ public class MemCallStack {
 
     public void push(RecordedCallState value) {
         for (RecordedCallState state : deque) {
-            state.incrementSubtreeCount();
+            state.incrementSubtreeSize();
         }
 
         if (!deque.isEmpty()) {

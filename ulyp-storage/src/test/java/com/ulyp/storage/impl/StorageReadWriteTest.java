@@ -47,6 +47,14 @@ public class StorageReadWriteTest {
             )
             .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
             .build();
+    private final TypeList types = new TypeList();
+    private final MethodList methods = new MethodList();
+
+    public static class T {
+        public String foo(String in) {
+            return in;
+        }
+    }
 
     @Before
     public void setUp() throws IOException {
@@ -60,6 +68,10 @@ public class StorageReadWriteTest {
                 .threadName("Thread-1")
                 .threadId(4343L)
                 .build();
+
+        types.add(type);
+        methods.add(method);
+
     }
 
     @After
@@ -68,18 +80,8 @@ public class StorageReadWriteTest {
         writer.close();
     }
 
-    public static class T {
-        public String foo(String in) {
-            return in;
-        }
-    }
-
     @Test
     public void testReadWriteRecordingWithoutReturnValue() {
-        TypeList types = new TypeList();
-        types.add(type);
-        MethodList methods = new MethodList();
-        methods.add(method);
         T callee = new T();
 
         RecordedMethodCallList methodCalls = new RecordedMethodCallList();
@@ -112,6 +114,7 @@ public class StorageReadWriteTest {
                             assertNotNull(root);
 
                             assertEquals(1, root.getArgs().size());
+                            assertEquals(1, root.getSubtreeSize());
                             StringObjectRecord argRecorded = (StringObjectRecord) root.getArgs().get(0);
                             assertEquals("ABC", argRecorded.value());
 
@@ -120,16 +123,13 @@ public class StorageReadWriteTest {
 
                             assertFalse(root.hasThrown());
                             assertEquals(NotRecordedObjectRecord.getInstance(), root.getReturnValue());
+                            assertEquals(0, root.getChildren().size());
                         }
                 );
     }
 
     @Test
     public void testReadWriteRecordingWithReturnValue() {
-        TypeList types = new TypeList();
-        types.add(type);
-        MethodList methods = new MethodList();
-        methods.add(method);
         T callee = new T();
 
         RecordedMethodCallList methodCalls = new RecordedMethodCallList();
@@ -171,6 +171,8 @@ public class StorageReadWriteTest {
                             assertNotNull(root);
 
                             assertEquals(1, root.getArgs().size());
+                            assertEquals(1, root.getSubtreeSize());
+
                             StringObjectRecord argRecorded = (StringObjectRecord) root.getArgs().get(0);
                             assertEquals("ABC", argRecorded.value());
 
@@ -200,6 +202,80 @@ public class StorageReadWriteTest {
                 .untilAsserted(
                         () -> {
                             assertEquals(1, reader.availableRecordings().size());
+                        }
+                );
+    }
+
+    @Test
+    public void testReadWriteWithCoupleOfChildren() {
+        T callee = new T();
+
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+
+        methodCalls.addEnterMethodCall(
+                recordingId,
+                0,
+                method,
+                typeResolver,
+                callee,
+                new Object[] { "ABC" }
+        );
+
+        methodCalls.addEnterMethodCall(
+                recordingId,
+                1,
+                method,
+                typeResolver,
+                callee,
+                new Object[] { "XYZ" }
+        );
+
+        methodCalls.addExitMethodCall(
+                recordingId,
+                1,
+                method,
+                typeResolver,
+                false,
+                "GHJ"
+        );
+
+        methodCalls.addEnterMethodCall(
+                recordingId,
+                2,
+                method,
+                typeResolver,
+                callee,
+                new Object[] { "BHJ" }
+        );
+
+
+        writer.write(recordingMetadata);
+        writer.write(recordingMetadata);
+        writer.write(types);
+        writer.write(methods);
+        writer.write(methodCalls);
+
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(
+                        () -> {
+                            assertEquals(1, reader.availableRecordings().size());
+
+                            Recording recording = reader.availableRecordings().get(0);
+                            CallRecord root = recording.getRoot();
+                            assertNotNull(root);
+
+                            assertEquals(3, root.getSubtreeSize());
+                            assertEquals(2, root.getChildren().size());
+
+                            CallRecord child1 = root.getChildren().get(0);
+
+                            assertTrue(child1.callComplete());
+
+                            CallRecord child2 = root.getChildren().get(1);
+
+                            assertFalse(child2.callComplete());
                         }
                 );
     }

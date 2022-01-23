@@ -72,15 +72,21 @@ public class RecordingState {
     }
 
     public CallRecord getRoot() {
-        if (rootCallId < 0) {
+        return getCallRecord(rootCallId);
+    }
+
+    public CallRecord getCallRecord(long callId) {
+        if (callId < 0) {
             return null;
         }
 
-        RecordedCallState callState = getState(rootCallId);
+        RecordedCallState callState = getState(callId);
         RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
 
         CallRecord callRecord = new CallRecord(
                 callState.getCallId(),
+                callState.getSubtreeSize(),
+                callState.getChildrenCallIds(),
                 enterMethodCall.getCallee().toRecord(typeRepository),
                 enterMethodCall.getArguments().stream()
                         .map(recorded -> recorded.toRecord(typeRepository))

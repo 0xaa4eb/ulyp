@@ -10,7 +10,7 @@ public class RecordedCallState {
     private final long callId;
     private final long enterMethodCallAddr;
     private final LongList childrenCallIds = new LongArrayList();
-    private int subtreeCount;
+    private int subtreeSize = 1;
     private long exitMethodCallAddr = -1;
 
     public RecordedCallState(long callId, long enterMethodCallAddr) {
@@ -18,8 +18,8 @@ public class RecordedCallState {
         this.enterMethodCallAddr = enterMethodCallAddr;
     }
 
-    public void incrementSubtreeCount() {
-        subtreeCount++;
+    public void incrementSubtreeSize() {
+        subtreeSize++;
     }
 
     public void addChildrenCallId(long callId) {

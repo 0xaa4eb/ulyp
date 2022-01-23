@@ -1,14 +1,14 @@
 package com.ulyp.storage;
 
-import com.ulyp.core.CallRecordDatabase;
 import com.ulyp.core.Method;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.impl.RecordingState;
-import com.ulyp.transport.TMethodInfoDecoder;
+import it.unimi.dsi.fastutil.longs.LongList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Method call record which was deserialized from binary format into POJO. Stands for a particular
@@ -35,25 +35,37 @@ import java.util.List;
 public class CallRecord {
 
     private final long callId;
+    private final int subtreeSize;
     private final Method method;
     private final ObjectRecord callee;
     private final List<ObjectRecord> args;
     private ObjectRecord returnValue = NotRecordedObjectRecord.getInstance();
     private boolean thrown;
+    private final LongList childrenCallIds;
     private final RecordingState recordingState;
+
+    private List<CallRecord> children = null;
 
     public CallRecord(
             long callId,
+            int subtreeSize,
+            LongList childrenCallIds,
             ObjectRecord callee,
             List<ObjectRecord> args,
             Method method,
             RecordingState recordingState)
     {
         this.callId = callId;
+        this.subtreeSize = subtreeSize;
         this.callee = callee;
         this.args = new ArrayList<>(args);
         this.method = method;
+        this.childrenCallIds = childrenCallIds;
         this.recordingState = recordingState;
+    }
+
+    public int getSubtreeSize() {
+        return subtreeSize;
     }
 
     public ObjectRecord getCallee() {
@@ -81,8 +93,17 @@ public class CallRecord {
     }
 
     public List<CallRecord> getChildren() throws StorageException {
-        // TODO
-        return null;
+        if (children != null) {
+            return children;
+        }
+
+        return children = childrenCallIds.stream()
+                .map(recordingState::getCallRecord)
+                .collect(Collectors.toList());
+    }
+
+    public boolean callComplete() {
+        return returnValue != NotRecordedObjectRecord.getInstance();
     }
 
     public void setReturnValue(ObjectRecord returnValue) {
@@ -100,8 +121,4 @@ public class CallRecord {
                 getMethod().getName() +
                 args;
     }
-
-    /*public boolean isComplete() {
-        return returnValue != NotRecordedObjectRecord.getInstance();
-    }*/
 }
