@@ -1,29 +1,34 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.core.*;
-import com.ulyp.core.impl.InMemoryIndex;
-import com.ulyp.core.impl.Index;
 import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.storage.Repository;
-import com.ulyp.transport.BinaryDataDecoder;
-import com.ulyp.transport.BinaryRecordedEnterMethodCallDecoder;
-import com.ulyp.transport.BinaryRecordedEnterMethodCallEncoder;
-import com.ulyp.transport.BinaryRecordedExitMethodCallDecoder;
-import org.agrona.concurrent.UnsafeBuffer;
+import com.ulyp.storage.CallRecord;
+import com.ulyp.core.ReadableRepository;
+import com.ulyp.core.Repository;
 
-import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class RecordingState {
 
-    private final int id;
-    private final ByAddressFileReader reader;
+    private final RecordingMetadata recordingMetadata;
+    private final DataReader reader;
     private final Repository<RecordedCallState> index = new InMemoryRepository<>();
     private final MemCallStack memCallStack = new MemCallStack();
+    private final ReadableRepository<Method> methodRepository;
+    private final ReadableRepository<Type> typeRepository;
+
     private long rootCallId = -1;
 
-    public RecordingState(int id, ByAddressFileReader input) {
-        this.id = id;
-        this.reader = input;
+    public RecordingState(
+            RecordingMetadata recordingMetadata,
+            DataReader dataReader,
+            ReadableRepository<Method> methodRepository,
+            ReadableRepository<Type> typeRepository)
+    {
+        this.recordingMetadata = recordingMetadata;
+        this.reader = dataReader;
+        this.methodRepository = methodRepository;
+        this.typeRepository = typeRepository;
     }
 
     void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
@@ -53,43 +58,38 @@ public class RecordingState {
     public RecordedCallState getState(long callId) {
         RecordedCallState callState = memCallStack.get(callId);
         if (callState != null) {
-            return index.get(callId);
+            return callState;
         }
-        return null;
-    }
-
-    public long getRootCallId() {
-        return rootCallId;
-    }
-
-    private void test(long addr) {
-        try {
-            byte[] bytes = reader.readBytes(addr, 8 * 1024);
-            UnsafeBuffer mem = new UnsafeBuffer(bytes);
-
-            BinaryDataDecoder decoder = new BinaryDataDecoder();
-            decoder.wrap(mem, 0, BinaryDataDecoder.BLOCK_LENGTH, 0);
-            UnsafeBuffer buffer = new UnsafeBuffer();
-            decoder.wrapValue(buffer);
-            if (decoder.id() == BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID) {
-                BinaryRecordedEnterMethodCallDecoder enterMethodCallDecoder = new BinaryRecordedEnterMethodCallDecoder();
-                enterMethodCallDecoder.wrap(buffer, 0, BinaryRecordedEnterMethodCallEncoder.BLOCK_LENGTH, 0);
-                RecordedMethodCall value = RecordedEnterMethodCall.deserialize(enterMethodCallDecoder);
-            } else {
-                BinaryRecordedExitMethodCallDecoder exitMethodCallDecoder = new BinaryRecordedExitMethodCallDecoder();
-                exitMethodCallDecoder.wrap(buffer, 0, BinaryRecordedExitMethodCallDecoder.BLOCK_LENGTH, 0);
-                RecordedMethodCall value = RecordedExitMethodCall.deserialize(exitMethodCallDecoder);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return index.get(callId);
     }
 
     public int getId() {
-        return id;
+        return recordingMetadata.getId();
     }
 
     public void update(RecordingMetadata metadata) {
         // TODO
+    }
+
+    public CallRecord getRoot() {
+        if (rootCallId < 0) {
+            return null;
+        }
+
+        RecordedCallState callState = getState(rootCallId);
+        RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
+        if (callState.getExitMethodCallAddr() > 0) {
+            RecordedExitMethodCall exitMethodCall = reader.readExitMethodCall(callState.getExitMethodCallAddr());
+        }
+
+        return new CallRecord(
+                callState.getCallId(),
+                enterMethodCall.getCallee().toRecord(typeRepository),
+                enterMethodCall.getArguments().stream()
+                        .map(recorded -> recorded.toRecord(typeRepository))
+                        .collect(Collectors.toList()),
+                methodRepository.get(enterMethodCall.getMethodId()),
+                this
+        );
     }
 }

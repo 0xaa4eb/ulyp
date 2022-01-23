@@ -3,7 +3,7 @@ package com.perf.agent.benchmarks;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.ulyp.core.CallEnterRecordList;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.HdrHistogram.Histogram;
@@ -58,7 +58,7 @@ public class RecorderMetricsBenchmarksMain {
                         long count = countMap.getOrDefault(k, 0L);
 
                         System.out.println(
-                                RecorderType.recorderForId(k).toString() + "    ->    " +
+                                ObjectRecorderType.recorderForId(k).toString() + "    ->    " +
                                         "total size = " + totalSizeDivided + " / count = " + countMap.get(k) +
                                         " ~ avg " + (v * 1.0 / count));
                     }

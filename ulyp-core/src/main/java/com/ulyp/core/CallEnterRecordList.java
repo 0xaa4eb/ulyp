@@ -2,7 +2,7 @@ package com.ulyp.core;
 
 import com.google.protobuf.ByteString;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
 import com.ulyp.transport.TCallEnterRecordDecoder;
 import com.ulyp.transport.TCallEnterRecordEncoder;
@@ -36,7 +36,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
             TCallEnterRecordEncoder.ArgumentsEncoder argumentsEncoder = encoder.argumentsCount(args.length);
 
             for (int i = 0; i < args.length; i++) {
-                ObjectRecorder recorder = args[i] != null ? recorders[i] : RecorderType.NULL_RECORDER.getInstance();
+                ObjectRecorder recorder = args[i] != null ? recorders[i] : ObjectRecorderType.NULL_RECORDER.getInstance();
 
                 Type argType = typeResolver.get(args[i]);
 
@@ -51,7 +51,7 @@ public class CallEnterRecordList extends AbstractBinaryEncodedList<TCallEnterRec
                 }
             }
 
-            ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
+            ObjectRecorder recorder = callee != null ? ObjectRecorderType.IDENTITY_RECORDER.getInstance() : ObjectRecorderType.NULL_RECORDER.getInstance();
 
             encoder.calleeTypeId(typeResolver.get(callee).getId());
             encoder.calleeRecorderId(recorder.getId());

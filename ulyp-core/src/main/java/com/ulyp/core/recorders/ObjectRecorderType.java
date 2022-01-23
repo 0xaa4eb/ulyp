@@ -1,6 +1,6 @@
 package com.ulyp.core.recorders;
 
-public enum RecorderType {
+public enum ObjectRecorderType {
     CLASS_OBJECT_RECORDER(new ClassObjectRecorder((byte) 1), 20),
     STRING_RECORDER(new StringRecorder((byte) 2), 0),
     THROWABLE_RECORDER(new ThrowableRecorder((byte) 5), 20),
@@ -20,7 +20,7 @@ public enum RecorderType {
     public static final ObjectRecorder[] recorderInstances = new ObjectRecorder[256];
 
     static {
-        for (RecorderType type : values()) {
+        for (ObjectRecorderType type : values()) {
             if (recorderInstances[type.getInstance().getId()] != null) {
                 throw new RuntimeException("Duplicate id");
             }
@@ -35,7 +35,7 @@ public enum RecorderType {
     private final ObjectRecorder instance;
     private final int order;
 
-    RecorderType(ObjectRecorder instance, int order) {
+    ObjectRecorderType(ObjectRecorder instance, int order) {
         this.instance = instance;
         this.order = order;
     }

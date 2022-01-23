@@ -1,6 +1,6 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.storage.Repository;
+import com.ulyp.core.Repository;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 

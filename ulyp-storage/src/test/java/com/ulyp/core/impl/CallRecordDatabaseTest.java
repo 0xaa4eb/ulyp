@@ -44,11 +44,11 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
-        exitRecords.add(0, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(0, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
 
         CallRecordDatabase database = build(methodInfoDatabase, typeInfoDatabase);
 
@@ -69,7 +69,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -77,12 +77,12 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
-        exitRecords.add(1, 100, typeResolver, false, RecorderType.STRING_RECORDER.getInstance(), "zzzxzxzx");
-        exitRecords.add(0, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(1, 100, typeResolver, false, ObjectRecorderType.STRING_RECORDER.getInstance(), "zzzxzxzx");
+        exitRecords.add(0, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
 
         CallRecordDatabase database = build(methodInfoDatabase, typeInfoDatabase);
 
@@ -107,7 +107,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -115,7 +115,7 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -123,13 +123,13 @@ public abstract class CallRecordDatabaseTest {
                 2,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
-        exitRecords.add(2, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
-        exitRecords.add(1, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
-        exitRecords.add(0, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(2, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(1, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(0, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
 
         CallRecordDatabase database = build(methodInfoDatabase, typeInfoDatabase);
 
@@ -158,7 +158,7 @@ public abstract class CallRecordDatabaseTest {
                 0,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -166,7 +166,7 @@ public abstract class CallRecordDatabaseTest {
                 1,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
@@ -174,11 +174,11 @@ public abstract class CallRecordDatabaseTest {
                 2,
                 100,
                 typeResolver,
-                new ObjectRecorder[] {RecorderType.IDENTITY_RECORDER.getInstance()},
+                new ObjectRecorder[] {ObjectRecorderType.IDENTITY_RECORDER.getInstance()},
                 this,
                 new Object[]{}
         );
-        exitRecords.add(2, 100, typeResolver, false, RecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
+        exitRecords.add(2, 100, typeResolver, false, ObjectRecorderType.IDENTITY_RECORDER.getInstance(), "asdasdad");
 
         CallRecordDatabase database = build(methodInfoDatabase, typeInfoDatabase);
 

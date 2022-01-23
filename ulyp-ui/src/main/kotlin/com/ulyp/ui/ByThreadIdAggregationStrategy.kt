@@ -3,7 +3,7 @@ package com.ulyp.ui
 import com.ulyp.core.*
 import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase
 import com.ulyp.core.impl.RocksdbIndex
-import com.ulyp.core.recorders.RecorderType
+import com.ulyp.core.recorders.ObjectRecorderType
 import com.ulyp.core.util.SingleTypeReflectionBasedResolver
 import com.ulyp.transport.TClassDescription
 import lombok.Value
@@ -50,7 +50,7 @@ class ByThreadIdAggregationStrategy : AggregationStrategy {
         val exitRecords = CallExitRecordList()
         enterRecords.add(
             0, Int.MAX_VALUE.toLong(),
-            typeResolver, arrayOf(RecorderType.IDENTITY_RECORDER.instance),
+            typeResolver, arrayOf(ObjectRecorderType.IDENTITY_RECORDER.instance),
             Thread.currentThread(), arrayOf()
         )
         database.persistBatch(enterRecords, exitRecords)

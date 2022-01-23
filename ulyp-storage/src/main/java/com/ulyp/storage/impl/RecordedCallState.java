@@ -11,7 +11,7 @@ public class RecordedCallState {
     private final long enterMethodCallAddr;
     private final LongList childrenCallIds = new LongArrayList();
     private int subtreeCount;
-    private long exitMethodCallAddr;
+    private long exitMethodCallAddr = -1;
 
     public RecordedCallState(long callId, long enterMethodCallAddr) {
         this.callId = callId;

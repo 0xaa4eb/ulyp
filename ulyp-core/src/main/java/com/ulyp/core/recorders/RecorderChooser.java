@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Finds {@link ObjectRecorder} that best matches for any given {@link Type}
@@ -19,14 +17,14 @@ public class RecorderChooser {
     private static final ObjectRecorder[] allRecorders;
 
     static {
-        allRecorders = new ObjectRecorder[RecorderType.values().length];
+        allRecorders = new ObjectRecorder[ObjectRecorderType.values().length];
 
-        List<RecorderType> recorderTypes = new ArrayList<>();
-        recorderTypes.addAll(Arrays.asList(RecorderType.values()));
-        recorderTypes.sort(Comparator.comparing(RecorderType::getOrder));
+        List<ObjectRecorderType> objectRecorderTypes = new ArrayList<>();
+        objectRecorderTypes.addAll(Arrays.asList(ObjectRecorderType.values()));
+        objectRecorderTypes.sort(Comparator.comparing(ObjectRecorderType::getOrder));
 
-        for (int i = 0; i < recorderTypes.size(); i++) {
-            allRecorders[i] = recorderTypes.get(i).getInstance();
+        for (int i = 0; i < objectRecorderTypes.size(); i++) {
+            allRecorders[i] = objectRecorderTypes.get(i).getInstance();
         }
     }
 

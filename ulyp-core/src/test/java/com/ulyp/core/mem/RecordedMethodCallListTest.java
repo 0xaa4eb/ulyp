@@ -2,7 +2,7 @@ package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class RecordedMethodCallListTest {
                 .id(5L)
                 .name("convert")
                 .declaringType(type)
-                .parameterRecorders(new ObjectRecorder[]{RecorderType.ANY_NUMBER_RECORDER.getInstance()})
-                .returnValueRecorder(RecorderType.STRING_RECORDER.getInstance())
+                .parameterRecorders(new ObjectRecorder[]{ObjectRecorderType.ANY_NUMBER_RECORDER.getInstance()})
+                .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
                 .build();
 
         list.addEnterMethodCall(

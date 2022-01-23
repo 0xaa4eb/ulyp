@@ -7,9 +7,10 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.*;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
+import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.StorageWriter;
 import org.awaitility.Awaitility;
@@ -50,7 +51,7 @@ public class StorageReadWriteTest {
     @Test
     public void testReadWriteRecording() {
         int recordingId = 42;
-        RecordingMetadata recording = RecordingMetadata.builder()
+        RecordingMetadata recordingMetadata = RecordingMetadata.builder()
                 .id(recordingId)
                 .createEpochMillis(2324L)
                 .threadName("Thread-1")
@@ -78,9 +79,9 @@ public class StorageReadWriteTest {
                 .isStatic(false)
                 .returnsSomething(true)
                 .parameterRecorders(
-                        new ObjectRecorder[] { RecorderType.STRING_RECORDER.getInstance() }
+                        new ObjectRecorder[] { ObjectRecorderType.STRING_RECORDER.getInstance() }
                 )
-                .returnValueRecorder(RecorderType.STRING_RECORDER.getInstance())
+                .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
                 .build();
         MethodList methods = new MethodList();
         methods.add(method);
@@ -107,7 +108,7 @@ public class StorageReadWriteTest {
         );
 
 
-        writer.write(recording);
+        writer.write(recordingMetadata);
         writer.write(types);
         writer.write(methods);
         writer.write(methodCalls);
@@ -119,7 +120,16 @@ public class StorageReadWriteTest {
                         () -> {
                             Assert.assertEquals(1, reader.availableRecordings().size());
 
+                            Recording recording = reader.availableRecordings().get(0);
+                            CallRecord root = recording.getRoot();
+                            Assert.assertNotNull(root);
 
+                            Assert.assertEquals(1, root.getArgs().size());
+                            StringObjectRecord argRecorded = (StringObjectRecord) root.getArgs().get(0);
+                            Assert.assertEquals("ABC", argRecorded.value());
+
+                            IdentityObjectRecord calleeRecorded = (IdentityObjectRecord) root.getCallee();
+                            Assert.assertEquals(System.identityHashCode(callee), calleeRecorded.getHashCode());
                         }
                 );
     }

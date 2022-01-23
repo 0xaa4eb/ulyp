@@ -1,4 +1,4 @@
-package com.ulyp.storage;
+package com.ulyp.core;
 
 import java.util.Collection;
 import java.util.function.Supplier;

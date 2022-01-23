@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -90,7 +90,7 @@ public class CallRecordLog {
                 if (thrown == null) {
                     exitRecords.add(callId, methodId, typeResolver, false, resultRecorder, returnValue);
                 } else {
-                    exitRecords.add(callId, methodId, typeResolver, true, RecorderType.THROWABLE_RECORDER.getInstance(), thrown);
+                    exitRecords.add(callId, methodId, typeResolver, true, ObjectRecorderType.THROWABLE_RECORDER.getInstance(), thrown);
                 }
                 lastExitCallId = callId;
             }

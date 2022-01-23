@@ -4,7 +4,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.bytes.BinaryInputImpl;
@@ -172,7 +172,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
             arguments = arguments.next();
             UnsafeBuffer buffer = new UnsafeBuffer();
             arguments.wrapValue(buffer);
-            args.add(RecorderType.recorderForId(arguments.recorderId()).read(
+            args.add(ObjectRecorderType.recorderForId(arguments.recorderId()).read(
                     typeInfoDatabase.find(arguments.typeId()),
                     new BinaryInputImpl(buffer),
                     decodingContext)
@@ -184,7 +184,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
 
         Type calleeType = typeInfoDatabase.find(enterRecordDecoder.calleeTypeId());
 
-        ObjectRecord callee = RecorderType.recorderForId(enterRecordDecoder.calleeRecorderId()).read(
+        ObjectRecord callee = ObjectRecorderType.recorderForId(enterRecordDecoder.calleeRecorderId()).read(
                 calleeType,
                 new BinaryInputImpl(buffer),
                 decodingContext
@@ -213,7 +213,7 @@ public class LegacyFileBasedCallRecordDatabase implements CallRecordDatabase {
 
         UnsafeBuffer returnValueBuffer = new UnsafeBuffer();
         exitRecordDecoder.wrapReturnValue(returnValueBuffer);
-        ObjectRecorder recorder = RecorderType.recorderForId(exitRecordDecoder.returnRecorderId());
+        ObjectRecorder recorder = ObjectRecorderType.recorderForId(exitRecordDecoder.returnRecorderId());
         ObjectRecord returnValue = recorder.read(typeInfoDatabase.find(exitRecordDecoder.returnTypeId()), new BinaryInputImpl(returnValueBuffer), decodingContext);
         boolean thrown = exitRecordDecoder.thrown() == BooleanType.T;
 

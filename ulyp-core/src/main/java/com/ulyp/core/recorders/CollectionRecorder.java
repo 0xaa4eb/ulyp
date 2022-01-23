@@ -56,7 +56,7 @@ public class CollectionRecorder extends ObjectRecorder {
                     items
             );
         } else {
-            return RecorderType.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
+            return ObjectRecorderType.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
         }
     }
 
@@ -96,7 +96,7 @@ public class CollectionRecorder extends ObjectRecorder {
     private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             appender.append(RECORDED_IDENTITY_FLAG);
-            RecorderType.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
+            ObjectRecorderType.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
         }
     }
 }

@@ -10,10 +10,12 @@ import java.io.RandomAccessFile;
 
 public class ByAddressFileReader {
 
+    private final File file;
     private final RandomAccessFile randomAccessFile;
 
     public ByAddressFileReader(File file) {
         try {
+            this.file = file;
             this.randomAccessFile = new RandomAccessFile(file, "r");
         } catch (FileNotFoundException e) {
             throw new StorageException(e);
@@ -34,5 +36,10 @@ public class ByAddressFileReader {
     public byte readByte(long address) throws IOException {
         randomAccessFile.seek(address);
         return randomAccessFile.readByte();
+    }
+
+    @Override
+    public String toString() {
+        return "ByAddressFileReader{file=" + file + "}";
     }
 }

@@ -1,15 +1,16 @@
 package com.ulyp.storage;
 
-import com.ulyp.core.CallRecord;
 import com.ulyp.storage.impl.RecordingState;
 
 public class Recording {
 
-    public Recording(RecordingState recordingState) {
+    private final RecordingState recordingState;
 
+    public Recording(RecordingState recordingState) {
+        this.recordingState = recordingState;
     }
 
     public CallRecord getRoot() {
-        ;
+        return recordingState.getRoot();
     }
 }

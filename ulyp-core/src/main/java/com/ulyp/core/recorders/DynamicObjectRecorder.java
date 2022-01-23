@@ -21,14 +21,14 @@ public class DynamicObjectRecorder extends ObjectRecorder {
     @Override
     public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         byte recorderId = input.readByte();
-        return RecorderType.recorderForId(recorderId).read(objectType, input, typeResolver);
+        return ObjectRecorderType.recorderForId(recorderId).read(objectType, input, typeResolver);
     }
 
     @Override
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         ObjectRecorder recorder = objectType.getSuggestedRecorder();
         if (recorder.getId() == getId()) {
-            recorder = RecorderType.IDENTITY_RECORDER.getInstance();
+            recorder = ObjectRecorderType.IDENTITY_RECORDER.getInstance();
         }
 
         try (BinaryOutputAppender appender = out.appender()) {

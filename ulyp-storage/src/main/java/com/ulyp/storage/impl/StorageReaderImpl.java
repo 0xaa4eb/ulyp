@@ -10,7 +10,7 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.Recording;
-import com.ulyp.storage.Repository;
+import com.ulyp.core.Repository;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
@@ -20,7 +20,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -109,9 +108,10 @@ public class StorageReaderImpl implements StorageReader {
             RecordingState recordingState = recordingStates.computeIfAbsent(
                     metadata.getId(),
                     () -> new RecordingState(
-                            metadata.getId(),
-                            new ByAddressFileReader(file)
-                    )
+                            metadata,
+                            new DataReader(file),
+                            methods,
+                            types)
             );
             recordingState.update(metadata);
         }
@@ -126,13 +126,7 @@ public class StorageReaderImpl implements StorageReader {
                 return;
             }
             RecordedMethodCall first = recordedMethodCalls.iterator().next();
-            RecordingState recordingState = recordingStates.computeIfAbsent(
-                    first.getRecordingId(),
-                    () -> new RecordingState(
-                            first.getRecordingId(),
-                            new ByAddressFileReader(file)
-                    )
-            );
+            RecordingState recordingState = recordingStates.get(first.getRecordingId());
             recordingState.onRecordedCalls(data.getAddress(), recordedMethodCalls);
         }
 
@@ -143,12 +137,10 @@ public class StorageReaderImpl implements StorageReader {
 
     @Override
     public List<Recording> availableRecordings() {
-        return new ArrayList<>(
-                recordingStates.values()
-                        .stream()
-                        .map(d -> Recording.builder().id(d.getId()).build())
-                        .collect(Collectors.toList())
-        );
+        return recordingStates.values()
+                .stream()
+                .map(Recording::new)
+                .collect(Collectors.toList());
     }
 
     @Override

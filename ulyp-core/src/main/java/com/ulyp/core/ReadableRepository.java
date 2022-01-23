@@ -1,4 +1,4 @@
-package com.ulyp.storage;
+package com.ulyp.core;
 
 public interface ReadableRepository<T> {
 

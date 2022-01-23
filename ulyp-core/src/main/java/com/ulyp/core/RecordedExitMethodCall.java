@@ -11,7 +11,7 @@ public class RecordedExitMethodCall extends RecordedMethodCall {
     private final RecordedObject returnValue;
     private final boolean thrown;
 
-    public static RecordedMethodCall deserialize(BinaryRecordedExitMethodCallDecoder decoder) {
+    public static RecordedExitMethodCall deserialize(BinaryRecordedExitMethodCallDecoder decoder) {
 
         byte[] returnValueBytes = new byte[decoder.returnValueBytesLength()];
         decoder.getReturnValueBytes(returnValueBytes, 0, returnValueBytes.length);

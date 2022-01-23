@@ -3,7 +3,7 @@ package com.ulyp.core.mem;
 import com.google.common.base.Preconditions;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderType;
+import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl2;
 import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl2;
 import com.ulyp.transport.*;
@@ -62,7 +62,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     ObjectRecorder recorder = returnValue != null ?
                             method.getReturnValueRecorder() :
-                            RecorderType.NULL_RECORDER.getInstance();
+                            ObjectRecorderType.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValueRecorderId(recorder.getId());
                     exitRecordBinaryOutput.wrap(exitMethodCallEncoder);
@@ -105,7 +105,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectRecorder recorder = args[i] != null ? paramRecorders[i] : RecorderType.NULL_RECORDER.getInstance();
+                        ObjectRecorder recorder = args[i] != null ? paramRecorders[i] : ObjectRecorderType.NULL_RECORDER.getInstance();
 
                         Type argType = typeResolver.get(args[i]);
 
@@ -120,7 +120,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                         }
                     }
 
-                    ObjectRecorder recorder = callee != null ? RecorderType.IDENTITY_RECORDER.getInstance() : RecorderType.NULL_RECORDER.getInstance();
+                    ObjectRecorder recorder = callee != null ? ObjectRecorderType.IDENTITY_RECORDER.getInstance() : ObjectRecorderType.NULL_RECORDER.getInstance();
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
                     enterMethodCallEncoder.calleeRecorderId(recorder.getId());
