@@ -24,16 +24,42 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 
+import static org.junit.Assert.*;
+
 public class StorageReadWriteTest {
 
     private StorageReader reader;
     private StorageWriter writer;
+
+    private final int recordingId = 42;
+    private RecordingMetadata recordingMetadata;
+    private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
+    private final Type type = typeResolver.get(T.class);
+    private final Method method = Method.builder()
+            .declaringType(type)
+            .name("run")
+            .id(1000L)
+            .isConstructor(false)
+            .isStatic(false)
+            .returnsSomething(true)
+            .parameterRecorders(
+                    new ObjectRecorder[] { ObjectRecorderType.STRING_RECORDER.getInstance() }
+            )
+            .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
+            .build();
 
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
         this.reader = new StorageReaderImpl(file);
         this.writer = new StorageWriterImpl(file);
+
+        recordingMetadata = RecordingMetadata.builder()
+                .id(recordingId)
+                .createEpochMillis(2324L)
+                .threadName("Thread-1")
+                .threadId(4343L)
+                .build();
     }
 
     @After
@@ -49,40 +75,59 @@ public class StorageReadWriteTest {
     }
 
     @Test
-    public void testReadWriteRecording() {
-        int recordingId = 42;
-        RecordingMetadata recordingMetadata = RecordingMetadata.builder()
-                .id(recordingId)
-                .createEpochMillis(2324L)
-                .threadName("Thread-1")
-                .threadId(4343L)
-                .build();
-
-        writer.write(
-                RecordingMetadata.builder()
-                        .id(recordingId)
-                        .createEpochMillis(2324L)
-                        .threadName("AAAA")
-                        .threadId(4343L)
-                        .build()
-        );
-
-        TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-        Type type = typeResolver.get(T.class);
+    public void testReadWriteRecordingWithoutReturnValue() {
         TypeList types = new TypeList();
         types.add(type);
-        Method method = Method.builder()
-                .declaringType(type)
-                .name("run")
-                .id(1000L)
-                .isConstructor(false)
-                .isStatic(false)
-                .returnsSomething(true)
-                .parameterRecorders(
-                        new ObjectRecorder[] { ObjectRecorderType.STRING_RECORDER.getInstance() }
-                )
-                .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
-                .build();
+        MethodList methods = new MethodList();
+        methods.add(method);
+        T callee = new T();
+
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+
+        methodCalls.addEnterMethodCall(
+                recordingId,
+                0,
+                method,
+                typeResolver,
+                callee,
+                new Object[] { "ABC" }
+        );
+
+
+        writer.write(recordingMetadata);
+        writer.write(recordingMetadata);
+        writer.write(types);
+        writer.write(methods);
+        writer.write(methodCalls);
+
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(
+                        () -> {
+                            assertEquals(1, reader.availableRecordings().size());
+
+                            Recording recording = reader.availableRecordings().get(0);
+                            CallRecord root = recording.getRoot();
+                            assertNotNull(root);
+
+                            assertEquals(1, root.getArgs().size());
+                            StringObjectRecord argRecorded = (StringObjectRecord) root.getArgs().get(0);
+                            assertEquals("ABC", argRecorded.value());
+
+                            IdentityObjectRecord calleeRecorded = (IdentityObjectRecord) root.getCallee();
+                            assertEquals(System.identityHashCode(callee), calleeRecorded.getHashCode());
+
+                            assertFalse(root.hasThrown());
+                            assertEquals(NotRecordedObjectRecord.getInstance(), root.getReturnValue());
+                        }
+                );
+    }
+
+    @Test
+    public void testReadWriteRecordingWithReturnValue() {
+        TypeList types = new TypeList();
+        types.add(type);
         MethodList methods = new MethodList();
         methods.add(method);
         T callee = new T();
@@ -109,6 +154,7 @@ public class StorageReadWriteTest {
 
 
         writer.write(recordingMetadata);
+        writer.write(recordingMetadata);
         writer.write(types);
         writer.write(methods);
         writer.write(methodCalls);
@@ -118,18 +164,21 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            Assert.assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.availableRecordings().size());
 
                             Recording recording = reader.availableRecordings().get(0);
                             CallRecord root = recording.getRoot();
-                            Assert.assertNotNull(root);
+                            assertNotNull(root);
 
-                            Assert.assertEquals(1, root.getArgs().size());
+                            assertEquals(1, root.getArgs().size());
                             StringObjectRecord argRecorded = (StringObjectRecord) root.getArgs().get(0);
-                            Assert.assertEquals("ABC", argRecorded.value());
+                            assertEquals("ABC", argRecorded.value());
 
                             IdentityObjectRecord calleeRecorded = (IdentityObjectRecord) root.getCallee();
-                            Assert.assertEquals(System.identityHashCode(callee), calleeRecorded.getHashCode());
+                            assertEquals(System.identityHashCode(callee), calleeRecorded.getHashCode());
+
+                            StringObjectRecord returnValueRecorded = (StringObjectRecord) root.getReturnValue();
+                            assertEquals("DEF", returnValueRecorded.value());
                         }
                 );
     }
@@ -150,7 +199,7 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            Assert.assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.availableRecordings().size());
                         }
                 );
     }

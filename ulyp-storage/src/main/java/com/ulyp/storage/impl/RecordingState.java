@@ -78,11 +78,8 @@ public class RecordingState {
 
         RecordedCallState callState = getState(rootCallId);
         RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
-        if (callState.getExitMethodCallAddr() > 0) {
-            RecordedExitMethodCall exitMethodCall = reader.readExitMethodCall(callState.getExitMethodCallAddr());
-        }
 
-        return new CallRecord(
+        CallRecord callRecord = new CallRecord(
                 callState.getCallId(),
                 enterMethodCall.getCallee().toRecord(typeRepository),
                 enterMethodCall.getArguments().stream()
@@ -91,5 +88,14 @@ public class RecordingState {
                 methodRepository.get(enterMethodCall.getMethodId()),
                 this
         );
+
+        if (callState.getExitMethodCallAddr() > 0) {
+            RecordedExitMethodCall exitMethodCall = reader.readExitMethodCall(callState.getExitMethodCallAddr());
+
+            callRecord.setThrown(exitMethodCall.isThrown());
+            callRecord.setReturnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
+        }
+
+        return callRecord;
     }
 }
