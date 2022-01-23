@@ -85,14 +85,13 @@ public class Recorder {
 //              log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
 //            }
 
-            context.getTransport().uploadAsync(
-                    new CallRecordTreeRequest(
-                            recordLog,
-                            MethodStore.getInstance().values(),
-                            typeResolver.getAllResolved(),
-                            context.getProcessInfo()
-                    )
-            );
+            // TODO methods and types
+            /*
+            * MethodStore.getInstance().values(),
+            * typeResolver.getAllResolved(),
+            */
+            context.getStorage().write(recordLog.getRecordingMetadata());
+            context.getStorage().write(recordLog.getRecordedCalls());
         }
     }
 
@@ -106,14 +105,14 @@ public class Recorder {
 //            if (LoggingSettings.INFO_ENABLED) {
 //                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
 //            }
-            context.getTransport().uploadAsync(
-                    new CallRecordTreeRequest(
-                            recordLog,
-                            MethodStore.getInstance().values(),
-                            typeResolver.getAllResolved(),
-                            context.getProcessInfo()
-                    )
-            );
+
+            // TODO methods and types
+            /*
+             * MethodStore.getInstance().values(),
+             * typeResolver.getAllResolved(),
+             */
+            context.getStorage().write(recordLog.getRecordingMetadata());
+            context.getStorage().write(recordLog.getRecordedCalls());
         }
     }
 
@@ -136,20 +135,19 @@ public class Recorder {
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
         CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
         if (currentRecordLog == null) return;
-        currentRecordLog.onMethodExit(method.getId(), method.getReturnValueRecorder(), result, thrown, callId);
+        currentRecordLog.onMethodExit(method, method.getReturnValueRecorder(), result, thrown, callId);
 
         if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100) {
             CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
             threadLocalRecordsLog.set(newRecordLog);
 
-            context.getTransport().uploadAsync(
-                    new CallRecordTreeRequest(
-                            currentRecordLog,
-                            MethodStore.getInstance().values(),
-                            typeResolver.getAllResolved(),
-                            context.getProcessInfo()
-                    )
-            );
+            // TODO methods and types
+            /*
+             * MethodStore.getInstance().values(),
+             * typeResolver.getAllResolved(),
+             */
+            context.getStorage().write(currentRecordLog.getRecordingMetadata());
+            context.getStorage().write(currentRecordLog.getRecordedCalls());
         }
     }
 }

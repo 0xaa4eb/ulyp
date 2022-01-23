@@ -1,5 +1,6 @@
 package com.ulyp.core;
 
+import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderType;
 import org.jetbrains.annotations.Nullable;
@@ -15,13 +16,14 @@ public class CallRecordLog {
     private final TypeResolver typeResolver;
     private final CallEnterRecordList enterRecords = new CallEnterRecordList();
     private final CallExitRecordList exitRecords = new CallExitRecordList();
+    private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
     private final StackTraceElement[] stackTrace;
 
     private boolean inProcessOfRecording = true;
 
     private long lastExitCallId = -1;
     private long rootCallId;
-    private long callIdCounter;
+    private long nextCallId;
 
     public CallRecordLog(TypeResolver typeResolver, long callIdInitialValue) {
         this.recordingMetadata = RecordingMetadata.builder()
@@ -32,7 +34,7 @@ public class CallRecordLog {
                 .build();
 
         this.typeResolver = typeResolver;
-        this.callIdCounter = callIdInitialValue;
+        this.nextCallId = callIdInitialValue;
         this.rootCallId = callIdInitialValue;
 
         StackTraceElement[] wholeStackTrace = new Exception().getStackTrace();
@@ -45,23 +47,23 @@ public class CallRecordLog {
             TypeResolver typeResolver,
             StackTraceElement[] stackTrace,
             boolean inProcessOfRecording,
-            long callIdCounter,
+            long nextCallId,
             long rootCallId)
     {
         this.recordingMetadata = recordingMetadata;
         this.typeResolver = typeResolver;
         this.stackTrace = stackTrace;
         this.inProcessOfRecording = inProcessOfRecording;
-        this.callIdCounter = callIdCounter;
+        this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(recordingMetadata, this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.callIdCounter, rootCallId);
+        return new CallRecordLog(recordingMetadata, this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
-        return enterRecords.buffer.capacity() + exitRecords.buffer.capacity();
+        return recordedCalls.getRawBytes().byteLength();
     }
 
     public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
@@ -71,15 +73,22 @@ public class CallRecordLog {
         inProcessOfRecording = false;
         try {
 
-            long callId = callIdCounter++;
-            enterRecords.add(callId, method.getId(), typeResolver, method.getParameterRecorders(), callee, args);
+            long callId = nextCallId++;
+            recordedCalls.addEnterMethodCall(
+                    recordingMetadata.getId(),
+                    callId,
+                    method,
+                    typeResolver,
+                    callee,
+                    args
+            );
             return callId;
         } finally {
             inProcessOfRecording = true;
         }
     }
 
-    public void onMethodExit(long methodId, ObjectRecorder resultRecorder, Object returnValue, Throwable thrown, long callId) {
+    public void onMethodExit(Method method, ObjectRecorder resultRecorder, Object returnValue, Throwable thrown, long callId) {
         if (!inProcessOfRecording) {
             return;
         }
@@ -88,9 +97,23 @@ public class CallRecordLog {
         try {
             if (callId >= 0) {
                 if (thrown == null) {
-                    exitRecords.add(callId, methodId, typeResolver, false, resultRecorder, returnValue);
+                    recordedCalls.addExitMethodCall(
+                            recordingMetadata.getId(),
+                            callId,
+                            method,
+                            typeResolver,
+                            false,
+                            returnValue
+                    );
                 } else {
-                    exitRecords.add(callId, methodId, typeResolver, true, ObjectRecorderType.THROWABLE_RECORDER.getInstance(), thrown);
+                    recordedCalls.addExitMethodCall(
+                            recordingMetadata.getId(),
+                            callId,
+                            method,
+                            typeResolver,
+                            true,
+                            thrown
+                    );
                 }
                 lastExitCallId = callId;
             }
@@ -115,12 +138,8 @@ public class CallRecordLog {
         return stackTrace;
     }
 
-    public CallEnterRecordList getEnterRecords() {
-        return enterRecords;
-    }
-
-    public CallExitRecordList getExitRecords() {
-        return exitRecords;
+    public RecordedMethodCallList getRecordedCalls() {
+        return recordedCalls;
     }
 
     @Override

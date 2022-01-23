@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.transport.UiTransport;
 import com.ulyp.core.process.ProcessInfo;
+import com.ulyp.storage.StorageWriter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,37 +25,25 @@ public class AgentContext {
 
     private final Settings settings;
     private final CallIdGenerator callIdGenerator;
-    private final UiTransport transport;
-    private final ProcessInfo processInfo;
+    private final StorageWriter storage;
 
     private AgentContext() {
         this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
-        this.processInfo = new ProcessInfo();
-        this.transport = settings.buildUiTransport();
 
-        Thread shutdown = new Thread(
-                () -> {
-                    try {
-                        transport.shutdownNowAndAwaitForRecordsLogsSending(30, TimeUnit.SECONDS);
-                    } catch (InterruptedException e) {
-                        // ignore
-                    }
-                }
-        );
+        this.storage = settings.buildStorageWriter();
+        this.storage.write(new ProcessInfo());
+
+        Thread shutdown = new Thread(storage::close);
         Runtime.getRuntime().addShutdownHook(shutdown);
+    }
+
+    public StorageWriter getStorage() {
+        return storage;
     }
 
     public CallIdGenerator getCallIdGenerator() {
         return callIdGenerator;
-    }
-
-    public ProcessInfo getProcessInfo() {
-        return processInfo;
-    }
-
-    public UiTransport getTransport() {
-        return transport;
     }
 
     public Settings getSettings() {

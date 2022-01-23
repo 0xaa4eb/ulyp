@@ -8,6 +8,8 @@ import com.ulyp.core.recorders.CollectionsRecordingMode;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
+import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.impl.FileStorageWriter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Paths;
@@ -29,14 +31,14 @@ public class Settings {
         String methodsToRecord = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
         RecordMethodList recordingStartMethods = RecordMethodList.parse(methodsToRecord);
 
-        Supplier<UiTransport> transportSupplier;
+        Supplier<StorageWriter> storageWriterSupplier;
         String filePath = System.getProperty(FILE_PATH_PROPERTY);
         if (filePath != null) {
             if (filePath.isEmpty()) {
-                transportSupplier = new Supplier<UiTransport>() {
+                storageWriterSupplier = new Supplier<StorageWriter>() {
                     @Override
-                    public UiTransport get() {
-                        return new DevNullStore();
+                    public StorageWriter get() {
+                        return StorageWriter.devNull();
                     }
 
                     @Override
@@ -45,10 +47,10 @@ public class Settings {
                     }
                 };
             } else {
-                transportSupplier = new Supplier<UiTransport>() {
+                storageWriterSupplier = new Supplier<StorageWriter>() {
                     @Override
-                    public UiTransport get() {
-                        return new FileUiTransport(Paths.get(filePath));
+                    public StorageWriter get() {
+                        return new FileStorageWriter(Paths.get(filePath).toFile());
                     }
 
                     @Override
@@ -79,7 +81,7 @@ public class Settings {
                     .collect(Collectors.toSet());
 
         return new Settings(
-                transportSupplier,
+                storageWriterSupplier,
                 instrumentationPackages,
                 excludedPackages,
                 recordingStartMethods,
@@ -99,7 +101,7 @@ public class Settings {
     public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
 
-    @NotNull private final Supplier<UiTransport> storeSupplier;
+    @NotNull private final Supplier<StorageWriter> storageWriterSupplier;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull private final RecordMethodList recordMethodList;
@@ -109,7 +111,7 @@ public class Settings {
     private final Set<ClassMatcher> classesToPrintWithToString;
 
     public Settings(
-            @NotNull Supplier<UiTransport> storeSupplier,
+            @NotNull Supplier<StorageWriter> storageWriterSupplier,
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
             @NotNull RecordMethodList recordMethodList,
@@ -118,7 +120,7 @@ public class Settings {
             Set<ClassMatcher> classesToPrintWithToString,
             StartRecordingPolicy startRecordingPolicy)
     {
-        this.storeSupplier = storeSupplier;
+        this.storageWriterSupplier = storageWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.recordMethodList = recordMethodList;
@@ -140,8 +142,8 @@ public class Settings {
         return recordMethodList;
     }
 
-    public UiTransport buildUiTransport() {
-        return storeSupplier.get();
+    public StorageWriter buildStorageWriter() {
+        return storageWriterSupplier.get();
     }
 
     public boolean shouldRecordConstructors() {
@@ -162,7 +164,7 @@ public class Settings {
 
     @Override
     public String toString() {
-        return "file: " + storeSupplier +
+        return "file: " + storageWriterSupplier +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + recordMethodList +

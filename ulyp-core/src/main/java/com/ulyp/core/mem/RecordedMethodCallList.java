@@ -61,7 +61,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
 
                     ObjectRecorder recorder = returnValue != null ?
-                            method.getReturnValueRecorder() :
+                            (thrown ? ObjectRecorderType.THROWABLE_RECORDER.getInstance() : method.getReturnValueRecorder()) :
                             ObjectRecorderType.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValueRecorderId(recorder.getId());

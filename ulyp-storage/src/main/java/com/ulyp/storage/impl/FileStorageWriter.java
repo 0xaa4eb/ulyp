@@ -14,12 +14,16 @@ import org.agrona.MutableDirectBuffer;
 import java.io.File;
 import java.io.IOException;
 
-public class StorageWriterImpl implements StorageWriter {
+public class FileStorageWriter implements StorageWriter {
 
     private final BinaryListFileWriter writer;
 
-    public StorageWriterImpl(File file) throws IOException {
-        this.writer = new BinaryListFileWriter(file);
+    public FileStorageWriter(File file) throws StorageException {
+        try {
+            this.writer = new BinaryListFileWriter(file);
+        } catch (IOException e) {
+            throw new StorageException("Could not build storage for file " + file, e);
+        }
     }
 
     @Override

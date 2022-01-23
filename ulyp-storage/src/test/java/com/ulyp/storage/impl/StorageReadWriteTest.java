@@ -15,7 +15,6 @@ import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.StorageWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +59,7 @@ public class StorageReadWriteTest {
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
         this.reader = new StorageReaderImpl(file);
-        this.writer = new StorageWriterImpl(file);
+        this.writer = new FileStorageWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
                 .id(recordingId)
@@ -276,6 +275,54 @@ public class StorageReadWriteTest {
                             CallRecord child2 = root.getChildren().get(1);
 
                             assertFalse(child2.callComplete());
+                        }
+                );
+
+
+        methodCalls = new RecordedMethodCallList();
+
+        methodCalls.addExitMethodCall(
+                recordingId,
+                2,
+                method,
+                typeResolver,
+                false,
+                "HJK"
+        );
+
+        methodCalls.addExitMethodCall(
+                recordingId,
+                0,
+                method,
+                typeResolver,
+                false,
+                "UIO"
+        );
+
+        writer.write(methodCalls);
+
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(
+                        () -> {
+                            assertEquals(1, reader.availableRecordings().size());
+
+                            Recording recording = reader.availableRecordings().get(0);
+                            CallRecord root = recording.getRoot();
+                            assertNotNull(root);
+
+                            assertTrue(root.callComplete());
+                            assertEquals(3, root.getSubtreeSize());
+                            assertEquals(2, root.getChildren().size());
+
+                            CallRecord child1 = root.getChildren().get(0);
+
+                            assertTrue(child1.callComplete());
+
+                            CallRecord child2 = root.getChildren().get(1);
+
+                            assertTrue(child2.callComplete());
                         }
                 );
     }
