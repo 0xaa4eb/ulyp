@@ -7,12 +7,13 @@ import com.ulyp.storage.StorageException;
 import com.ulyp.transport.*;
 import org.agrona.concurrent.UnsafeBuffer;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
-class DataReader {
+class DataReader implements Closeable {
 
-    private ByAddressFileReader reader;
+    private final ByAddressFileReader reader;
 
     public DataReader(File file) {
         this.reader = new ByAddressFileReader(file);
@@ -60,5 +61,10 @@ class DataReader {
                     " in file " + reader
             );
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        reader.close();
     }
 }

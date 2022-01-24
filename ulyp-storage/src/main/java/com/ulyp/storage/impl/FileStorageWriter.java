@@ -1,5 +1,6 @@
 package com.ulyp.storage.impl;
 
+import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.RecordedMethodCallList;
@@ -8,6 +9,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.process.ProcessInfo;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
+import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import org.agrona.MutableDirectBuffer;
 
@@ -27,14 +29,20 @@ public class FileStorageWriter implements StorageWriter {
     }
 
     @Override
-    public void write(ProcessInfo processInfo) {
-        BinaryList binaryList = new BinaryList(ProcessInfo.ID);
+    public void write(ProcessMetadata processMetadata) {
+        BinaryList binaryList = new BinaryList(ProcessMetadata.WIRE_ID);
         binaryList.add(
-                com.ulyp.transport.ProcessInfo.newBuilder()
-                        .setMainClassName(processInfo.getMainClassName())
-                        .addAllClasspath(processInfo.getClasspath().toList())
-                        .build()
-                        .toByteArray()
+                encoder -> {
+                    MutableDirectBuffer wrappedBuffer = encoder.buffer();
+                    int headerLength = 4;
+                    int limit = encoder.limit();
+                    BinaryProcessMetadataEncoder binaryMetadataEncoder = new BinaryProcessMetadataEncoder();
+                    binaryMetadataEncoder.wrap(wrappedBuffer, limit + headerLength);
+                    processMetadata.serialize(binaryMetadataEncoder);
+                    int typeSerializedLength = binaryMetadataEncoder.encodedLength();
+                    encoder.limit(limit + headerLength + typeSerializedLength);
+                    wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
+                }
         );
         writer.append(binaryList);
     }

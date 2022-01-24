@@ -1,5 +1,6 @@
 package com.ulyp.storage.impl;
 
+import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
@@ -11,7 +12,7 @@ import com.ulyp.storage.StorageWriter;
 public class DevNullStorageWriter implements StorageWriter {
 
     @Override
-    public void write(ProcessInfo processInfo) throws StorageException {
+    public void write(ProcessMetadata processInfo) throws StorageException {
 
     }
 

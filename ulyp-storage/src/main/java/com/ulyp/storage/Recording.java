@@ -10,6 +10,10 @@ public class Recording {
         this.recordingState = recordingState;
     }
 
+    public int getId() {
+        return recordingState.getId();
+    }
+
     public CallRecord getRoot() {
         return recordingState.getRoot();
     }

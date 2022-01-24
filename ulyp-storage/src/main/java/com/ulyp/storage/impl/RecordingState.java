@@ -6,9 +6,11 @@ import com.ulyp.storage.CallRecord;
 import com.ulyp.core.ReadableRepository;
 import com.ulyp.core.Repository;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class RecordingState {
+public class RecordingState implements Closeable {
 
     private final RecordingMetadata recordingMetadata;
     private final DataReader reader;
@@ -103,5 +105,10 @@ public class RecordingState {
         }
 
         return callRecord;
+    }
+
+    @Override
+    public void close() throws IOException {
+        reader.close();
     }
 }

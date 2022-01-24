@@ -3,12 +3,9 @@ package com.ulyp.storage.impl;
 import com.ulyp.storage.StorageException;
 import org.agrona.DirectBuffer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 
-public class ByAddressFileReader {
+public class ByAddressFileReader implements Closeable {
 
     private final File file;
     private final RandomAccessFile randomAccessFile;
@@ -41,5 +38,10 @@ public class ByAddressFileReader {
     @Override
     public String toString() {
         return "ByAddressFileReader{file=" + file + "}";
+    }
+
+    @Override
+    public void close() throws IOException {
+        randomAccessFile.close();
     }
 }

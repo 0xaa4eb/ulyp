@@ -58,7 +58,7 @@ public class StorageReadWriteTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.reader = new StorageReaderImpl(file);
+        this.reader = new BackgroundThreadFileStorageReader(file);
         this.writer = new FileStorageWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
@@ -270,11 +270,11 @@ public class StorageReadWriteTest {
 
                             CallRecord child1 = root.getChildren().get(0);
 
-                            assertTrue(child1.callComplete());
+                            assertTrue(child1.isComplete());
 
                             CallRecord child2 = root.getChildren().get(1);
 
-                            assertFalse(child2.callComplete());
+                            assertFalse(child2.isComplete());
                         }
                 );
 
@@ -312,17 +312,17 @@ public class StorageReadWriteTest {
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 
-                            assertTrue(root.callComplete());
+                            assertTrue(root.isComplete());
                             assertEquals(3, root.getSubtreeSize());
                             assertEquals(2, root.getChildren().size());
 
                             CallRecord child1 = root.getChildren().get(0);
 
-                            assertTrue(child1.callComplete());
+                            assertTrue(child1.isComplete());
 
                             CallRecord child2 = root.getChildren().get(1);
 
-                            assertTrue(child2.callComplete());
+                            assertTrue(child2.isComplete());
                         }
                 );
     }

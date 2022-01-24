@@ -1,15 +1,11 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.transport.UiTransport;
-import com.ulyp.agent.transport.file.FileUiTransport;
-import com.ulyp.agent.transport.nop.DevNullStore;
 import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.recorders.CollectionsRecordingMode;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.storage.StorageWriter;
-import com.ulyp.storage.impl.FileStorageWriter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Paths;
@@ -50,7 +46,7 @@ public class Settings {
                 storageWriterSupplier = new Supplier<StorageWriter>() {
                     @Override
                     public StorageWriter get() {
-                        return new FileStorageWriter(Paths.get(filePath).toFile());
+                        return StorageWriter.forFile(Paths.get(filePath).toFile());
                     }
 
                     @Override

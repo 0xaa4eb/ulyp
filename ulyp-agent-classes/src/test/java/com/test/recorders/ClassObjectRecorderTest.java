@@ -2,8 +2,8 @@ package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
-import com.ulyp.core.CallRecord;
 import com.ulyp.core.recorders.ClassObjectRecord;
+import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

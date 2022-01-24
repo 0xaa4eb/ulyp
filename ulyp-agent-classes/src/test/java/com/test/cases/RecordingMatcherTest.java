@@ -2,8 +2,8 @@ package com.test.cases;
 
 import com.test.cases.util.RecordingResult;
 import com.test.cases.util.ForkProcessBuilder;
-import com.ulyp.core.CallRecord;
 import com.ulyp.core.util.MethodMatcher;
+import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;

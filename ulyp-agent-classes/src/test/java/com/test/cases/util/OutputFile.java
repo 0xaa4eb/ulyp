@@ -1,16 +1,11 @@
 package com.test.cases.util;
 
-import com.ulyp.transport.TCallRecordLogUploadRequest;
-import org.junit.Assert;
+import com.ulyp.storage.StorageReader;
+import com.ulyp.storage.impl.SameThreadFileStorageReader;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OutputFile {
 
@@ -25,20 +20,8 @@ public class OutputFile {
         }
     }
 
-    public List<TCallRecordLogUploadRequest> read() {
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file.toFile()))) {
-
-            List<TCallRecordLogUploadRequest> result = new ArrayList<>();
-
-            while (inputStream.available() > 0) {
-                result.add(TCallRecordLogUploadRequest.parseDelimitedFrom(inputStream));
-            }
-
-            return result;
-        } catch (Exception e) {
-            Assert.fail("Failed to parse " + file);
-            throw new RuntimeException();
-        }
+    public StorageReader read() {
+        return new SameThreadFileStorageReader(file.toFile());
     }
 
     @Override

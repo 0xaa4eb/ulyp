@@ -72,6 +72,31 @@ public class CallRecord {
         return callee;
     }
 
+    public long getId() {
+        return callId;
+    }
+
+    public boolean isVoidMethod() {
+        return !method.returnsSomething();
+    }
+
+    public boolean isConstructor() {
+        return method.isConstructor();
+    }
+
+    public boolean isStatic() {
+        return method.isStatic();
+    }
+
+    public String getClassName() {
+        return method.getDeclaringType().getName();
+    }
+
+    public String getMethodName() {
+        return method.getName();
+    }
+
+
     public long getCallId() {
         return callId;
     }
@@ -102,7 +127,7 @@ public class CallRecord {
                 .collect(Collectors.toList());
     }
 
-    public boolean callComplete() {
+    public boolean isComplete() {
         return returnValue != NotRecordedObjectRecord.getInstance();
     }
 

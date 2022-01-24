@@ -1,7 +1,7 @@
 package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
-import com.ulyp.core.CallRecord;
+import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -17,7 +17,7 @@ public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("fibonacci")
         );
 
-        assertThat(root.getSubtreeNodeCount(), is(177L));
+        assertThat(root.getSubtreeSize(), is(177L));
     }
 
     public static class RecursionTestCases {

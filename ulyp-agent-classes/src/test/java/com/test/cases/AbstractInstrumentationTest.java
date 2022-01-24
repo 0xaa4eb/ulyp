@@ -1,16 +1,14 @@
 package com.test.cases;
 
-import com.test.cases.util.*;
-import com.ulyp.core.CallRecord;
-import com.ulyp.transport.TCallRecordLogUploadRequest;
+import com.test.cases.util.ForkProcessBuilder;
+import com.test.cases.util.RecordingResult;
+import com.test.cases.util.TestUtil;
+import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.StorageReader;
 import junit.framework.AssertionFailedError;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class AbstractInstrumentationTest {
 
@@ -29,18 +27,17 @@ public class AbstractInstrumentationTest {
     }
 
     protected void assertNoRecording(ForkProcessBuilder settings) {
-        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings), Matchers.empty());
+        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).availableRecordings(), Matchers.empty());
     }
 
-    protected List<TCallRecordLogUploadRequest> runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
+    protected StorageReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
         TestUtil.runClassInSeparateJavaProcess(settings);
         if (settings.getOutputFile() == null) {
-            return Collections.emptyList();
+            return StorageReader.empty();
         } else {
-            List<TCallRecordLogUploadRequest> requests = settings.getOutputFile().read();
-            requests.sort(Comparator.comparingLong(r -> r.getRecordingInfo().getChunkId()));
-            System.out.println("Got " + requests.size() + " chunks from process");
-            return requests;
+            StorageReader reader = settings.getOutputFile().read();
+            System.out.println("Got " + reader.availableRecordings().size() + " recordings");
+            return reader;
         }
     }
 }

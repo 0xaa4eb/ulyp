@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public class ProcessMetadata {
 
+    public static final int WIRE_ID = 20;
+
     private final String mainClassName;
     private final String classPath;
     private final long pid;
@@ -25,5 +27,19 @@ public class ProcessMetadata {
                 .classPath(decoder.classPath())
                 .pid(decoder.pid())
                 .build();
+    }
+
+    public static String getMainClassNameFromProp() {
+        String mainFromProp = System.getProperty("sun.java.command");
+        if (mainFromProp != null && !mainFromProp.isEmpty()) {
+            int space = mainFromProp.indexOf(' ');
+            if (space > 0) {
+                return mainFromProp.substring(0, space);
+            } else {
+                return mainFromProp;
+            }
+        } else {
+            return "Unknown";
+        }
     }
 }

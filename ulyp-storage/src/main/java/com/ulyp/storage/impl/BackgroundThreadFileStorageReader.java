@@ -1,18 +1,15 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.agent.transport.NamedThreadFactory;
-import com.ulyp.core.Method;
-import com.ulyp.core.RecordedMethodCall;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.Type;
+import com.ulyp.storage.util.NamedThreadFactory;
+import com.ulyp.core.*;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.Recording;
-import com.ulyp.core.Repository;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
+import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -26,20 +23,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class StorageReaderImpl implements StorageReader {
+public class BackgroundThreadFileStorageReader implements StorageReader {
 
     private final File file;
     private final ExecutorService executorService;
-
     private final Repository<Type> types = new InMemoryRepository<>();
     private final Repository<RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Method> methods = new InMemoryRepository<>();
 
-    public StorageReaderImpl(File file) {
+    // TODO replace with listenable
+    private volatile ProcessMetadata processMetadata;
+
+    public BackgroundThreadFileStorageReader(File file) {
         this.file = file;
         this.executorService = Executors.newFixedThreadPool(
                 1,
-                new NamedThreadFactory("Reader-" + file.toString(), false)
+                new NamedThreadFactory("Reader-" + file.toString(), true)
         );
 
         try {
@@ -70,6 +69,9 @@ public class StorageReaderImpl implements StorageReader {
                     }
 
                     switch(data.getBytes().id()) {
+                        case ProcessMetadata.WIRE_ID:
+                            onProcessMetadata(data.getBytes());
+                            break;
                         case RecordingMetadata.WIRE_ID:
                             onRecordingMetadata(data.getBytes());
                             break;
@@ -97,6 +99,14 @@ public class StorageReaderImpl implements StorageReader {
         @Override
         public void close() throws IOException {
 
+        }
+
+        private void onProcessMetadata(BinaryList data) {
+            UnsafeBuffer buffer = new UnsafeBuffer();
+            data.iterator().next().wrapValue(buffer);
+            BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
+            decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
+            processMetadata = ProcessMetadata.deserialize(decoder);
         }
 
         private void onRecordingMetadata(BinaryList data) {
@@ -133,6 +143,11 @@ public class StorageReaderImpl implements StorageReader {
         private void onMethods(BinaryList data) {
             new MethodList(data).forEach(type -> methods.store(type.getId(), type));
         }
+    }
+
+    @Override
+    public ProcessMetadata getProcessMetadata() {
+        return processMetadata;
     }
 
     @Override

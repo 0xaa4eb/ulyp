@@ -2,9 +2,9 @@ package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
-import com.ulyp.core.CallRecord;
 import com.ulyp.core.recorders.BooleanRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
+import com.ulyp.storage.CallRecord;
 import org.junit.Assert;
 import org.junit.Test;
 

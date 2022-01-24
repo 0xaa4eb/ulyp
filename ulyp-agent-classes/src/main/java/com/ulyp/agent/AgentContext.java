@@ -1,5 +1,8 @@
 package com.ulyp.agent;
 
+import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.process.Classpath;
 import com.ulyp.core.process.ProcessInfo;
 import com.ulyp.storage.StorageWriter;
 
@@ -32,7 +35,11 @@ public class AgentContext {
         this.settings = Settings.fromSystemProperties();
 
         this.storage = settings.buildStorageWriter();
-        this.storage.write(new ProcessInfo());
+        this.storage.write(ProcessMetadata.builder()
+                        .classPath(new Classpath().toString())
+                        .mainClassName(ProcessMetadata.getMainClassNameFromProp())
+                        .build()
+        );
 
         Thread shutdown = new Thread(storage::close);
         Runtime.getRuntime().addShutdownHook(shutdown);

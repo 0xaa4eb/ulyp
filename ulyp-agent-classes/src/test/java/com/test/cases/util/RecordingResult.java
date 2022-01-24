@@ -1,28 +1,26 @@
 package com.test.cases.util;
 
-import com.ulyp.core.*;
-import com.ulyp.core.impl.LegacyFileBasedCallRecordDatabase;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderType;
-import com.ulyp.core.util.ReflectionBasedTypeResolver;
+import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageException;
-import com.ulyp.transport.TCallRecordLogUploadRequest;
+import com.ulyp.storage.StorageReader;
 import org.junit.Assert;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class RecordingResult {
 
-    private final List<TCallRecordLogUploadRequest> requests;
+    private final StorageReader reader;
 
-    public RecordingResult(List<TCallRecordLogUploadRequest> requests) {
-        this.requests = requests;
+    public RecordingResult(StorageReader reader) {
+        this.reader = reader;
     }
 
-    public Map<Long, CallRecordDatabase> aggregateByThread() throws StorageException {
-        Map<Long, CallRecordDatabase> recordingIdToRequest = new HashMap<>();
+    /*
+    public Map<Integer, Recording> aggregateByThread() throws StorageException {
+        Map<Integer, CallRecordDatabase> recordingIdToRequest = new HashMap<>();
 
         MethodInfoDatabase methodInfoDatabase = new MethodInfoDatabase();
         TypeInfoDatabase typeInfoDatabase = new TypeInfoDatabase();
@@ -40,7 +38,7 @@ public class RecordingResult {
         methodInfos.add(threadRunMethod);
         methodInfoDatabase.addAll(methodInfos);
 
-        for (TCallRecordLogUploadRequest request : requests) {
+        for (TCallRecordLogUploadRequest request : reader) {
             CallRecordDatabase database = recordingIdToRequest.computeIfAbsent(
                     request.getRecordingInfo().getThreadId(),
                     id -> {
@@ -74,28 +72,10 @@ public class RecordingResult {
 
         return recordingIdToRequest;
     }
+    */
 
-    public Map<Long, CallRecordDatabase> aggregateByRecordings() {
-        Map<Long, CallRecordDatabase> recordingIdToRequest = new HashMap<>();
-
-        MethodInfoDatabase methodInfoDatabase = new MethodInfoDatabase();
-        TypeInfoDatabase typeInfoDatabase = new TypeInfoDatabase();
-
-        for (TCallRecordLogUploadRequest request : requests) {
-            CallRecordDatabase database = recordingIdToRequest.computeIfAbsent(
-                    request.getRecordingInfo().getRecordingId(),
-                    id -> {
-                        return new LegacyFileBasedCallRecordDatabase(methodInfoDatabase, typeInfoDatabase);
-                    }
-            );
-
-            methodInfoDatabase.addAll(new MethodInfoList(request.getMethodDescriptionList().getData()));
-            typeInfoDatabase.addAll(request.getDescriptionList());
-
-            database.persistBatch(new CallEnterRecordList(request.getRecordLog().getEnterRecords()), new CallExitRecordList(request.getRecordLog().getExitRecords()));
-        }
-
-        return recordingIdToRequest;
+    public Map<Integer, Recording> aggregateByRecordings() {
+        return reader.availableRecordings().stream().collect(Collectors.toMap(Recording::getId, Function.identity()));
     }
 
     public CallRecord getSingleRoot() throws StorageException {
@@ -105,12 +85,12 @@ public class RecordingResult {
     }
 
     public void assertSingleRecordingSession() {
-        Map<Long, CallRecordDatabase> request = aggregateByRecordings();
+        Map<Integer, Recording> request = aggregateByRecordings();
         Assert.assertEquals("Expect single recording session, but got " + request.size(), 1, request.size());
     }
 
     public void assertRecordingSessionCount(int count) {
-        Map<Long, CallRecordDatabase> request = aggregateByRecordings();
+        Map<Integer, Recording> request = aggregateByRecordings();
         Assert.assertEquals("Expect " + count + " recording session, but got " + request.size(), count, request.size());
     }
 }

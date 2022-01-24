@@ -1,9 +1,10 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.transport.CallRecordTreeRequest;
 import com.ulyp.agent.util.EnhancedThreadLocal;
 import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.*;
+import com.ulyp.core.mem.MethodList;
+import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,13 +86,7 @@ public class Recorder {
 //              log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
 //            }
 
-            // TODO methods and types
-            /*
-            * MethodStore.getInstance().values(),
-            * typeResolver.getAllResolved(),
-            */
-            context.getStorage().write(recordLog.getRecordingMetadata());
-            context.getStorage().write(recordLog.getRecordedCalls());
+            write(typeResolver, recordLog);
         }
     }
 
@@ -106,14 +101,31 @@ public class Recorder {
 //                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingId(), recordLog.getCallsRecorded());
 //            }
 
-            // TODO methods and types
-            /*
-             * MethodStore.getInstance().values(),
-             * typeResolver.getAllResolved(),
-             */
-            context.getStorage().write(recordLog.getRecordingMetadata());
-            context.getStorage().write(recordLog.getRecordedCalls());
+            write(typeResolver, recordLog);
         }
+    }
+
+    private void write(TypeResolver typeResolver, CallRecordLog recordLog) {
+        MethodList methods = new MethodList();
+        for (Method method : MethodStore.getInstance().values()) {
+            if (!method.wasWrittenToFile()) {
+                methods.add(method);
+                method.setWrittenToFile();
+            }
+        }
+        context.getStorage().write(methods);
+
+        TypeList types = new TypeList();
+        for (Type type : typeResolver.getAllResolved()) {
+            if (!type.wasWrittenToFile()) {
+                types.add(type);
+                type.setWrittenToFile();
+            }
+        }
+        context.getStorage().write(types);
+
+        context.getStorage().write(recordLog.getRecordingMetadata());
+        context.getStorage().write(recordLog.getRecordedCalls());
     }
 
     public long onConstructorEnter(Method method, Object[] args) {
@@ -141,13 +153,7 @@ public class Recorder {
             CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
             threadLocalRecordsLog.set(newRecordLog);
 
-            // TODO methods and types
-            /*
-             * MethodStore.getInstance().values(),
-             * typeResolver.getAllResolved(),
-             */
-            context.getStorage().write(currentRecordLog.getRecordingMetadata());
-            context.getStorage().write(currentRecordLog.getRecordedCalls());
+            write(typeResolver, newRecordLog);
         }
     }
 }
