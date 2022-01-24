@@ -2,7 +2,6 @@ package com.ulyp.core;
 
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -14,8 +13,6 @@ public class CallRecordLog {
 
     private final RecordingMetadata recordingMetadata;
     private final TypeResolver typeResolver;
-    private final CallEnterRecordList enterRecords = new CallEnterRecordList();
-    private final CallExitRecordList exitRecords = new CallExitRecordList();
     private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
     private final StackTraceElement[] stackTrace;
 
@@ -124,10 +121,6 @@ public class CallRecordLog {
 
     public boolean isComplete() {
         return lastExitCallId == rootCallId;
-    }
-
-    public long size() {
-        return enterRecords.size();
     }
 
     public RecordingMetadata getRecordingMetadata() {
