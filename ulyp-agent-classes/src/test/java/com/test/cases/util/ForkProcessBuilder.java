@@ -16,6 +16,7 @@ public class ForkProcessBuilder {
     private PackageList instrumentedPackages = new PackageList();
     private PackageList excludedFromInstrumentationPackages = new PackageList();
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
+    private String logLevel = "INFO";
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -44,6 +45,15 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder setMethodToRecord(MethodMatcher methodToRecord) {
         this.methodToRecord = methodToRecord;
+        return this;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public ForkProcessBuilder setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
         return this;
     }
 

@@ -96,7 +96,6 @@ public class StorageReadWriteTest {
 
 
         writer.write(recordingMetadata);
-        writer.write(recordingMetadata);
         writer.write(types);
         writer.write(methods);
         writer.write(methodCalls);
@@ -152,7 +151,6 @@ public class StorageReadWriteTest {
         );
 
 
-        writer.write(recordingMetadata);
         writer.write(recordingMetadata);
         writer.write(types);
         writer.write(methods);

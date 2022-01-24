@@ -29,7 +29,7 @@ public class FileStorageWriter implements StorageWriter {
     }
 
     @Override
-    public void write(ProcessMetadata processMetadata) {
+    public synchronized void write(ProcessMetadata processMetadata) {
         BinaryList binaryList = new BinaryList(ProcessMetadata.WIRE_ID);
         binaryList.add(
                 encoder -> {
@@ -48,7 +48,7 @@ public class FileStorageWriter implements StorageWriter {
     }
 
     @Override
-    public void write(RecordingMetadata recordingMetadata) {
+    public synchronized void write(RecordingMetadata recordingMetadata) {
         BinaryList binaryList = new BinaryList(RecordingMetadata.WIRE_ID);
         binaryList.add(
                 encoder -> {
@@ -67,22 +67,31 @@ public class FileStorageWriter implements StorageWriter {
     }
 
     @Override
-    public void write(TypeList types) {
+    public synchronized void write(TypeList types) {
+        if (types.getRawBytes().isEmpty()) {
+            return;
+        }
         writer.append(types.getRawBytes());
     }
 
     @Override
-    public void write(RecordedMethodCallList callRecords) {
+    public synchronized void write(RecordedMethodCallList callRecords) {
+        if (callRecords.getRawBytes().isEmpty()) {
+            return;
+        }
         writer.append(callRecords.getRawBytes());
     }
 
     @Override
-    public void write(MethodList methods) {
+    public synchronized void write(MethodList methods) {
+        if (methods.getRawBytes().isEmpty()) {
+            return;
+        }
         writer.append(methods.getRawBytes());
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         writer.close();
     }
 }

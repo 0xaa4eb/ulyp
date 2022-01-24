@@ -144,6 +144,10 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         return new Iterator();
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     private class Iterator implements AddressableItemIterator<BinaryDataDecoder> {
 
         private int recordAddress = HEADER_LENGTH;
