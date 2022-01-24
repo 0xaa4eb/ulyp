@@ -24,7 +24,7 @@ public class RecordedObject {
         return objectRecorder.read(
                 type,
                 new BinaryInputImpl(value),
-                id -> typeResolver.get(typeId)
+                typeResolver::get
         );
     }
 }
