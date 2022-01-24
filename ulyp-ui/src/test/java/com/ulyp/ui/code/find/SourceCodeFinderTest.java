@@ -1,6 +1,6 @@
 package com.ulyp.ui.code.find;
 
-import com.ulyp.core.process.Classpath;
+import com.ulyp.core.util.Classpath;
 import com.ulyp.ui.code.SourceCode;
 import org.hamcrest.Matchers;
 import org.junit.Assert;

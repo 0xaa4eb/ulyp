@@ -1,16 +1,12 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.CollectionRecorder;
 import com.ulyp.core.recorders.MapRecorder;
 import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.recorders.ToStringRecorder;
-import com.ulyp.core.process.ProcessInfo;
-import com.ulyp.core.util.ClassMatcher;
-import com.ulyp.core.util.ClassUtils;
-import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.core.util.PackageList;
+import com.ulyp.core.util.*;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
@@ -49,9 +45,8 @@ public class Agent {
 
         if (recordMethodList == null || recordMethodList.isEmpty()) {
             // if not specified, then record main(String[] args) method as it's the only entry point to the program we have
-            ProcessInfo processInfo = new ProcessInfo();
             recordMethodList = RecordMethodList.of(
-                    new MethodMatcher(ClassMatcher.parse(ClassUtils.getSimpleNameFromName(processInfo.getMainClassName())), "main")
+                    new MethodMatcher(ClassMatcher.parse(ClassUtils.getSimpleNameFromName(ProcessMetadata.getMainClassNameFromProp())), "main")
             );
         }
 
