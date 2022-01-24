@@ -85,7 +85,7 @@ public class CallRecordLog {
         }
     }
 
-    public void onMethodExit(Method method, ObjectRecorder resultRecorder, Object returnValue, Throwable thrown, long callId) {
+    public void onMethodExit(Method method, Object returnValue, Throwable thrown, long callId) {
         if (!inProcessOfRecording) {
             return;
         }
@@ -129,6 +129,10 @@ public class CallRecordLog {
 
     public StackTraceElement[] getStackTrace() {
         return stackTrace;
+    }
+
+    public int size() {
+        return recordedCalls.size();
     }
 
     public RecordedMethodCallList getRecordedCalls() {

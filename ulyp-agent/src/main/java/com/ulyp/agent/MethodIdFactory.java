@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
-import com.ulyp.core.MethodStore;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.Method;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -14,11 +14,11 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 /**
  * Allows to wire method id into advice classes {@link ConstructorCallRecordingAdvice} and {@link MethodCallRecordingAdvice}
  *
- * Uses a singleton instance of {@link MethodStore} to store methods into it.
+ * Uses a singleton instance of {@link MethodRepository} to store methods into it.
  */
 public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
-    static final MethodStore methodStore = MethodStore.getInstance();
+    static final MethodRepository methodRepository = MethodRepository.getInstance();
 
     private final ForMethodIdOffsetMapping instance;
 
@@ -74,7 +74,7 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
                 id = idMapping.methodId;
             } else {
                 Method method = byteBuddyMethodResolver.resolve(instrumentedMethod);
-                id = methodStore.putAndGetId(method, recordMethodList.shouldStartRecording(method));
+                id = methodRepository.putAndGetId(method, recordMethodList.shouldStartRecording(method));
                 lastMethod.set(new IdMapping(instrumentedMethod, id));
             }
 

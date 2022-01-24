@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
-import com.ulyp.core.MethodStore;
+import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 
 public class ConstructorCallRecordingAdvice {
@@ -20,12 +20,12 @@ public class ConstructorCallRecordingAdvice {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    MethodStore.getInstance().get(methodId),
+                    MethodRepository.getInstance().get(methodId),
                     arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                callId = Recorder.getInstance().onConstructorEnter(MethodStore.getInstance().get(methodId), arguments);
+                callId = Recorder.getInstance().onConstructorEnter(MethodRepository.getInstance().get(methodId), arguments);
             }
         }
     }
@@ -45,7 +45,7 @@ public class ConstructorCallRecordingAdvice {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnConstructorExit(
                         ByteBuddyTypeResolver.getInstance(),
-                        MethodStore.getInstance().get(methodId),
+                        MethodRepository.getInstance().get(methodId),
                         callId,
                         returnValue
                 );
@@ -53,7 +53,7 @@ public class ConstructorCallRecordingAdvice {
                 if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                     Recorder.getInstance().onConstructorExit(
                             ByteBuddyTypeResolver.getInstance(),
-                            MethodStore.getInstance().get(methodId),
+                            MethodRepository.getInstance().get(methodId),
                             returnValue,
                             callId
                     );
