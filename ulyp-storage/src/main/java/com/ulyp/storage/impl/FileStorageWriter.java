@@ -6,15 +6,18 @@ import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.agrona.MutableDirectBuffer;
 
 import java.io.File;
 import java.io.IOException;
 
+@Slf4j
 public class FileStorageWriter implements StorageWriter {
 
     private final BinaryListFileWriter writer;
@@ -44,6 +47,9 @@ public class FileStorageWriter implements StorageWriter {
                 }
         );
         writer.append(binaryList);
+        if (LoggingSettings.INFO_ENABLED) {
+            log.info("Has written {} to storage", processMetadata);
+        }
     }
 
     @Override
@@ -63,6 +69,9 @@ public class FileStorageWriter implements StorageWriter {
                 }
         );
         writer.append(binaryList);
+        if (LoggingSettings.INFO_ENABLED) {
+            log.info("Has written {} to storage", recordingMetadata);
+        }
     }
 
     @Override

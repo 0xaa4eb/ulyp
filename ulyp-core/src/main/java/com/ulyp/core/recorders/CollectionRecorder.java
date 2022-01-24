@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
+import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -82,7 +83,9 @@ public class CollectionRecorder extends ObjectRecorder {
                         recorded++;
                     }
                 } catch (Throwable throwable) {
-                    log.info("Collection items will not be recorded as error occurred while recording", throwable);
+                    if (LoggingSettings.INFO_ENABLED) {
+                        log.info("Collection items will not be recorded as error occurred while recording", throwable);
+                    }
                     checkpoint.rollback();
                     active = false;
                     writeIdentity(object, out, typeResolver);

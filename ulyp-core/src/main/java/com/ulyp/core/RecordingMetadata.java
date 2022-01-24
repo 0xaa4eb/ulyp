@@ -4,9 +4,11 @@ import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class RecordingMetadata {
 
     public static final int WIRE_ID = 7;

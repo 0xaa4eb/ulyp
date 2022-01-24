@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.ObjectRecorderType;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl2;
 import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl2;
 import com.ulyp.transport.*;
+import lombok.extern.slf4j.Slf4j;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.NotNull;

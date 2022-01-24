@@ -5,7 +5,10 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.util.LoggingSettings;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ClassObjectRecorder extends ObjectRecorder {
 
     protected ClassObjectRecorder(byte id) {
@@ -27,6 +30,11 @@ public class ClassObjectRecorder extends ObjectRecorder {
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Class<?> clazz = (Class<?>) object;
 
-        out.writeLong(typeResolver.get(clazz).getId());
+        long typeId = typeResolver.get(clazz).getId();
+        out.writeLong(typeId);
+
+        if (LoggingSettings.TRACE_ENABLED) {
+            log.trace("Writing typeId={} for {}", typeId, object);
+        }
     }
 }

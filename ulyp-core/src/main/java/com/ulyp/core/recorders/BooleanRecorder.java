@@ -6,7 +6,10 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.util.LoggingSettings;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class BooleanRecorder extends ObjectRecorder {
 
     protected BooleanRecorder(byte id) {
@@ -27,5 +30,8 @@ public class BooleanRecorder extends ObjectRecorder {
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Boolean value = (Boolean) object;
         out.writeBool(value);
+        if (LoggingSettings.TRACE_ENABLED) {
+            log.trace("Writing {}", object);
+        }
     }
 }

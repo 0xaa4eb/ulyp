@@ -4,9 +4,11 @@ import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class ProcessMetadata {
 
     public static final int WIRE_ID = 20;

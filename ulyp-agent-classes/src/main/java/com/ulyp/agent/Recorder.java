@@ -113,6 +113,9 @@ public class Recorder {
             if (!method.wasWrittenToFile()) {
                 methods.add(method);
                 method.setWrittenToFile();
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.info("Will write {} to storage", method);
+                }
             }
         }
         context.getStorage().write(methods);
@@ -122,6 +125,9 @@ public class Recorder {
             if (!type.wasWrittenToFile()) {
                 types.add(type);
                 type.setWrittenToFile();
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.info("Will write {} to storage", type);
+                }
             }
         }
         context.getStorage().write(types);
