@@ -7,6 +7,7 @@ import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -90,6 +91,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
+    @Ignore
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runForkWithUi(
