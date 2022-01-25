@@ -10,7 +10,7 @@ jobs:
       - image: circleci/openjdk:8u312-buster-node-browsers
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - build
+      - checkout
       - run:
           name: "Run gradle build"
           command: "chmod +x gradlew && ./gradlew ulyp-agent-classes:check -i"
