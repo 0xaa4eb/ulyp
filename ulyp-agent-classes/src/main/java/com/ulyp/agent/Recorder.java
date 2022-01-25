@@ -108,6 +108,7 @@ public class Recorder {
     }
 
     private void write(TypeResolver typeResolver, CallRecordLog recordLog) {
+
         MethodList methods = new MethodList();
         for (Method method : MethodRepository.getInstance().values()) {
             if (!method.wasWrittenToFile()) {
@@ -163,9 +164,19 @@ public class Recorder {
             if (currentRecordLog == null) return;
             currentRecordLog.onMethodExit(method, result, thrown, callId);
 
-            if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100) {
+            if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
+                    (
+                            (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100
+                            &&
+                            currentRecordLog.size() > 0
+                    )) {
                 CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
-                threadLocalRecordsLog.set(newRecordLog);
+
+                if (!currentRecordLog.isComplete()) {
+                    threadLocalRecordsLog.set(newRecordLog);
+                } else {
+                    threadLocalRecordsLog.clear();
+                }
 
                 write(typeResolver, currentRecordLog);
             }

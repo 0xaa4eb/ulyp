@@ -84,10 +84,14 @@ public class FileStorageWriter implements StorageWriter {
 
     @Override
     public synchronized void write(RecordedMethodCallList callRecords) {
-        if (callRecords.getRawBytes().isEmpty()) {
+        BinaryList callsBytes = callRecords.getRawBytes();
+        if (callsBytes.isEmpty()) {
             return;
         }
-        writer.append(callRecords.getRawBytes());
+        writer.append(callsBytes);
+        if (LoggingSettings.INFO_ENABLED) {
+            log.info("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
+        }
     }
 
     @Override
