@@ -167,7 +167,7 @@ public class Recorder {
                 CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
                 threadLocalRecordsLog.set(newRecordLog);
 
-                write(typeResolver, newRecordLog);
+                write(typeResolver, currentRecordLog);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
