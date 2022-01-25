@@ -141,11 +141,16 @@ public class Recorder {
     }
 
     public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
-        CallRecordLog callRecordLog = threadLocalRecordsLog.get();
-        if (callRecordLog == null) {
+        try {
+            CallRecordLog callRecordLog = threadLocalRecordsLog.get();
+            if (callRecordLog == null) {
+                return -1;
+            }
+            return callRecordLog.onMethodEnter(method, callee, args);
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
             return -1;
         }
-        return callRecordLog.onMethodEnter(method, callee, args);
     }
 
     public void onConstructorExit(TypeResolver typeResolver, Method method, Object result, long callId) {
@@ -153,15 +158,19 @@ public class Recorder {
     }
 
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
-        CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
-        if (currentRecordLog == null) return;
-        currentRecordLog.onMethodExit(method, result, thrown, callId);
+        try {
+            CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
+            if (currentRecordLog == null) return;
+            currentRecordLog.onMethodExit(method, result, thrown, callId);
 
-        if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100) {
-            CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
-            threadLocalRecordsLog.set(newRecordLog);
+            if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 || (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100) {
+                CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
+                threadLocalRecordsLog.set(newRecordLog);
 
-            write(typeResolver, newRecordLog);
+                write(typeResolver, newRecordLog);
+            }
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
         }
     }
 }
