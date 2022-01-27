@@ -5,6 +5,8 @@ import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.repository.InMemoryRepository;
+import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
@@ -22,9 +24,9 @@ public class SameThreadFileStorageReader implements StorageReader {
 
     private final File file;
     private ProcessMetadata processMetadata;
-    private final Repository<Type> types = new InMemoryRepository<>();
-    private final Repository<RecordingState> recordingStates = new InMemoryRepository<>();
-    private final Repository<Method> methods = new InMemoryRepository<>();
+    private final Repository<Long, Type> types = new InMemoryRepository<>();
+    private final Repository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
+    private final Repository<Long, Method> methods = new InMemoryRepository<>();
 
     public SameThreadFileStorageReader(File file) {
         this.file = file;

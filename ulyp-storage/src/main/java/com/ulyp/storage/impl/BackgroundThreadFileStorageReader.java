@@ -1,5 +1,7 @@
 package com.ulyp.storage.impl;
 
+import com.ulyp.core.repository.InMemoryRepository;
+import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.util.NamedThreadFactory;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.BinaryList;
@@ -27,9 +29,9 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
 
     private final File file;
     private final ExecutorService executorService;
-    private final Repository<Type> types = new InMemoryRepository<>();
-    private final Repository<RecordingState> recordingStates = new InMemoryRepository<>();
-    private final Repository<Method> methods = new InMemoryRepository<>();
+    private final Repository<Long, Type> types = new InMemoryRepository<>();
+    private final Repository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
+    private final Repository<Long, Method> methods = new InMemoryRepository<>();
 
     // TODO replace with listenable
     private volatile ProcessMetadata processMetadata;

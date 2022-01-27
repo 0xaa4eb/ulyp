@@ -2,9 +2,10 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.storage.CallRecord;
-import com.ulyp.core.ReadableRepository;
-import com.ulyp.core.Repository;
+import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.core.repository.Repository;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,18 +15,18 @@ public class RecordingState implements Closeable {
 
     private final RecordingMetadata recordingMetadata;
     private final DataReader reader;
-    private final Repository<RecordedCallState> index = new InMemoryRepository<>();
+    private final Repository<Long, RecordedCallState> index = new InMemoryRepository<>();
     private final MemCallStack memCallStack = new MemCallStack();
-    private final ReadableRepository<Method> methodRepository;
-    private final ReadableRepository<Type> typeRepository;
+    private final ReadableRepository<Long, Method> methodRepository;
+    private final ReadableRepository<Long, Type> typeRepository;
 
     private long rootCallId = -1;
 
     public RecordingState(
             RecordingMetadata recordingMetadata,
             DataReader dataReader,
-            ReadableRepository<Method> methodRepository,
-            ReadableRepository<Type> typeRepository)
+            ReadableRepository<Long, Method> methodRepository,
+            ReadableRepository<Long, Type> typeRepository)
     {
         this.recordingMetadata = recordingMetadata;
         this.reader = dataReader;
