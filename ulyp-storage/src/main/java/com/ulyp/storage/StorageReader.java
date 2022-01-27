@@ -13,6 +13,8 @@ public interface StorageReader extends AutoCloseable {
 
     ProcessMetadata getProcessMetadata();
 
+    void subscribe(RecordingListener listener);
+
     List<Recording> availableRecordings();
 
     void close() throws StorageException;

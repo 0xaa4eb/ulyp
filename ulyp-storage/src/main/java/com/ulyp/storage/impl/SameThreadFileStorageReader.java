@@ -8,6 +8,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.Recording;
+import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
@@ -84,7 +85,8 @@ public class SameThreadFileStorageReader implements StorageReader {
                         metadata,
                         new DataReader(file),
                         methods,
-                        types)
+                        types,
+                        RecordingListener.empty())
         );
         recordingState.update(metadata);
     }
@@ -110,6 +112,11 @@ public class SameThreadFileStorageReader implements StorageReader {
     @Override
     public ProcessMetadata getProcessMetadata() {
         return processMetadata;
+    }
+
+    @Override
+    public void subscribe(RecordingListener listener) {
+
     }
 
     @Override

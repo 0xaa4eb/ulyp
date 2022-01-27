@@ -6,6 +6,8 @@ import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.repository.Repository;
+import com.ulyp.storage.Recording;
+import com.ulyp.storage.RecordingListener;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class RecordingState implements Closeable {
     private final MemCallStack memCallStack = new MemCallStack();
     private final ReadableRepository<Long, Method> methodRepository;
     private final ReadableRepository<Long, Type> typeRepository;
+    private final RecordingListener listener;
 
     private long rootCallId = -1;
 
@@ -26,15 +29,17 @@ public class RecordingState implements Closeable {
             RecordingMetadata recordingMetadata,
             DataReader dataReader,
             ReadableRepository<Long, Method> methodRepository,
-            ReadableRepository<Long, Type> typeRepository)
+            ReadableRepository<Long, Type> typeRepository,
+            RecordingListener recordingListener)
     {
         this.recordingMetadata = recordingMetadata;
         this.reader = dataReader;
         this.methodRepository = methodRepository;
         this.typeRepository = typeRepository;
+        this.listener = recordingListener;
     }
 
-    void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+    synchronized void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
 
         AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
         while (iterator.hasNext()) {
@@ -56,9 +61,15 @@ public class RecordingState implements Closeable {
                 index.store(callState.getCallId(), callState);
             }
         }
+
+        listener.onRecordingUpdated(this.toRecording());
     }
 
-    public RecordedCallState getState(long callId) {
+    private Recording toRecording() {
+        return new Recording(this);
+    }
+
+    public synchronized RecordedCallState getState(long callId) {
         RecordedCallState callState = memCallStack.get(callId);
         if (callState != null) {
             return callState;
@@ -66,11 +77,11 @@ public class RecordingState implements Closeable {
         return index.get(callId);
     }
 
-    public int getId() {
+    public synchronized int getId() {
         return recordingMetadata.getId();
     }
 
-    public void update(RecordingMetadata metadata) {
+    public synchronized void update(RecordingMetadata metadata) {
         // TODO
     }
 
@@ -78,7 +89,7 @@ public class RecordingState implements Closeable {
         return getCallRecord(rootCallId);
     }
 
-    public CallRecord getCallRecord(long callId) {
+    public synchronized CallRecord getCallRecord(long callId) {
         if (callId < 0) {
             return null;
         }
@@ -109,7 +120,7 @@ public class RecordingState implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
         reader.close();
     }
 }

@@ -2,6 +2,7 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
+import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.util.NamedThreadFactory;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.BinaryList;
@@ -32,17 +33,24 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
     private final Repository<Long, Type> types = new InMemoryRepository<>();
     private final Repository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
+    private volatile RecordingListener recordingListener = RecordingListener.empty();
 
     // TODO replace with listenable
     private volatile ProcessMetadata processMetadata;
 
-    public BackgroundThreadFileStorageReader(File file) {
+    public BackgroundThreadFileStorageReader(File file, boolean autoStart) {
         this.file = file;
         this.executorService = Executors.newFixedThreadPool(
                 1,
                 new NamedThreadFactory("Reader-" + file.toString(), true)
         );
 
+        if (autoStart) {
+            start();
+        }
+    }
+
+    public synchronized void start() {
         try {
             Runnable task = new StorageReaderTask(file);
             this.executorService.submit(task);
@@ -123,7 +131,8 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
                             metadata,
                             new DataReader(file),
                             methods,
-                            types)
+                            types,
+                            recordingListener)
             );
             recordingState.update(metadata);
         }
@@ -150,6 +159,11 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
     @Override
     public ProcessMetadata getProcessMetadata() {
         return processMetadata;
+    }
+
+    @Override
+    public void subscribe(RecordingListener listener) {
+        this.recordingListener = listener;
     }
 
     @Override
