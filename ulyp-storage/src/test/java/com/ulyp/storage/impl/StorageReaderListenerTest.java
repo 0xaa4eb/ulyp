@@ -89,7 +89,7 @@ public class StorageReaderListenerTest {
     }
 
     @Test
-    public void testStorageReadA() {
+    public void testAsyncReadOfProcessMetadata() {
         reader.start();
 
         writer.write(ProcessMetadata.builder()
