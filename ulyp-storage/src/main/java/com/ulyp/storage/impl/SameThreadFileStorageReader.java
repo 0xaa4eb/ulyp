@@ -39,7 +39,7 @@ public class SameThreadFileStorageReader implements StorageReader {
         try (BinaryListFileReader reader = new BinaryListFileReader(file)) {
 
             BinaryListWithAddress data;
-            while ((data  = reader.readWithAddress(Duration.ofSeconds(1))) != null) {
+            while ((data  = reader.readWithAddress()) != null) {
                 switch(data.getBytes().id()) {
                     case ProcessMetadata.WIRE_ID:
                         onProcessMetadata(data.getBytes());

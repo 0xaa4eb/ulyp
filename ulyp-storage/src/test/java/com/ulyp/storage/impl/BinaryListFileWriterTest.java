@@ -29,7 +29,7 @@ public class BinaryListFileWriterTest {
 
     @Test
     public void shouldReturnNullWhenNoListIsWritten() throws IOException, InterruptedException {
-        Assert.assertNull(reader.read(Duration.ofSeconds(1)));
+        Assert.assertNull(reader.read());
 
     }
 
@@ -39,10 +39,10 @@ public class BinaryListFileWriterTest {
 
         writer.append(list1);
 
-        BinaryList binaryList = reader.read(Duration.ofSeconds(5));
+        BinaryList binaryList = reader.read();
 
         Assert.assertEquals(list1, binaryList);
-        Assert.assertNull(reader.read(Duration.ofSeconds(1)));
+        Assert.assertNull(reader.read());
     }
 
     @Test
@@ -53,9 +53,9 @@ public class BinaryListFileWriterTest {
         writer.append(list1);
         writer.append(list2);
 
-        Assert.assertEquals(list1, reader.read(Duration.ofSeconds(5)));
-        Assert.assertEquals(list2, reader.read(Duration.ofSeconds(5)));
-        Assert.assertNull(reader.read(Duration.ofSeconds(1)));
+        Assert.assertEquals(list1, reader.read());
+        Assert.assertEquals(list2, reader.read());
+        Assert.assertNull(reader.read());
     }
 
     @Test
@@ -63,14 +63,14 @@ public class BinaryListFileWriterTest {
         BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
         writer.append(list1);
 
-        Assert.assertEquals(list1, reader.read(Duration.ofSeconds(5)));
+        Assert.assertEquals(list1, reader.read());
 
         BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
         writer.append(list2);
 
-        Assert.assertEquals(list2, reader.read(Duration.ofSeconds(5)));
+        Assert.assertEquals(list2, reader.read());
 
-        Assert.assertNull(reader.read(Duration.ofSeconds(1)));
+        Assert.assertNull(reader.read());
     }
 
     @Test
@@ -81,12 +81,12 @@ public class BinaryListFileWriterTest {
         BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
         writer.append(list2);
 
-        BinaryListWithAddress data1 = reader.readWithAddress(Duration.ofSeconds(5));
+        BinaryListWithAddress data1 = reader.readWithAddress();
         byte[] list1Raw = byAddressFileReader.readBytes(data1.getAddress(), 8 * 1024);
 
         Assert.assertEquals(list1, new BinaryList(list1Raw));
 
-        BinaryListWithAddress data2 = reader.readWithAddress(Duration.ofSeconds(5));
+        BinaryListWithAddress data2 = reader.readWithAddress();
         byte[] list2Raw = byAddressFileReader.readBytes(data2.getAddress(), 8 * 1024);
 
         Assert.assertEquals(list2, new BinaryList(list2Raw));
@@ -100,7 +100,7 @@ public class BinaryListFileWriterTest {
         BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
         writer.append(list2);
 
-        BinaryListWithAddress data1 = reader.readWithAddress(Duration.ofSeconds(5));
+        BinaryListWithAddress data1 = reader.readWithAddress();
         AddressableItemIterator<BinaryDataDecoder> iterator1 = data1.getBytes().iterator();
         iterator1.next();
         long addressOfItem1 = iterator1.address(); // within the list address

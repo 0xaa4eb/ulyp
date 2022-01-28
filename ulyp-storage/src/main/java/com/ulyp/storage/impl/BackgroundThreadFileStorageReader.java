@@ -2,6 +2,8 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
+import com.ulyp.core.util.Backoff;
+import com.ulyp.core.util.FixedDelayBackoff;
 import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.util.NamedThreadFactory;
 import com.ulyp.core.*;
@@ -69,12 +71,15 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
 
         @Override
         public void run() {
+            Backoff backoff = new FixedDelayBackoff(Duration.ofMillis(100));
+
             while (!Thread.currentThread().isInterrupted()) {
 
                 try {
-                    BinaryListWithAddress data  = this.reader.readWithAddress(Duration.ofSeconds(1));
+                    BinaryListWithAddress data  = this.reader.readWithAddress();
 
                     if (data == null) {
+                        backoff.await();
                         continue;
                     }
 
