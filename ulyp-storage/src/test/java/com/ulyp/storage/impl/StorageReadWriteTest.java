@@ -58,7 +58,7 @@ public class StorageReadWriteTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.reader = new BackgroundThreadFileStorageReader(file, true);
+        this.reader = new AsyncFileStorageReader(file, true);
         this.writer = new FileStorageWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()

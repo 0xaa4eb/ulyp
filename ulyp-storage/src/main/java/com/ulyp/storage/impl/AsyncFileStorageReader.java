@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class BackgroundThreadFileStorageReader implements StorageReader {
+public class AsyncFileStorageReader implements StorageReader {
 
     private final File file;
     private final ExecutorService executorService;
@@ -39,7 +39,7 @@ public class BackgroundThreadFileStorageReader implements StorageReader {
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
-    public BackgroundThreadFileStorageReader(File file, boolean autoStart) {
+    public AsyncFileStorageReader(File file, boolean autoStart) {
         this.file = file;
         this.executorService = Executors.newFixedThreadPool(
                 1,

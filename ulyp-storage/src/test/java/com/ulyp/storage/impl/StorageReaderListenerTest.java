@@ -8,7 +8,6 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.Recording;
-import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.StorageWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
@@ -20,16 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.Assert.*;
-
 public class StorageReaderListenerTest {
 
-    private BackgroundThreadFileStorageReader reader;
+    private AsyncFileStorageReader reader;
     private StorageWriter writer;
 
     private RecordingMetadata recordingMetadata1;
@@ -60,7 +56,7 @@ public class StorageReaderListenerTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReaderListenerTest.class.getSimpleName(), "a").toFile();
-        this.reader = new BackgroundThreadFileStorageReader(file, false);
+        this.reader = new AsyncFileStorageReader(file, false);
         this.writer = new FileStorageWriter(file);
 
         recordingMetadata1 = RecordingMetadata.builder()

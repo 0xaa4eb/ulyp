@@ -1,6 +1,6 @@
 package com.ulyp.ui
 
-import com.ulyp.storage.impl.BackgroundThreadFileStorageReader
+import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.looknfeel.Theme
@@ -62,7 +62,7 @@ class PrimaryViewController(
         fontSizeChanger.upscale(primaryPane.scene)
         fontSizeChanger.downscale(primaryPane.scene)
         val file = fileChooser.get()
-        val storageReader = BackgroundThreadFileStorageReader(file, false)
+        val storageReader = AsyncFileStorageReader(file, false)
 
         storageReader.processMetadata.thenAccept { processMetadata ->
             storageReader.subscribe { recording ->
