@@ -1,7 +1,9 @@
 package com.ulyp.ui
 
 import com.ulyp.core.*
-import com.ulyp.transport.RecordingInfo
+import com.ulyp.storage.CallRecord
+import com.ulyp.storage.Recording
+import com.ulyp.storage.StorageReader
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
@@ -25,16 +27,15 @@ import java.sql.Timestamp
 
 @Component
 @Scope(value = "prototype")
-class CallRecordTreeTab(
+class RecordingTab(
     private val parent: Region,
-    private val database: CallRecordDatabase,
-    private val methodInfoDatabase: MethodInfoDatabase,
-    private val typeInfoDatabase: TypeInfoDatabase
+    private val storageReader: StorageReader,
+    private val recording: Recording
 ) : Tab() {
 
     private var root: CallRecord? = null
-    private var recordingInfo: RecordingInfo? = null
-    private var treeView: TreeView<CallTreeNodeContent>? = null
+    private var recordingMetadata: RecordingMetadata? = null
+    private var treeView: TreeView<RecordingTreeNodeContent>? = null
 
     @Autowired
     private lateinit var sourceCodeView: SourceCodeView
@@ -50,13 +51,16 @@ class CallRecordTreeTab(
         if (initialized) {
             return
         }
-        treeView = TreeView(CallRecordTreeNode(database, root!!.id, renderSettings))
+
+        treeView = TreeView(RecordingTreeNode(recording, root!!.id, renderSettings))
+
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
-        val sourceCodeFinder = SourceCodeFinder(recordingInfo!!.processInfo.classpathList)
+
+        val sourceCodeFinder = SourceCodeFinder(storageReader.processMetadata.classPathFiles)
         treeView!!.selectionModel.selectedItemProperty()
-            .addListener { observable: ObservableValue<out TreeItem<CallTreeNodeContent>?>?, oldValue: TreeItem<CallTreeNodeContent>?, newValue: TreeItem<CallTreeNodeContent>? ->
-                val selectedNode = newValue as CallRecordTreeNode?
+            .addListener { observable: ObservableValue<out TreeItem<RecordingTreeNodeContent>?>?, oldValue: TreeItem<RecordingTreeNodeContent>?, newValue: TreeItem<RecordingTreeNodeContent>? ->
+                val selectedNode = newValue as RecordingTreeNode?
                 if (selectedNode?.callRecord != null) {
                     val sourceCodeFuture = sourceCodeFinder.find(
                         selectedNode.callRecord!!.className
@@ -64,7 +68,7 @@ class CallRecordTreeTab(
                     sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                         Platform.runLater {
                             val currentlySelected = treeView!!.selectionModel.selectedItem
-                            val currentlySelectedNode = currentlySelected as CallRecordTreeNode
+                            val currentlySelectedNode = currentlySelected as RecordingTreeNode
                             if (selectedNode.callRecord!!.id == currentlySelectedNode.callRecord!!.id) {
                                 sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord!!.methodName)
                             }
@@ -89,25 +93,27 @@ class CallRecordTreeTab(
 
     @get:Synchronized
     val tabName: String
-        get() = if (root == null || recordingInfo == null) {
+        get() = if (root == null || recordingMetadata == null) {
             "?"
-        } else recordingInfo!!.threadName + " " +
-                toSimpleName(root!!.className) + "." + root!!.methodName + "(" + recordingInfo!!.lifetimeMillis + " ms, " + database.countAll() + ")"
+        } else recordingMetadata!!.threadName + " " +
+                toSimpleName(root!!.className) + "." + root!!.methodName + "(" + recordingMetadata!!.lifetimeMillis + " ms, " + recording.callCount() + ")"
 
     @get:Synchronized
     private val tooltipText: Tooltip
         private get() {
-            if (root == null || recordingInfo == null) {
+            if (root == null || recordingMetadata == null) {
                 return Tooltip("")
             }
             val builder = StringBuilder()
-                .append("Thread: ").append(recordingInfo!!.threadName).append("\n")
-                .append("Created at: ").append(Timestamp(recordingInfo!!.createEpochMillis)).append("\n")
+                .append("Thread: ").append(recordingMetadata!!.threadName).append("\n")
+                .append("Created at: ").append(Timestamp(recordingMetadata!!.createEpochMillis)).append("\n")
                 .append("Finished at: ")
-                .append(Timestamp(recordingInfo!!.createEpochMillis + recordingInfo!!.lifetimeMillis)).append("\n")
-                .append("Lifetime: ").append(recordingInfo!!.lifetimeMillis).append(" millis").append("\n")
+                .append(Timestamp(recordingMetadata!!.createEpochMillis + recordingMetadata!!.lifetimeMillis)).append("\n")
+                .append("Lifetime: ").append(recordingMetadata!!.lifetimeMillis).append(" millis").append("\n")
+
+/*
             builder.append("Stack trace: ").append("\n")
-            for (element in recordingInfo!!.stackTrace.elementList) {
+            for (element in recordingMetadata!!.stackTrace.elementList) {
                 builder.append("\tat ")
                     .append(element.declaringClass)
                     .append(".")
@@ -119,42 +125,33 @@ class CallRecordTreeTab(
                     .append(")")
                     .append("\n")
             }
+            */
             return Tooltip(builder.toString())
         }
 
-    fun getSelected(): CallRecordTreeNode? {
-        return treeView!!.selectionModel.selectedItem as CallRecordTreeNode
+    fun getSelected(): RecordingTreeNode? {
+        return treeView!!.selectionModel.selectedItem as RecordingTreeNode
     }
 
     fun dispose() {
-        database.close()
+//        database.close()
     }
 
     @Synchronized
     fun refreshTreeView() {
         init()
-        val root = treeView!!.root as CallRecordTreeNode
+        val root = treeView!!.root as RecordingTreeNode
         text = tabName
         root.refresh()
     }
 
     @Synchronized
-    fun uploadChunk(chunk: CallRecordTreeChunk) {
-        try {
-            if (recordingInfo == null) {
-                recordingInfo = chunk.recordingInfo
-            }
-            methodInfoDatabase.addAll(MethodInfoList(chunk.request.methodDescriptionList.data))
-            typeInfoDatabase.addAll(chunk.request.descriptionList)
-            database.persistBatch(
-                CallEnterRecordList(chunk.request.recordLog.enterRecords),
-                CallExitRecordList(chunk.request.recordLog.exitRecords)
-            )
-            if (root == null) {
-                root = database.root
-            }
-        } catch (e: Exception) {
-            throw RuntimeException(e)
+    fun update(recording: Recording) {
+        if (recordingMetadata == null) {
+            recordingMetadata = recording.metadata
+        }
+        if (root == null) {
+            root = recording.root
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.ulyp.ui
 
-import com.ulyp.transport.ProcessInfo
+import com.ulyp.core.ProcessMetadata
 import java.io.File
 
-class FileRecordingsTabName(private val file: File, private val processInfo: ProcessInfo) {
+class FileRecordingsTabName(private val file: File, private val processMetadata: ProcessMetadata) {
     override fun toString(): String {
-        return String.format("%s: %s", file.absolutePath, processInfo.mainClassName)
+        return String.format("%s: %s", file.absolutePath, processMetadata.mainClassName)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -15,14 +15,14 @@ class FileRecordingsTabName(private val file: File, private val processInfo: Pro
         other as FileRecordingsTabName
 
         if (file != other.file) return false
-        if (processInfo != other.processInfo) return false
+        if (processMetadata != other.processMetadata) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = file.hashCode()
-        result = 31 * result + processInfo.hashCode()
+        result = 31 * result + processMetadata.hashCode()
         return result
     }
 

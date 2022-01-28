@@ -96,6 +96,9 @@ public class CallRecord {
         return method.getName();
     }
 
+    public LongList getChildrenCallIds() {
+        return childrenCallIds;
+    }
 
     public long getCallId() {
         return callId;

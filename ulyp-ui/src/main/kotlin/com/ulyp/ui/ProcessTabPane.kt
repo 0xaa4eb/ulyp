@@ -33,7 +33,7 @@ class ProcessTabPane : TabPane() {
         return execute {
             val processTab = tabs
                 .stream()
-                .filter { tab: Tab -> name.equals((tab as FileRecordingsTab).name) }
+                .filter { tab: Tab -> name == (tab as FileRecordingsTab).name }
                 .findFirst()
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab

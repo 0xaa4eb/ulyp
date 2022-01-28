@@ -1,14 +1,14 @@
 package com.ulyp.ui
 
-import com.ulyp.core.CallRecord
+import com.ulyp.storage.CallRecord
 import javafx.scene.layout.Region
 
 /**
  * A background rectangle which shows how much nested calls every call record tree node has.
  */
-class CallRecordTreeNodeRelativeWeight(node: CallRecord, totalNodeCountInTree: Long) : Region() {
+class RecordingTreeNodeWeight(node: CallRecord, totalNodeCountInTree: Long) : Region() {
     init {
-        val width = (600.0 * node.subtreeNodeCount / totalNodeCountInTree).toInt()
+        val width = (600.0 * node.subtreeSize / totalNodeCountInTree).toInt()
 
         styleClass.add("ulyp-ctt-call-node")
 

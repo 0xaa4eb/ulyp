@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class RecordingState implements Closeable {
 
-    private final RecordingMetadata recordingMetadata;
     private final DataReader reader;
     private final Repository<Long, RecordedCallState> index = new InMemoryRepository<>();
     private final MemCallStack memCallStack = new MemCallStack();
@@ -23,16 +22,18 @@ public class RecordingState implements Closeable {
     private final ReadableRepository<Long, Type> typeRepository;
     private final RecordingListener listener;
 
+    private RecordingMetadata metadata;
+
     private long rootCallId = -1;
 
     public RecordingState(
-            RecordingMetadata recordingMetadata,
+            RecordingMetadata metadata,
             DataReader dataReader,
             ReadableRepository<Long, Method> methodRepository,
             ReadableRepository<Long, Type> typeRepository,
             RecordingListener recordingListener)
     {
-        this.recordingMetadata = recordingMetadata;
+        this.metadata = metadata;
         this.reader = dataReader;
         this.methodRepository = methodRepository;
         this.typeRepository = typeRepository;
@@ -65,7 +66,7 @@ public class RecordingState implements Closeable {
         listener.onRecordingUpdated(this.toRecording());
     }
 
-    private Recording toRecording() {
+    private synchronized Recording toRecording() {
         return new Recording(this);
     }
 
@@ -78,14 +79,14 @@ public class RecordingState implements Closeable {
     }
 
     public synchronized int getId() {
-        return recordingMetadata.getId();
+        return metadata.getId();
     }
 
     public synchronized void update(RecordingMetadata metadata) {
         // TODO
     }
 
-    public CallRecord getRoot() {
+    public synchronized CallRecord getRoot() {
         return getCallRecord(rootCallId);
     }
 
@@ -117,6 +118,14 @@ public class RecordingState implements Closeable {
         }
 
         return callRecord;
+    }
+
+    public synchronized RecordingMetadata getMetadata() {
+        return metadata;
+    }
+
+    public synchronized int callCount() {
+        return rootCallId >= 0 ? getRoot().getSubtreeSize() : 0;
     }
 
     @Override

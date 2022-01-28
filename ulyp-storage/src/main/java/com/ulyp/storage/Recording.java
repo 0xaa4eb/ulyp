@@ -1,5 +1,6 @@
 package com.ulyp.storage;
 
+import com.ulyp.core.RecordingMetadata;
 import com.ulyp.storage.impl.RecordingState;
 
 public class Recording {
@@ -16,5 +17,17 @@ public class Recording {
 
     public CallRecord getRoot() {
         return recordingState.getRoot();
+    }
+
+    public long callCount() {
+        return recordingState.callCount();
+    }
+
+    public RecordingMetadata getMetadata() {
+        return recordingState.getMetadata();
+    }
+
+    public CallRecord getCallRecord(long callId) {
+        return recordingState.getCallRecord(callId);
     }
 }

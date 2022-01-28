@@ -9,7 +9,7 @@ import java.util.concurrent.Executors
 import java.util.function.Predicate
 import java.util.stream.Collectors
 
-class SourceCodeFinder(classpath: List<String?>) {
+class SourceCodeFinder(classpath: List<String>) {
 
     private val jars: MutableList<JarFile>
     private val decompilingExecutorService = Executors.newFixedThreadPool(2)

@@ -1,6 +1,6 @@
 package com.ulyp.ui
 
-import com.ulyp.core.CallRecord
+import com.ulyp.storage.CallRecord
 import com.ulyp.ui.renderers.RenderedObject.Companion.of
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
@@ -10,7 +10,7 @@ import javafx.scene.Node
 import javafx.scene.text.TextFlow
 import java.util.function.Consumer
 
-class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : TextFlow() {
+class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : TextFlow() {
 
     companion object {
         private fun text(): TextBuilder {
@@ -46,8 +46,6 @@ class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : Tex
         }
 
         private fun renderArguments(node: CallRecord, renderSettings: RenderSettings): List<Node> {
-            val hasParameterNames = !node.parameterNames.isEmpty() && node.parameterNames.stream()
-                .noneMatch { name: String -> name.startsWith("arg") }
             val output: MutableList<Node> = ArrayList()
             output.add(text().text("(")
                     .style(CssClass.CALL_TREE_ALL)
@@ -56,18 +54,6 @@ class RenderedCallRecord(node: CallRecord, renderSettings: RenderSettings) : Tex
             )
             for (i in node.args.indices) {
                 val argValue = node.args[i]
-                if (hasParameterNames) {
-                    output.add(text().text(node.parameterNames[i])
-                            .style(CssClass.CALL_TREE_ALL)
-                            .style(CssClass.CALL_TREE_ARG_NAME)
-                            .build()
-                    )
-                    output.add(text().text(": ")
-                            .style(CssClass.CALL_TREE_ALL)
-                            .style(CssClass.CALL_TREE_NODE_SEPARATOR)
-                            .build()
-                    )
-                }
                 output.add(of(argValue, renderSettings))
                 if (i < node.args.size - 1) {
                     output.add(text().text(", ")

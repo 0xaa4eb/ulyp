@@ -32,7 +32,7 @@ public class AgentContext {
 
         this.storage = settings.buildStorageWriter();
         this.storage.write(ProcessMetadata.builder()
-                        .classPath(new Classpath().toString())
+                        .classPathFiles(new Classpath().toList())
                         .mainClassName(ProcessMetadata.getMainClassNameFromProp())
                         .build()
         );

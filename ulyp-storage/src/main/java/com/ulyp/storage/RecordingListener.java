@@ -1,5 +1,6 @@
 package com.ulyp.storage;
 
+@FunctionalInterface
 public interface RecordingListener {
 
     static RecordingListener empty() {

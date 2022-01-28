@@ -1,13 +1,13 @@
 package com.ulyp.ui
 
-import com.ulyp.core.MethodInfoDatabase
-import com.ulyp.core.TypeInfoDatabase
+import com.ulyp.storage.Recording
+import com.ulyp.storage.StorageReader
+import com.ulyp.ui.util.FxThreadExecutor
 import com.ulyp.ui.util.FxThreadExecutor.execute
 import javafx.event.Event
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
@@ -21,48 +21,41 @@ class FileRecordingsTab internal constructor(
         private val applicationContext: ApplicationContext
         ) : Tab(name.toString()) {
 
-    private lateinit var callTreeTabs: TabPane
+    private lateinit var recordingTabs: TabPane
 
-    private val methodInfoDatabase = MethodInfoDatabase()
-    private val typeInfoDatabase = TypeInfoDatabase()
-    private val tabsByRecordingId: MutableMap<CallRecordTreeTabId, CallRecordTreeTab> = ConcurrentHashMap()
+    private val tabsByRecordingId: MutableMap<Int, RecordingTab> = ConcurrentHashMap()
 
     @PostConstruct
     fun init() {
         val tabPane = TabPane()
-        callTreeTabs = tabPane
+        recordingTabs = tabPane
         content = tabPane
     }
 
-    fun getOrCreateRecordingTab(
-        aggregationStrategy: AggregationStrategy,
-        chunk: CallRecordTreeChunk
-    ): CallRecordTreeTab {
-        val id = aggregationStrategy.getId(chunk)
+    fun getOrCreateRecordingTab(storageReader: StorageReader, recording: Recording): RecordingTab {
+        val id = recording.id
         return execute {
-            tabsByRecordingId.computeIfAbsent(id) { rId: CallRecordTreeTabId? ->
-                val callRecordDatabase = aggregationStrategy.buildDatabase(methodInfoDatabase, typeInfoDatabase)
+            tabsByRecordingId.computeIfAbsent(id) { recordingId: Int ->
                 val tab = applicationContext.getBean(
-                    CallRecordTreeTab::class.java,
-                    callTreeTabs,
-                    callRecordDatabase,
-                    methodInfoDatabase,
-                    typeInfoDatabase
+                    RecordingTab::class.java,
+                    recordingTabs,
+                    storageReader,
+                    recording
                 )
-                callTreeTabs.tabs.add(tab)
+                recordingTabs.tabs.add(tab)
                 tab.onClosed = EventHandler { ev: Event? -> tabsByRecordingId.remove(id) }
                 tab
             }
         }
     }
 
-    val selectedTreeTab: CallRecordTreeTab
-        get() = callTreeTabs.selectionModel.selectedItem as CallRecordTreeTab
+    val selectedTreeTab: RecordingTab
+        get() = recordingTabs.selectionModel.selectedItem as RecordingTab
 
     fun dispose() {
-        for (tab in callTreeTabs.tabs) {
-            val fxCallRecordTreeTab = tab as CallRecordTreeTab
-            fxCallRecordTreeTab.dispose()
+        for (tab in recordingTabs.tabs) {
+            val fxRecordingTab = tab as RecordingTab
+            fxRecordingTab.dispose()
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.ulyp.ui
 
-import com.ulyp.transport.TCallRecordLogUploadRequest
+import com.ulyp.storage.impl.BackgroundThreadFileStorageReader
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.looknfeel.Theme
@@ -12,13 +12,9 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
-import org.springframework.beans.factory.annotation.Autowired
-import java.io.BufferedInputStream
 import java.io.File
-import java.io.FileInputStream
 import java.net.URL
 import java.util.*
-import java.util.concurrent.Executors
 import java.util.function.Supplier
 
 class PrimaryViewController(
@@ -35,9 +31,6 @@ class PrimaryViewController(
     lateinit var processTabAnchorPane: AnchorPane
     @FXML
     lateinit var sourceCodeViewAnchorPane: AnchorPane
-
-    private var aggregationStrategy: AggregationStrategy = ByRecordingIdAggregationStrategy()
-    private val uploaderExecutorService = Executors.newFixedThreadPool(1)
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         processTabAnchorPane.children.add(processTabPane)
@@ -57,8 +50,7 @@ class PrimaryViewController(
     }
 
     fun changeAggregation(event: Event?) {
-        aggregationStrategy = ByThreadIdAggregationStrategy()
-        // TODO maybe popup
+        // TODO maybe implement
     }
 
     fun changeTheme(event: Event?) {
@@ -70,22 +62,18 @@ class PrimaryViewController(
         fontSizeChanger.upscale(primaryPane.scene)
         fontSizeChanger.downscale(primaryPane.scene)
         val file = fileChooser.get()
-        uploaderExecutorService.submit {
-            try {
-                BufferedInputStream(FileInputStream(file)).use { inputStream ->
-                    while (inputStream.available() > 0) {
-                        val request = TCallRecordLogUploadRequest.parseDelimitedFrom(inputStream)
-                        val chunk = CallRecordTreeChunk(request)
-                        val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, chunk.processInfo))
-                        val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(aggregationStrategy, chunk)
-                        recordingTab.uploadChunk(chunk)
-                        Platform.runLater { recordingTab.refreshTreeView() }
-                    }
-                }
-            } catch (e: Exception) {
-                // TODO show error dialog
-                e.printStackTrace()
-            }
+        val storageReader = BackgroundThreadFileStorageReader(file, false)
+        if (storageReader.processMetadata == null) {
+            // TODO handle err
         }
+
+        storageReader.subscribe {
+            recording ->
+                val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, storageReader.processMetadata))
+                val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(storageReader, recording)
+                recordingTab.update(recording)
+                Platform.runLater { recordingTab.refreshTreeView() }
+        }
+        storageReader.start()
     }
 }

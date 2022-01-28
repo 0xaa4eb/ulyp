@@ -2,9 +2,15 @@ package com.ulyp.core;
 
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
+import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -14,19 +20,25 @@ public class ProcessMetadata {
     public static final int WIRE_ID = 20;
 
     private final String mainClassName;
-    private final String classPath;
+    private final List<String> classPathFiles;
     private final long pid;
 
     public void serialize(BinaryProcessMetadataEncoder encoder) {
-        encoder.mainClassName(mainClassName);
-        encoder.classPath(classPath);
         encoder.pid(pid);
+        BinaryProcessMetadataEncoder.ClassPathFilesEncoder classPathFilesEncoder = encoder.classPathFilesCount(classPathFiles.size());
+        for (String val : classPathFiles) {
+            classPathFilesEncoder.next().value(val);
+        }
+        encoder.mainClassName(mainClassName);
     }
 
     public static ProcessMetadata deserialize(BinaryProcessMetadataDecoder decoder) {
+        List<String> classPathFiles = new ArrayList<>();
+        decoder.classPathFiles().forEachRemaining(val -> classPathFiles.add(val.value()));
+
         return ProcessMetadata.builder()
                 .mainClassName(decoder.mainClassName())
-                .classPath(decoder.classPath())
+                .classPathFiles(classPathFiles)
                 .pid(decoder.pid())
                 .build();
     }
