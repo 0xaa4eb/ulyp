@@ -1,9 +1,6 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.core.Method;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.Type;
-import com.ulyp.core.TypeResolver;
+import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
@@ -24,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -88,6 +86,32 @@ public class StorageReaderListenerTest {
     public void tearDown() {
         reader.close();
         writer.close();
+    }
+
+    @Test
+    public void testStorageReadA() {
+        reader.start();
+
+        writer.write(ProcessMetadata.builder()
+                .mainClassName("a.b.C")
+                .pid(555L)
+                .classPathFiles(Arrays.asList("A", "B", "C"))
+                .build()
+        );
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(10))
+                .untilAsserted(
+                        () -> {
+                            ProcessMetadata processMetadata = reader.getProcessMetadata().getNow(null);
+
+                            Assert.assertNotNull(processMetadata);
+
+                            Assert.assertEquals("a.b.C", processMetadata.getMainClassName());
+                            Assert.assertEquals(555L, processMetadata.getPid());
+                            Assert.assertEquals(Arrays.asList("A", "B", "C"), processMetadata.getClassPathFiles());
+                        }
+                );
     }
 
     @Test

@@ -8,12 +8,13 @@ import com.ulyp.storage.StorageReader;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class EmptyStorageReader implements StorageReader {
 
     @Override
-    public ProcessMetadata getProcessMetadata() {
-        return null;
+    public CompletableFuture<ProcessMetadata> getProcessMetadata() {
+        return new CompletableFuture<>();
     }
 
     @Override

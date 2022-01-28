@@ -4,6 +4,7 @@ import com.ulyp.core.ProcessMetadata;
 import com.ulyp.storage.impl.EmptyStorageReader;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface StorageReader extends AutoCloseable {
 
@@ -11,7 +12,7 @@ public interface StorageReader extends AutoCloseable {
         return new EmptyStorageReader();
     }
 
-    ProcessMetadata getProcessMetadata();
+    CompletableFuture<ProcessMetadata> getProcessMetadata();
 
     void subscribe(RecordingListener listener);
 

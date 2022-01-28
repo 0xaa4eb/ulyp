@@ -19,12 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class SameThreadFileStorageReader implements StorageReader {
 
     private final File file;
-    private ProcessMetadata processMetadata;
+    private final CompletableFuture<ProcessMetadata> processMetadata = new CompletableFuture<>();
     private final Repository<Long, Type> types = new InMemoryRepository<>();
     private final Repository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
@@ -70,7 +71,7 @@ public class SameThreadFileStorageReader implements StorageReader {
         data.iterator().next().wrapValue(buffer);
         BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
         decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
-        processMetadata = ProcessMetadata.deserialize(decoder);
+        processMetadata.complete(ProcessMetadata.deserialize(decoder));
     }
 
     private void onRecordingMetadata(BinaryList data) {
@@ -110,7 +111,7 @@ public class SameThreadFileStorageReader implements StorageReader {
     }
 
     @Override
-    public ProcessMetadata getProcessMetadata() {
+    public CompletableFuture<ProcessMetadata> getProcessMetadata() {
         return processMetadata;
     }
 

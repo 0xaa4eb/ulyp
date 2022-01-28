@@ -21,8 +21,7 @@ public class RecordingState implements Closeable {
     private final ReadableRepository<Long, Method> methodRepository;
     private final ReadableRepository<Long, Type> typeRepository;
     private final RecordingListener listener;
-
-    private RecordingMetadata metadata;
+    private final RecordingMetadata metadata;
 
     private long rootCallId = -1;
 

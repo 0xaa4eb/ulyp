@@ -51,7 +51,7 @@ public class ConcurrentReaderWriterBinaryListTest {
             int itemsRead = 0;
 
             for (int i = 0; i < expectedListsCount; ) {
-                BinaryList binaryList = reader.read(Duration.ofSeconds(5));
+                BinaryList binaryList = reader.read();
 
                 if (binaryList != null) {
                     itemsRead += binaryList.size();

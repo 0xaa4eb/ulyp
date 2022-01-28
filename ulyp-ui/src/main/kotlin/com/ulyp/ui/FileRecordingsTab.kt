@@ -43,7 +43,7 @@ class FileRecordingsTab internal constructor(
                     recording
                 )
                 recordingTabs.tabs.add(tab)
-                tab.onClosed = EventHandler { ev: Event? -> tabsByRecordingId.remove(id) }
+                tab.onClosed = EventHandler { tabsByRecordingId.remove(recordingId) }
                 tab
             }
         }
