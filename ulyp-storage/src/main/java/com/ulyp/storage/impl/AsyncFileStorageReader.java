@@ -160,6 +160,10 @@ public class AsyncFileStorageReader implements StorageReader {
         }
     }
 
+    public Repository<Long, Type> getTypes() {
+        return types;
+    }
+
     @Override
     public CompletableFuture<ProcessMetadata> getProcessMetadata() {
         return processMetadata;

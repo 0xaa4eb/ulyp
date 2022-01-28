@@ -20,10 +20,12 @@ import java.io.IOException;
 @Slf4j
 public class FileStorageWriter implements StorageWriter {
 
+    private final File file;
     private final BinaryListFileWriter writer;
 
     public FileStorageWriter(File file) throws StorageException {
         try {
+            this.file = file;
             this.writer = new BinaryListFileWriter(file);
         } catch (IOException e) {
             throw new StorageException("Could not build storage for file " + file, e);
@@ -100,6 +102,11 @@ public class FileStorageWriter implements StorageWriter {
             return;
         }
         writer.append(methods.getRawBytes());
+    }
+
+    @Override
+    public String toString() {
+        return FileStorageWriter.class.getSimpleName() + "-" + file;
     }
 
     @Override

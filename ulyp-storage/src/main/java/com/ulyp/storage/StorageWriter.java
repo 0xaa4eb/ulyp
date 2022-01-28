@@ -5,12 +5,17 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.storage.impl.AsyncFileStorageWriter;
 import com.ulyp.storage.impl.DevNullStorageWriter;
 import com.ulyp.storage.impl.FileStorageWriter;
 
 import java.io.File;
 
 public interface StorageWriter extends AutoCloseable {
+
+    static StorageWriter async(StorageWriter delegate) {
+        return new AsyncFileStorageWriter(delegate);
+    }
 
     static StorageWriter forFile(File file) {
         return new FileStorageWriter(file);
