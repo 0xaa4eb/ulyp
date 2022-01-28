@@ -1,10 +1,8 @@
 package com.ulyp.ui
 
+import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.Recording
-import com.ulyp.storage.StorageReader
-import com.ulyp.ui.util.FxThreadExecutor
 import com.ulyp.ui.util.FxThreadExecutor.execute
-import javafx.event.Event
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
@@ -32,14 +30,14 @@ class FileRecordingsTab internal constructor(
         content = tabPane
     }
 
-    fun getOrCreateRecordingTab(storageReader: StorageReader, recording: Recording): RecordingTab {
+    fun getOrCreateRecordingTab(processMetadata: ProcessMetadata, recording: Recording): RecordingTab {
         val id = recording.id
         return execute {
             tabsByRecordingId.computeIfAbsent(id) { recordingId: Int ->
                 val tab = applicationContext.getBean(
                     RecordingTab::class.java,
                     recordingTabs,
-                    storageReader,
+                    processMetadata,
                     recording
                 )
                 recordingTabs.tabs.add(tab)

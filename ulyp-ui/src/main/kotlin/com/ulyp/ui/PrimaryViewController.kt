@@ -63,17 +63,16 @@ class PrimaryViewController(
         fontSizeChanger.downscale(primaryPane.scene)
         val file = fileChooser.get()
         val storageReader = BackgroundThreadFileStorageReader(file, false)
-        if (storageReader.processMetadata == null) {
-            // TODO handle err
-        }
 
-        storageReader.subscribe {
-            recording ->
-                val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, storageReader.processMetadata))
-                val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(storageReader, recording)
+        storageReader.processMetadata.thenAccept { processMetadata ->
+            storageReader.subscribe { recording ->
+                val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
+                val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(processMetadata, recording)
                 recordingTab.update(recording)
                 Platform.runLater { recordingTab.refreshTreeView() }
+            }
         }
+
         storageReader.start()
     }
 }

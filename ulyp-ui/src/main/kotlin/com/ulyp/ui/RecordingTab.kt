@@ -24,12 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
+import kotlin.system.exitProcess
 
 @Component
 @Scope(value = "prototype")
 class RecordingTab(
     private val parent: Region,
-    private val storageReader: StorageReader,
+    private val processMetadata: ProcessMetadata,
     private val recording: Recording
 ) : Tab() {
 
@@ -57,7 +58,7 @@ class RecordingTab(
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
 
-        val sourceCodeFinder = SourceCodeFinder(storageReader.processMetadata.classPathFiles)
+        val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
         treeView!!.selectionModel.selectedItemProperty()
             .addListener { observable: ObservableValue<out TreeItem<RecordingTreeNodeContent>?>?, oldValue: TreeItem<RecordingTreeNodeContent>?, newValue: TreeItem<RecordingTreeNodeContent>? ->
                 val selectedNode = newValue as RecordingTreeNode?
