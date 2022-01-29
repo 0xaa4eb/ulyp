@@ -23,7 +23,7 @@ public class ClassObjectRecorder extends ObjectRecorder {
     @Override
     public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
 
-        return new ClassObjectRecord(objectType, typeResolver.getType(input.readInt()));
+        return new ClassObjectRecord(objectType, typeResolver.getType(input.readLong()));
     }
 
     @Override

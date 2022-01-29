@@ -3,6 +3,7 @@ package com.test.recorders;
 import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.BooleanRecord;
+import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.junit.Assert;
@@ -38,6 +39,18 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
         Assert.assertEquals("ABC", objectRepresentation.value());
     }
 
+    @Test
+    public void shouldUseClassRecorderIfClassIsPassed() {
+
+        CallRecord root = runForkWithUi(
+                new ForkProcessBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord("passClass")
+        );
+
+        ClassObjectRecord record = (ClassObjectRecord) root.getArgs().get(0);
+    }
+
     static class TestCase {
 
         public static void passBoolean(Object val) {
@@ -48,9 +61,14 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
             System.out.println(val);
         }
 
+        public static void passClass(Object val) {
+            System.out.println(val);
+        }
+
         public static void main(String[] args) {
             passBoolean(true);
             passString("ABC");
+            passClass(int[].class);
         }
     }
 }

@@ -4,9 +4,12 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.storage.CallRecord;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
@@ -21,7 +24,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
         ClassObjectRecord arg = (ClassObjectRecord) root.getReturnValue();
 
-        assertEquals(X.class.getName(), arg.getCarriedType().getName());
+        assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
     }
 
     @Test
@@ -35,7 +38,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
         ClassObjectRecord arg = (ClassObjectRecord) root.getArgs().get(0);
 
-        assertEquals(X.class.getName(), arg.getCarriedType().getName());
+        assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
     }
 
     static class X {
@@ -47,12 +50,12 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
             return X.class;
         }
 
-        public static void pass(Class<?> clazz) {
+        public static void takeClass(Class<?> clazz) {
             System.out.println(clazz);
         }
 
         public static void main(String[] args) {
-            pass(X.class);
+            takeClass(X.class);
             System.out.println(returnClass());
         }
     }

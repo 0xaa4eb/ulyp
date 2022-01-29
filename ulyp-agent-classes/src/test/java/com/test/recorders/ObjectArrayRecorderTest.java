@@ -5,6 +5,7 @@ import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -89,13 +90,14 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
             new TakesVariousItemsArray().accept(new Object[]{
                     new X(),
                     664,
+                    Object.class,
                     "asdd",
-                    new X(),
-                    Object.class
+                    new X()
             });
         }
 
         public void accept(Object[] array) {
+            System.out.println(array);
         }
     }
 
@@ -124,5 +126,37 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         NumberRecord arg1 = (NumberRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
+
+        ClassObjectRecord arg4 = (ClassObjectRecord) items.get(2);
+        assertThat(arg4.getCarriedType().getName(), is(Object.class.getName()));
+    }
+
+    public static class VaragsTestCase {
+
+        public static void main(String[] args) {
+            takeVararg(new Object[] {Byte[].class, String.class, Integer.class, int[].class, int.class});
+        }
+
+        private static void takeVararg(Object[] commonClasses) {
+            for (Object b : commonClasses) {
+                System.out.println(b);
+            }
+        }
+    }
+
+    @Test
+    public void testVarargs() {
+        CallRecord root = runForkWithUi(
+                new ForkProcessBuilder()
+                        .setMainClassName(VaragsTestCase.class)
+                        .setMethodToRecord("takeVararg")
+        );
+
+
+        ObjectArrayRecord arrayRecord = (ObjectArrayRecord) root.getArgs().get(0);
+
+        Assert.assertThat(arrayRecord.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
+        Assert.assertThat(arrayRecord.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
+        Assert.assertThat(arrayRecord.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
     }
 }

@@ -40,6 +40,10 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
             for (CallRecord child2 : child.getChildren()) {
 
                 Assert.assertEquals(10, child2.getChildren().size());
+
+                for (CallRecord child3 : child2.getChildren()) {
+                    Assert.assertEquals(1000, child3.getChildren().size());
+                }
             }
         }
     }
