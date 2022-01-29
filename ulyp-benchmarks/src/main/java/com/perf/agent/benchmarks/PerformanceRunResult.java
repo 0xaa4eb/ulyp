@@ -28,21 +28,21 @@ public class PerformanceRunResult {
 
         builder.append(benchmarkClazz.getSimpleName());
         builder.append(": ");
-        padTo(builder, 30);
+        padTo(builder, 50);
         builder.append(profile);
-        padTo(builder, 70);
+        padTo(builder, 120);
 
         builder.append(String.format("%.2f", procTimeHistogram.getMean() / 1000.0))
                 .append(" ± ")
                 .append(String.format("%.3f", procTimeHistogram.getStdDeviation() / 1000.0))
-                .append("   ")
+                .append("     ")
                 .append(String.format("%.2f", recordTimeHistogram.getMean() / 1000.0))
                 .append(" ± ")
                 .append(String.format("%.3f", recordTimeHistogram.getStdDeviation() / 1000.0))
-                .append("   ")
+                .append("  ")
                 .append("sec")
-                .append(" ")
-                .append(recordsCountHistogram.getMean());
+                .append("    ")
+                .append((int) recordsCountHistogram.getMean());
 
         System.out.println(builder);
     }

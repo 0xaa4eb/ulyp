@@ -4,10 +4,9 @@ import com.google.common.base.Preconditions;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderType;
-import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl2;
-import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl2;
+import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
+import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl;
 import com.ulyp.transport.*;
-import lombok.extern.slf4j.Slf4j;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +20,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     public static final int WIRE_ID = 2;
 
-    private final BinaryOutputForEnterRecordImpl2 enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl2();
-    private final BinaryOutputForExitRecordImpl2 exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl2();
+    private final BinaryOutputForEnterRecordImpl enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl();
+    private final BinaryOutputForExitRecordImpl exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl();
     private final BinaryRecordedEnterMethodCallEncoder enterMethodCallEncoder = new BinaryRecordedEnterMethodCallEncoder();
     private final BinaryRecordedExitMethodCallEncoder exitMethodCallEncoder = new BinaryRecordedExitMethodCallEncoder();
     private final BinaryList bytes;

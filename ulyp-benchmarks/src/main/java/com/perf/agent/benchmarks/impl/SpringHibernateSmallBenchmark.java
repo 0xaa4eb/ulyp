@@ -21,16 +21,16 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
         return Arrays.asList(
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(SpringHibernateSmallBenchmark.class, "main"))
-                        .withInstrumentedPackages(new PackageList("com", "org"))
                         .build(),
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(UserService.class, "save"))
-                        .withInstrumentedPackages(new PackageList("com", "org"))
                         .build(),
                 new BenchmarkProfileBuilder()
-                        .withInstrumentedPackages(new PackageList("com", "org"))
+                        .withMethodToRecord(new MethodMatcher(SpringHibernateSmallBenchmark.class, "doesntExist"))
                         .build(),
-                new BenchmarkProfileBuilder().build()
+                new BenchmarkProfileBuilder()
+                        .withAgentDisabled()
+                        .build()
         );
     }
 

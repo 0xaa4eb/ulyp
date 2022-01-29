@@ -1,7 +1,6 @@
 package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
-import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.NullObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
@@ -14,7 +13,7 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordThrowableWithMessage() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(ThrowableTestCases.class)
                         .setMethodToRecord("throwsRuntimeException")
@@ -27,7 +26,7 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldHandleNullMessageInThrowable() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(ThrowableTestCases.class)
                         .setMethodToRecord("throwsNullPointerException")
@@ -41,8 +40,16 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
     public static class ThrowableTestCases {
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> new ThrowableTestCases().throwsRuntimeException());
-            SafeCaller.call(() -> new ThrowableTestCases().throwsNullPointerException());
+            try {
+                new ThrowableTestCases().throwsRuntimeException();
+            } catch (Exception e) {
+
+            }
+            try {
+                new ThrowableTestCases().throwsNullPointerException();
+            } catch (Exception e) {
+
+            }
         }
 
         public int throwsRuntimeException() {

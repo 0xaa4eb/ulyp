@@ -11,20 +11,7 @@ import java.nio.file.StandardOpenOption
 @Component
 class FontSizeChanger {
     private var currentFontSize = 14
-    private var fontFamily: String = getFontFamily()
-
-    private fun getFontFamily(): String {
-        val families = Font.getFamilies()
-        if (families.contains("Monaco")) {
-            return "Monaco"
-        }
-        if (families.contains("Consolas")) {
-            return "Consolas"
-        }
-        return if (families.contains("Monospaced")) {
-            "Monospaced"
-        } else Font.getDefault().family
-    }
+    private val fontChooser = FontChooser()
 
     fun upscale(scene: Scene) {
         val font = ++currentFontSize
@@ -43,7 +30,7 @@ class FontSizeChanger {
             Files.write(
                 path,
                 """.ulyp-ctt {
-                -fx-font-family: $fontFamily;
+                -fx-font-family: ${fontChooser.getFontName()};
                 -fx-font-size: ${font}px;
                 }""".toByteArray(StandardCharsets.UTF_8),
                 StandardOpenOption.WRITE

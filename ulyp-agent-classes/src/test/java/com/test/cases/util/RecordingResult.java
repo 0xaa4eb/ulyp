@@ -6,6 +6,7 @@ import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
 import org.junit.Assert;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -78,6 +79,10 @@ public class RecordingResult {
         return reader.availableRecordings().stream().collect(Collectors.toMap(Recording::getId, Function.identity()));
     }
 
+    public List<Recording> recordings() {
+        return reader.availableRecordings().stream().collect(Collectors.toList());
+    }
+
     public CallRecord getSingleRoot() throws StorageException {
         assertSingleRecordingSession();
 
@@ -92,5 +97,9 @@ public class RecordingResult {
     public void assertRecordingSessionCount(int count) {
         Map<Integer, Recording> request = aggregateByRecordings();
         Assert.assertEquals("Expect " + count + " recording session, but got " + request.size(), count, request.size());
+    }
+
+    public void assertIsEmpty() {
+        Assert.assertNull(reader.getProcessMetadata().getNow(null));
     }
 }

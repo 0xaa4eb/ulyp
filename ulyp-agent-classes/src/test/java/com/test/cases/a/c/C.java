@@ -1,11 +1,15 @@
 package com.test.cases.a.c;
 
-/**
- * Used for {@link com.test.cases.PackageFilterInstrumentationTest}
- */
-public class C {
+import com.test.cases.a.interfaces.CInterface;
 
-    public static int c() {
+/**
+ * Used for {@link com.test.cases.PackageFilterInstrumentationTest} for testing configurating instrumentation
+ * by packages
+ */
+public class C implements CInterface {
+
+    @Override
+    public int c() {
         return 5;
     }
 }

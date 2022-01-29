@@ -16,7 +16,7 @@ public class TypeInfoTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldProvideArgumentTypes() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder().setMainClassName(TestCases.class)
                         .setMethodToRecord("intSum")
         );
@@ -42,7 +42,7 @@ public class TypeInfoTest extends AbstractInstrumentationTest {
         }
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> TestCases.intSum(new AtomicInteger(2), new AtomicLong(3)));
+            TestCases.intSum(new AtomicInteger(2), new AtomicLong(3));
         }
     }
 }

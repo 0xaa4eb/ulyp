@@ -19,12 +19,18 @@ public class MethodTest {
     public void testSerialization() {
         verifySerilization(
                 Method.builder()
-                        .declaringType(Type.builder()
-                                .id(534L)
-                                .name("java.lang.RuntimeException")
-                                .superTypeNames(new HashSet<>(Arrays.asList("java.lang.Throwable", "java.lang.Exception")))
-                                .superTypeSimpleNames(new HashSet<>(Arrays.asList("Throwable", "Exception")))
-                                .build())
+                        .declaringType(
+                                Type.builder()
+                                        .id(534L)
+                                        .name("java.lang.RuntimeException")
+                                        .build()
+                        )
+                        .implementingType(
+                                Type.builder()
+                                        .id(1024)
+                                        .name("a.b.C")
+                                        .build()
+                        )
                         .name("run")
                         .id(5552312L)
                         .isConstructor(false)
@@ -54,6 +60,8 @@ public class MethodTest {
 
         Assert.assertEquals(method.getDeclaringType().getName(), deserialized.getDeclaringType().getName());
         Assert.assertEquals(method.getDeclaringType().getId(), deserialized.getDeclaringType().getId());
-        Assert.assertEquals(method.getDeclaringType().getSuperTypeNames(), deserialized.getDeclaringType().getSuperTypeNames());
+
+        Assert.assertEquals(method.getImplementingType().getName(), deserialized.getImplementingType().getName());
+        Assert.assertEquals(method.getImplementingType().getId(), deserialized.getImplementingType().getId());
     }
 }

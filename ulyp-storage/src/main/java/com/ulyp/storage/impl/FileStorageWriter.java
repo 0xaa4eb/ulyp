@@ -1,6 +1,7 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.RecordingCompleteMark;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
@@ -21,12 +22,12 @@ import java.io.IOException;
 public class FileStorageWriter implements StorageWriter {
 
     private final File file;
-    private final BinaryListFileWriter writer;
+    private final BinaryListFileWriter fileWriter;
 
     public FileStorageWriter(File file) throws StorageException {
         try {
             this.file = file;
-            this.writer = new BinaryListFileWriter(file);
+            this.fileWriter = new BinaryListFileWriter(file);
         } catch (IOException e) {
             throw new StorageException("Could not build storage for file " + file, e);
         }
@@ -48,7 +49,7 @@ public class FileStorageWriter implements StorageWriter {
                     wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
                 }
         );
-        writer.append(binaryList);
+        fileWriter.append(binaryList);
         if (LoggingSettings.INFO_ENABLED) {
             log.info("Has written {} to storage", processMetadata);
         }
@@ -70,7 +71,7 @@ public class FileStorageWriter implements StorageWriter {
                     wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
                 }
         );
-        writer.append(binaryList);
+        fileWriter.append(binaryList);
         if (LoggingSettings.INFO_ENABLED) {
             log.info("Has written {} to storage", recordingMetadata);
         }
@@ -81,7 +82,7 @@ public class FileStorageWriter implements StorageWriter {
         if (types.getRawBytes().isEmpty()) {
             return;
         }
-        writer.append(types.getRawBytes());
+        fileWriter.append(types.getRawBytes());
     }
 
     @Override
@@ -90,7 +91,7 @@ public class FileStorageWriter implements StorageWriter {
         if (callsBytes.isEmpty()) {
             return;
         }
-        writer.append(callsBytes);
+        fileWriter.append(callsBytes);
         if (LoggingSettings.INFO_ENABLED) {
             log.info("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
         }
@@ -101,16 +102,21 @@ public class FileStorageWriter implements StorageWriter {
         if (methods.getRawBytes().isEmpty()) {
             return;
         }
-        writer.append(methods.getRawBytes());
+        fileWriter.append(methods.getRawBytes());
+    }
+
+    private synchronized void writePoisonPill() {
+        fileWriter.append(new BinaryList(RecordingCompleteMark.WIRE_ID));
     }
 
     @Override
     public String toString() {
-        return FileStorageWriter.class.getSimpleName() + "-" + file;
+        return "FileStorageWriter";
     }
 
     @Override
     public synchronized void close() {
-        writer.close();
+        writePoisonPill();
+        fileWriter.close();
     }
 }

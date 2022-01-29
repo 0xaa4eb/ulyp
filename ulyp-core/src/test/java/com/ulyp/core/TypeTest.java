@@ -20,8 +20,6 @@ public class TypeTest {
                 Type.builder()
                         .id(34L)
                         .name("java.lang.RuntimeException")
-                        .superTypeNames(new HashSet<>())
-                        .superTypeSimpleNames(new HashSet<>())
                         .build()
         );
 
@@ -29,8 +27,6 @@ public class TypeTest {
                 Type.builder()
                         .id(534L)
                         .name("java.lang.RuntimeException")
-                        .superTypeNames(new HashSet<>(Arrays.asList("java.lang.Throwable", "java.lang.Exception")))
-                        .superTypeSimpleNames(new HashSet<>(Arrays.asList("Throwable", "Exception")))
                         .build()
         );
     }
@@ -49,7 +45,5 @@ public class TypeTest {
 
         Assert.assertEquals(type.getName(), deserialized.getName());
         Assert.assertEquals(type.getId(), deserialized.getId());
-        Assert.assertEquals(type.getSuperTypeNames(), deserialized.getSuperTypeNames());
-        Assert.assertEquals(type.getSuperTypeSimpleNames(), deserialized.getSuperTypeSimpleNames());
     }
 }

@@ -1,7 +1,6 @@
 package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
-import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.EnumRecord;
 import com.ulyp.storage.CallRecord;
@@ -18,7 +17,7 @@ public class EnumRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldPrintEnumNames() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(EnumTestCases.class)
                         .setMethodToRecord("consumesMapAndEnums")
@@ -38,12 +37,12 @@ public class EnumRecorderTest extends AbstractInstrumentationTest {
     public static class EnumTestCases {
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> new EnumTestCases().consumesMapAndEnums(
+            new EnumTestCases().consumesMapAndEnums(
                     new HashMap<TestEnum, TestEnum>() {{
                         put(TestEnum.T1, TestEnum.T2);
                     }},
                     TestEnum.T1,
-                    TestEnum.T2));
+                    TestEnum.T2);
         }
 
         public void consumesMapAndEnums(Map<TestEnum, TestEnum> map, TestEnum l1, TestEnum l2) {

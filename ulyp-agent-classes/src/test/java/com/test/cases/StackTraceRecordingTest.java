@@ -3,8 +3,6 @@ package com.test.cases;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.StorageReader;
-import com.ulyp.transport.TStackTrace;
-import com.ulyp.transport.TStackTraceElement;
 import org.junit.Assert;
 import org.junit.Test;
 

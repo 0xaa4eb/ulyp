@@ -3,12 +3,13 @@ package com.perf.agent.benchmarks;
 import com.perf.agent.benchmarks.impl.H2MemDatabaseBenchmark;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.ulyp.core.CallEnterRecordList;
-import com.ulyp.transport.TCallRecordLogUploadRequest;
+import com.perf.agent.benchmarks.proc.OutputFile;
+import com.ulyp.storage.StorageReader;
 import org.HdrHistogram.Histogram;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class PerformanceBenchmarksMain {
@@ -54,10 +55,14 @@ public class PerformanceBenchmarksMain {
 
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
-            TCallRecordLogUploadRequest request = profile.getOutputFile().read().get(0);
-            recordsTimeHistogram.recordValue(request.getRecordingInfo().getLifetimeMillis());
-
-            return new CallEnterRecordList(request.getRecordLog().getEnterRecords()).size();
+            StorageReader storageReader = Optional.ofNullable(profile.getOutputFile()).map(OutputFile::toReader).orElse(StorageReader.empty());
+            if (!storageReader.availableRecordings().isEmpty()) {
+                recordsTimeHistogram.recordValue(storageReader.availableRecordings().get(0).getLifetime().toMillis());
+                return storageReader.availableRecordings().get(0).callCount();
+            } else {
+                recordsTimeHistogram.recordValue(0L);
+                return 0;
+            }
         }
     }
 

@@ -34,6 +34,7 @@ public class StorageReaderListenerTest {
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
             .declaringType(type)
+            .implementingType(type)
             .name("run")
             .id(1000L)
             .isConstructor(false)
@@ -61,14 +62,12 @@ public class StorageReaderListenerTest {
 
         recordingMetadata1 = RecordingMetadata.builder()
                 .id(1)
-                .createEpochMillis(2324L)
                 .threadName("Thread-1")
                 .threadId(4343L)
                 .build();
 
         recordingMetadata2 = RecordingMetadata.builder()
                 .id(2)
-                .createEpochMillis(2324L)
                 .threadName("Thread-1")
                 .threadId(4343L)
                 .build();

@@ -4,7 +4,6 @@ import com.test.cases.AbstractInstrumentationTest;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.storage.CallRecord;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -16,7 +15,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testClassTypeReturning() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(PassClazz.class)
                         .setMethodToRecord("returnClass")
@@ -30,7 +29,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testClassTypePassing() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(PassClazz.class)
                         .setMethodToRecord("takeClass")

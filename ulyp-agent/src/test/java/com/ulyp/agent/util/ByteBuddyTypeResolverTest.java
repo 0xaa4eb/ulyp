@@ -88,6 +88,15 @@ public class ByteBuddyTypeResolverTest {
     }
 
     @Test
+    public void testForOptional() throws NoSuchMethodException {
+
+
+        Type byteBuddyType = typeResolver.get(Optional.class);
+
+        System.out.println(byteBuddyType.getName());
+    }
+
+    @Test
     public void testTraitsForPrimitiveArray() throws NoSuchMethodException {
 
 
@@ -208,13 +217,13 @@ public class ByteBuddyTypeResolverTest {
 
         Assert.assertEquals(
                 new HashSet<String>() {{
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$TestClass");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$BaseClass");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$I1");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$I2");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$I3");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$I4");
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest$I5");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.TestClass");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.BaseClass");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I1");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I2");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I3");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I4");
+                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I5");
                 }},
                 type.getSuperTypeNames()
         );

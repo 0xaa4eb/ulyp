@@ -20,7 +20,7 @@ public class OutputFile {
         }
     }
 
-    public StorageReader read() {
+    public StorageReader toReader() {
         return new SameThreadFileStorageReader(file.toFile());
     }
 

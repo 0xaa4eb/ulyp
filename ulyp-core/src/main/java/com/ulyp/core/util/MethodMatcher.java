@@ -1,17 +1,18 @@
 package com.ulyp.core.util;
 
 import com.ulyp.core.Method;
+import lombok.ToString;
 
 /**
  * User provided matcher for the method where recording should start.
- * A user should specify it in the following format as string: <simple class name>.<method name>
+ * A user should specify it in the following format as string: <class name ant pattern>.<method name>
  * Examples:
- *  Runnable.run
- *  SpringApplication.main
+ *  **.Runnable.run
+ *  org.*.SpringApplication.main
+ *  com.test.**.run
+ *  com.test.TestClass.*
  *
- * Wildcards are also supported:
- *  Runnable.*
- *  *.*
+ * If recording should start at any method, then *.* string should be used
  */
 public class MethodMatcher {
 
@@ -26,14 +27,14 @@ public class MethodMatcher {
         int separatorPos = text.lastIndexOf(SEPARATOR);
         // TODO regexp?
         if (separatorPos < 0) {
-            throw new SettingsException("");
+            throw new SettingsException("Invalid method matcher: " + text);
         }
 
         return new MethodMatcher(ClassMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));
     }
 
     public MethodMatcher(Class<?> clazz, String methodName) {
-        this(ClassMatcher.parse(clazz.getSimpleName()), methodName);
+        this(ClassMatcher.parse(clazz.getName()), methodName);
     }
 
     public MethodMatcher(ClassMatcher classMatcher, String methodName) {
@@ -42,8 +43,8 @@ public class MethodMatcher {
         this.isMethodWildcard = methodName.equals(WILDCARD);
     }
 
-    public boolean matches(Method methodRepresentation) {
-        return (isMethodWildcard || methodRepresentation.getName().equals(methodName)) && classMatcher.matches(methodRepresentation.getDeclaringType());
+    public boolean matches(Method method) {
+        return  (isMethodWildcard || method.getName().equals(methodName)) && classMatcher.matches(method.getDeclaringType());
     }
 
     @Override

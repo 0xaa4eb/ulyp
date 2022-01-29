@@ -67,7 +67,7 @@ public class AsyncFileStorageWriter implements StorageWriter {
     public synchronized void close() {
         try {
             executorService.shutdown();
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
+            executorService.awaitTermination(30, TimeUnit.SECONDS);
         } finally {
             delegate.close();
         }

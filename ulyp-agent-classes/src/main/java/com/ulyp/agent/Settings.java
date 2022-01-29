@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,6 +24,10 @@ public class Settings {
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
+        List<ClassMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
+                .stream()
+                .map(ClassMatcher::parse)
+                .collect(Collectors.toList());
 
         String methodsToRecord = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
         RecordMethodList recordingStartMethods = RecordMethodList.parse(methodsToRecord);
@@ -46,7 +51,7 @@ public class Settings {
                 storageWriterSupplier = new Supplier<StorageWriter>() {
                     @Override
                     public StorageWriter get() {
-                        return StorageWriter.forFile(Paths.get(filePath).toFile());
+                        return StorageWriter.async(StorageWriter.forFile(Paths.get(filePath).toFile()));
                     }
 
                     @Override
@@ -64,6 +69,8 @@ public class Settings {
             shouldRecordConstructors = true;
         }
 
+        boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
+
         String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
         if (recordCollectionsProp.isEmpty()) {
             recordCollectionsProp = CollectionsRecordingMode.ALL.name();
@@ -71,7 +78,7 @@ public class Settings {
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
 
         Set<ClassMatcher> classesToPrint =
-                CommaSeparatedList.parse(System.getProperty(PRINT_WITH_TO_STRING_CLASSES_PROPERTY, ""))
+                CommaSeparatedList.parse(System.getProperty(PRINT_CLASSES_PROPERTY, ""))
                     .stream()
                     .map(ClassMatcher::parse)
                     .collect(Collectors.toSet());
@@ -84,27 +91,33 @@ public class Settings {
                 shouldRecordConstructors,
                 collectionsRecordingMode,
                 classesToPrint,
-                startRecordingPolicy
+                startRecordingPolicy,
+                excludeClassesFromInstrumentation,
+                agentDisabled
         );
     }
 
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
     public static final String START_RECORDING_DELAY_PROPERTY = "ulyp.delay";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
+    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String PRINT_WITH_TO_STRING_CLASSES_PROPERTY = "ulyp.to-string-print";
+    public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
+    public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
     @NotNull private final Supplier<StorageWriter> storageWriterSupplier;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull private final RecordMethodList recordMethodList;
+    private final List<ClassMatcher> excludeFromInstrumentationClasses;
     private final boolean shouldRecordConstructors;
     private final StartRecordingPolicy startRecordingPolicy;
     private final CollectionsRecordingMode collectionsRecordingMode;
-    private final Set<ClassMatcher> classesToPrintWithToString;
+    private final Set<ClassMatcher> classesToPrint;
+    private final boolean agentDisabled;
 
     public Settings(
             @NotNull Supplier<StorageWriter> storageWriterSupplier,
@@ -113,8 +126,10 @@ public class Settings {
             @NotNull RecordMethodList recordMethodList,
             boolean shouldRecordConstructors,
             CollectionsRecordingMode collectionsRecordingMode,
-            Set<ClassMatcher> classesToPrintWithToString,
-            StartRecordingPolicy startRecordingPolicy)
+            Set<ClassMatcher> classesToPrint,
+            StartRecordingPolicy startRecordingPolicy,
+            List<ClassMatcher> excludeFromInstrumentationClasses,
+            boolean agentDisabled)
     {
         this.storageWriterSupplier = storageWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
@@ -122,8 +137,10 @@ public class Settings {
         this.recordMethodList = recordMethodList;
         this.shouldRecordConstructors = shouldRecordConstructors;
         this.collectionsRecordingMode = collectionsRecordingMode;
-        this.classesToPrintWithToString = classesToPrintWithToString;
+        this.classesToPrint = classesToPrint;
         this.startRecordingPolicy = startRecordingPolicy;
+        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
+        this.agentDisabled = agentDisabled;
     }
 
     public PackageList getInstrumentatedPackages() {
@@ -150,12 +167,20 @@ public class Settings {
         return collectionsRecordingMode;
     }
 
-    public Set<ClassMatcher> getClassesToPrintWithToString() {
-        return classesToPrintWithToString;
+    public Set<ClassMatcher> getClassesToPrint() {
+        return classesToPrint;
     }
 
     public StartRecordingPolicy getStartRecordingPolicy() {
         return startRecordingPolicy;
+    }
+
+    public List<ClassMatcher> getExcludeFromInstrumentationClasses() {
+        return excludeFromInstrumentationClasses;
+    }
+
+    public boolean isAgentDisabled() {
+        return agentDisabled;
     }
 
     @Override
@@ -167,6 +192,6 @@ public class Settings {
                 ",\nrecord constructors: " + shouldRecordConstructors +
                 ",\nrecording policy: " + startRecordingPolicy +
                 ",\nrecord collections: " + collectionsRecordingMode +
-                ",\nclassesToPrintWithToString(TBD)=" + classesToPrintWithToString;
+                ",\nclassesToPrintWithToString(TBD)=" + classesToPrint;
     }
 }

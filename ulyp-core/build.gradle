@@ -11,7 +11,6 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'com.google.protobuf' version '0.8.8'
     id "io.freefair.lombok" version "6.0.0-m2"
 }
 
@@ -37,12 +36,8 @@ repositories {
     mavenCentral()
 }
 
-def protobufVersion = '3.11.0'
-def protocVersion = protobufVersion
-
 dependencies {
     compileOnly "javax.annotation:javax.annotation-api:1.2"
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
     compile group: 'com.google.guava', name: 'guava', version: '28.1-android'
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     compile group: 'org.agrona', name: 'agrona', version: '1.4.0'

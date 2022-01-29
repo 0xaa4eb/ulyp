@@ -2,9 +2,9 @@ package com.perf.agent.benchmarks;
 
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.ulyp.core.CallEnterRecordList;
 import com.ulyp.core.util.PackageList;
-import com.ulyp.transport.TCallRecordLogUploadRequest;
+import com.ulyp.storage.Recording;
+import com.ulyp.storage.StorageReader;
 import org.HdrHistogram.Histogram;
 
 import java.util.ArrayList;
@@ -41,14 +41,14 @@ public class BenchmarksForSomeProfileMain {
 
         Histogram procTimeHistogram = emptyHistogram();
         Histogram recordingTimeHistogram = emptyHistogram();
-        Histogram recordsCountHistogram = emptyHistogram();
+        Histogram callsCountHistogram = emptyHistogram();
 
         for (int i = 0; i < ITERATIONS_PER_PROFILE; i++) {
-            int recordsCount = run(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram);
-            recordsCountHistogram.recordValue(recordsCount);
+            int callsCount = run(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram);
+            callsCountHistogram.recordValue(callsCount);
         }
 
-        runResults.add(new PerformanceRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, recordsCountHistogram));
+        runResults.add(new PerformanceRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, callsCountHistogram));
 
         return runResults;
     }
@@ -60,11 +60,11 @@ public class BenchmarksForSomeProfileMain {
 
             if (profile.shouldWriteRecording()) {
 
-                TCallRecordLogUploadRequest request = profile.getOutputFile().read().get(0);
-                recordingTimeHistogram.recordValue(request.getRecordingInfo().getLifetimeMillis());
+                StorageReader read = profile.getOutputFile().toReader();
+                Recording recording = read.availableRecordings().get(0);
+                recordingTimeHistogram.recordValue(recording.getLifetime().toMillis());
 
-                CallEnterRecordList enterRecords = new CallEnterRecordList(request.getRecordLog().getEnterRecords());
-                return enterRecords.size();
+                return recording.getRoot().getSubtreeSize();
             }
 
             return 0;

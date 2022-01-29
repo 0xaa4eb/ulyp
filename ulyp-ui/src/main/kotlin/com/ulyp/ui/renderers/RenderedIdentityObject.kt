@@ -14,7 +14,7 @@ class RenderedIdentityObject(repr: IdentityObjectRecord, renderSettings: RenderS
         super.getChildren().addAll(
             listOf(
                 of(className, CssClass.CALL_TREE_TYPE_NAME),
-                of("@", CssClass.CALL_TREE_IDENTITY_REPR),
+                of("@", CssClass.CALL_TREE_IDENTITY_REPR, CssClass.CALL_TREE_IDENTITY_HASH_CODE),
                 of(Integer.toHexString(repr.hashCode), CssClass.CALL_TREE_IDENTITY_REPR)
             )
         )

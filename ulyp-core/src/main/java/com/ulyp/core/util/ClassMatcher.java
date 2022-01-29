@@ -10,20 +10,32 @@ public class ClassMatcher {
         return new ClassMatcher(text);
     }
 
-    private final String typeSimpleName;
+    private final String patternText;
+    private final AntPathMatcher antMatcher;
     private final boolean isWildcard;
 
-    private ClassMatcher(String classSimpleName) {
-        this.typeSimpleName = classSimpleName;
-        this.isWildcard = classSimpleName.equals(WILDCARD);
+    private ClassMatcher(String patternText) {
+        this.antMatcher = new AntPathMatcher(".");
+
+        // '.' is used for nested class name matching instead of '$'
+        this.patternText = patternText.replace('$', '.');
+        this.isWildcard = patternText.equals(WILDCARD);
     }
 
     public boolean matches(Type type) {
-        return isWildcard || type.getSuperTypeSimpleNames().contains(typeSimpleName);
+        if (isWildcard) {
+            return true;
+        }
+        for (String superType : type.getSuperTypeNames()) {
+            if (antMatcher.match(patternText, superType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public String toString() {
-        return typeSimpleName;
+        return patternText;
     }
 }

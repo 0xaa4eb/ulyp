@@ -1,31 +1,70 @@
 package com.ulyp.ui.code
 
 import com.ulyp.ui.code.util.MethodLineNumberFinder
+import com.ulyp.ui.looknfeel.FontChooser
 import javafx.embed.swing.SwingNode
+import javafx.event.EventHandler
 import javafx.scene.control.Tab
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 import org.fife.ui.rsyntaxtextarea.Theme
 import org.fife.ui.rtextarea.RTextScrollPane
 import org.springframework.stereotype.Component
+import java.awt.Font
+import java.awt.event.KeyListener
 import java.io.IOException
 import javax.swing.SwingUtilities
 
 @Component
 class SourceCodeTab : Tab() {
     private val textScrollPane: RTextScrollPane
-    private var stamp: Long = 0
+    private val fontChooser = FontChooser()
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
+
+    private var stamp: Long = 0
+    private var font = 15
 
     init {
         textArea.syntaxEditingStyle = SyntaxConstants.SYNTAX_STYLE_JAVA
         textArea.isCodeFoldingEnabled = true
         textArea.text = ""
+        textArea.isEditable = false
         setTheme(com.ulyp.ui.looknfeel.Theme.DARK.rsyntaxThemePath)
         textScrollPane = RTextScrollPane(textArea)
         val swingNode = SwingNode()
         swingNode.content = textScrollPane
         content = swingNode
+
+        textArea.addKeyListener(
+                object : KeyListener {
+                    override fun keyTyped(e: java.awt.event.KeyEvent) {
+                        if (e.keyChar == '=') {
+                            SwingUtilities.invokeLater {
+                                synchronized(this) {
+                                    font++
+                                    textArea.font = Font(fontChooser.getFontName(), Font.PLAIN, font)
+                                }
+                            }
+                        }
+                        if (e.keyChar == '-') {
+                            SwingUtilities.invokeLater {
+                                synchronized(this) {
+                                    font--
+                                    textArea.font = Font(fontChooser.getFontName(), Font.PLAIN, font)
+                                }
+                            }
+                        }
+                    }
+                    override fun keyPressed(e: java.awt.event.KeyEvent) {
+
+                    }
+                    override fun keyReleased(e: java.awt.event.KeyEvent) {
+
+                    }
+                }
+        )
     }
 
     fun setText(code: SourceCode, methodNameToScrollTo: String?) {

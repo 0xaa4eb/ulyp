@@ -1,7 +1,6 @@
 package com.test.recorders;
 
 import com.test.cases.AbstractInstrumentationTest;
-import com.test.cases.SafeCaller;
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
@@ -23,13 +22,13 @@ public class StringRecorderTest extends AbstractInstrumentationTest {
         }
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> returnLongString());
+            System.out.println(returnLongString());
         }
     }
 
     @Test
     public void shouldCutLongStringWhileRecording() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder().setMainClassName(TestCases.class).setMethodToRecord("returnLongString")
         );
 

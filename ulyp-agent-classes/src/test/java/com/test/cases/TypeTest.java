@@ -1,9 +1,13 @@
 package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
+import com.test.cases.util.RecordingResult;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.CallRecord;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,33 +20,36 @@ public class TypeTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldProvideArgumentTypes() {
-        CallRecord root = runForkWithUi(
-                new ForkProcessBuilder().setMainClassName(TestCases.class)
-                        .setMethodToRecord("intSum")
+        RecordingResult recordingResult = runForkProcess(
+                new ForkProcessBuilder()
+                        .setMainClassName(TestCase.class)
+                        .setMethodToRecord(MethodMatcher.parse("**.FooImpl.bar"))
         );
 
+        recordingResult.assertRecordingSessionCount(1);
 
-        NumberRecord firstArg = (NumberRecord) root.getArgs().get(0);
-        assertThat(firstArg.getNumberPrintedText(), is("2"));
-        assertThat(firstArg.getType().getName(), is("java.util.concurrent.atomic.AtomicInteger"));
+        CallRecord root = recordingResult.getSingleRoot();
 
-        NumberRecord secondArg = (NumberRecord) root.getArgs().get(1);
-
-        assertThat(secondArg.getNumberPrintedText(), is("3"));
-        assertThat(secondArg.getType().getName(), is("java.util.concurrent.atomic.AtomicLong"));
-
-        ObjectRecord returnValue = root.getReturnValue();
-        assertThat(returnValue.getType().getName(), is("java.lang.String"));
+        assertThat(root.getMethod().getImplementingType().getName(), is("com.test.cases.TypeTest$FooImpl"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.test.cases.TypeTest$FooImpl"));
     }
 
-    public static class TestCases {
+    public interface Foo {
+        void bar();
+    }
 
-        public static String intSum(AtomicInteger v1, AtomicLong v2) {
-            return String.valueOf(v1.get() + v2.get());
+    public static class FooImpl implements Foo {
+
+        @Override
+        public void bar() {
+            System.out.println("ABC");
         }
+    }
+
+    public static class TestCase {
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> TestCases.intSum(new AtomicInteger(2), new AtomicLong(3)));
+            new FooImpl().bar();
         }
     }
 }

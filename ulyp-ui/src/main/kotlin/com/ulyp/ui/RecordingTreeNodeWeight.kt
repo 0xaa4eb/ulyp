@@ -6,7 +6,7 @@ import javafx.scene.layout.Region
 /**
  * A background rectangle which shows how much nested calls every call record tree node has.
  */
-class RecordingTreeNodeWeight(node: CallRecord, totalNodeCountInTree: Long) : Region() {
+class RecordingTreeNodeWeight(node: CallRecord, totalNodeCountInTree: Int) : Region() {
     init {
         val width = (600.0 * node.subtreeSize / totalNodeCountInTree).toInt()
 

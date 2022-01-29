@@ -31,14 +31,17 @@ public class AgentContext {
         this.settings = Settings.fromSystemProperties();
 
         this.storage = settings.buildStorageWriter();
-        this.storage.write(ProcessMetadata.builder()
-                        .classPathFiles(new Classpath().toList())
-                        .mainClassName(ProcessMetadata.getMainClassNameFromProp())
-                        .build()
-        );
+        if (!settings.isAgentDisabled()) {
+            this.storage.write(ProcessMetadata.builder()
+                    .classPathFiles(new Classpath().toList())
+                    .mainClassName(ProcessMetadata.getMainClassNameFromProp())
+                    .pid(System.currentTimeMillis())
+                    .build()
+            );
 
-        Thread shutdown = new Thread(storage::close);
-        Runtime.getRuntime().addShutdownHook(shutdown);
+            Thread shutdown = new Thread(storage::close);
+            Runtime.getRuntime().addShutdownHook(shutdown);
+        }
     }
 
     public StorageWriter getStorage() {

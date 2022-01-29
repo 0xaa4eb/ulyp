@@ -14,7 +14,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
 
     @Test
     public void shouldInstrumentAndTraceAllClasses() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
                         .setInstrumentedPackages("com.test.cases.a")
@@ -27,7 +27,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
 
     @Test
     public void shouldExcludeInstrumentationPackage() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
                         .setInstrumentedPackages("com.test.cases.a")
@@ -46,7 +46,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
 
     @Test
     public void shouldExcludeTwoPackages() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
                         .setInstrumentedPackages("com.test.cases.a")

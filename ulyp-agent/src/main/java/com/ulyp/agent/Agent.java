@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.CollectionRecorder;
@@ -38,6 +39,10 @@ public class Agent {
         AgentContext instance = AgentContext.getInstance();
 
         Settings settings = Settings.fromSystemProperties();
+        if (settings.isAgentDisabled()) {
+            System.out.println("ULYP agent disabled, no code will be instrumented");
+            return;
+        }
 
         PackageList instrumentedPackages = settings.getInstrumentatedPackages();
         PackageList excludedPackages = settings.getExcludedFromInstrumentationPackages();
@@ -53,22 +58,22 @@ public class Agent {
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
 
-        CollectionRecorder recorder = (CollectionRecorder) ObjectRecorderType.COLLECTION_DEBUG_RECORDER.getInstance();
+        CollectionRecorder recorder = (CollectionRecorder) ObjectRecorderType.COLLECTION_RECORDER.getInstance();
         recorder.setMode(settings.getCollectionsRecordingMode());
 
         MapRecorder mapRecorder = (MapRecorder) ObjectRecorderType.MAP_RECORDER.getInstance();
         mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
         ToStringRecorder toStringRecorder = (ToStringRecorder) (ObjectRecorderType.TO_STRING_RECORDER.getInstance());
-        toStringRecorder.addClassNamesSupportPrinting(settings.getClassesToPrintWithToString());
+        toStringRecorder.addClassesToPrint(settings.getClassesToPrint());
 
-        ElementMatcher.Junction<TypeDescription> tracingMatcher = null;
+        ElementMatcher.Junction<TypeDescription> instrumentationMatcher = null;
 
         for (String packageToInstrument : instrumentedPackages) {
-            if (tracingMatcher == null) {
-                tracingMatcher = ElementMatchers.nameStartsWith(packageToInstrument);
+            if (instrumentationMatcher == null) {
+                instrumentationMatcher = ElementMatchers.nameStartsWith(packageToInstrument);
             } else {
-                tracingMatcher = tracingMatcher.or(ElementMatchers.nameStartsWith(packageToInstrument));
+                instrumentationMatcher = instrumentationMatcher.or(ElementMatchers.nameStartsWith(packageToInstrument));
             }
         }
 
@@ -78,19 +83,25 @@ public class Agent {
         excludedPackages.add("sun");
 
         for (String excludedPackage : excludedPackages) {
-            if (tracingMatcher == null) {
-                tracingMatcher = ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage));
+            if (instrumentationMatcher == null) {
+                instrumentationMatcher = ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage));
             } else {
-                tracingMatcher = tracingMatcher.and(ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage)));
+                instrumentationMatcher = instrumentationMatcher.and(ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage)));
             }
+        }
+
+        for (ClassMatcher excludeClassMatcher : settings.getExcludeFromInstrumentationClasses()) {
+            instrumentationMatcher = instrumentationMatcher.and(
+                    target -> !excludeClassMatcher.matches(ByteBuddyTypeResolver.getInstance().resolve(target.asGenericType()))
+            );
         }
 
         ElementMatcher.Junction<TypeDescription> finalMatcher = ElementMatchers
                 .not(ElementMatchers.nameStartsWith("com.ulyp"))
                 .and(ElementMatchers.not(ElementMatchers.nameStartsWith("shadowed")));
 
-        if (tracingMatcher != null) {
-            finalMatcher = finalMatcher.and(tracingMatcher);
+        if (instrumentationMatcher != null) {
+            finalMatcher = finalMatcher.and(instrumentationMatcher);
         }
 
         MethodIdFactory methodIdFactory = new MethodIdFactory(recordMethodList);

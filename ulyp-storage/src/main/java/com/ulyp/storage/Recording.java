@@ -3,6 +3,8 @@ package com.ulyp.storage;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.storage.impl.RecordingState;
 
+import java.time.Duration;
+
 public class Recording {
 
     private final RecordingState recordingState;
@@ -19,7 +21,7 @@ public class Recording {
         return recordingState.getRoot();
     }
 
-    public long callCount() {
+    public int callCount() {
         return recordingState.callCount();
     }
 
@@ -29,5 +31,9 @@ public class Recording {
 
     public CallRecord getCallRecord(long callId) {
         return recordingState.getCallRecord(callId);
+    }
+
+    public Duration getLifetime() {
+        return recordingState.getLifetime();
     }
 }

@@ -11,7 +11,7 @@ public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void testFibonacciMethodCall() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(RecursionTestCases.class)
                         .setMethodToRecord("fibonacci")
@@ -23,7 +23,7 @@ public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
     public static class RecursionTestCases {
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> new RecursionTestCases().fibonacci(10));
+            System.out.println(new RecursionTestCases().fibonacci(10));
         }
 
         public int fibonacci(int v) {

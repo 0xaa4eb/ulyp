@@ -1,7 +1,6 @@
 package com.ulyp.core;
 
 import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.recorders.ObjectRecorder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -11,21 +10,22 @@ public class CallRecordLog {
 
     public static final AtomicInteger idGenerator = new AtomicInteger(-1);
 
-    private final RecordingMetadata recordingMetadata;
     private final TypeResolver typeResolver;
     private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
     private final StackTraceElement[] stackTrace;
+    private final long rootCallId;
 
+    private RecordingMetadata recordingMetadata;
     private boolean inProcessOfRecording = true;
 
     private long lastExitCallId = -1;
-    private long rootCallId;
     private long nextCallId;
 
     public CallRecordLog(TypeResolver typeResolver, long callIdInitialValue) {
         this.recordingMetadata = RecordingMetadata.builder()
                 .id(idGenerator.incrementAndGet())
-                .createEpochMillis(System.currentTimeMillis())
+                .recordingStartedEpochMillis(System.currentTimeMillis())
+                .logCreatedEpochMillis(System.currentTimeMillis())
                 .threadId(Thread.currentThread().getId())
                 .threadName(Thread.currentThread().getName())
                 .build();
@@ -49,7 +49,7 @@ public class CallRecordLog {
     {
         this.recordingMetadata = RecordingMetadata.builder()
                 .id(id)
-                .createEpochMillis(System.currentTimeMillis())
+                .logCreatedEpochMillis(System.currentTimeMillis())
                 .threadId(Thread.currentThread().getId())
                 .threadName(Thread.currentThread().getName())
                 .build();
@@ -119,6 +119,9 @@ public class CallRecordLog {
                     );
                 }
                 lastExitCallId = callId;
+                if (isComplete()) {
+                    this.recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
+                }
             }
         } finally {
             inProcessOfRecording = true;

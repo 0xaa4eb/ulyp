@@ -15,10 +15,10 @@ public class GenericsRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testAtomicIntegerSum() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(X.class)
-                        .setMethodToRecord(MethodMatcher.parse("Box.get"))
+                        .setMethodToRecord(MethodMatcher.parse("**.Box.get"))
         );
 
         StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();

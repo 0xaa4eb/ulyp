@@ -10,4 +10,11 @@ object StyledText {
         text.styleClass.addAll(style.cssClasses)
         return text
     }
+
+    @JvmStatic
+    fun of(content: String?, vararg styles: CssClass): Text {
+        val text = Text(content)
+        styles.forEach { text.styleClass.addAll(it.cssClasses) }
+        return text
+    }
 }

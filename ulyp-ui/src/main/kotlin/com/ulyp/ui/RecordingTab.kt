@@ -97,7 +97,7 @@ class RecordingTab(
         get() = if (root == null || recordingMetadata == null) {
             "?"
         } else recordingMetadata!!.threadName + " " +
-                toSimpleName(root!!.className) + "." + root!!.methodName + "(" + recordingMetadata!!.lifetimeMillis + " ms, " + recording.callCount() + ")"
+                toSimpleName(root!!.className) + "." + root!!.methodName + "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
 
     @get:Synchronized
     private val tooltipText: Tooltip
@@ -107,10 +107,10 @@ class RecordingTab(
             }
             val builder = StringBuilder()
                 .append("Thread: ").append(recordingMetadata!!.threadName).append("\n")
-                .append("Created at: ").append(Timestamp(recordingMetadata!!.createEpochMillis)).append("\n")
+                .append("Created at: ").append(Timestamp(recordingMetadata!!.recordingStartedEpochMillis)).append("\n")
                 .append("Finished at: ")
-                .append(Timestamp(recordingMetadata!!.createEpochMillis + recordingMetadata!!.lifetimeMillis)).append("\n")
-                .append("Lifetime: ").append(recordingMetadata!!.lifetimeMillis).append(" millis").append("\n")
+                .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
+                .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
 
 /*
             builder.append("Stack trace: ").append("\n")
@@ -130,7 +130,7 @@ class RecordingTab(
             return Tooltip(builder.toString())
         }
 
-    fun getSelected(): RecordingTreeNode? {
+    fun getSelected(): RecordingTreeNode {
         return treeView!!.selectionModel.selectedItem as RecordingTreeNode
     }
 
@@ -143,6 +143,7 @@ class RecordingTab(
         init()
         val root = treeView!!.root as RecordingTreeNode
         text = tabName
+        tooltip = tooltipText
         root.refresh()
     }
 

@@ -16,19 +16,19 @@ public class ToStringRecorder extends ObjectRecorder {
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
-    private final Set<ClassMatcher> classesToPrintWithToString = new HashSet<>();
+    private final Set<ClassMatcher> classesToPrint = new HashSet<>();
 
     protected ToStringRecorder(byte id) {
         super(id);
     }
 
-    public void addClassNamesSupportPrinting(Set<ClassMatcher> classNames) {
-        this.classesToPrintWithToString.addAll(classNames);
+    public void addClassesToPrint(Set<ClassMatcher> classNames) {
+        this.classesToPrint.addAll(classNames);
     }
 
     @Override
     boolean supports(Type type) {
-        return classesToPrintWithToString.stream().anyMatch(x -> x.matches(type));
+        return classesToPrint.stream().anyMatch(matcher -> matcher.matches(type));
     }
 
     @Override
@@ -36,15 +36,15 @@ public class ToStringRecorder extends ObjectRecorder {
         int result = input.readInt();
         if (result == TO_STRING_CALL_SUCCESS) {
             int identityHashCode = input.readInt();
-            ObjectRecord printed = input.readObject(typeResolver);
-            return new ToStringPrintedRecord(printed, objectType, identityHashCode);
+            StringObjectRecord printed = (StringObjectRecord) input.readObject(typeResolver);
+            return new PrintedObjectRecord(printed, objectType, identityHashCode);
         } else {
             return ObjectRecorderType.IDENTITY_RECORDER.getInstance().read(objectType, input, typeResolver);
         }
     }
 
     @Override
-    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try {
             String printed = object.toString();
 

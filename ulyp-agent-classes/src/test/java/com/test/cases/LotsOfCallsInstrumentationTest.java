@@ -14,7 +14,7 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
 
     @Test
     public void shouldMake1000Calls() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(LotsOfCallsTestCases.class)
                         .setMethodToRecord("make1000CallsSep")
@@ -25,7 +25,7 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
 
     @Test
     public void shouldHaveCompleteTree() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(LotsOfCallsTestCases.class)
                         .setMethodToRecord("level0")
@@ -54,9 +54,9 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
         private static volatile int value;
 
         public static void main(String[] args) {
-            SafeCaller.call(() -> new LotsOfCallsTestCases().make1000CallsLevel0());
-            SafeCaller.call(() -> new LotsOfCallsTestCases().level0());
-            SafeCaller.call(() -> new LotsOfCallsTestCases().make1000CallsSep());
+            new LotsOfCallsTestCases().make1000CallsLevel0();
+            new LotsOfCallsTestCases().level0();
+            new LotsOfCallsTestCases().make1000CallsSep();
         }
 
         public void level0() {

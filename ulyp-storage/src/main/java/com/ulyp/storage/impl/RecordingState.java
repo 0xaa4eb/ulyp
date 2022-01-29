@@ -11,6 +11,7 @@ import com.ulyp.storage.RecordingListener;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.stream.Collectors;
 
 public class RecordingState implements Closeable {
@@ -83,7 +84,9 @@ public class RecordingState implements Closeable {
     }
 
     public synchronized void update(RecordingMetadata metadata) {
-        // TODO
+        if (metadata.getRecordingCompletedEpochMillis() > 0) {
+            this.metadata.setRecordingCompletedEpochMillis(metadata.getRecordingCompletedEpochMillis());
+        }
     }
 
     public synchronized CallRecord getRoot() {
@@ -122,6 +125,15 @@ public class RecordingState implements Closeable {
 
     public synchronized RecordingMetadata getMetadata() {
         return metadata;
+    }
+
+    public synchronized Duration getLifetime() {
+        RecordingMetadata metadata = getMetadata();
+        if (metadata.getRecordingCompletedEpochMillis() > 0) {
+            return Duration.ofMillis(metadata.getRecordingCompletedEpochMillis() - metadata.getRecordingStartedEpochMillis());
+        } else {
+            return Duration.ofSeconds(0);
+        }
     }
 
     public synchronized int callCount() {

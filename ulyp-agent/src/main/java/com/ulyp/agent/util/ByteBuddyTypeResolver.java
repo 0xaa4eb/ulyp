@@ -51,7 +51,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();
     }
 
-    public static TypeResolver getInstance() {
+    public static ByteBuddyTypeResolver getInstance() {
         return InstanceHolder.context;
     }
 
@@ -123,7 +123,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
 
             return Type.builder()
                     .id(typeIdGenerator.incrementAndGet())
-                    .name(type.getActualName())
+                    .name(trimGenerics(type.getActualName()))
                     .superTypeNames(superTypes)
                     .superTypeSimpleNames(superTypes.stream().map(ClassUtils::getSimpleNameFromName).collect(Collectors.toSet()))
                     .typeTraits(typeTraits)
@@ -194,7 +194,13 @@ public class ByteBuddyTypeResolver implements TypeResolver {
             TypeDefinition.Sort sort = type.getSort();
             if (sort != TypeDefinition.Sort.VARIABLE && sort != TypeDefinition.Sort.VARIABLE_SYMBOLIC && sort != TypeDefinition.Sort.WILDCARD) {
                 while (type != null && !type.equals(TypeDescription.Generic.OBJECT)) {
-                    superTypes.add(type.asErasure().getActualName());
+
+                    String actualName = type.asErasure().getActualName();
+                    if (actualName.contains("$")) {
+                        actualName = actualName.replace('$', '.');
+                    }
+
+                    superTypes.add(actualName);
 
                     for (TypeDescription.Generic interfface : type.getInterfaces()) {
                         addInterfaceAndAllParentInterfaces(superTypes, interfface);
@@ -210,21 +216,28 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     }
 
     private void addInterfaceAndAllParentInterfaces(Set<String> superTypes, TypeDescription.Generic interfface) {
-        superTypes.add(trimGenericTypes(interfface.asErasure().getActualName()));
+        superTypes.add(prepareTypeName(interfface.asErasure().getActualName()));
 
         for (TypeDescription.Generic parentInterface : interfface.getInterfaces()) {
             addInterfaceAndAllParentInterfaces(superTypes, parentInterface);
         }
     }
 
-    // TODO fix the hack
-    private String trimGenericTypes(String genericName) {
+    private String trimGenerics(String genericName) {
         int pos = genericName.indexOf('<');
         if (pos > 0) {
-            return genericName.substring(0, pos);
-        } else {
-            return genericName;
+            genericName = genericName.substring(0, pos);
         }
+        return genericName;
+    }
+
+    private String prepareTypeName(String genericName) {
+        genericName = trimGenerics(genericName);
+
+        if (genericName.contains("$")) {
+            genericName = genericName.replace('$', '.');
+        }
+        return genericName;
     }
 
     @NotNull

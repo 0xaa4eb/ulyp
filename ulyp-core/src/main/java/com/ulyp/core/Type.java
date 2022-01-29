@@ -8,13 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 @Builder
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"suggestedRecorder", "writtenToFile"})
 public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();
@@ -114,31 +115,15 @@ public class Type {
 
     public void serialize(BinaryTypeEncoder encoder) {
         encoder.id(this.id);
-        BinaryTypeEncoder.SuperTypeNamesEncoder superTypeNamesEncoder = encoder.superTypeNamesCount(superTypeNames.size());
-        for (String val : superTypeNames) {
-            superTypeNamesEncoder.next().value(val);
-        }
-        BinaryTypeEncoder.SuperTypeSimpleNamesEncoder superTypeSimpleNamesEncoder = encoder.superTypeSimpleNamesCount(superTypeSimpleNames.size());
-        for (String val : superTypeSimpleNames) {
-            superTypeSimpleNamesEncoder.next().value(val);
-        }
         encoder.name(this.name);
     }
 
     public static Type deserialize(BinaryTypeDecoder decoder) {
-        Set<String> superTypeNames = new HashSet<>();
-        decoder.superTypeNames().forEachRemaining(val -> superTypeNames.add(val.value()));
-
-        Set<String> superTypeSimpleNames = new HashSet<>();
-        decoder.superTypeSimpleNames().forEachRemaining(val -> superTypeSimpleNames.add(val.value()));
-
         String name = decoder.name();
 
         return Type.builder()
                 .id(decoder.id())
                 .name(name)
-                .superTypeNames(superTypeNames)
-                .superTypeSimpleNames(superTypeSimpleNames)
                 .build();
     }
 }

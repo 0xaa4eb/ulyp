@@ -28,7 +28,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldProvideArgumentTypes() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TakesEmptyObjectArray.class)
                         .setMethodToRecord("accept")
@@ -58,7 +58,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordSimpleArrayWithString() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TakesStringArrayWithSomeString.class)
                         .setMethodToRecord("accept")
@@ -108,7 +108,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testUserDefinedClassArrayWith3Elements() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TakesVariousItemsArray.class)
                         .setMethodToRecord("accept")
@@ -146,7 +146,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testVarargs() {
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(VaragsTestCase.class)
                         .setMethodToRecord("takeVararg")

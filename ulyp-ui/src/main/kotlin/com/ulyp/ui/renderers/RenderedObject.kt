@@ -10,24 +10,25 @@ import java.util.function.Consumer
 abstract class RenderedObject protected constructor(private val type: Type?) : TextFlow() {
     companion object {
         @JvmStatic
-        fun of(repr: ObjectRecord, renderSettings: RenderSettings?): RenderedObject {
-            val objectValue = when (repr) {
-                is StringObjectRecord -> RenderedStringObject(repr, repr.getType(), renderSettings)
+        fun of(record: ObjectRecord, renderSettings: RenderSettings?): RenderedObject {
+            val objectValue = when (record) {
+                is StringObjectRecord -> RenderedStringObject(record, record.getType(), renderSettings)
                 is NullObjectRecord -> RenderedNull(renderSettings)
                 is NotRecordedObjectRecord -> RenderedNotRecordedObject(renderSettings!!)
-                is NumberRecord -> RenderedNumber(repr, repr.getType(), renderSettings!!)
-                is ObjectArrayRecord -> RenderedObjectArray(repr, renderSettings)
-                is CollectionRecord -> RenderedCollection(repr, renderSettings!!)
-                is MapEntryRecord -> RenderedMapEntry(repr, renderSettings)
-                is ClassObjectRecord -> RenderedClassObject(repr, renderSettings!!)
-                is MapRecord -> RenderedMap(repr, renderSettings!!)
-                is IdentityObjectRecord -> RenderedIdentityObject(repr, renderSettings!!)
-                is ThrowableRecord -> RenderedThrowable(repr, renderSettings!!)
-                is EnumRecord -> RenderedEnum(repr, renderSettings!!)
-                is ToStringPrintedRecord -> RenderedToStringPrinted(repr, renderSettings!!)
-                is DateRecord -> RenderDate(repr, renderSettings!!)
-                is BooleanRecord -> RenderedBoolean(repr, renderSettings!!)
-                else -> throw RuntimeException("Not supported for rendering: $repr")
+                is NumberRecord -> RenderedNumber(record, record.getType(), renderSettings!!)
+                is ObjectArrayRecord -> RenderedObjectArray(record, renderSettings)
+                is CollectionRecord -> RenderedCollection(record, renderSettings!!)
+                is MapEntryRecord -> RenderedMapEntry(record, renderSettings)
+                is ClassObjectRecord -> RenderedClassObject(record, renderSettings!!)
+                is MapRecord -> RenderedMap(record, renderSettings!!)
+                is IdentityObjectRecord -> RenderedIdentityObject(record, renderSettings!!)
+                is ThrowableRecord -> RenderedThrowable(record, renderSettings!!)
+                is EnumRecord -> RenderedEnum(record, renderSettings!!)
+                is PrintedObjectRecord -> RenderedPrintedObject(record, renderSettings!!)
+                is DateRecord -> RenderDate(record, renderSettings!!)
+                is BooleanRecord -> RenderedBoolean(record, renderSettings!!)
+                is OptionalRecord -> RenderedOptional(record, renderSettings!!)
+                else -> throw RuntimeException("Not supported for rendering: $record")
             }
             objectValue.children.forEach(Consumer { node: Node ->
                 node.styleClass.add("ulyp-ctt")

@@ -17,10 +17,6 @@ repositories {
     mavenCentral()
 }
 
-def grpcVersion = '1.27.0'
-def protobufVersion = '3.11.0'
-def protocVersion = protobufVersion
-
 dependencies {
     compile project(':ulyp-core')
     compile project(':ulyp-storage')
@@ -32,11 +28,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
-    implementation "io.grpc:grpc-stub:${grpcVersion}"
     compileOnly "javax.annotation:javax.annotation-api:1.2"
-    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
-    runtimeOnly "io.grpc:grpc-netty:${grpcVersion}"
 
     testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
     testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'

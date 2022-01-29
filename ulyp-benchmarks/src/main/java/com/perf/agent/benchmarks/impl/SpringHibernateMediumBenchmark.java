@@ -29,7 +29,7 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
                         .build(),
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(DepartmentService.class, "shuffle"))
-                        .withUiDisabled()
+                        .withWriteDisabled()
                         .withInstrumentedPackages(new PackageList("com", "org"))
                         .build()
         );

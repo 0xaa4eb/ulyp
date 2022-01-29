@@ -36,6 +36,7 @@ public class StorageReadWriteTest {
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
             .declaringType(type)
+            .implementingType(type)
             .name("run")
             .id(1000L)
             .isConstructor(false)
@@ -63,7 +64,7 @@ public class StorageReadWriteTest {
 
         recordingMetadata = RecordingMetadata.builder()
                 .id(recordingId)
-                .createEpochMillis(2324L)
+                .recordingStartedEpochMillis(System.currentTimeMillis())
                 .threadName("Thread-1")
                 .threadId(4343L)
                 .build();
@@ -188,7 +189,6 @@ public class StorageReadWriteTest {
         writer.write(
                 RecordingMetadata.builder()
                         .id(42)
-                        .createEpochMillis(2324L)
                         .threadName("AAAA")
                         .threadId(4343L)
                         .build()

@@ -19,18 +19,12 @@ public class H2MemDatabaseBenchmark implements Benchmark {
         return Arrays.asList(
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
-                        .withInstrumentedPackages(new PackageList("com", "org"))
                         .build(),
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
-                        .withInstrumentedPackages(new PackageList("com", "org"))
-                        .withUiDisabled()
                         .build(),
                 new BenchmarkProfileBuilder()
-                        .withInstrumentedPackages(new PackageList("com", "org"))
-                        .build(),
-                new BenchmarkProfileBuilder()
-                        .withInstrumentedPackages(new PackageList("com", "org"))
+                        .withAgentDisabled()
                         .build()
         );
     }
@@ -60,7 +54,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
 
     public void run() throws Exception {
 
-        for (int id = 0; id < 5; id++) {
+        for (int id = 0; id < 400; id++) {
             new Inserter(connection).insert(id);
         }
     }

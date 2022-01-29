@@ -1,6 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.transport.BinaryRecordedExitMethodCallDecoder;
+import com.ulyp.transport.BooleanType;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -24,6 +25,7 @@ public class RecordedExitMethodCall extends RecordedMethodCall {
                                 .value(returnValueBytes)
                                 .build()
                 )
+                .thrown(decoder.thrown() == BooleanType.T)
                 .recordingId(decoder.recordingId())
                 .callId(decoder.callId())
                 .methodId(decoder.methodId())

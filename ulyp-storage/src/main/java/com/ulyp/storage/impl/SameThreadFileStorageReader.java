@@ -57,6 +57,8 @@ public class SameThreadFileStorageReader implements StorageReader {
                     case RecordedMethodCallList.WIRE_ID:
                         onRecordedCalls(data);
                         break;
+                    case RecordingCompleteMark.WIRE_ID:
+                        return;
                     default:
                         throw new StorageException("Unknown binary data id " + data.getBytes().id());
                 }

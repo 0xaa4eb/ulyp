@@ -1,11 +1,15 @@
 package com.test.cases.a.b;
 
-/**
- * Used for {@link com.test.cases.PackageFilterInstrumentationTest}
- */
-public class B {
+import com.test.cases.a.interfaces.BInterface;
 
-    public static int b() {
+/**
+ * Used for {@link com.test.cases.PackageFilterInstrumentationTest} for testing configurating instrumentation
+ * by packages
+ */
+public class B implements BInterface {
+
+    @Override
+    public int b() {
         return 5;
     }
 }

@@ -20,19 +20,25 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
         private fun renderReturnValue(node: CallRecord, renderSettings: RenderSettings): List<Node> {
             return if (!node.isVoidMethod || node.hasThrown()) {
                 val output: MutableList<Node> = ArrayList()
-                var renderedObject = WithStylesPane(
+                var renderedReturnValue = WithStylesPane(
                         of(node.returnValue, renderSettings),
                         CssClass.CALL_TREE_ALL,
                         CssClass.CALL_TREE_RETURN_VALUE
                 ).get()
                 if (node.hasThrown()) {
-                    renderedObject = WithStylesPane(
-                            renderedObject,
-                            CssClass.CALL_TREE_ALL,
-                            CssClass.CALL_TREE_THROWN
+                    renderedReturnValue = WithStylesPane(
+                        renderedReturnValue,
+                        CssClass.CALL_TREE_ALL,
+                        CssClass.CALL_TREE_THROWN
                     ).get()
+                    output.add(
+                        text().text("\uD83D\uDDF2")
+                            .style(CssClass.CALL_TREE_ALL)
+                            .style(CssClass.CALL_TREE_THROWN)
+                            .build()
+                    )
                 }
-                output.add(renderedObject)
+                output.add(renderedReturnValue)
                 output.add(
                         text().text(" : ")
                                 .style(CssClass.CALL_TREE_ALL)

@@ -2,19 +2,19 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 
-public class ToStringPrintedRecord extends ObjectRecord {
+public class PrintedObjectRecord extends ObjectRecord {
 
-    private final ObjectRecord printed;
+    private final StringObjectRecord printed;
     private final int identityHashCode;
 
-    protected ToStringPrintedRecord(ObjectRecord printed, Type type, int identityHashCode) {
+    protected PrintedObjectRecord(StringObjectRecord printed, Type type, int identityHashCode) {
         super(type);
 
         this.printed = printed;
         this.identityHashCode = identityHashCode;
     }
 
-    public ObjectRecord getPrinted() {
+    public StringObjectRecord getPrinted() {
         return printed;
     }
 

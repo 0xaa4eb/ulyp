@@ -1,6 +1,5 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.proc.BenchmarkEnv;
 import com.perf.agent.benchmarks.proc.OutputFile;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
@@ -15,6 +14,7 @@ public class BenchmarkProfileBuilder {
     private MethodMatcher methodToRecord;
     @NotNull
     private PackageList instrumentedPackages = new PackageList();
+    private boolean agentEnabled = true;
     private OutputFile outputFile = new OutputFile("ulyp-benchmark", "dat");
     private final List<String> additionalProcessArgs = new ArrayList<>();
 
@@ -33,12 +33,17 @@ public class BenchmarkProfileBuilder {
         return this;
     }
 
-    public BenchmarkProfileBuilder withUiDisabled() {
+    public BenchmarkProfileBuilder withAgentDisabled() {
+        agentEnabled = false;
+        return this;
+    }
+
+    public BenchmarkProfileBuilder withWriteDisabled() {
         outputFile = null;
         return this;
     }
 
     public BenchmarkProfile build() {
-        return new BenchmarkProfile(methodToRecord, instrumentedPackages, additionalProcessArgs, outputFile);
+        return new BenchmarkProfile(methodToRecord, instrumentedPackages, additionalProcessArgs, outputFile, agentEnabled);
     }
 }

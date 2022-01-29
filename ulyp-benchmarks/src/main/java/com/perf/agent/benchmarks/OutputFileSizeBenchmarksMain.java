@@ -3,29 +3,26 @@ package com.perf.agent.benchmarks;
 import com.perf.agent.benchmarks.impl.H2MemDatabaseBenchmark;
 import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.ulyp.transport.TCallRecordLogUploadRequest;
-import org.HdrHistogram.Histogram;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class RequestMemoryBenchmarksMain {
+public class OutputFileSizeBenchmarksMain {
 
     public static void main(String[] args) throws Exception {
 
-        List<RequestMemoryRunResult> runResults = new ArrayList<>();
+        List<OutputFileSizeResult> runResults = new ArrayList<>();
 
         runResults.addAll(runBench(H2MemDatabaseBenchmark.class));
         runResults.addAll(runBench(SpringHibernateSmallBenchmark.class));
 
-        for (RequestMemoryRunResult runResult : runResults) {
+        for (OutputFileSizeResult runResult : runResults) {
             System.out.println(runResult);
         }
     }
 
-    private static List<RequestMemoryRunResult> runBench(Class<? extends Benchmark> benchmarkClazz) throws Exception {
-        List<RequestMemoryRunResult> runResults = new ArrayList<>();
+    private static List<OutputFileSizeResult> runBench(Class<? extends Benchmark> benchmarkClazz) throws Exception {
+        List<OutputFileSizeResult> runResults = new ArrayList<>();
 
         Benchmark benchmark = benchmarkClazz.newInstance();
 
@@ -35,17 +32,15 @@ public class RequestMemoryBenchmarksMain {
                 continue;
             }
 
-            TCallRecordLogUploadRequest request = run(benchmarkClazz, profile);
-            int byteSize = request.getSerializedSize();
-            runResults.add(new RequestMemoryRunResult(benchmarkClazz, profile, byteSize));
+            runResults.add(new OutputFileSizeResult(benchmarkClazz, profile, run(benchmarkClazz, profile)));
         }
 
         return runResults;
     }
 
-    private static TCallRecordLogUploadRequest run(Class<?> benchmarkClazz, BenchmarkProfile profile) {
+    private static long run(Class<?> benchmarkClazz, BenchmarkProfile profile) {
         BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
-        return profile.getOutputFile().read().get(0);
+        return profile.getOutputFile().byteSize();
     }
 }

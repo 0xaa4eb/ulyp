@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class AsyncFileStorageReader implements StorageReader {
@@ -98,12 +95,15 @@ public class AsyncFileStorageReader implements StorageReader {
                         case RecordedMethodCallList.WIRE_ID:
                             onRecordedCalls(data);
                             break;
+                        case RecordingCompleteMark.WIRE_ID:
+                            ForkJoinPool.commonPool().execute(executorService::shutdownNow);
+                            return;
                         default:
                             throw new StorageException("Unknown binary data id " + data.getBytes().id());
                     }
                 } catch (Exception e) {
 
-                    // TODO show in UI
+                    // TODO show in UI ?
                     e.printStackTrace();
                     return;
                 }

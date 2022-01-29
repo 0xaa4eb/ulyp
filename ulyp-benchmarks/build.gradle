@@ -19,21 +19,13 @@ repositories {
     mavenCentral()
 }
 
-def grpcVersion = '1.27.0'
-def protobufVersion = '3.11.0'
-def protocVersion = protobufVersion
-
 dependencies {
     compile project(':ulyp-storage')
     compile project(':ulyp-core')
 
     compile group: 'org.hdrhistogram', name: 'HdrHistogram', version: '2.1.4'
     compile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
-    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
-    implementation "io.grpc:grpc-stub:${grpcVersion}"
     compileOnly "javax.annotation:javax.annotation-api:1.2"
-    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
-    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     compile group: 'com.h2database', name: 'h2', version: '1.4.200'
     compile group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'

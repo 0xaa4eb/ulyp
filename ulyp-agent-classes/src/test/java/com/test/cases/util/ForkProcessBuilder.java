@@ -14,9 +14,12 @@ public class ForkProcessBuilder {
     private MethodMatcher methodToRecord;
     private OutputFile outputFile = new OutputFile("test", ".dat");
     private PackageList instrumentedPackages = new PackageList();
+    private String excludeClassesProperty = null;
     private PackageList excludedFromInstrumentationPackages = new PackageList();
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
+    private String printClasses = null;
     private String logLevel = "INFO";
+    private Boolean agentDisabled = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -40,6 +43,16 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder setInstrumentedPackages(String... packages) {
         this.instrumentedPackages = new PackageList(packages);
+        return this;
+    }
+
+    public ForkProcessBuilder setPrintClasses(String printClasses) {
+        this.printClasses = printClasses;
+        return this;
+    }
+
+    public ForkProcessBuilder setAgentDisabled(Boolean agentDisabled) {
+        this.agentDisabled = agentDisabled;
         return this;
     }
 
@@ -80,12 +93,26 @@ public class ForkProcessBuilder {
         return this;
     }
 
+    public ForkProcessBuilder setExcludeClassesProperty(String excludeClassesProperty) {
+        this.excludeClassesProperty = excludeClassesProperty;
+        return this;
+    }
+
     public List<String> toCmdJavaProps() {
         List<String> params = new ArrayList<>();
 
         params.add("-D" + Settings.PACKAGES_PROPERTY + "=" + String.join(",", instrumentedPackages));
         if (!excludedFromInstrumentationPackages.isEmpty()) {
             params.add("-D" + Settings.EXCLUDE_PACKAGES_PROPERTY + "=" + String.join(",", excludedFromInstrumentationPackages));
+        }
+        if (excludeClassesProperty != null) {
+            params.add("-D" + Settings.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
+        }
+        if (printClasses != null) {
+            params.add("-D" + Settings.PRINT_CLASSES_PROPERTY + "=" + printClasses);
+        }
+        if (agentDisabled != null && agentDisabled) {
+            params.add("-D" + Settings.AGENT_DISABLED_PROPERTY);
         }
 
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());

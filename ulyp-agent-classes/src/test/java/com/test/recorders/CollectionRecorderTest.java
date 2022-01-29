@@ -20,7 +20,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleItemsProperly() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnArrayListOfString")
@@ -41,7 +41,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnArrayListOfString")
@@ -54,7 +54,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleListIfJavaCollectionsAreRecorded() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnArrayListOfString")
@@ -67,7 +67,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldNotRecordAnythingIfSpecifiedToRecordOnlyJavaCollection() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnCustomList")
@@ -80,7 +80,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordCustomListIfSpecifiedAllCollectionsToRecord() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnCustomList")
@@ -94,7 +94,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Ignore
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
-        CallRecord root = runForkWithUi(
+        CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(TestCase.class)
                         .setMethodToRecord("returnThrowingOnIteratorList")

@@ -13,7 +13,7 @@ import org.junit.Assert;
 public class AbstractInstrumentationTest {
 
     @NotNull
-    protected CallRecord runForkWithUi(ForkProcessBuilder settings) {
+    protected CallRecord run(ForkProcessBuilder settings) {
         try {
             return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
         } catch (Exception e) {
@@ -35,7 +35,7 @@ public class AbstractInstrumentationTest {
         if (settings.getOutputFile() == null) {
             return StorageReader.empty();
         } else {
-            StorageReader reader = settings.getOutputFile().read();
+            StorageReader reader = settings.getOutputFile().toReader();
             System.out.println("Got " + reader.availableRecordings().size() + " recordings");
             return reader;
         }

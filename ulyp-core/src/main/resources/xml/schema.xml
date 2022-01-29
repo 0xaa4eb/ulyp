@@ -36,49 +36,6 @@
         </enum>
     </types>
 
-    <sbe:message name="TCallEnterRecord" id="3">
-        <field name="methodId" id="1" type="int64"/>
-        <field name="callId" id="2" type="int64"/>
-        <field name="calleeTypeId" id="16" type="int64"/>
-        <field name="calleeRecorderId" id="17" type="int8"/>
-        <group name="arguments" id="10" dimensionType="groupSizeEncoding">
-            <field name="typeId" id="11" type="int64"/>
-            <field name="recorderId" id="13" type="int8"/>
-            <data name="value" id="12" type="varStringEncoding"/>
-        </group>
-        <data name="callee" id="15" type="varStringEncoding"/>
-    </sbe:message>
-
-    <sbe:message name="TCallExitRecord" id="4">
-        <field name="methodId" id="1" type="int64"/>
-        <field name="callId" id="2" type="int64"/>
-        <field name="thrown" id="3" type="BooleanType"/>
-        <field name="returnTypeId" id="11" type="int64"/>
-        <field name="returnRecorderId" id="13" type="int8"/>
-        <data name="returnValue" id="12" type="varStringEncoding"/>
-    </sbe:message>
-
-    <sbe:message name="TMethodInfo" id="5">
-        <field name="id" id="1" type="int64"/>
-        <field name="returnsSomething" id="2" type="BooleanType"/>
-        <field name="constructor" id="30" type="BooleanType"/>
-        <!-- 'staticFlag' becuase 'static' is not a valid field name -->
-        <field name="staticFlag" id="20" type="BooleanType"/>
-        <field name="typeId" id="14" type="int64"/>
-        <group name="parameterNames" id="15" dimensionType="groupSizeEncoding">
-            <data name="value" id="16" type="varStringEncoding"/>
-        </group>
-        <data name="className" id="12" type="varStringEncoding"/>
-        <data name="methodName" id="13" type="varStringEncoding"/>
-    </sbe:message>
-
-    <sbe:message name="TClassDescription" id="6">
-        <field name="id" id="1" type="int64"/>
-        <data name="simpleClassName" id="2" type="varStringEncoding"/>
-        <data name="className" id="3" type="varStringEncoding"/>
-    </sbe:message>
-
-    <!-- new gen -->
     <sbe:message name="BinaryMethod" id="8">
         <field name="id" id="1" type="int64"/>
         <field name="returnsSomething" id="2" type="BooleanType"/>
@@ -87,6 +44,7 @@
         <field name="staticFlag" id="20" type="BooleanType"/>
         <data name="name" id="50" type="varStringEncoding"/>
         <data name="declaringTypeValue" id="40" type="varStringEncoding"/>
+        <data name="implementingTypeValue" id="41" type="varStringEncoding"/>
     </sbe:message>
 
     <sbe:message name="BinaryRecordedEnterMethodCall" id="50">
@@ -115,18 +73,13 @@
 
     <sbe:message name="BinaryType" id="7">
         <field name="id" id="1" type="int64"/>
-        <group name="superTypeNames" id="3" dimensionType="groupSizeEncoding">
-            <data name="value" id="4" type="varStringEncoding"/>
-        </group>
-        <group name="superTypeSimpleNames" id="10" dimensionType="groupSizeEncoding">
-            <data name="value" id="11" type="varStringEncoding"/>
-        </group>
         <data name="name" id="2" type="varStringEncoding"/>
     </sbe:message>
 
     <sbe:message name="BinaryRecordingMetadata" id="60">
-        <field name="createEpochMillis" id="1" type="int64"/>
-        <field name="lifetimeMillis" id="2" type="int64"/>
+        <field name="recordingStartedEpochMillis" id="1" type="int64"/>
+        <field name="logCreatedEpochMillis" id="2" type="int64"/>
+        <field name="recordingCompletedEpochMillis" id="10" type="int64"/>
         <field name="recordingId" id="3" type="int32"/>
         <field name="chunkId" id="4" type="int64"/>
         <field name="threadId" id="5" type="int64"/>

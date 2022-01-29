@@ -166,7 +166,7 @@ public class Recorder {
 
             if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
                     (
-                            (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getCreateEpochMillis()) > 100
+                            (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
                             &&
                             currentRecordLog.size() > 0
                     )) {

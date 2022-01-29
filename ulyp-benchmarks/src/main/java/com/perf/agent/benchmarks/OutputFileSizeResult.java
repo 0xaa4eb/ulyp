@@ -1,12 +1,12 @@
 package com.perf.agent.benchmarks;
 
-public class RequestMemoryRunResult {
+public class OutputFileSizeResult {
 
     private final Class<?> benchmarkClazz;
     private final BenchmarkProfile profile;
     private final long bytesSize;
 
-    public RequestMemoryRunResult(
+    public OutputFileSizeResult(
             Class<?> benchmarkClazz,
             BenchmarkProfile profile,
             long bytesSize) {

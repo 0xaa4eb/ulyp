@@ -32,6 +32,9 @@ public class RecordMethodList {
     }
 
     public boolean shouldStartRecording(Method description) {
+        if (methods.isEmpty()) {
+            System.out.println("**** EMPTY");
+        }
         return methods.isEmpty() || methods.stream().anyMatch(matcher -> matcher.matches(description));
     }
 
