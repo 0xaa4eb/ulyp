@@ -45,7 +45,7 @@ class RecordingTreeNode(private val recording: Recording, private val callRecord
         return if (loaded) {
             children.isEmpty()
         } else {
-            currentCallRecord.children.isEmpty()
+            currentCallRecord.childrenCallIds.isEmpty()
         }
     }
 

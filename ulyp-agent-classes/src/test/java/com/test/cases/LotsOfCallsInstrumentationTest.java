@@ -2,7 +2,10 @@ package com.test.cases;
 
 import com.test.cases.util.ForkProcessBuilder;
 import com.ulyp.storage.CallRecord;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -18,6 +21,27 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
         );
 
         assertThat(root.getChildren(), hasSize(1000));
+    }
+
+    @Test
+    public void shouldHaveCompleteTree() {
+        CallRecord root = runForkWithUi(
+                new ForkProcessBuilder()
+                        .setMainClassName(LotsOfCallsTestCases.class)
+                        .setMethodToRecord("level0")
+        );
+
+        List<CallRecord> children = root.getChildren();
+
+        for (CallRecord child : children) {
+
+            Assert.assertEquals(10, child.getChildren().size());
+
+            for (CallRecord child2 : child.getChildren()) {
+
+                Assert.assertEquals(10, child2.getChildren().size());
+            }
+        }
     }
 
     public static class LotsOfCallsTestCases {

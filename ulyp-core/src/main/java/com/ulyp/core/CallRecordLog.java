@@ -40,6 +40,7 @@ public class CallRecordLog {
     }
 
     private CallRecordLog(
+            int id,
             TypeResolver typeResolver,
             StackTraceElement[] stackTrace,
             boolean inProcessOfRecording,
@@ -47,7 +48,7 @@ public class CallRecordLog {
             long rootCallId)
     {
         this.recordingMetadata = RecordingMetadata.builder()
-                .id(idGenerator.incrementAndGet())
+                .id(id)
                 .createEpochMillis(System.currentTimeMillis())
                 .threadId(Thread.currentThread().getId())
                 .threadName(Thread.currentThread().getName())
@@ -61,7 +62,7 @@ public class CallRecordLog {
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.nextCallId, rootCallId);
+        return new CallRecordLog(this.recordingMetadata.getId(), this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {

@@ -39,26 +39,27 @@ public class RecordingState implements Closeable {
         this.listener = recordingListener;
     }
 
-    synchronized void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+    void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+        synchronized (this) {
+            AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
+            while (iterator.hasNext()) {
+                RecordedMethodCall value = iterator.next();
+                long relativeAddress = iterator.address();
+                if (value instanceof RecordedEnterMethodCall) {
+                    if (rootCallId < 0) {
+                        rootCallId = value.getCallId();
+                    }
+                    RecordedCallState callState = new RecordedCallState(
+                            value.getCallId(),
+                            fileAddr + relativeAddress
+                    );
+                    memCallStack.push(callState);
+                } else {
 
-        AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
-        while (iterator.hasNext()) {
-            RecordedMethodCall value = iterator.next();
-            long relativeAddress = iterator.address();
-            if (value instanceof RecordedEnterMethodCall) {
-                if (rootCallId < 0) {
-                    rootCallId = value.getCallId();
+                    RecordedCallState callState = memCallStack.pop();
+                    callState.setExitMethodCallAddr(fileAddr + relativeAddress);
+                    index.store(callState.getCallId(), callState);
                 }
-                RecordedCallState callState = new RecordedCallState(
-                        value.getCallId(),
-                        fileAddr + relativeAddress
-                );
-                memCallStack.push(callState);
-            } else {
-
-                RecordedCallState callState = memCallStack.pop();
-                callState.setExitMethodCallAddr(fileAddr + relativeAddress);
-                index.store(callState.getCallId(), callState);
             }
         }
 
