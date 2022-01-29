@@ -33,7 +33,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = runForkWithUi(
                 new ForkProcessBuilder()
                         .setMainClassName(PassClazz.class)
-                        .setMethodToRecord("pass")
+                        .setMethodToRecord("takeClass")
         );
 
         ClassObjectRecord arg = (ClassObjectRecord) root.getArgs().get(0);
