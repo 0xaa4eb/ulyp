@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-public class InMemoryRepository<K, V> implements Repository<K, V> {
+public class InMemoryRepository<K, V> implements Repository<K, V>, ListenableRepository<K, V> {
 
     private final Map<K, V> map = new ConcurrentHashMap<>();
     private volatile RepositoryListener<K, V> listener = new EmptyListener<>();
@@ -14,7 +14,6 @@ public class InMemoryRepository<K, V> implements Repository<K, V> {
         return map.get(id);
     }
 
-    @Override
     public V computeIfAbsent(K id, Supplier<V> supplier) {
         return map.computeIfAbsent(id, i -> {
             V newValue = supplier.get();
@@ -35,7 +34,6 @@ public class InMemoryRepository<K, V> implements Repository<K, V> {
         });
     }
 
-    @Override
     public Collection<V> values() {
         return new ArrayList<>(map.values());
     }

@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+// Test only
 public class SameThreadFileStorageReader implements StorageReader {
 
     private final File file;
+    private final RocksdbIndex index = new RocksdbIndex();
     private final CompletableFuture<ProcessMetadata> processMetadata = new CompletableFuture<>();
     private final Repository<Long, Type> types = new InMemoryRepository<>();
-    private final Repository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
+    private final InMemoryRepository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
 
     public SameThreadFileStorageReader(File file) {
@@ -86,6 +88,7 @@ public class SameThreadFileStorageReader implements StorageReader {
                 metadata.getId(),
                 () -> new RecordingState(
                         metadata,
+                        index,
                         new DataReader(file),
                         methods,
                         types,

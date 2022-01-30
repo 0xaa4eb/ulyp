@@ -3,11 +3,12 @@ package com.ulyp.ui
 import com.ulyp.storage.CallRecord
 import com.ulyp.storage.Recording
 import javafx.collections.ObservableList
+import javafx.event.EventHandler
 import javafx.scene.control.TreeItem
 import java.util.function.Consumer
 
 class RecordingTreeNode(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings?) :
-    TreeItem<RecordingTreeNodeContent>(
+    TreeItem<RecordingTreeNodeContent> (
         RecordingTreeNodeContent(
             recording.getCallRecord(callRecordId),
             renderSettings,
@@ -17,6 +18,13 @@ class RecordingTreeNode(private val recording: Recording, private val callRecord
 
     private var loaded = false
     private var currentCallRecord: CallRecord = recording.getCallRecord(callRecordId)
+
+    init {
+        this.addEventHandler(TreeItem.branchCollapsedEvent(), EventHandler<TreeModificationEvent<RecordingTreeNodeContent>> {
+            val s = it.treeItem as RecordingTreeNode
+            s.unloadChildren()
+        })
+    }
 
     fun refresh() {
         currentCallRecord = recording.getCallRecord(callRecordId)
@@ -57,6 +65,11 @@ class RecordingTreeNode(private val recording: Recording, private val callRecord
         }
         super.getChildren().setAll(children)
         loaded = true
+    }
+
+    private fun unloadChildren() {
+        super.getChildren().setAll(ArrayList())
+        loaded = false
     }
 
     val callRecord: CallRecord
