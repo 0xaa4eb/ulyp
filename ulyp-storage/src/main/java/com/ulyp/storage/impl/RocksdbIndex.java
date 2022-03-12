@@ -74,7 +74,7 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
         byte[] valueBytes = getValueBuffer(valueEncoded);
         buffer.getBytes(0, valueBytes);
         try {
-            db.put(writeOptions, keyBytes, valueBytes);
+            db.put(writeOptions, keyBytes, 0, keyBytes.length, valueBytes, 0, valueEncoded);
         } catch (RocksDBException e) {
             throw new StorageException("Could not write", e);
         }
