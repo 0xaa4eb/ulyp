@@ -18,7 +18,7 @@ apply plugin: "vontikov.sbe-generator-plugin"
 
 sbeGenerator {
     src {
-        dir = 'src/main/resources/xml'
+        dir = 'src/main/resources'
         includes = ['schema.xml']
         excludes = []
     }

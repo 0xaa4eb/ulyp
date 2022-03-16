@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 
 public class InMemoryRepositoryTest {
 
-    private final Repository<Long, String> repository = new InMemoryRepository<>();
+    private final InMemoryRepository<Long, String> repository = new InMemoryRepository<>();
 
     @Test
     public void testListener() {

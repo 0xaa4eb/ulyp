@@ -3,9 +3,9 @@ package com.ulyp.storage.impl;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.InMemoryRepository;
-import com.ulyp.storage.CallRecord;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.repository.Repository;
+import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingListener;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class RecordingState implements Closeable {
 
     private final DataReader reader;
-    private final Repository<Long, RecordedCallState> index = new InMemoryRepository<>();
+    private final Repository<Long, RecordedCallState> index;
     private final MemCallStack memCallStack = new MemCallStack();
     private final ReadableRepository<Long, Method> methodRepository;
     private final ReadableRepository<Long, Type> typeRepository;
@@ -28,11 +28,13 @@ public class RecordingState implements Closeable {
 
     public RecordingState(
             RecordingMetadata metadata,
+            Repository<Long, RecordedCallState> index,
             DataReader dataReader,
             ReadableRepository<Long, Method> methodRepository,
             ReadableRepository<Long, Type> typeRepository,
             RecordingListener recordingListener)
     {
+        this.index = index;
         this.metadata = metadata;
         this.reader = dataReader;
         this.methodRepository = methodRepository;
@@ -50,10 +52,10 @@ public class RecordingState implements Closeable {
                     if (rootCallId < 0) {
                         rootCallId = value.getCallId();
                     }
-                    RecordedCallState callState = new RecordedCallState(
-                            value.getCallId(),
-                            fileAddr + relativeAddress
-                    );
+                    RecordedCallState callState = RecordedCallState.builder()
+                            .callId(value.getCallId())
+                            .enterMethodCallAddr(fileAddr + relativeAddress)
+                            .build();
                     memCallStack.push(callState);
                 } else {
 
