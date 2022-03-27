@@ -20,7 +20,7 @@ repositories {
 dependencies {
     compileOnly project(':ulyp-agent-classes')
     runtimeOnly files('../ulyp-agent-classes/build/libs/ulyp-agent-classes.jarr')
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.18'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
 
 
     compileOnly 'org.projectlombok:lombok:1.18.20'

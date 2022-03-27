@@ -61,10 +61,6 @@ public class Type {
         return typeTraits.contains(TypeTrait.JAVA_LANG_STRING);
     }
 
-    public boolean isNonPrimitveArray() {
-        return typeTraits.contains(TypeTrait.NON_PRIMITIVE_ARRAY);
-    }
-
     public boolean wasWrittenToFile() {
         return writtenToFile;
     }

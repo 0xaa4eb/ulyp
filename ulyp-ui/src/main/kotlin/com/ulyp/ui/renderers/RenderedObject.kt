@@ -15,7 +15,7 @@ abstract class RenderedObject protected constructor(private val type: Type?) : T
                 is StringObjectRecord -> RenderedStringObject(record, record.getType(), renderSettings)
                 is NullObjectRecord -> RenderedNull(renderSettings)
                 is NotRecordedObjectRecord -> RenderedNotRecordedObject(renderSettings!!)
-                is NumberRecord -> RenderedNumber(record, record.getType(), renderSettings!!)
+                is NumberRecord -> RenderedNumber(record.numberPrintedText, record.getType(), renderSettings!!)
                 is ObjectArrayRecord -> RenderedObjectArray(record, renderSettings)
                 is CollectionRecord -> RenderedCollection(record, renderSettings!!)
                 is MapEntryRecord -> RenderedMapEntry(record, renderSettings)
