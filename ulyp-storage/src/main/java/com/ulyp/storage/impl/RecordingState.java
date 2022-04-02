@@ -2,7 +2,6 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.CallRecord;
@@ -42,7 +41,7 @@ public class RecordingState implements Closeable {
         this.listener = recordingListener;
     }
 
-    void onRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+    void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
         synchronized (this) {
             AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
             while (iterator.hasNext()) {

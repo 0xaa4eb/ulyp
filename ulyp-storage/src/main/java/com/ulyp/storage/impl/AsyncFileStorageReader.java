@@ -154,7 +154,7 @@ public class AsyncFileStorageReader implements StorageReader {
             }
             RecordedMethodCall first = recordedMethodCalls.iterator().next();
             RecordingState recordingState = recordingStates.get(first.getRecordingId());
-            recordingState.onRecordedCalls(data.getAddress(), recordedMethodCalls);
+            recordingState.onNewRecordedCalls(data.getAddress(), recordedMethodCalls);
         }
 
         private void onMethods(BinaryList data) {

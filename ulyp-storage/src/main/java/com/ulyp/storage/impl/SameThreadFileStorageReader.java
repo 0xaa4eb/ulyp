@@ -17,7 +17,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -108,7 +107,7 @@ public class SameThreadFileStorageReader implements StorageReader {
         }
         RecordedMethodCall first = recordedMethodCalls.iterator().next();
         RecordingState recordingState = recordingStates.get(first.getRecordingId());
-        recordingState.onRecordedCalls(data.getAddress(), recordedMethodCalls);
+        recordingState.onNewRecordedCalls(data.getAddress(), recordedMethodCalls);
     }
 
     private void onMethods(BinaryList data) {
