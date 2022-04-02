@@ -1,4 +1,4 @@
-package com.ulyp.storage.impl;
+package com.ulyp.storage.impl.util;
 
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.storage.StorageException;

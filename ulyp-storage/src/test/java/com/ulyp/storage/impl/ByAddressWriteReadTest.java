@@ -1,7 +1,7 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.storage.impl.ByAddressFileReader;
-import com.ulyp.storage.impl.ByAddressFileWriter;
+import com.ulyp.storage.impl.util.ByAddressFileReader;
+import com.ulyp.storage.impl.util.ByAddressFileWriter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;

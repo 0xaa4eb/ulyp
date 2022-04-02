@@ -1,4 +1,4 @@
-package com.ulyp.storage.impl;
+package com.ulyp.storage.impl.util;
 
 import com.ulyp.storage.StorageException;
 import org.agrona.DirectBuffer;

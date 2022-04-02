@@ -1,8 +1,9 @@
-package com.ulyp.storage.impl;
+package com.ulyp.storage.impl.util;
 
 import com.google.common.base.Preconditions;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.util.Backoff;
+import com.ulyp.storage.impl.BinaryListWithAddress;
 
 import java.io.*;
 import java.time.Duration;

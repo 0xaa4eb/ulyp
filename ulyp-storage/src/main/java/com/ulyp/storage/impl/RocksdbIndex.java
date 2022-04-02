@@ -88,23 +88,4 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
         }
         return buf;
     }
-
-    public static void main(String[] args) {
-        RocksdbIndex rocksdbIndex = new RocksdbIndex();
-
-        LongList s = new LongArrayList();
-        s.add(5553L);
-        s.add(42L);
-        s.add(54353L);
-
-        rocksdbIndex.store(
-                543L,
-                RecordedCallState.builder()
-                        .callId(552L)
-                        .childrenCallIds(s)
-                        .build()
-        );
-
-        System.out.println(rocksdbIndex.get(543L));
-    }
 }

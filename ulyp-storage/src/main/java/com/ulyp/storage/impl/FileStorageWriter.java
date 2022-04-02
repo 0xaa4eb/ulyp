@@ -10,6 +10,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.impl.util.BinaryListFileWriter;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import lombok.extern.slf4j.Slf4j;
