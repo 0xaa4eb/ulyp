@@ -6,7 +6,6 @@ import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.PrintedObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.instanceOf;
