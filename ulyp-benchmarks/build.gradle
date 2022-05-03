@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compile project(':ulyp-storage')
-    compile project(':ulyp-core')
+    compile project(':ulyp-common')
 
     compile group: 'org.hdrhistogram', name: 'HdrHistogram', version: '2.1.4'
     compile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'

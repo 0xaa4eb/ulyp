@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':ulyp-core')
+    compile project(':ulyp-common')
     compile project(':ulyp-storage')
 
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
