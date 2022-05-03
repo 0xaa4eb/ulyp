@@ -1,13 +1,9 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.util.ForkProcessBuilder;
-import com.test.cases.util.RecordingResult;
+import com.agent.tests.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import org.junit.Test;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class AgentDisableTest extends AbstractInstrumentationTest {
 

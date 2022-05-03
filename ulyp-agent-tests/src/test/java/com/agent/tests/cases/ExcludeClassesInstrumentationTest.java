@@ -1,9 +1,9 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.a.A;
-import com.test.cases.a.b.B;
-import com.test.cases.a.c.C;
-import com.test.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.a.A;
+import com.agent.tests.cases.a.b.B;
+import com.agent.tests.cases.a.c.C;
+import com.agent.tests.cases.util.ForkProcessBuilder;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.test.cases.a.b.B")
+                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.B")
         );
 
 
@@ -57,7 +57,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.test.cases.a.b.B, com.test.cases.a.c.C")
+                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.B, com.agent.tests.cases.a.c.C")
         );
 
 
@@ -69,7 +69,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.test.cases.a.b.**")
+                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.**")
         );
 
 
@@ -81,7 +81,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.test.cases.a.b.**, com.test.cases.a.c.**")
+                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.**, com.agent.tests.cases.a.c.**")
         );
 
 

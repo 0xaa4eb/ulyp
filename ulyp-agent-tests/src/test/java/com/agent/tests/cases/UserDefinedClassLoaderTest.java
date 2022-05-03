@@ -1,6 +1,6 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.ForkProcessBuilder;
 import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
 
             ClassLoader cl = new URLClassLoader(urls);
             try {
-                Class<?> aClass = cl.loadClass("com.test.cases.UserDefinedClassLoaderTest$UserDefinedClassLoaderTestCase");
+                Class<?> aClass = cl.loadClass("com.agent.tests.cases.UserDefinedClassLoaderTest$UserDefinedClassLoaderTestCase");
 
                 Method hello = aClass.getDeclaredMethod("hello");
 

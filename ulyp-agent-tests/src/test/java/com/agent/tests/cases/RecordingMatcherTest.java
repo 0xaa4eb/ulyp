@@ -1,7 +1,7 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.util.ForkProcessBuilder;
-import com.test.cases.util.RecordingResult;
+import com.agent.tests.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -59,7 +59,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
                 runForkProcess(
                         new ForkProcessBuilder()
                                 .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("com.test.cases.RecordingMatcherTest.TestCases.main"))
+                                .setMethodToRecord(MethodMatcher.parse("com.agent.tests.cases.RecordingMatcherTest.TestCases.main"))
                 ).recordings(),
                 hasSize(1)
         );

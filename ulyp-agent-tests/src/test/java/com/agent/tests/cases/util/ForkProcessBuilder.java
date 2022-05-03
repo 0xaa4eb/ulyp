@@ -1,4 +1,4 @@
-package com.test.cases.util;
+package com.agent.tests.cases.util;
 
 import com.ulyp.agent.Settings;
 import com.ulyp.core.recorders.CollectionsRecordingMode;

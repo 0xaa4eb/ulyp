@@ -1,9 +1,10 @@
-package com.test.cases.a.c;
+package com.agent.tests.cases.a.c;
 
-import com.test.cases.a.interfaces.CInterface;
+import com.agent.tests.cases.PackageFilterInstrumentationTest;
+import com.agent.tests.cases.a.interfaces.CInterface;
 
 /**
- * Used for {@link com.test.cases.PackageFilterInstrumentationTest} for testing configurating instrumentation
+ * Used for {@link PackageFilterInstrumentationTest} for testing configurating instrumentation
  * by packages
  */
 public class C implements CInterface {

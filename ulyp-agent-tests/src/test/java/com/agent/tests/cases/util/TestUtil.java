@@ -1,4 +1,4 @@
-package com.test.cases.util;
+package com.agent.tests.cases.util;
 
 import com.ulyp.core.util.LoggingSettings;
 import org.buildobjects.process.ProcBuilder;

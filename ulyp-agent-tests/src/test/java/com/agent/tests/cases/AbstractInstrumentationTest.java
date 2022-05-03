@@ -1,8 +1,8 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.util.ForkProcessBuilder;
-import com.test.cases.util.RecordingResult;
-import com.test.cases.util.TestUtil;
+import com.agent.tests.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.RecordingResult;
+import com.agent.tests.cases.util.TestUtil;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.StorageReader;
 import junit.framework.AssertionFailedError;

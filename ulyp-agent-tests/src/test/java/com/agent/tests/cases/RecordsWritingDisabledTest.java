@@ -1,6 +1,6 @@
-package com.test.cases;
+package com.agent.tests.cases;
 
-import com.test.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.ForkProcessBuilder;
 import org.junit.Test;
 
 public class RecordsWritingDisabledTest extends AbstractInstrumentationTest {

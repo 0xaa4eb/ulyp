@@ -1,10 +1,11 @@
-package com.test.cases.a;
+package com.agent.tests.cases.a;
 
-import com.test.cases.a.b.B;
-import com.test.cases.a.c.C;
+import com.agent.tests.cases.PackageFilterInstrumentationTest;
+import com.agent.tests.cases.a.b.B;
+import com.agent.tests.cases.a.c.C;
 
 /**
- * Used for {@link com.test.cases.PackageFilterInstrumentationTest} for testing configurating instrumentation
+ * Used for {@link PackageFilterInstrumentationTest} for testing configurating instrumentation
  * by packages
  */
 public class A {

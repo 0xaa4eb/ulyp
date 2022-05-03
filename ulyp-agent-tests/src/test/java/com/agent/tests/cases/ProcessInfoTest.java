@@ -1,8 +1,8 @@
 /*
-package com.test.cases;
+package com.agent.tests.cases;
 
 import com.google.protobuf.ProtocolStringList;
-import com.test.cases.util.ForkProcessBuilder;
+import com.agent.tests.cases.util.ForkProcessBuilder;
 import com.ulyp.transport.ProcessInfo;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class ProcessInfoTest extends AbstractInstrumentationTest {
 
         assertThat(classpath.size(), greaterThan(0));
 
-        assertThat(processInfo.getMainClassName(), is("com.test.cases.ProcessInfoTest$X"));
+        assertThat(processInfo.getMainClassName(), is("com.agent.tests.cases.ProcessInfoTest$X"));
     }
 
     public static class X {
