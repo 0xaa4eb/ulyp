@@ -1,7 +1,7 @@
 package com.agent.tests.recorders;
 
-import com.agent.tests.cases.AbstractInstrumentationTest;
-import com.agent.tests.cases.util.ForkProcessBuilder;
+import com.agent.tests.util.AbstractInstrumentationTest;
+import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.junit.Test;

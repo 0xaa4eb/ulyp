@@ -1,5 +1,7 @@
 package com.agent.tests.cases;
 
+import com.agent.tests.util.AbstractInstrumentationTest;
+
 public class StackTraceRecordingTest extends AbstractInstrumentationTest {
 
 /*

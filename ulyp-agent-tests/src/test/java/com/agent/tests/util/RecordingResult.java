@@ -1,4 +1,4 @@
-package com.agent.tests.cases.util;
+package com.agent.tests.util;
 
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.Recording;

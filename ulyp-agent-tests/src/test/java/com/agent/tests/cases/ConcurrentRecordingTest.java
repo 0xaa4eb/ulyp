@@ -1,7 +1,8 @@
 package com.agent.tests.cases;
 
-import com.agent.tests.cases.util.ForkProcessBuilder;
-import com.agent.tests.cases.util.RecordingResult;
+import com.agent.tests.util.AbstractInstrumentationTest;
+import com.agent.tests.util.ForkProcessBuilder;
+import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import org.junit.Test;
 

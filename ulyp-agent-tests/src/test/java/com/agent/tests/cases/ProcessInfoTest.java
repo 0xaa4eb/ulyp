@@ -2,7 +2,7 @@
 package com.agent.tests.cases;
 
 import com.google.protobuf.ProtocolStringList;
-import com.agent.tests.cases.util.ForkProcessBuilder;
+import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.transport.ProcessInfo;
 import com.ulyp.transport.TCallRecordLogUploadRequest;
 import org.junit.Test;
