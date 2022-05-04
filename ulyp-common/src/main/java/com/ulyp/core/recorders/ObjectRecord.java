@@ -20,4 +20,7 @@ public abstract class ObjectRecord {
     public Type getType() {
         return type;
     }
+
+    // Only used in unit tests
+    public abstract String toString();
 }

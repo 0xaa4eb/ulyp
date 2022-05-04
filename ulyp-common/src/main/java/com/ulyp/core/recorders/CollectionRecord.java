@@ -24,4 +24,9 @@ public class CollectionRecord extends ObjectRecord {
     public List<ObjectRecord> getRecordedItems() {
         return recordedItems;
     }
+
+    @Override
+    public String toString() {
+        return "len: " + length + ", items: " + recordedItems.toString();
+    }
 }

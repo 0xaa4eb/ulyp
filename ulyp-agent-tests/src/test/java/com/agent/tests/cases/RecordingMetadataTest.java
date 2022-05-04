@@ -39,7 +39,7 @@ public class RecordingMetadataTest extends AbstractInstrumentationTest {
         );
 
 
-        Collection<Recording> recordings = recordingResult.aggregateByRecordings().values();
+        Collection<Recording> recordings = recordingResult.aggregateByRecordings();
 
 
         Assert.assertThat(recordings, hasSize(1));

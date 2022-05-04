@@ -14,4 +14,9 @@ public class NumberRecord extends ObjectRecord {
     public String getNumberPrintedText() {
         return numberPrintedText;
     }
+
+    @Override
+    public String toString() {
+        return numberPrintedText;
+    }
 }

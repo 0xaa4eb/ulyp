@@ -24,4 +24,9 @@ public class MapRecord extends ObjectRecord {
     public List<MapEntryRecord> getEntries() {
         return entries;
     }
+
+    @Override
+    public String toString() {
+        return "size: " + size + ", entries: " + entries;
+    }
 }

@@ -20,4 +20,9 @@ public class OptionalRecord extends ObjectRecord {
     public ObjectRecord getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "optional {" + value + "}";
+    }
 }

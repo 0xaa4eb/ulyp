@@ -12,7 +12,7 @@ public class ForkProcessBuilder {
 
     private Class<?> mainClassName;
     private MethodMatcher methodToRecord;
-    private OutputFile outputFile = new OutputFile("test", ".dat");
+    private OutputFile outputFile = new OutputFile();
     private PackageList instrumentedPackages = new PackageList();
     private String excludeClassesProperty = null;
     private PackageList excludedFromInstrumentationPackages = new PackageList();
@@ -99,6 +99,7 @@ public class ForkProcessBuilder {
     }
 
     public List<String> toCmdJavaProps() {
+        // TODO use SystemProp everywhere
         List<String> params = new ArrayList<>();
 
         params.add("-D" + Settings.PACKAGES_PROPERTY + "=" + String.join(",", instrumentedPackages));

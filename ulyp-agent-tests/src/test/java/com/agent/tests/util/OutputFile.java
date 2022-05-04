@@ -1,5 +1,6 @@
 package com.agent.tests.util;
 
+import com.ulyp.core.util.TempFile;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.impl.SameThreadFileStorageReader;
 
@@ -9,23 +10,18 @@ import java.nio.file.Path;
 
 public class OutputFile {
 
-    private final Path file;
+    private final TempFile file;
 
-    public OutputFile(String prefix, String suffix) {
-        try {
-            this.file = Files.createTempFile(prefix, suffix);
-            file.toFile().deleteOnExit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public OutputFile() {
+        this.file = new TempFile();
     }
 
     public StorageReader toReader() {
-        return new SameThreadFileStorageReader(file.toFile());
+        return new SameThreadFileStorageReader(file.toPath().toFile());
     }
 
     @Override
     public String toString() {
-        return "" + file;
+        return file.toPath().toString();
     }
 }

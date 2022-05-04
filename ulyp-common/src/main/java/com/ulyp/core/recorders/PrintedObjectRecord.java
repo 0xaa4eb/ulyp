@@ -21,4 +21,9 @@ public class PrintedObjectRecord extends ObjectRecord {
     public int getIdentityHashCode() {
         return identityHashCode;
     }
+
+    @Override
+    public String toString() {
+        return printed.toString();
+    }
 }

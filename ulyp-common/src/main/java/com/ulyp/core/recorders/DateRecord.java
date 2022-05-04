@@ -14,4 +14,9 @@ public class DateRecord extends ObjectRecord {
     public String getDatePrinted() {
         return datePrinted;
     }
+
+    @Override
+    public String toString() {
+        return datePrinted;
+    }
 }

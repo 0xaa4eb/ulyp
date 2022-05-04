@@ -19,4 +19,9 @@ public class ClassObjectRecord extends ObjectRecord {
     public Type getCarriedType() {
         return carriedType;
     }
+
+    @Override
+    public String toString() {
+        return "class " + carriedType.getName();
+    }
 }

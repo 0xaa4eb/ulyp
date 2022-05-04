@@ -24,4 +24,9 @@ public class ObjectArrayRecord extends ObjectRecord {
     public List<ObjectRecord> getRecordedItems() {
         return recordedItems;
     }
+
+    @Override
+    public String toString() {
+        return "array len: " + length + ", items: " + recordedItems;
+    }
 }

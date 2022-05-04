@@ -13,4 +13,9 @@ public class NullObjectRecord extends ObjectRecord {
     private NullObjectRecord() {
         super(Type.unknown());
     }
+
+    @Override
+    public String toString() {
+        return "null";
+    }
 }

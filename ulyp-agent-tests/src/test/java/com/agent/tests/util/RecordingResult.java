@@ -75,8 +75,8 @@ public class RecordingResult {
     }
     */
 
-    public Map<Integer, Recording> aggregateByRecordings() {
-        return reader.availableRecordings().stream().collect(Collectors.toMap(Recording::getId, Function.identity()));
+    public List<Recording> aggregateByRecordings() {
+        return reader.availableRecordings();
     }
 
     public List<Recording> recordings() {
@@ -86,20 +86,36 @@ public class RecordingResult {
     public CallRecord getSingleRoot() throws StorageException {
         assertSingleRecordingSession();
 
-        return aggregateByRecordings().entrySet().iterator().next().getValue().getRoot();
+        return aggregateByRecordings().iterator().next().getRoot();
     }
 
     public void assertSingleRecordingSession() {
-        Map<Integer, Recording> request = aggregateByRecordings();
-        Assert.assertEquals("Expect single recording session, but got " + request.size(), 1, request.size());
+        List<Recording> recordings = aggregateByRecordings();
+        Assert.assertEquals(
+                "Expect single recording session, but got " + recordings.size(),
+                1, recordings.size()
+        );
     }
 
     public void assertRecordingSessionCount(int count) {
-        Map<Integer, Recording> request = aggregateByRecordings();
-        Assert.assertEquals("Expect " + count + " recording session, but got " + request.size(), count, request.size());
+        List<Recording> recordings = aggregateByRecordings();
+        Assert.assertEquals(
+                "Expect " + count + " recording session, but got " + recordings.size(),
+                count, recordings.size()
+        );
     }
 
     public void assertIsEmpty() {
         Assert.assertNull(reader.getProcessMetadata().getNow(null));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Recording recording : recordings()) {
+            builder.append("Recording ").append(recording.getId()).append(":\n");
+            builder.append(DebugCallRecordTreePrinter.printTree(getSingleRoot()));
+        }
+        return builder.toString();
     }
 }

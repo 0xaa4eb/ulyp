@@ -19,4 +19,9 @@ public class NotRecordedObjectRecord extends ObjectRecord {
     private NotRecordedObjectRecord(Type type) {
         super(type);
     }
+
+    @Override
+    public String toString() {
+        return "?";
+    }
 }

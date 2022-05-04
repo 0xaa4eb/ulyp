@@ -15,4 +15,9 @@ public class ThrowableRecord extends ObjectRecord {
     public ObjectRecord getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "exception: " + message;
+    }
 }

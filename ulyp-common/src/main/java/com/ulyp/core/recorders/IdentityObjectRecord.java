@@ -14,4 +14,9 @@ public class IdentityObjectRecord extends ObjectRecord {
     public int getHashCode() {
         return hashCode;
     }
+
+    @Override
+    public String toString() {
+        return getType().getName() + "@" + hashCode;
+    }
 }
