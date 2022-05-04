@@ -45,7 +45,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         CallRecord xConstructorCall = root.getChildren().get(0);
 
         assertThat(xConstructorCall.getMethod().getName(), Matchers.is("<init>"));
-        assertThat(xConstructorCall.getClassName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X"));
+        assertThat(xConstructorCall.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X"));
 
         assertThat(xConstructorCall.getChildren(), Matchers.hasSize(1));
     }
@@ -83,7 +83,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         CallRecord ctr = root.getChildren().get(0);
 
         assertThat(ctr.getMethod().getName(), Matchers.is("<init>"));
-        assertThat(ctr.getClassName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
+        assertThat(ctr.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -135,6 +135,6 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         CallRecord ctr = root.getChildren().get(0);
 
         assertThat(ctr.getMethod().getName(), Matchers.is("<init>"));
-        assertThat(ctr.getClassName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
+        assertThat(ctr.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
     }
 }

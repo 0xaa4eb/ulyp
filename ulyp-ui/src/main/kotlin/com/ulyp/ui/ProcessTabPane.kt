@@ -62,7 +62,7 @@ class ProcessTabPane : TabPane() {
                         val clipboard = Clipboard.getSystemClipboard()
                         val content = ClipboardContent()
                         val callRecord = selectedCallRecord.callRecord
-                        content.putString(callRecord!!.className + "." + callRecord.method.name)
+                        content.putString(callRecord!!.method.declaringType.name + "." + callRecord.method.name)
                         clipboard.setContent(content)
                     }
                 }

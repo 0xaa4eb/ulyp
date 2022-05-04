@@ -268,11 +268,11 @@ public class StorageReadWriteTest {
 
                             CallRecord child1 = root.getChildren().get(0);
 
-                            assertTrue(child1.isComplete());
+                            assertTrue(child1.isFullyRecorded());
 
                             CallRecord child2 = root.getChildren().get(1);
 
-                            assertFalse(child2.isComplete());
+                            assertFalse(child2.isFullyRecorded());
                         }
                 );
 
@@ -310,17 +310,17 @@ public class StorageReadWriteTest {
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 
-                            assertTrue(root.isComplete());
+                            assertTrue(root.isFullyRecorded());
                             assertEquals(3, root.getSubtreeSize());
                             assertEquals(2, root.getChildren().size());
 
                             CallRecord child1 = root.getChildren().get(0);
 
-                            assertTrue(child1.isComplete());
+                            assertTrue(child1.isFullyRecorded());
 
                             CallRecord child2 = root.getChildren().get(1);
 
-                            assertTrue(child2.isComplete());
+                            assertTrue(child2.isFullyRecorded());
                         }
                 );
     }

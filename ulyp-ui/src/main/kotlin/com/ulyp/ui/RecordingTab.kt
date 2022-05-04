@@ -64,7 +64,7 @@ class RecordingTab(
                 val selectedNode = newValue as RecordingTreeNode?
                 if (selectedNode?.callRecord != null) {
                     val sourceCodeFuture = sourceCodeFinder.find(
-                        selectedNode.callRecord!!.className
+                        selectedNode.callRecord!!.method.declaringType.name
                     )
                     sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                         Platform.runLater {
@@ -97,7 +97,7 @@ class RecordingTab(
         get() = if (root == null || recordingMetadata == null) {
             "?"
         } else recordingMetadata!!.threadName + " " +
-                toSimpleName(root!!.className) + "." + root!!.method.name + "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
+                toSimpleName(root!!.method.declaringType.name) + "." + root!!.method.name + "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
 
     @get:Synchronized
     private val tooltipText: Tooltip

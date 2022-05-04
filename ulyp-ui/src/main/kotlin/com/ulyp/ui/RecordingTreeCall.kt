@@ -18,7 +18,7 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
         }
 
         private fun renderReturnValue(node: CallRecord, renderSettings: RenderSettings): List<Node> {
-            return if (!node.isVoidMethod || node.hasThrown()) {
+            return if (node.method.returnsSomething() || node.hasThrown()) {
                 val output: MutableList<Node> = ArrayList()
                 var renderedReturnValue = WithStylesPane(
                         of(node.returnValue, renderSettings),
@@ -78,9 +78,9 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
         private fun renderCallee(node: CallRecord, renderSettings: RenderSettings): List<Node> {
             val result: MutableList<Node> = ArrayList()
 
-            if (node.isStatic || node.isConstructor) {
+            if (node.method.isStatic || node.method.isConstructor) {
                 result.add(
-                        text().text(toSimpleName(node.className))
+                        text().text(toSimpleName(node.method.declaringType.name))
                                 .style(CssClass.CALL_TREE_ALL)
                                 .style(CssClass.CALL_TREE_METHOD_NAME)
                                 .build()
@@ -107,7 +107,7 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                     .style(CssClass.CALL_TREE_ALL)
                     .style(CssClass.CALL_TREE_METHOD_NAME)
 
-            if (node.isStatic) {
+            if (node.method.isStatic) {
                 methodNameBuilder = methodNameBuilder
                         .style(CssClass.CALL_TREE_ALL)
                         .style(CssClass.CALL_TREE_METHOD_NAME)

@@ -5,6 +5,7 @@ import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.impl.RecordingState;
 import it.unimi.dsi.fastutil.longs.LongList;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * and whether it thrown any exception or not. This happens when method exit has not yet been recorded (i.e.
  * method exit still hasn't happened or app crashed during recording session)
  */
+@Builder
 public class CallRecord {
 
     private final long callId;
@@ -39,30 +41,14 @@ public class CallRecord {
     private final Method method;
     private final ObjectRecord callee;
     private final List<ObjectRecord> args;
-    private ObjectRecord returnValue = NotRecordedObjectRecord.getInstance();
-    private boolean thrown;
     private final LongList childrenCallIds;
     private final RecordingState recordingState;
+    @Builder.Default
+    private final boolean thrown = false;
+    @Builder.Default
+    private final ObjectRecord returnValue = NotRecordedObjectRecord.getInstance();
 
-    private List<CallRecord> children = null;
-
-    public CallRecord(
-            long callId,
-            int subtreeSize,
-            LongList childrenCallIds,
-            ObjectRecord callee,
-            List<ObjectRecord> args,
-            Method method,
-            RecordingState recordingState)
-    {
-        this.callId = callId;
-        this.subtreeSize = subtreeSize;
-        this.callee = callee;
-        this.args = new ArrayList<>(args);
-        this.method = method;
-        this.childrenCallIds = childrenCallIds;
-        this.recordingState = recordingState;
-    }
+    private List<CallRecord> children;
 
     public int getSubtreeSize() {
         return subtreeSize;
@@ -74,22 +60,6 @@ public class CallRecord {
 
     public long getId() {
         return callId;
-    }
-
-    public boolean isVoidMethod() {
-        return !method.returnsSomething();
-    }
-
-    public boolean isConstructor() {
-        return method.isConstructor();
-    }
-
-    public boolean isStatic() {
-        return method.isStatic();
-    }
-
-    public String getClassName() {
-        return method.getDeclaringType().getName();
     }
 
     public LongList getChildrenCallIds() {
@@ -126,16 +96,8 @@ public class CallRecord {
                 .collect(Collectors.toList());
     }
 
-    public boolean isComplete() {
+    public boolean isFullyRecorded() {
         return returnValue != NotRecordedObjectRecord.getInstance();
-    }
-
-    public void setReturnValue(ObjectRecord returnValue) {
-        this.returnValue = returnValue;
-    }
-
-    public void setThrown(boolean thrown) {
-        this.thrown = thrown;
     }
 
     public String toString() {

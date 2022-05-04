@@ -22,7 +22,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         );
 
         assertThat(root.getMethod().getName(), is("main"));
-        assertThat(root.getClassName(), is(A.class.getName()));
+        assertThat(root.getMethod().getDeclaringType().getName(), is(A.class.getName()));
         assertThat(root.getChildren(), Matchers.hasSize(2));
     }
 
@@ -36,12 +36,12 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         );
 
         assertThat(root.getMethod().getName(), is("main"));
-        assertThat(root.getClassName(), is("com.agent.tests.cases.a.A"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.cases.a.A"));
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
         CallRecord callRecord = root.getChildren().get(0);
 
-        assertThat(callRecord.getClassName(), is(C.class.getName()));
+        assertThat(callRecord.getMethod().getDeclaringType().getName(), is(C.class.getName()));
         assertThat(callRecord.getMethod().getName(), is("c"));
     }
 
@@ -55,7 +55,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         );
 
         assertThat(root.getMethod().getName(), is("main"));
-        assertThat(root.getClassName(), is("com.agent.tests.cases.a.A"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.cases.a.A"));
         assertThat(root.getChildren(), Matchers.empty());
     }
 }
