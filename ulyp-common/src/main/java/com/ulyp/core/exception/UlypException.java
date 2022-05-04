@@ -6,6 +6,10 @@ public class UlypException extends RuntimeException {
         super(message);
     }
 
+    public UlypException(Throwable cause) {
+        super(cause);
+    }
+
     public UlypException(String message, Throwable cause) {
         super(message, cause);
     }
