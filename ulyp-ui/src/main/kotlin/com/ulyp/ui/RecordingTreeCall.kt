@@ -103,7 +103,7 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                             .build()
             )
 
-            var methodNameBuilder = text().text(node.methodName)
+            var methodNameBuilder = text().text(node.method.name)
                     .style(CssClass.CALL_TREE_ALL)
                     .style(CssClass.CALL_TREE_METHOD_NAME)
 

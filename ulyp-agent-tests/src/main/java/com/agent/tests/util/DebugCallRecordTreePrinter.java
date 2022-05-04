@@ -48,7 +48,7 @@ public class DebugCallRecordTreePrinter {
                 .append(" ")
                 .append(node.getCallee())
                 .append(".")
-                .append(node.getMethodName())
+                .append(node.getMethod().getName())
                 .append("(")
                 .append(node.getArgs())
                 .append(")");

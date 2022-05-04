@@ -26,11 +26,11 @@ public class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
                         .setMethodToRecord("runInOwnClassLoader")
         );
 
-        assertThat(root.getMethodName(), is("runInOwnClassLoader"));
+        assertThat(root.getMethod().getName(), is("runInOwnClassLoader"));
         assertThat(root.getChildren(), hasSize(1));
 
         CallRecord callRecord = root.getChildren().get(0);
-        assertThat(callRecord.getMethodName(), is("hello"));
+        assertThat(callRecord.getMethod().getName(), is("hello"));
     }
 
     static class UserDefinedClassLoaderTestCase {

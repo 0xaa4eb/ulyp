@@ -92,10 +92,6 @@ public class CallRecord {
         return method.getDeclaringType().getName();
     }
 
-    public String getMethodName() {
-        return method.getName();
-    }
-
     public LongList getChildrenCallIds() {
         return childrenCallIds;
     }
