@@ -2,11 +2,7 @@ package com.agent.tests.util;
 
 import com.ulyp.core.util.TempFile;
 import com.ulyp.storage.StorageReader;
-import com.ulyp.storage.impl.SameThreadFileStorageReader;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.ulyp.storage.impl.AsyncFileStorageReader;
 
 public class OutputFile {
 
@@ -17,7 +13,7 @@ public class OutputFile {
     }
 
     public StorageReader toReader() {
-        return new SameThreadFileStorageReader(file.toPath().toFile());
+        return new AsyncFileStorageReader(file.toPath().toFile(), true);
     }
 
     @Override

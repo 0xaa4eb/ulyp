@@ -31,9 +31,10 @@ public class AsyncFileStorageReader implements StorageReader {
 
     private final File file;
     private final ExecutorService executorService;
-    private final CompletableFuture<ProcessMetadata> processMetadata = new CompletableFuture<>();
+    private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
+    private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
     private final RocksdbIndex index = new RocksdbIndex();
-    private final Repository<Long, Type> types = new InMemoryRepository<>();
+    private final InMemoryRepository<Long, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
     private volatile RecordingListener recordingListener = RecordingListener.empty();
@@ -99,6 +100,7 @@ public class AsyncFileStorageReader implements StorageReader {
                             break;
                         case RecordingCompleteMark.WIRE_ID:
                             ForkJoinPool.commonPool().execute(executorService::shutdownNow);
+                            finishedReadingFuture.complete(true);
                             return;
                         default:
                             throw new StorageException("Unknown binary data id " + data.getBytes().id());
@@ -122,7 +124,7 @@ public class AsyncFileStorageReader implements StorageReader {
             data.iterator().next().wrapValue(buffer);
             BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
             decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
-            processMetadata.complete(ProcessMetadata.deserialize(decoder));
+            processMetadataFuture.complete(ProcessMetadata.deserialize(decoder));
         }
 
         private void onRecordingMetadata(BinaryList data) {
@@ -163,13 +165,17 @@ public class AsyncFileStorageReader implements StorageReader {
         }
     }
 
-    public Repository<Long, Type> getTypes() {
+    public InMemoryRepository<Long, Type> getTypes() {
         return types;
     }
 
+    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
+        return processMetadataFuture;
+    }
+
     @Override
-    public CompletableFuture<ProcessMetadata> getProcessMetadata() {
-        return processMetadata;
+    public CompletableFuture<Boolean> getFinishedReadingFuture() {
+        return finishedReadingFuture;
     }
 
     @Override

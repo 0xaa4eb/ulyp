@@ -98,7 +98,7 @@ public class StorageReaderListenerTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            ProcessMetadata processMetadata = reader.getProcessMetadata().getNow(null);
+                            ProcessMetadata processMetadata = reader.getProcessMetadataFuture().getNow(null);
 
                             Assert.assertNotNull(processMetadata);
 

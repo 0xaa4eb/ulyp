@@ -10,6 +10,10 @@ import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 public class AbstractInstrumentationTest {
 
     @NotNull
@@ -36,6 +40,15 @@ public class AbstractInstrumentationTest {
             return StorageReader.empty();
         } else {
             StorageReader reader = settings.getOutputFile().toReader();
+            try {
+                reader.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Assert.fail("Thread is interrupted");
+            } catch (ExecutionException ignored) {
+                // Should not happen
+            } catch (TimeoutException e) {
+                Assert.fail("Timed out waiting for process to finish");
+            }
             System.out.println("Got " + reader.availableRecordings().size() + " recordings");
             return reader;
         }

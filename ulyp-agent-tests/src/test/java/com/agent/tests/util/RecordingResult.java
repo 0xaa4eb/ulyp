@@ -7,8 +7,6 @@ import com.ulyp.storage.StorageReader;
 import org.junit.Assert;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RecordingResult {
@@ -106,7 +104,7 @@ public class RecordingResult {
     }
 
     public void assertIsEmpty() {
-        Assert.assertNull(reader.getProcessMetadata().getNow(null));
+        Assert.assertNull(reader.getProcessMetadataFuture().getNow(null));
     }
 
     @Override

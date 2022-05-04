@@ -64,7 +64,7 @@ class PrimaryViewController(
         val file = fileChooser.get()
         val storageReader = AsyncFileStorageReader(file, false)
 
-        storageReader.processMetadata.thenAccept { processMetadata ->
+        storageReader.processMetadataFuture.thenAccept { processMetadata ->
             storageReader.subscribe { recording ->
                 val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
                 val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(processMetadata, recording)

@@ -1,7 +1,7 @@
 package com.perf.agent.benchmarks.proc;
 
 import com.ulyp.storage.StorageReader;
-import com.ulyp.storage.impl.SameThreadFileStorageReader;
+import com.ulyp.storage.impl.AsyncFileStorageReader;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -29,7 +29,7 @@ public class OutputFile {
     }
 
     public StorageReader toReader() {
-        return new SameThreadFileStorageReader(file.toFile());
+        return new AsyncFileStorageReader(file.toFile(), true);
     }
 
     @Override
