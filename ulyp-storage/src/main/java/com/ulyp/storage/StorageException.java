@@ -1,7 +1,9 @@
 package com.ulyp.storage;
 
 
-public class StorageException extends RuntimeException {
+import com.ulyp.core.exception.UlypException;
+
+public class StorageException extends UlypException {
 
     public StorageException(String message) {
         super(message);

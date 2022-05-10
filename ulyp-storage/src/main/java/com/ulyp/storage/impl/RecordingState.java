@@ -11,6 +11,7 @@ import com.ulyp.storage.RecordingListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class RecordingState implements Closeable {
@@ -102,26 +103,25 @@ public class RecordingState implements Closeable {
         RecordedCallState callState = getState(callId);
         RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
 
-        CallRecord callRecord = new CallRecord(
-                callState.getCallId(),
-                callState.getSubtreeSize(),
-                callState.getChildrenCallIds(),
-                enterMethodCall.getCallee().toRecord(typeRepository),
-                enterMethodCall.getArguments().stream()
+        CallRecord.CallRecordBuilder builder = CallRecord.builder()
+                .callId(callState.getCallId())
+                .subtreeSize(callState.getSubtreeSize())
+                .childrenCallIds(callState.getChildrenCallIds())
+                .method(methodRepository.get(enterMethodCall.getMethodId()))
+                .callee(enterMethodCall.getCallee().toRecord(typeRepository))
+                .args(new ArrayList<>(enterMethodCall.getArguments().stream()
                         .map(recorded -> recorded.toRecord(typeRepository))
-                        .collect(Collectors.toList()),
-                methodRepository.get(enterMethodCall.getMethodId()),
-                this
-        );
+                        .collect(Collectors.toList())))
+                .recordingState(this);
 
         if (callState.getExitMethodCallAddr() > 0) {
             RecordedExitMethodCall exitMethodCall = reader.readExitMethodCall(callState.getExitMethodCallAddr());
 
-            callRecord.setThrown(exitMethodCall.isThrown());
-            callRecord.setReturnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
+            builder = builder.thrown(exitMethodCall.isThrown())
+                    .returnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
         }
 
-        return callRecord;
+        return builder.build();
     }
 
     public synchronized RecordingMetadata getMetadata() {

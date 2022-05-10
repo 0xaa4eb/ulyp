@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':ulyp-core')
+    compile project(':ulyp-common')
     compileOnly "javax.annotation:javax.annotation-api:1.2"
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     compile group: 'org.agrona', name: 'agrona', version: '1.4.0'

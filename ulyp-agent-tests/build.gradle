@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
+    }
+}
+
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "6.0.0-m2"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':ulyp-agent-classes')
+    compile project(':ulyp-storage')
+
+    testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
+    testCompileOnly "javax.annotation:javax.annotation-api:1.2"
+
+    testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
+    testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testCompile group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'
+    testCompile group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.1.RELEASE'
+    testCompile group: 'javax.transaction', name: 'jta', version: '1.1'
+    testCompile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.0.Final'
+    testCompile group: 'net.openhft', name: 'chronicle', version: '3.6.4'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java', '../src/main/java']
+}
+
+test {
+    dependsOn(':ulyp-agent:shadowJar')
+}

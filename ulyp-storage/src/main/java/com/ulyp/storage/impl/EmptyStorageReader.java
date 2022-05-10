@@ -12,9 +12,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class EmptyStorageReader implements StorageReader {
 
-    @Override
-    public CompletableFuture<ProcessMetadata> getProcessMetadata() {
+    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
         return new CompletableFuture<>();
+    }
+
+    @Override
+    public CompletableFuture<Boolean> getFinishedReadingFuture() {
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

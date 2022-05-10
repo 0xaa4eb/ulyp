@@ -4,6 +4,7 @@
 /build
 /.idea
 */.iml
+*/.DS_Store
 /ulyp-ui-repository/src/main/java/com/ulyp/database/Workspace.java
 /ulyp-benchmarks/src/main/java/com/perf/agent/benchmarks/impl/H2MemDatabaseBenchmark2.java
 /ulyp-agent/src/main/java/com/test/
