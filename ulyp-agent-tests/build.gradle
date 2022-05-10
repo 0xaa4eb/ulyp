@@ -47,8 +47,6 @@ sourceSets {
     main.java.srcDirs = ['src/main/java', '../src/main/java']
 }
 
-compileJava {
+test {
     dependsOn(':ulyp-agent:shadowJar')
-
-    options.debug = true
 }
