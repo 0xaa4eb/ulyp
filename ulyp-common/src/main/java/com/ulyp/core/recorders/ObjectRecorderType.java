@@ -14,6 +14,7 @@ public enum ObjectRecorderType {
     MAP_RECORDER(new MapRecorder((byte) 13), 1),
     OPTIONAL_RECORDER(new OptionalRecorder((byte) 25), 90),
     FILE_RECORDER(new FileRecorder((byte) 26), 90),
+    PATH_RECORDER(new PathRecorder((byte) 27), 90),
     DATE_RECORDER(new DateRecorder((byte) 20), 90),
     TO_STRING_RECORDER(new ToStringRecorder((byte) 91), 99),
     IDENTITY_RECORDER(new IdentityRecorder((byte) 0), Integer.MAX_VALUE / 2),
