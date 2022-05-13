@@ -8,6 +8,7 @@ enum class CssClass(vararg classes: String) {
     CALL_TREE_TYPE_NAME("ulyp-ctt-typename"),
     CALL_TREE_STRING_LITERAL("ulyp-ctt-string"),
     CALL_TREE_NUMBER("ulyp-ctt-number"),
+    CALL_TREE_FILE("ulyp-ctt-file"),
     CALL_TREE_NULL("ulyp-ctt-null"),
     CALL_TREE_NODE_SEPARATOR("ulyp-ctt-sep"),
     CALL_TREE_COLLECTION_BRACKET("ulyp-ctt-bracket"),

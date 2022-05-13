@@ -90,6 +90,10 @@
     -fx-fill: rgb(74, 133, 186);
 }
 
+.ulyp-ctt-file {
+    -fx-fill: rgb(32, 187, 191);
+}
+
 .ulyp-ctt-null {
     -fx-fill: rgb(255,140,0);
 }
