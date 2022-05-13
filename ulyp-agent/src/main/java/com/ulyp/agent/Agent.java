@@ -49,9 +49,8 @@ public class Agent {
         RecordMethodList recordMethodList = settings.getRecordMethodList();
 
         if (recordMethodList == null || recordMethodList.isEmpty()) {
-            // if not specified, then record main(String[] args) method as it's the only entry point to the program we have
             recordMethodList = RecordMethodList.of(
-                    new MethodMatcher(ClassMatcher.parse(ClassUtils.getSimpleNameFromName(ProcessMetadata.getMainClassNameFromProp())), "main")
+                    new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
             );
         }
 
