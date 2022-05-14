@@ -29,7 +29,7 @@ public class StringRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldCutLongStringWhileRecording() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(TestCases.class).setMethodToRecord("returnLongString")
+                new ForkProcessBuilder().withMainClassName(TestCases.class).withMethodToRecord("returnLongString")
         );
 
         StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();

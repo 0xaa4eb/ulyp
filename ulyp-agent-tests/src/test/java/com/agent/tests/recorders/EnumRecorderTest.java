@@ -19,8 +19,8 @@ public class EnumRecorderTest extends AbstractInstrumentationTest {
     public void shouldPrintEnumNames() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(EnumTestCases.class)
-                        .setMethodToRecord("consumesMapAndEnums")
+                        .withMainClassName(EnumTestCases.class)
+                        .withMethodToRecord("consumesMapAndEnums")
         );
 
         assertThat(root.getArgs(), Matchers.hasSize(3));

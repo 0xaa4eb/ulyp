@@ -17,8 +17,8 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
     public void shouldMake1000Calls() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(LotsOfCallsTestCases.class)
-                        .setMethodToRecord("make1000CallsSep")
+                        .withMainClassName(LotsOfCallsTestCases.class)
+                        .withMethodToRecord("make1000CallsSep")
         );
 
         assertThat(root.getChildren(), hasSize(1000));
@@ -28,8 +28,8 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
     public void shouldHaveCompleteTree() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(LotsOfCallsTestCases.class)
-                        .setMethodToRecord("level0")
+                        .withMainClassName(LotsOfCallsTestCases.class)
+                        .withMethodToRecord("level0")
         );
 
         List<CallRecord> children = root.getChildren();

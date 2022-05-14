@@ -17,8 +17,8 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(PassClazz.class)
-                        .setMethodToRecord("returnClass")
+                        .withMainClassName(PassClazz.class)
+                        .withMethodToRecord("returnClass")
         );
 
         ClassObjectRecord arg = (ClassObjectRecord) root.getReturnValue();
@@ -31,8 +31,8 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(PassClazz.class)
-                        .setMethodToRecord("takeClass")
+                        .withMainClassName(PassClazz.class)
+                        .withMethodToRecord("takeClass")
         );
 
         ClassObjectRecord arg = (ClassObjectRecord) root.getArgs().get(0);

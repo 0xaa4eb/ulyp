@@ -13,8 +13,7 @@ public class SystemProp {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
+    public String toJavaCmdLineProp() {
         return "-D" + key + "=" + value;
     }
 }

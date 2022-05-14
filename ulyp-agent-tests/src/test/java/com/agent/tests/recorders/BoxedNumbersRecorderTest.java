@@ -45,8 +45,8 @@ public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testBoxedLong() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(BoxedNumbersTestCases.class)
-                        .setMethodToRecord("te")
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("te")
         );
 
         NumberRecord arg = (NumberRecord) root.getArgs().get(0);
@@ -56,8 +56,8 @@ public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testPrimitiveIntSum() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(BoxedNumbersTestCases.class)
-                        .setMethodToRecord("primitiveIntSum")
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("primitiveIntSum")
         );
 
         assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-234"));
@@ -68,8 +68,8 @@ public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testBoxedIntSum() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(BoxedNumbersTestCases.class)
-                        .setMethodToRecord("boxedIntSum")
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("boxedIntSum")
         );
 
         assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), is("-211"));
@@ -78,8 +78,8 @@ public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testPrimitiveDoubleSum() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(BoxedNumbersTestCases.class)
-                        .setMethodToRecord("primitiveDoubleSum")
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("primitiveDoubleSum")
         );
 
         assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));
@@ -90,8 +90,8 @@ public class BoxedNumbersRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testBoxedDoubleSum() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(BoxedNumbersTestCases.class)
-                        .setMethodToRecord("boxedDoubleSum")
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("boxedDoubleSum")
         );
 
         assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));

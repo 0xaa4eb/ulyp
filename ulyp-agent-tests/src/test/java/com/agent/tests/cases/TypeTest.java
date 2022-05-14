@@ -16,8 +16,8 @@ public class TypeTest extends AbstractInstrumentationTest {
     public void shouldProvideArgumentTypes() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.FooImpl.bar"))
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.FooImpl.bar"))
         );
 
         recordingResult.assertRecordingSessionCount(1);

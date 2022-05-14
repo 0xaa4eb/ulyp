@@ -19,8 +19,8 @@ public class FileRecorderTest extends AbstractInstrumentationTest {
     public void shouldRecordFileObject() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnFile")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnFile")
         );
 
         FileRecord value = (FileRecord) root.getReturnValue();
@@ -32,8 +32,8 @@ public class FileRecorderTest extends AbstractInstrumentationTest {
     public void shouldRecordPathObject() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnPath")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnPath")
         );
 
         FileRecord value = (FileRecord) root.getReturnValue();

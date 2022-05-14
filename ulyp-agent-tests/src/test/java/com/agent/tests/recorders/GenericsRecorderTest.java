@@ -17,8 +17,8 @@ public class GenericsRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(X.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.Box.get"))
+                        .withMainClassName(X.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.Box.get"))
         );
 
         StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();

@@ -16,9 +16,9 @@ public class ConcurrentRecordingTest extends AbstractInstrumentationTest {
     public void shouldRecordInConcurrentMode() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(MultithreadedExample.class)
-                        .setMethodToRecord(MethodMatcher.parse("*.*"))
-                        .setLogLevel("OFF")
+                        .withMainClassName(MultithreadedExample.class)
+                        .withMethodToRecord(MethodMatcher.parse("*.*"))
+                        .withLogLevel("OFF")
         );
 
 

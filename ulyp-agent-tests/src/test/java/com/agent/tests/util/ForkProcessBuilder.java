@@ -20,12 +20,13 @@ public class ForkProcessBuilder {
     private String printClasses = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
+    private final List<SystemProp> systemProps = new ArrayList<>();
 
     public Class<?> getMainClassName() {
         return mainClassName;
     }
 
-    public ForkProcessBuilder setMainClassName(Class<?> mainClassName) {
+    public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
         this.mainClassName = mainClassName;
         if (instrumentedPackages.isEmpty()) {
             instrumentedPackages = new PackageList(mainClassName.getPackage().getName());
@@ -36,27 +37,27 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public ForkProcessBuilder recordCollections(CollectionsRecordingMode mode) {
+    public ForkProcessBuilder withRecordCollections(CollectionsRecordingMode mode) {
         collectionsRecordingMode = mode;
         return this;
     }
 
-    public ForkProcessBuilder setInstrumentedPackages(String... packages) {
+    public ForkProcessBuilder withInstrumentedPackages(String... packages) {
         this.instrumentedPackages = new PackageList(packages);
         return this;
     }
 
-    public ForkProcessBuilder setPrintClasses(String printClasses) {
+    public ForkProcessBuilder withPrintClasses(String printClasses) {
         this.printClasses = printClasses;
         return this;
     }
 
-    public ForkProcessBuilder setAgentDisabled(Boolean agentDisabled) {
+    public ForkProcessBuilder withAgentDisabled(Boolean agentDisabled) {
         this.agentDisabled = agentDisabled;
         return this;
     }
 
-    public ForkProcessBuilder setMethodToRecord(MethodMatcher methodToRecord) {
+    public ForkProcessBuilder withMethodToRecord(MethodMatcher methodToRecord) {
         this.methodToRecord = methodToRecord;
         return this;
     }
@@ -65,12 +66,12 @@ public class ForkProcessBuilder {
         return logLevel;
     }
 
-    public ForkProcessBuilder setLogLevel(String logLevel) {
+    public ForkProcessBuilder withLogLevel(String logLevel) {
         this.logLevel = logLevel;
         return this;
     }
 
-    public ForkProcessBuilder setMethodToRecord(String startMethod) {
+    public ForkProcessBuilder withMethodToRecord(String startMethod) {
         if (mainClassName != null) {
             this.methodToRecord = new MethodMatcher(mainClassName, startMethod);
         } else {
@@ -83,23 +84,27 @@ public class ForkProcessBuilder {
         return outputFile;
     }
 
-    public ForkProcessBuilder setOutputFile(OutputFile outputFile) {
+    public ForkProcessBuilder withOutputFile(OutputFile outputFile) {
         this.outputFile = outputFile;
         return this;
     }
 
-    public ForkProcessBuilder setExcludedFromInstrumentationPackages(String... packages) {
+    public ForkProcessBuilder withExcludedFromInstrumentationPackages(String... packages) {
         this.excludedFromInstrumentationPackages = new PackageList(packages);
         return this;
     }
 
-    public ForkProcessBuilder setExcludeClassesProperty(String excludeClassesProperty) {
+    public ForkProcessBuilder withExcludeClassesProperty(String excludeClassesProperty) {
         this.excludeClassesProperty = excludeClassesProperty;
         return this;
     }
 
+    public ForkProcessBuilder withSystemProp(SystemProp systemProp) {
+        this.systemProps.add(systemProp);
+        return this;
+    }
+
     public List<String> toCmdJavaProps() {
-        // TODO use SystemProp everywhere
         List<String> params = new ArrayList<>();
 
         params.add("-D" + Settings.PACKAGES_PROPERTY + "=" + String.join(",", instrumentedPackages));
@@ -119,6 +124,8 @@ public class ForkProcessBuilder {
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
         params.add("-D" + Settings.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
         params.add("-D" + Settings.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
+
+        systemProps.forEach(sysProp -> params.add(sysProp.toJavaCmdLineProp()));
 
         return params;
     }

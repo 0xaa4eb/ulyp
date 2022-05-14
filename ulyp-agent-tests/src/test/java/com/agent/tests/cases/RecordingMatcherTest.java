@@ -19,8 +19,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("**.TestCasesAZASdasd.main"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("**.TestCasesAZASdasd.main"))
                 ).recordings(),
                 Matchers.empty()
         );
@@ -28,8 +28,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("a.b.c.RecordingMatcherTest.TestCases.main"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("a.b.c.RecordingMatcherTest.TestCases.main"))
                 ).recordings(),
                 Matchers.empty()
         );
@@ -41,8 +41,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("*.*"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("*.*"))
                 ).recordings(),
                 hasSize(1)
         );
@@ -50,8 +50,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("**.TestCases.main"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("**.TestCases.main"))
                 ).recordings(),
                 hasSize(1)
         );
@@ -59,8 +59,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("com.agent.tests.cases.RecordingMatcherTest.TestCases.main"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("com.agent.tests.cases.RecordingMatcherTest.TestCases.main"))
                 ).recordings(),
                 hasSize(1)
         );
@@ -68,8 +68,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("**.RecordingMatcherTest.TestCases.main"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("**.RecordingMatcherTest.TestCases.main"))
                 ).recordings(),
                 hasSize(1)
         );
@@ -81,8 +81,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCases.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.Clazz.bar"))
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.Clazz.bar"))
         );
 
         assertThat(
@@ -98,8 +98,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCases.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.Clazz.foo"))
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.Clazz.foo"))
         );
 
         assertThat(
@@ -113,8 +113,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         assertThat(
                 runForkProcess(
                         new ForkProcessBuilder()
-                                .setMainClassName(TestCases.class)
-                                .setMethodToRecord(MethodMatcher.parse("**.Interface.foo"))
+                                .withMainClassName(TestCases.class)
+                                .withMethodToRecord(MethodMatcher.parse("**.Interface.foo"))
                 ).recordings(),
                 hasSize(1)
         );
@@ -124,8 +124,8 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     public void shouldRecordAllMethods() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(MultithreadedExample.class)
-                        .setMethodToRecord(MethodMatcher.parse("*.*"))
+                        .withMainClassName(MultithreadedExample.class)
+                        .withMethodToRecord(MethodMatcher.parse("*.*"))
         );
 
         // threads have two recording sessions each (constructor + method call)

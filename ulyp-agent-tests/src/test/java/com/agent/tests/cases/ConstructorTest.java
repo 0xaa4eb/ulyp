@@ -36,8 +36,8 @@ public class ConstructorTest extends AbstractInstrumentationTest {
     public void testHappyPathConstructor() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCases.class)
-                        .setMethodToRecord("main")
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord("main")
         );
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
@@ -74,8 +74,8 @@ public class ConstructorTest extends AbstractInstrumentationTest {
     public void testConstructorThrown() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCasesThrows.class)
-                        .setMethodToRecord("main")
+                        .withMainClassName(TestCasesThrows.class)
+                        .withMethodToRecord("main")
         );
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
@@ -126,8 +126,8 @@ public class ConstructorTest extends AbstractInstrumentationTest {
     public void testConstructorThrownInsideMethodCalls() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCasesThrows2.class)
-                        .setMethodToRecord("main")
+                        .withMainClassName(TestCasesThrows2.class)
+                        .withMethodToRecord("main")
         );
 
         assertThat(root.getChildren(), Matchers.hasSize(1));

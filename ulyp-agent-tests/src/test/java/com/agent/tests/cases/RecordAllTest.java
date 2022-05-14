@@ -15,8 +15,8 @@ public class RecordAllTest extends AbstractInstrumentationTest {
     public void shouldRecordAllMethods() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(MultithreadedExample.class)
-                        .setMethodToRecord(MethodMatcher.parse("*.*"))
+                        .withMainClassName(MultithreadedExample.class)
+                        .withMethodToRecord(MethodMatcher.parse("*.*"))
         );
 
         // threads have two recording sessions each (constructor + method call)

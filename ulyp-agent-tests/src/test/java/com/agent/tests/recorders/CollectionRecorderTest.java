@@ -22,9 +22,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnArrayListOfString")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();
@@ -43,9 +43,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnArrayListOfString")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
@@ -56,9 +56,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnArrayListOfString")
-                        .recordCollections(CollectionsRecordingMode.JAVA)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
@@ -69,9 +69,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnCustomList")
-                        .recordCollections(CollectionsRecordingMode.JAVA)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnCustomList")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
@@ -82,9 +82,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnCustomList")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnCustomList")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
@@ -96,9 +96,9 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnThrowingOnIteratorList")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnThrowingOnIteratorList")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));

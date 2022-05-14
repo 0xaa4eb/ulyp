@@ -28,8 +28,8 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
     public void testReturnOptionalWithSomeString() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnStringOptional")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnStringOptional")
         );
 
 
@@ -59,8 +59,8 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
     public void testReturnEmptyOptional() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase2.class)
-                        .setMethodToRecord("returnStringOptional")
+                        .withMainClassName(TestCase2.class)
+                        .withMethodToRecord("returnStringOptional")
         );
 
 

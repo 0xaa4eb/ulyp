@@ -11,9 +11,9 @@ public class RecordsWritingDisabledTest extends AbstractInstrumentationTest {
 
         assertNoRecording(
                 new ForkProcessBuilder()
-                        .setMainClassName(X.class)
-                        .setMethodToRecord("main")
-                        .setOutputFile(null)
+                        .withMainClassName(X.class)
+                        .withMethodToRecord("main")
+                        .withOutputFile(null)
         );
     }
 

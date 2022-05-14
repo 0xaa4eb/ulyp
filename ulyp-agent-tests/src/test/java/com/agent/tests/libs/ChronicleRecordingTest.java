@@ -1,9 +1,6 @@
 package com.agent.tests.libs;
 
-import com.agent.tests.util.AbstractInstrumentationTest;
-import com.agent.tests.util.DebugCallRecordTreePrinter;
-import com.agent.tests.util.ForkProcessBuilder;
-import com.agent.tests.util.RecordingResult;
+import com.agent.tests.util.*;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.CallRecord;
 import net.openhft.chronicle.Chronicle;
@@ -26,9 +23,9 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
-                        .setInstrumentedPackages()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
+                        .withInstrumentedPackages()
         );
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
@@ -36,7 +33,27 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
         assertThat(
                 DebugCallRecordTreePrinter.printTree(singleRoot),
                 singleRoot.getSubtreeSize(),
-                greaterThan(400)
+                greaterThan(100)
+        );
+    }
+
+    @Test
+    public void testChronicleLibraryWithSingleMessage2() {
+
+        RecordingResult recordingResult = runForkProcess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
+                        .withInstrumentedPackages()
+                        .withSystemProp(SystemProp.builder().key("messageCount").value("6").build())
+        );
+
+        CallRecord singleRoot = recordingResult.getSingleRoot();
+
+        assertThat(
+                DebugCallRecordTreePrinter.printTree(singleRoot),
+                singleRoot.getSubtreeSize(),
+                greaterThan(300)
         );
     }
 
@@ -52,7 +69,6 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
             for (int i = 0; i < msgCount; i++) {
                 appender.startExcerpt();
-                appender.writeUTF("Hello chronicle");
                 appender.writeInt(4324);
                 appender.writeLong(54563463L);
                 appender.writeDouble(234324.43);
@@ -61,7 +77,6 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
             ExcerptTailer tailer = chronicle.createTailer();
             while (tailer.nextIndex()) {
-                System.out.println(tailer.readUTF());
                 System.out.println(tailer.readInt());
                 System.out.println(tailer.readLong());
                 System.out.println(tailer.readDouble());

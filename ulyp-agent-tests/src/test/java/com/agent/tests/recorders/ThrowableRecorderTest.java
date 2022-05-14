@@ -15,8 +15,8 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
     public void shouldRecordThrowableWithMessage() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(ThrowableTestCases.class)
-                        .setMethodToRecord("throwsRuntimeException")
+                        .withMainClassName(ThrowableTestCases.class)
+                        .withMethodToRecord("throwsRuntimeException")
         );
 
         ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();
@@ -28,8 +28,8 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
     public void shouldHandleNullMessageInThrowable() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(ThrowableTestCases.class)
-                        .setMethodToRecord("throwsNullPointerException")
+                        .withMainClassName(ThrowableTestCases.class)
+                        .withMethodToRecord("throwsNullPointerException")
         );
 
         ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();

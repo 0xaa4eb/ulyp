@@ -22,8 +22,8 @@ public class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(UserDefinedClassLoaderTestCase.class)
-                        .setMethodToRecord("runInOwnClassLoader")
+                        .withMainClassName(UserDefinedClassLoaderTestCase.class)
+                        .withMethodToRecord("runInOwnClassLoader")
         );
 
         assertThat(root.getMethod().getName(), is("runInOwnClassLoader"));

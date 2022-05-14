@@ -17,9 +17,9 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnHashMap")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnHashMap")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         MapRecord collection = (MapRecord) root.getReturnValue();
@@ -39,9 +39,9 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnHashMap")
-                        .recordCollections(CollectionsRecordingMode.JAVA)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnHashMap")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
@@ -52,9 +52,9 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnMapThrowingOnIteration")
-                        .recordCollections(CollectionsRecordingMode.ALL)
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnMapThrowingOnIteration")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));

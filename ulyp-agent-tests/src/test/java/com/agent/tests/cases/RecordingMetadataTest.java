@@ -34,8 +34,8 @@ public class RecordingMetadataTest extends AbstractInstrumentationTest {
     public void shouldRecordAllMethods() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("foo")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("foo")
         );
 
 

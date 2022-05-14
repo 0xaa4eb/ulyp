@@ -17,8 +17,8 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
     public void shouldInstrumentAndTraceAllClasses() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setInstrumentedPackages("com.agent.tests.cases.a")
+                        .withMainClassName(A.class)
+                        .withInstrumentedPackages("com.agent.tests.cases.a")
         );
 
         assertThat(root.getMethod().getName(), is("main"));
@@ -30,9 +30,9 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
     public void shouldExcludeInstrumentationPackage() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setInstrumentedPackages("com.agent.tests.cases.a")
-                        .setExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b")
+                        .withMainClassName(A.class)
+                        .withInstrumentedPackages("com.agent.tests.cases.a")
+                        .withExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b")
         );
 
         assertThat(root.getMethod().getName(), is("main"));
@@ -49,9 +49,9 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
     public void shouldExcludeTwoPackages() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setInstrumentedPackages("com.agent.tests.cases.a")
-                        .setExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b", "com.agent.tests.cases.a.c")
+                        .withMainClassName(A.class)
+                        .withInstrumentedPackages("com.agent.tests.cases.a")
+                        .withExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b", "com.agent.tests.cases.a.c")
         );
 
         assertThat(root.getMethod().getName(), is("main"));

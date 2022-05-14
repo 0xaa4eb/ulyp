@@ -18,8 +18,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     public void shouldPrintObjects() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(ObjectTestCases.class)
-                        .setMethodToRecord("acceptsTwoObjects")
+                        .withMainClassName(ObjectTestCases.class)
+                        .withMethodToRecord("acceptsTwoObjects")
         );
 
         assertThat(root.getArgs(), hasSize(2));
@@ -31,8 +31,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     public void shouldChooseValidRecorderForJavaLangObjectAtRuntime() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(ObjectTestCases.class)
-                        .setMethodToRecord("acceptsTwoObjects2")
+                        .withMainClassName(ObjectTestCases.class)
+                        .withMethodToRecord("acceptsTwoObjects2")
         );
 
         assertThat(root.getArgs(), hasSize(2));
@@ -44,8 +44,8 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     public void shouldPrintNullArguments() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(ObjectTestCases.class)
-                        .setMethodToRecord("acceptsTwoNulls")
+                        .withMainClassName(ObjectTestCases.class)
+                        .withMethodToRecord("acceptsTwoNulls")
         );
 
         assertThat(root.getArgs(), hasSize(2));

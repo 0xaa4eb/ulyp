@@ -19,8 +19,8 @@ public class PrintClassRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("foo")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("foo")
         );
 
 
@@ -32,9 +32,9 @@ public class PrintClassRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("foo")
-                        .setPrintClasses("**.X")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("foo")
+                        .withPrintClasses("**.X")
         );
 
 

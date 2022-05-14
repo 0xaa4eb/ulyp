@@ -14,8 +14,8 @@ public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
     public void testFibonacciMethodCall() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(RecursionTestCases.class)
-                        .setMethodToRecord("fibonacci")
+                        .withMainClassName(RecursionTestCases.class)
+                        .withMethodToRecord("fibonacci")
         );
 
         assertThat(root.getSubtreeSize(), is(177));

@@ -16,8 +16,8 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("passBoolean")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("passBoolean")
         );
 
         BooleanRecord repr = (BooleanRecord) root.getArgs().get(0);
@@ -30,8 +30,8 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("passString")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("passString")
         );
 
         StringObjectRecord objectRepresentation = (StringObjectRecord) root.getArgs().get(0);
@@ -44,8 +44,8 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("passClass")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("passClass")
         );
 
         ClassObjectRecord record = (ClassObjectRecord) root.getArgs().get(0);

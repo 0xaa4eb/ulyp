@@ -17,8 +17,8 @@ public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("returnArray")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArray")
         );
 
         ObjectArrayRecord repr = (ObjectArrayRecord) root.getReturnValue();

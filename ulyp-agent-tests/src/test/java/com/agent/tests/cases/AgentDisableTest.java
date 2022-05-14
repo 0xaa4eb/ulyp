@@ -12,9 +12,9 @@ public class AgentDisableTest extends AbstractInstrumentationTest {
     public void shouldRecordInConcurrentMode() {
         RecordingResult recordingResult = runForkProcess(
                 new ForkProcessBuilder()
-                        .setMainClassName(AgentDisableTestCase.class)
-                        .setMethodToRecord(MethodMatcher.parse("**.AgentDisableTestCase.*"))
-                        .setAgentDisabled(true)
+                        .withMainClassName(AgentDisableTestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.AgentDisableTestCase.*"))
+                        .withAgentDisabled(true)
         );
 
 

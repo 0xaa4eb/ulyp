@@ -16,8 +16,8 @@ public class IdentityRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(TestCase.class)
-                        .setMethodToRecord("pass")
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("pass")
         );
 
         NumberRecord objectRepresentation = (NumberRecord) root.getReturnValue();

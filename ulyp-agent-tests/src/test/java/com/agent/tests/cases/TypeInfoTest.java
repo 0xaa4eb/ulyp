@@ -18,8 +18,8 @@ public class TypeInfoTest extends AbstractInstrumentationTest {
     @Test
     public void shouldProvideArgumentTypes() {
         CallRecord root = run(
-                new ForkProcessBuilder().setMainClassName(TestCases.class)
-                        .setMethodToRecord("intSum")
+                new ForkProcessBuilder().withMainClassName(TestCases.class)
+                        .withMethodToRecord("intSum")
         );
 
 

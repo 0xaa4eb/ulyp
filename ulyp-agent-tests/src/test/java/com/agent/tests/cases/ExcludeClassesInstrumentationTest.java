@@ -18,7 +18,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldNotExcludeAnyClassesIfOptionIsNotSet() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
+                        .withMainClassName(A.class)
         );
 
 
@@ -31,8 +31,8 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldExcludeFromInstrumentationOneClass() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.B")
+                        .withMainClassName(A.class)
+                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.B")
         );
 
 
@@ -44,8 +44,8 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldExcludeFromInstrumentationOneClassByInterface() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setExcludeClassesProperty("**.BInterface")
+                        .withMainClassName(A.class)
+                        .withExcludeClassesProperty("**.BInterface")
         );
 
 
@@ -57,8 +57,8 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldExcludeTwoClassesFromInstrumentation() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.B, com.agent.tests.cases.a.c.C")
+                        .withMainClassName(A.class)
+                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.B, com.agent.tests.cases.a.c.C")
         );
 
 
@@ -69,8 +69,8 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldExcludeOneClassFromInstrumentationByAntPattern() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.**")
+                        .withMainClassName(A.class)
+                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.**")
         );
 
 
@@ -81,8 +81,8 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     public void shouldExcludeTwoClassesFromInstrumentationByAntPattern() {
         CallRecord root = run(
                 new ForkProcessBuilder()
-                        .setMainClassName(A.class)
-                        .setExcludeClassesProperty("com.agent.tests.cases.a.b.**, com.agent.tests.cases.a.c.**")
+                        .withMainClassName(A.class)
+                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.**, com.agent.tests.cases.a.c.**")
         );
 
 
