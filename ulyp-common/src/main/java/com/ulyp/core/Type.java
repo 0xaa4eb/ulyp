@@ -13,6 +13,9 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Domain class for all java types.
+ */
 @Builder
 @AllArgsConstructor
 @ToString(exclude = {"suggestedRecorder", "writtenToFile"})
@@ -24,8 +27,6 @@ public class Type {
     private final String name;
     @Builder.Default
     private final Set<TypeTrait> typeTraits = EnumSet.noneOf(TypeTrait.class);
-    @Builder.Default
-    private final boolean hasToStringMethod = false;
     @Builder.Default
     private final Set<String> superTypeNames = new HashSet<>();
     @Builder.Default
@@ -103,10 +104,6 @@ public class Type {
 
     public boolean isClassObject() {
         return typeTraits.contains(TypeTrait.CLASS_OBJECT);
-    }
-
-    public boolean hasToStringMethod() {
-        return hasToStringMethod;
     }
 
     public void serialize(BinaryTypeEncoder encoder) {

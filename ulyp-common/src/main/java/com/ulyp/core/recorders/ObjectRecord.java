@@ -3,7 +3,7 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.Type;
 
 /**
- * Deserialized object record. Depending on the recorder used for serialization
+ * Recorded object value. Depending on the recorder chosen for recording
  * some amount of information might (and for some data types certainly will) be lost
  *
  * For example, for strings the corresponding recorder {@link StringRecorder} will only record first 200 symbols, for complex objects

@@ -18,28 +18,7 @@ import static org.junit.Assert.*;
 
 public class ByteBuddyTypeResolverTest {
 
-    private ByteBuddyTypeResolver typeResolver = new ByteBuddyTypeResolver();
-    
-    static class Y {
-
-    }
-
-    static class X {
-
-        @Override
-        public String toString() {
-            return "X{}";
-        }
-    }
-
-    @Test
-    @Ignore
-    public void testHasToString() {
-
-        assertTrue(typeResolver.resolve(TypeDescription.ForLoadedType.of(X.class).asGenericType()).hasToStringMethod());
-
-        assertFalse(typeResolver.resolve(TypeDescription.ForLoadedType.of(Y.class).asGenericType()).hasToStringMethod());
-    }
+    private final ByteBuddyTypeResolver typeResolver = new ByteBuddyTypeResolver();
 
     static class BaseClass implements I2, I3 {
 
