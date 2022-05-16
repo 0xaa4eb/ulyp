@@ -23,6 +23,8 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     private static final Set<TypeDescription.Generic> PRIMITIVE_INTEGRAL_TYPES = new HashSet<>();
     private static final Set<TypeDescription.Generic> BOXED_INTEGRAL_TYPES = new HashSet<>();
     private static final Set<TypeDescription.Generic> PRIMITIVE_DOUBLE_TYPES = new HashSet<>();
+    private static final TypeDescription.Generic PRIMITIVE_CHAR_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(char.class);
+    private static final TypeDescription.Generic BOXED_CHAR_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Character.class);
     private static final TypeDescription CLASS_OBJECT_ERASED = TypeDescription.Generic.CLASS.asErasure();
     private static final TypeDescription COLLECTION_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Collection.class).asErasure();
     private static final TypeDescription MAP_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Map.class).asErasure();
@@ -108,19 +110,6 @@ public class ByteBuddyTypeResolver implements TypeResolver {
             Set<String> superTypes = getSuperTypes(type);
             Set<TypeTrait> typeTraits = deriveTraits(type, superTypes);
 
-            boolean hasToStringMethod;
-            try {
-                if (!typeTraits.contains(TypeTrait.TYPE_VAR)) {
-                    hasToStringMethod = type.getDeclaredMethods().stream().anyMatch(
-                            method -> method.getActualName().equals("toString") && method.getReturnType().equals(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(String.class))
-                    );
-                } else {
-                    hasToStringMethod = false;
-                }
-            } catch (Throwable e) {
-                hasToStringMethod = false;
-            }
-
             return Type.builder()
                     .id(typeIdGenerator.incrementAndGet())
                     .name(trimGenerics(type.getActualName()))
@@ -157,6 +146,9 @@ public class ByteBuddyTypeResolver implements TypeResolver {
             }
         } else if (type.isPrimitive()) {
             traits.add(TypeTrait.PRIMITIVE);
+            if (PRIMITIVE_CHAR_TYPE.equals(type)) {
+                traits.add(TypeTrait.CHAR);
+            }
             if (PRIMITIVE_INTEGRAL_TYPES.contains(type)) {
                 traits.add(TypeTrait.INTEGRAL);
             }
@@ -173,6 +165,8 @@ public class ByteBuddyTypeResolver implements TypeResolver {
             if (BOXED_INTEGRAL_TYPES.contains(type)) {
                 traits.add(TypeTrait.INTEGRAL);
             }
+        } else if (BOXED_CHAR_TYPE.equals(type)) {
+            traits.add(TypeTrait.CHAR);
         } else if (BOXED_BOOLEAN.equals(type)) {
             traits.add(TypeTrait.BOOLEAN);
         } else if (type.isEnum()) {

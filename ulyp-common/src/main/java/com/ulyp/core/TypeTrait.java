@@ -10,6 +10,7 @@ public enum TypeTrait {
     NUMBER,
     BOOLEAN,
     INTEGRAL,
+    CHAR,
     FRACTIONAL,
     PRIMITIVE_ARRAY,
     NON_PRIMITIVE_ARRAY,
