@@ -50,7 +50,7 @@ public class Recorder {
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.generateCallId());
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
@@ -65,7 +65,7 @@ public class Recorder {
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.generateCallId());
+                CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
