@@ -15,6 +15,8 @@ public interface BinaryInput {
 
     int readInt();
 
+    char readChar();
+
     long readLong();
 
     ObjectRecord readObject(ByIdTypeResolver typeResolver);

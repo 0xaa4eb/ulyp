@@ -22,11 +22,11 @@ public class CharRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new DateRecord(objectType, input.readString());
+        return new CharObjectRecord(objectType, input.readChar());
     }
 
     @Override
     public void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(object.toString());
+        out.writeChar((char) object);
     }
 }

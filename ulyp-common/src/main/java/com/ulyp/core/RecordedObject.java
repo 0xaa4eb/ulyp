@@ -2,7 +2,7 @@ package com.ulyp.core;
 
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderType;
+import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInputImpl;
 import com.ulyp.core.repository.ReadableRepository;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class RecordedObject {
     public ObjectRecord toRecord(ReadableRepository<Long, Type> typeResolver) {
 
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
-        ObjectRecorder objectRecorder = ObjectRecorderType.recorderForId(recorderId);
+        ObjectRecorder objectRecorder = ObjectRecorderRegistry.recorderForId(recorderId);
         return objectRecorder.read(
                 type,
                 new BinaryInputImpl(value),

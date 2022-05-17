@@ -4,6 +4,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeTrait;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,8 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class ByteBuddyTypeResolverTest {
@@ -67,12 +67,17 @@ public class ByteBuddyTypeResolverTest {
     }
 
     @Test
-    public void testForOptional() throws NoSuchMethodException {
+    public void testForChar() {
 
+        Type byteBuddyType = typeResolver.get(char.class);
 
-        Type byteBuddyType = typeResolver.get(Optional.class);
+        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.CHAR));
+        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.PRIMITIVE));
 
-        System.out.println(byteBuddyType.getName());
+        byteBuddyType = typeResolver.get(Character.class);
+
+        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.CHAR));
+        assertThat(byteBuddyType.getTraits(), not(hasItem(TypeTrait.PRIMITIVE)));
     }
 
     @Test

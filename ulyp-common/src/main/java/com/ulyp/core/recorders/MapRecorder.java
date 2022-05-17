@@ -53,7 +53,7 @@ public class MapRecorder extends ObjectRecorder {
                     entries
             );
         } else {
-            return ObjectRecorderType.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
+            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
         }
     }
 
@@ -93,7 +93,7 @@ public class MapRecorder extends ObjectRecorder {
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             appender.append(RECORDED_IDENTITY_ONLY);
-            ObjectRecorderType.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
         }
     }
 }

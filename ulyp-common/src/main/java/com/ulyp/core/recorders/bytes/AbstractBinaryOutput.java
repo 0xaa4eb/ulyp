@@ -27,6 +27,12 @@ public abstract class AbstractBinaryOutput implements BinaryOutput {
         }
     }
 
+    public void writeChar(char val) throws Exception {
+        try (BinaryOutputAppender appender = appender()) {
+            appender.append(val);
+        }
+    }
+
     public void writeInt(int val) throws Exception {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(val);

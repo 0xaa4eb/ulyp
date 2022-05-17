@@ -7,8 +7,9 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 
 /**
- * Object recorder which essentially encodes some java object at recording time into bytes which
- * can later be read and decoded. The decoded value is some implementation of {@link ObjectRecord}.
+ * Object recorder which does what it is named for. It essentially encodes some java object of
+ * certain type at runtime into bytes which can later be read and decoded.
+ * The decoded value is some implementation of {@link ObjectRecord}.
  *
  * Depending on the particular implementation used for serialization
  * some amount of information may (and for some data types certainly will) be lost.

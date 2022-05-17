@@ -2,7 +2,7 @@ package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderType;
+import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.Type;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -31,6 +31,11 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
 
     public void append(boolean value) {
         append(value ? 1 : 0);
+    }
+
+    public void append(char value) {
+        tmpBuffer.putChar(bytePos, value);
+        bytePos += Character.BYTES;
     }
 
     public void append(int value) {
@@ -74,9 +79,9 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
         ObjectRecorder recorder;
         if (object != null) {
             // Simply stop recursively write objects if it's too deep
-            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedRecorder() : ObjectRecorderType.IDENTITY_RECORDER.getInstance();
+            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedRecorder() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
         } else {
-            recorder = ObjectRecorderType.NULL_RECORDER.getInstance();
+            recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
         }
         append(recorder.getId());
         recorder.write(object, itemType, this, typeResolver);
@@ -108,6 +113,11 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
 
     @Override
     public void writeBool(boolean val) throws Exception {
+        append(val);
+    }
+
+    @Override
+    public void writeChar(char val) throws Exception {
         append(val);
     }
 

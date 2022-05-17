@@ -4,7 +4,7 @@ import com.ulyp.core.Method;
 import com.ulyp.core.Type;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderType;
+import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.method.MethodDescription;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
- * Converts byte buddy method description to internal model
+ * Converts byte buddy method description to internal domain class {@link Method}
  */
 @Slf4j
 public class ByteBuddyMethodResolver {
@@ -33,7 +33,7 @@ public class ByteBuddyMethodResolver {
 
         ObjectRecorder[] paramRecorders = RecorderChooser.getInstance().chooseForTypes(parameters);
         ObjectRecorder returnValueRecorder = description.isConstructor() ?
-                ObjectRecorderType.IDENTITY_RECORDER.getInstance() :
+                ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance() :
                 RecorderChooser.getInstance().chooseForType(returnType);
 
         Method resolved = Method.builder()

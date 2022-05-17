@@ -39,7 +39,7 @@ public class ToStringRecorder extends ObjectRecorder {
             StringObjectRecord printed = (StringObjectRecord) input.readObject(typeResolver);
             return new PrintedObjectRecord(printed, objectType, identityHashCode);
         } else {
-            return ObjectRecorderType.IDENTITY_RECORDER.getInstance().read(objectType, input, typeResolver);
+            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(objectType, input, typeResolver);
         }
     }
 
@@ -56,7 +56,7 @@ public class ToStringRecorder extends ObjectRecorder {
         } catch (Throwable e) {
             try (BinaryOutputAppender appender = out.appender()) {
                 appender.append(TO_STRING_CALL_FAIL);
-                ObjectRecorderType.IDENTITY_RECORDER.getInstance().write(object, appender, typeResolver);
+                ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, typeResolver);
             }
         }
     }

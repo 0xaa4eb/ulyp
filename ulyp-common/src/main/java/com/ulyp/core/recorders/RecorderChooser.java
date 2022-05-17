@@ -17,11 +17,11 @@ public class RecorderChooser {
     private static final ObjectRecorder[] allRecorders;
 
     static {
-        allRecorders = new ObjectRecorder[ObjectRecorderType.values().length];
+        allRecorders = new ObjectRecorder[ObjectRecorderRegistry.values().length];
 
-        List<ObjectRecorderType> objectRecorderTypes = new ArrayList<>();
-        objectRecorderTypes.addAll(Arrays.asList(ObjectRecorderType.values()));
-        objectRecorderTypes.sort(Comparator.comparing(ObjectRecorderType::getOrder));
+        List<ObjectRecorderRegistry> objectRecorderTypes = new ArrayList<>();
+        objectRecorderTypes.addAll(Arrays.asList(ObjectRecorderRegistry.values()));
+        objectRecorderTypes.sort(Comparator.comparing(ObjectRecorderRegistry::getOrder));
 
         for (int i = 0; i < objectRecorderTypes.size(); i++) {
             allRecorders[i] = objectRecorderTypes.get(i).getInstance();

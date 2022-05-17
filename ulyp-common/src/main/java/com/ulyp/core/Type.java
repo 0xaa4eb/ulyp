@@ -14,7 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Domain class for all java types.
+ * Domain class for all java types. All type-related logic uses this class. It's also is
+ * written to the output recording file and read in UI
  */
 @Builder
 @AllArgsConstructor

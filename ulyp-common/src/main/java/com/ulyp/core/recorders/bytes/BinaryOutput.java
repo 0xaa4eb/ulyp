@@ -10,6 +10,8 @@ public interface BinaryOutput {
 
     void writeBool(boolean val) throws Exception;
 
+    void writeChar(char val) throws Exception;
+
     void writeInt(int val) throws Exception;
 
     void writeLong(long val) throws Exception;

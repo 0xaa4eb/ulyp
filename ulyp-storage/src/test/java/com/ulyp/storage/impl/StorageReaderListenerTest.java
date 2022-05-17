@@ -41,9 +41,9 @@ public class StorageReaderListenerTest {
             .isStatic(false)
             .returnsSomething(true)
             .parameterRecorders(
-                    new ObjectRecorder[] { ObjectRecorderType.STRING_RECORDER.getInstance() }
+                    new ObjectRecorder[] { ObjectRecorderRegistry.STRING_RECORDER.getInstance() }
             )
-            .returnValueRecorder(ObjectRecorderType.STRING_RECORDER.getInstance())
+            .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
