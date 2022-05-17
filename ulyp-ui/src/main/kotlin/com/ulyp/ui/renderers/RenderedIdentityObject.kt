@@ -6,16 +6,16 @@ import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedIdentityObject(repr: IdentityObjectRecord, renderSettings: RenderSettings) : RenderedObject(repr.type) {
+class RenderedIdentityObject(record: IdentityObjectRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
 
     init {
-        val className = if (renderSettings.showTypes()) repr.type.name else toSimpleName(repr.type.name)
+        val className = if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
 
         super.getChildren().addAll(
             listOf(
                 of(className, CssClass.CALL_TREE_TYPE_NAME),
-                of("@", CssClass.CALL_TREE_IDENTITY_REPR, CssClass.CALL_TREE_IDENTITY_HASH_CODE),
-                of(Integer.toHexString(repr.hashCode), CssClass.CALL_TREE_IDENTITY_REPR)
+                of("@", CssClass.CALL_TREE_IDENTITY, CssClass.CALL_TREE_IDENTITY_HASH_CODE),
+                of(Integer.toHexString(record.hashCode), CssClass.CALL_TREE_IDENTITY)
             )
         )
     }

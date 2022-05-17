@@ -12,7 +12,8 @@ abstract class RenderedObject protected constructor(private val type: Type?) : T
         @JvmStatic
         fun of(record: ObjectRecord, renderSettings: RenderSettings?): RenderedObject {
             val objectValue = when (record) {
-                is StringObjectRecord -> RenderedStringObject(record, record.getType(), renderSettings)
+                is StringObjectRecord -> RenderedString(record, record.getType(), renderSettings)
+                is CharObjectRecord -> RenderedChar(record, record.getType(), renderSettings!!)
                 is NullObjectRecord -> RenderedNull(renderSettings)
                 is NotRecordedObjectRecord -> RenderedNotRecordedObject(renderSettings!!)
                 is NumberRecord -> RenderedNumber(record.numberPrintedText, record.getType(), renderSettings!!)

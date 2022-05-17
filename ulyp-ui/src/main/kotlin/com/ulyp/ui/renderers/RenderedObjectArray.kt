@@ -8,25 +8,25 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RenderedObjectArray(arrayRepresentation: ObjectArrayRecord, renderSettings: RenderSettings?) : RenderedObject(arrayRepresentation.type) {
+class RenderedObjectArray(record: ObjectArrayRecord, renderSettings: RenderSettings?) : RenderedObject(record.type) {
 
     init {
-        val renderedObjects = arrayRepresentation.recordedItems
+        val renderedObjects = record.recordedItems
             .stream()
-            .map { repr: ObjectRecord -> of(repr, renderSettings) }
+            .map { record: ObjectRecord -> of(record, renderSettings) }
             .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
         texts.add(of("[", CssClass.CALL_TREE_COLLECTION_BRACKET))
         for (i in renderedObjects.indices) {
             texts.add(renderedObjects[i])
-            if (i != renderedObjects.size - 1 || renderedObjects.size < arrayRepresentation.length) {
+            if (i != renderedObjects.size - 1 || renderedObjects.size < record.length) {
                 texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR))
             }
         }
-        if (renderedObjects.size < arrayRepresentation.length) {
+        if (renderedObjects.size < record.length) {
             texts.add(
                 of(
-                    (arrayRepresentation.length - renderedObjects.size).toString() + " more...",
+                    (record.length - renderedObjects.size).toString() + " more...",
                     CssClass.CALL_TREE_NODE_SEPARATOR
                 )
             )

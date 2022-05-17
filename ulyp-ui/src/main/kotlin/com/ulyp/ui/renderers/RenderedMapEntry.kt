@@ -6,13 +6,13 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedMapEntry(entry: MapEntryRecord, renderSettings: RenderSettings?) : RenderedObject(entry.type) {
+class RenderedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings?) : RenderedObject(record.type) {
 
     init {
         val texts: MutableList<Node> = ArrayList()
-        texts.add(of(entry.key, renderSettings))
+        texts.add(of(record.key, renderSettings))
         texts.add(of(" -> ", CssClass.CALL_TREE_NODE_SEPARATOR))
-        texts.add(of(entry.value, renderSettings))
+        texts.add(of(record.value, renderSettings))
         super.getChildren().addAll(texts)
     }
 }

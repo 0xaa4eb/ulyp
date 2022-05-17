@@ -12,7 +12,7 @@ enum class CssClass(vararg classes: String) {
     CALL_TREE_NULL("ulyp-ctt-null"),
     CALL_TREE_NODE_SEPARATOR("ulyp-ctt-sep"),
     CALL_TREE_COLLECTION_BRACKET("ulyp-ctt-bracket"),
-    CALL_TREE_IDENTITY_REPR("ulyp-ctt-identity"),
+    CALL_TREE_IDENTITY("ulyp-ctt-identity"),
     CALL_TREE_IDENTITY_HASH_CODE("ulyp-ctt-identity-hash-code"),
     CALL_TREE_METHOD_NAME("ulyp-ctt-method-name"),
     CALL_TREE_RETURN_VALUE("ulyp-ctt-return-value"),

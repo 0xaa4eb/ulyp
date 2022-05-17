@@ -7,11 +7,11 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
 
-class RenderedStringObject internal constructor(representation: StringObjectRecord, classDescription: Type?, renderSettings: RenderSettings?)
+class RenderedString internal constructor(record: StringObjectRecord, classDescription: Type?, renderSettings: RenderSettings?)
     : RenderedObject(classDescription) {
 
     init {
-        val text: Text = MultilinedText("\"" + representation.value() + "\"")
+        val text: Text = MultilinedText("\"" + record.value() + "\"")
         super.getChildren().add(StyledText.of(text.text, CssClass.CALL_TREE_STRING_LITERAL))
     }
 }

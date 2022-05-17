@@ -8,18 +8,18 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedThrowable(representation: ThrowableRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedThrowable(record: ThrowableRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
 
     init {
         val className =
-            if (renderSettings.showTypes()) representation.type.name else toSimpleName(representation.type.name)
+            if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
         val children: MutableList<Node> = ArrayList()
         children.add(of(className, CssClass.CALL_TREE_TYPE_NAME))
-        children.add(of("(", CssClass.CALL_TREE_IDENTITY_REPR))
-        if (representation.message !is NullObjectRecord) {
-            children.add(of(representation.message, renderSettings))
+        children.add(of("(", CssClass.CALL_TREE_IDENTITY))
+        if (record.message !is NullObjectRecord) {
+            children.add(of(record.message, renderSettings))
         }
-        children.add(of(")", CssClass.CALL_TREE_IDENTITY_REPR))
+        children.add(of(")", CssClass.CALL_TREE_IDENTITY))
         super.getChildren().addAll(children)
     }
 }

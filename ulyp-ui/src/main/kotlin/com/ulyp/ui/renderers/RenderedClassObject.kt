@@ -6,13 +6,13 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.text.Text
 
-class RenderedClassObject(classObject: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject(classObject.type) {
+class RenderedClassObject(record: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
 
     init {
         if (renderSettings.showTypes()) {
             super.getChildren().add(of(Class::class.java.name + ": ", CssClass.CALL_TREE_TYPE_NAME))
         }
-        val text: Text = MultilinedText("class " + classObject.carriedType.name)
+        val text: Text = MultilinedText("class " + record.carriedType.name)
         super.getChildren().add(text)
     }
 }

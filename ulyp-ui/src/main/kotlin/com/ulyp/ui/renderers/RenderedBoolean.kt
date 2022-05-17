@@ -5,13 +5,13 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 
-class RenderedBoolean(representation: BooleanRecord, renderSettings: RenderSettings) : RenderedObject(representation.type) {
+class RenderedBoolean(record: BooleanRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(of(representation.type.name, CssClass.CALL_TREE_TYPE_NAME))
+            super.getChildren().add(of(record.type.name, CssClass.CALL_TREE_TYPE_NAME))
             super.getChildren().add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
         }
-        super.getChildren().add(of(representation.value().toString(), CssClass.CALL_TREE_NUMBER))
+        super.getChildren().add(of(record.value().toString(), CssClass.CALL_TREE_NUMBER))
     }
 }
