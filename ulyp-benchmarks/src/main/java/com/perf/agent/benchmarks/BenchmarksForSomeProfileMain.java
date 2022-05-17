@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
+import com.perf.agent.benchmarks.benchmarks.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.storage.Recording;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarksForSomeProfileMain {
 
-    private static final int ITERATIONS_PER_PROFILE = 1;
+    private static final int ITERATIONS_PER_PROFILE = 5;
 
     public static void main(String[] args) throws Exception {
 
@@ -55,7 +55,7 @@ public class BenchmarksForSomeProfileMain {
 
     private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
 
-        try (MillisMeasured measured = new MillisMeasured(procTimeHistogram)) {
+        try (TimeMeasurer _ = new TimeMeasurer(procTimeHistogram)) {
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
             if (profile.shouldWriteRecording()) {

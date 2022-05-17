@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.impl.spring;
+package com.perf.agent.benchmarks.benchmarks.util;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,10 +1,9 @@
-package com.perf.agent.benchmarks.impl;
+package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkProfile;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.core.util.PackageList;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -17,9 +16,6 @@ public class H2MemDatabaseBenchmark implements Benchmark {
     @Override
     public List<BenchmarkProfile> getProfiles() {
         return Arrays.asList(
-                new BenchmarkProfileBuilder()
-                        .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
-                        .build(),
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
                         .build(),

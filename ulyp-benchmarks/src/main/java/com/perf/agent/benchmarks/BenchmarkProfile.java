@@ -46,7 +46,6 @@ public class BenchmarkProfile {
             args.add("-javaagent:" + BenchmarkEnv.findBuiltAgentJar());
         }
 
-
         if (!instrumentedPackages.isEmpty()) {
             args.add("-Dulyp.packages=" + this.instrumentedPackages);
         }

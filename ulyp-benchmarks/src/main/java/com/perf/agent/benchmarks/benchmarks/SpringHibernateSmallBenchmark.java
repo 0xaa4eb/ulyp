@@ -1,13 +1,12 @@
-package com.perf.agent.benchmarks.impl;
+package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkProfile;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
-import com.perf.agent.benchmarks.impl.spring.ApplicationConfiguration;
-import com.perf.agent.benchmarks.impl.spring.User;
-import com.perf.agent.benchmarks.impl.spring.UserService;
+import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
+import com.perf.agent.benchmarks.benchmarks.util.User;
+import com.perf.agent.benchmarks.benchmarks.util.UserService;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.core.util.PackageList;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

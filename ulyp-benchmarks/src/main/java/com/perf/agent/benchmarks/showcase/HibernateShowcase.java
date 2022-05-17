@@ -1,8 +1,8 @@
 package com.perf.agent.benchmarks.showcase;
 
-import com.perf.agent.benchmarks.impl.spring.ApplicationConfiguration;
-import com.perf.agent.benchmarks.impl.spring.User;
-import com.perf.agent.benchmarks.impl.spring.UserService;
+import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
+import com.perf.agent.benchmarks.benchmarks.util.User;
+import com.perf.agent.benchmarks.benchmarks.util.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

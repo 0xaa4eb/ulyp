@@ -1,11 +1,15 @@
 package com.perf.agent.benchmarks.proc;
 
+import com.ulyp.core.exception.UlypException;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.impl.AsyncFileStorageReader;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class OutputFile {
 
@@ -20,16 +24,14 @@ public class OutputFile {
         }
     }
 
-    public long byteSize() {
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file.toFile(), "r")) {
-            return randomAccessFile.length();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public StorageReader toReader() {
-        return new AsyncFileStorageReader(file.toFile(), true);
+        StorageReader reader = new AsyncFileStorageReader(file.toFile(), true);
+        try {
+            reader.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new UlypException("Timed out waiting for recording to finish", e);
+        }
+        return reader;
     }
 
     @Override

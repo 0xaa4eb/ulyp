@@ -4,6 +4,7 @@ import com.perf.agent.benchmarks.proc.OutputFile;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ public class BenchmarkProfileBuilder {
     @NotNull
     private PackageList instrumentedPackages = new PackageList();
     private boolean agentEnabled = true;
+    @Nullable
     private OutputFile outputFile = new OutputFile("ulyp-benchmark", "dat");
     private final List<String> additionalProcessArgs = new ArrayList<>();
 
@@ -35,6 +37,7 @@ public class BenchmarkProfileBuilder {
 
     public BenchmarkProfileBuilder withAgentDisabled() {
         agentEnabled = false;
+        outputFile = null;
         return this;
     }
 

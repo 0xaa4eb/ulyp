@@ -1,7 +1,7 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.impl.H2MemDatabaseBenchmark;
-import com.perf.agent.benchmarks.impl.SpringHibernateSmallBenchmark;
+import com.perf.agent.benchmarks.benchmarks.H2MemDatabaseBenchmark;
+import com.perf.agent.benchmarks.benchmarks.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.perf.agent.benchmarks.proc.OutputFile;
 import com.ulyp.storage.StorageReader;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class PerformanceBenchmarksMain {
+public class BenchmarksMain {
 
     private static final int ITERATIONS_PER_PROFILE = 5;
 
@@ -51,7 +51,7 @@ public class PerformanceBenchmarksMain {
 
     private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordsTimeHistogram) {
 
-        try (MillisMeasured measured = new MillisMeasured(procTimeHistogram)) {
+        try (TimeMeasurer measured = new TimeMeasurer(procTimeHistogram)) {
 
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 

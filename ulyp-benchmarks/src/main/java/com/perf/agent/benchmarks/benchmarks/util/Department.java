@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.impl.spring;
+package com.perf.agent.benchmarks.benchmarks.util;
 
 import javax.persistence.*;
 import java.util.HashSet;

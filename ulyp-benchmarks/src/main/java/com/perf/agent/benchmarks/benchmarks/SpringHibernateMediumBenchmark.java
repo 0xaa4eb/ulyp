@@ -1,9 +1,9 @@
-package com.perf.agent.benchmarks.impl;
+package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkProfile;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
-import com.perf.agent.benchmarks.impl.spring.*;
+import com.perf.agent.benchmarks.benchmarks.util.*;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 import org.HdrHistogram.Histogram;

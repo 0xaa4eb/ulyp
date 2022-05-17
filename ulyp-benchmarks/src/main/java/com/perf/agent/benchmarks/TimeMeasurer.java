@@ -4,12 +4,12 @@ import org.HdrHistogram.Histogram;
 
 import java.io.Closeable;
 
-public class MillisMeasured implements Closeable {
+public class TimeMeasurer implements Closeable {
 
     private final Histogram histogram;
     private final long startTime;
 
-    public MillisMeasured(Histogram histogram) {
+    public TimeMeasurer(Histogram histogram) {
         this.histogram = histogram;
         this.startTime = System.currentTimeMillis();
     }

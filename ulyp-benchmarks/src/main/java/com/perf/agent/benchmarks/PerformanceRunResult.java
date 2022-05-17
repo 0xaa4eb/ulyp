@@ -30,7 +30,7 @@ public class PerformanceRunResult {
         builder.append(": ");
         padTo(builder, 50);
         builder.append(profile);
-        padTo(builder, 120);
+        padTo(builder, 150);
 
         builder.append(String.format("%.2f", procTimeHistogram.getMean() / 1000.0))
                 .append(" ± ")
