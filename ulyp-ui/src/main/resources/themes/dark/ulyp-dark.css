@@ -58,10 +58,16 @@
 /* ULYP part */
 
 .tooltip {
-    -fx-font-size: 15px;
+    -fx-font-size: 0.8em;
+}
+
+.ulyp-help-text {
+    -fx-font-size: 1.2em;
+    -fx-fill: rgb(169, 183, 198);
 }
 
 .ulyp-ctt {
+    -fx-font-size: 1.0em;
     -fx-fill: rgb(169, 183, 198);
 }
 

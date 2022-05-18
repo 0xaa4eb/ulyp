@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @Scope(value = "prototype")
-class Popup(val content: Node) : Stage() {
+class Popup(content: Node) : Stage() {
 
     init {
         initModality(Modality.APPLICATION_MODAL)

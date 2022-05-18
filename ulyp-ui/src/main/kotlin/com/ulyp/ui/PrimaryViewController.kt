@@ -12,14 +12,8 @@ import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.geometry.Insets
-import javafx.scene.Scene
 import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import javafx.scene.text.Text
-import javafx.stage.Modality
-import javafx.stage.Stage
 import java.io.File
 import java.net.URL
 import java.util.*
@@ -29,7 +23,6 @@ import java.util.function.Supplier
 class PrimaryViewController(
         private val sourceCodeView: SourceCodeView,
         private val processTabPane: ProcessTabPane,
-        private val fontSizeChanger: FontSizeChanger,
         private val themeManager: ThemeManager,
         private val fileChooser: Supplier<File>
 ) : Initializable {
@@ -63,7 +56,7 @@ class PrimaryViewController(
     }
 
     fun showAboutPopup(event: Event?) {
-        val popup = Popup(StyledText.of("This is a text", CssClass.TEXT))
+        val popup = Popup(StyledText.of("This is a text", CssClass.HELP_TEXT))
         popup.show()
     }
 
@@ -77,8 +70,6 @@ class PrimaryViewController(
 
     fun openRecordedDump(actionEvent: ActionEvent?) {
         // Without those calls font style won't be applied until user changes font for the first time
-        fontSizeChanger.upscale(primaryPane.scene)
-        fontSizeChanger.downscale(primaryPane.scene)
         val file = fileChooser.get()
         val storageReader = AsyncFileStorageReader(file, false)
 

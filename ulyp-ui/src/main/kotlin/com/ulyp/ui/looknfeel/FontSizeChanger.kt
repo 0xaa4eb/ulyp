@@ -10,20 +10,20 @@ import java.nio.file.StandardOpenOption
 
 @Component
 class FontSizeChanger {
-    private var currentFontSize = 14
+    private var currentFontSize = 1.0
     private val fontChooser = FontChooser()
 
     fun upscale(scene: Scene) {
-        val font = ++currentFontSize
-        refreshFont(scene, font)
+        currentFontSize += 0.05
+        refreshFont(scene, currentFontSize)
     }
 
     fun downscale(scene: Scene) {
-        val font = --currentFontSize
-        refreshFont(scene, font)
+        currentFontSize -= 0.05
+        refreshFont(scene, currentFontSize)
     }
 
-    private fun refreshFont(scene: Scene, font: Int) {
+    private fun refreshFont(scene: Scene, font: Double) {
         try {
             val path = Files.createTempFile(STYLE_PREFIX, null)
             path.toFile().deleteOnExit()
@@ -31,7 +31,7 @@ class FontSizeChanger {
                 path,
                 """.ulyp-ctt {
                 -fx-font-family: ${fontChooser.getFontName()};
-                -fx-font-size: ${font}px;
+                -fx-font-size: ${font}em;
                 }""".toByteArray(StandardCharsets.UTF_8),
                 StandardOpenOption.WRITE
             )
