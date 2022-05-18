@@ -1,7 +1,6 @@
 package com.ulyp.ui.looknfeel
 
 import javafx.scene.Scene
-import javafx.scene.text.Font
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -11,7 +10,7 @@ import java.nio.file.StandardOpenOption
 @Component
 class FontSizeChanger {
     private var currentFontSize = 1.0
-    private val fontChooser = FontChooser()
+    private val fontChooser = FontNameResolver()
 
     fun upscale(scene: Scene) {
         currentFontSize += 0.05

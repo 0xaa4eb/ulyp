@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 public class Main extends Application {
 
+    // Guaranteed to be non-null and initialized
     public static Stage stage;
 
     private AnnotationConfigApplicationContext context;
@@ -36,7 +37,7 @@ public class Main extends Application {
         stage.setMaximized(true);
         stage.setOnCloseRequest(event -> System.exit(0));
         stage.setTitle("ULYP");
-        InputStream iconStream = Main.class.getClassLoader().getResourceAsStream("icon.png");
+        InputStream iconStream = Main.class.getClassLoader().getResourceAsStream("icons/ulyp-logo-icon.png");
         if (iconStream == null) {
             throw new RuntimeException("Icon not found");
         }

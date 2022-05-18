@@ -5,6 +5,7 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.menu.ControlsPopup
+import com.ulyp.ui.menu.ErrorPopup
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event

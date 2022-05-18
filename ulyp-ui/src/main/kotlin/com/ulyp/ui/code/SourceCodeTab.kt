@@ -1,12 +1,9 @@
 package com.ulyp.ui.code
 
 import com.ulyp.ui.code.util.MethodLineNumberFinder
-import com.ulyp.ui.looknfeel.FontChooser
+import com.ulyp.ui.looknfeel.FontNameResolver
 import javafx.embed.swing.SwingNode
-import javafx.event.EventHandler
 import javafx.scene.control.Tab
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 import org.fife.ui.rsyntaxtextarea.Theme
@@ -20,7 +17,7 @@ import javax.swing.SwingUtilities
 @Component
 class SourceCodeTab : Tab() {
     private val textScrollPane: RTextScrollPane
-    private val fontChooser = FontChooser()
+    private val fontChooser = FontNameResolver()
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
 
     private var stamp: Long = 0
