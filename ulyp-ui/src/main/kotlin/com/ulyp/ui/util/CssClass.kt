@@ -4,7 +4,7 @@ import java.util.*
 
 enum class CssClass(vararg classes: String) {
 
-    ERROR_TEXT("ulyp-help-text"),
+    ERROR_TEXT("ulyp-error-text"),
     HELP_TEXT("ulyp-help-text"),
     CALL_TREE_ALL("ulyp-ctt"),
     CALL_TREE_TYPE_NAME("ulyp-ctt-typename"),
@@ -23,6 +23,7 @@ enum class CssClass(vararg classes: String) {
     CALL_TREE_CALLEE("ulyp-ctt-callee");
 
     val cssClasses: List<String>
+        get() = field
 
     init {
         cssClasses = Arrays.asList(*classes)

@@ -4,8 +4,7 @@ import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
-import com.ulyp.ui.menu.ControlsPopup
-import com.ulyp.ui.menu.ErrorPopup
+import com.ulyp.ui.controls.ControlsPopup
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event

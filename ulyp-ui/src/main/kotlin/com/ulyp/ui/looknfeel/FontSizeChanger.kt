@@ -1,6 +1,9 @@
 package com.ulyp.ui.looknfeel
 
+import com.ulyp.ui.controls.ErrorPopup
+import com.ulyp.ui.util.ExceptionAsText
 import javafx.scene.Scene
+import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -8,7 +11,7 @@ import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
 @Component
-class FontSizeChanger {
+class FontSizeChanger(private val applicationContext: ApplicationContext) {
     private var currentFontSize = 1.0
     private val fontChooser = FontNameResolver()
 
@@ -24,6 +27,7 @@ class FontSizeChanger {
 
     private fun refreshFont(scene: Scene, font: Double) {
         try {
+
             val path = Files.createTempFile(STYLE_PREFIX, null)
             path.toFile().deleteOnExit()
             Files.write(
@@ -47,8 +51,13 @@ class FontSizeChanger {
                 scene.stylesheets.add(path.toFile().toURI().toString())
             }
         } catch (e: IOException) {
-            // TODO show error
-            e.printStackTrace()
+
+            val errorPopup = applicationContext.getBean(
+                    ErrorPopup::class.java,
+                    "Could not change font size: " + e.message,
+                    ExceptionAsText(e)
+            )
+            errorPopup.show()
         }
     }
 

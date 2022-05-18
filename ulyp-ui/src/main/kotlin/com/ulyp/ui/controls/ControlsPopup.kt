@@ -1,4 +1,4 @@
-package com.ulyp.ui.menu
+package com.ulyp.ui.controls
 
 import com.ulyp.ui.Popup
 import com.ulyp.ui.util.CssClass

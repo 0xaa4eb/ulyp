@@ -4,9 +4,7 @@ import com.ulyp.ui.Main
 import com.ulyp.ui.PrimaryViewController
 import com.ulyp.ui.ProcessTabPane
 import com.ulyp.ui.code.SourceCodeView
-import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.looknfeel.ThemeManager
-import javafx.scene.Scene
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.springframework.context.ApplicationContext
