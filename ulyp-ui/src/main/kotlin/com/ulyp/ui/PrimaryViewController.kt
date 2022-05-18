@@ -63,22 +63,8 @@ class PrimaryViewController(
     }
 
     fun showAboutPopup(event: Event?) {
-        val dialog = Stage()
-        dialog.initModality(Modality.APPLICATION_MODAL)
-        dialog.initOwner(Main.stage)
-        val dialogVbox = AnchorPane()
-        val text = StyledText.of("Ulyp 0.2, recording debugger", CssClass.TEXT)
-        dialogVbox.children.add(text)
-
-        AnchorPane.setTopAnchor(text, 50.0)
-        AnchorPane.setBottomAnchor(text, 50.0)
-        AnchorPane.setRightAnchor(text, 50.0)
-        AnchorPane.setLeftAnchor(text, 50.0)
-
-        val dialogScene = Scene(dialogVbox, 300.0, 200.0)
-        dialogScene.stylesheets.add(Theme.DARK.ulypCssPath)
-        dialog.scene = dialogScene
-        dialog.show()
+        val popup = Popup(StyledText.of("This is a text", CssClass.TEXT))
+        popup.show()
     }
 
     fun showControlsPopup(event: Event?) {
