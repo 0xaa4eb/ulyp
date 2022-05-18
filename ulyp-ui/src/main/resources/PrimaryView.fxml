@@ -26,6 +26,12 @@
                         <MenuItem mnemonicParsing="false" onAction="#changeTheme" text="Change theme" />
                     </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showControlsPopup" text="Controls" />
+                        <MenuItem mnemonicParsing="false" onAction="#showAboutPopup" text="About" />
+                    </items>
+                </Menu>
             </menus>
         </MenuBar>
       <SplitPane dividerPositions="0.5014044943820225" prefHeight="418.0" prefWidth="714.0" VBox.vgrow="ALWAYS">

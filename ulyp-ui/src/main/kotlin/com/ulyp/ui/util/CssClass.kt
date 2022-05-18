@@ -4,6 +4,7 @@ import java.util.*
 
 enum class CssClass(vararg classes: String) {
 
+    TEXT("ulyp-ctt-sep"),
     CALL_TREE_ALL("ulyp-ctt"),
     CALL_TREE_TYPE_NAME("ulyp-ctt-typename"),
     CALL_TREE_STRING_LITERAL("ulyp-ctt-string"),

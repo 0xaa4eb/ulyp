@@ -5,17 +5,26 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
+import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.StyledText
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.geometry.Insets
+import javafx.scene.Scene
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import javafx.scene.text.Text
+import javafx.stage.Modality
+import javafx.stage.Stage
 import java.io.File
 import java.net.URL
 import java.util.*
 import java.util.function.Supplier
+
 
 class PrimaryViewController(
         private val sourceCodeView: SourceCodeView,
@@ -51,6 +60,29 @@ class PrimaryViewController(
 
     fun changeAggregation(event: Event?) {
         // TODO maybe implement
+    }
+
+    fun showAboutPopup(event: Event?) {
+        val dialog = Stage()
+        dialog.initModality(Modality.APPLICATION_MODAL)
+        dialog.initOwner(Main.stage)
+        val dialogVbox = AnchorPane()
+        val text = StyledText.of("Ulyp 0.2, recording debugger", CssClass.TEXT)
+        dialogVbox.children.add(text)
+
+        AnchorPane.setTopAnchor(text, 50.0)
+        AnchorPane.setBottomAnchor(text, 50.0)
+        AnchorPane.setRightAnchor(text, 50.0)
+        AnchorPane.setLeftAnchor(text, 50.0)
+
+        val dialogScene = Scene(dialogVbox, 300.0, 200.0)
+        dialogScene.stylesheets.add(Theme.DARK.ulypCssPath)
+        dialog.scene = dialogScene
+        dialog.show()
+    }
+
+    fun showControlsPopup(event: Event?) {
+
     }
 
     fun changeTheme(event: Event?) {
