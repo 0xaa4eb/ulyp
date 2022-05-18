@@ -4,7 +4,9 @@ import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
-import com.ulyp.ui.controls.ControlsPopup
+import com.ulyp.ui.elements.controls.ControlsPopup
+import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
+import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event
@@ -22,7 +24,7 @@ import java.util.function.Supplier
 class PrimaryViewController(
         private val applicationContext: ApplicationContext,
         private val sourceCodeView: SourceCodeView,
-        private val processTabPane: ProcessTabPane,
+        private val fileRecordingTabPane: FileRecordingTabPane,
         private val themeManager: ThemeManager,
         private val fileChooser: Supplier<File>
 ) : Initializable {
@@ -30,16 +32,16 @@ class PrimaryViewController(
     @FXML
     lateinit var primaryPane: VBox
     @FXML
-    lateinit var processTabAnchorPane: AnchorPane
+    lateinit var fileTabPaneAnchorPane: AnchorPane
     @FXML
     lateinit var sourceCodeViewAnchorPane: AnchorPane
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
-        processTabAnchorPane.children.add(processTabPane)
-        AnchorPane.setTopAnchor(processTabPane, 0.0)
-        AnchorPane.setBottomAnchor(processTabPane, 0.0)
-        AnchorPane.setRightAnchor(processTabPane, 0.0)
-        AnchorPane.setLeftAnchor(processTabPane, 0.0)
+        fileTabPaneAnchorPane.children.add(fileRecordingTabPane)
+        AnchorPane.setTopAnchor(fileRecordingTabPane, 0.0)
+        AnchorPane.setBottomAnchor(fileRecordingTabPane, 0.0)
+        AnchorPane.setRightAnchor(fileRecordingTabPane, 0.0)
+        AnchorPane.setLeftAnchor(fileRecordingTabPane, 0.0)
         sourceCodeViewAnchorPane.children.add(sourceCodeView)
         AnchorPane.setTopAnchor(sourceCodeView, 0.0)
         AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
@@ -48,7 +50,7 @@ class PrimaryViewController(
     }
 
     fun clearAll(event: Event?) {
-        processTabPane.clear()
+        fileRecordingTabPane.clear()
     }
 
     fun changeAggregation(event: Event?) {
@@ -75,7 +77,7 @@ class PrimaryViewController(
 
         storageReader.processMetadataFuture.thenAccept { processMetadata ->
             storageReader.subscribe { recording ->
-                val fileRecordingsTab = processTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
+                val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
                 val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(processMetadata, recording)
                 recordingTab.update(recording)
                 Platform.runLater { recordingTab.refreshTreeView() }

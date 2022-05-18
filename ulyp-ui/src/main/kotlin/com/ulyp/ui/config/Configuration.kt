@@ -2,7 +2,7 @@ package com.ulyp.ui.config
 
 import com.ulyp.ui.Main
 import com.ulyp.ui.PrimaryViewController
-import com.ulyp.ui.ProcessTabPane
+import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.ThemeManager
 import javafx.stage.FileChooser
@@ -25,7 +25,7 @@ open class Configuration {
     open fun viewController(
             applicationContext: ApplicationContext,
             sourceCodeView: SourceCodeView,
-            processTabPane: ProcessTabPane,
+            processTabPane: FileRecordingTabPane,
             themeManager: ThemeManager,
             stage: Stage
     ): PrimaryViewController {
@@ -42,8 +42,8 @@ open class Configuration {
 
     @Bean
     @Lazy
-    open fun processTabPane(): ProcessTabPane {
-        val tabPane = ProcessTabPane()
+    open fun processTabPane(): FileRecordingTabPane {
+        val tabPane = FileRecordingTabPane()
 
         tabPane.prefHeight = 408.0
         tabPane.prefWidth = 354.0
