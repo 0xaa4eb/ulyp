@@ -6,27 +6,32 @@ import javafx.scene.Scene
 import javafx.scene.layout.AnchorPane
 import javafx.stage.Modality
 import javafx.stage.Stage
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 
-@Component
-@Scope(value = "prototype")
-class Popup(content: Node) : Stage() {
+open class Popup() : Stage() {
+
+    private val anchorPane = AnchorPane()
 
     init {
         initModality(Modality.APPLICATION_MODAL)
         initOwner(Main.stage)
-        val anchorPane = AnchorPane(content)
-        anchorPane.prefHeight = 300.0
-        anchorPane.prefWidth = 300.0
 
-        AnchorPane.setTopAnchor(content, 50.0)
-        AnchorPane.setBottomAnchor(content, 50.0)
-        AnchorPane.setRightAnchor(content, 50.0)
-        AnchorPane.setLeftAnchor(content, 50.0)
+        anchorPane.prefHeight = 500.0
+        anchorPane.prefWidth = 700.0
 
         val dialogScene = Scene(anchorPane)
         dialogScene.stylesheets.add(Theme.DARK.ulypCssPath)
         scene = dialogScene
     }
+
+    var content: Node? = null
+        get() = field
+        set(value) {
+            field = value
+
+            anchorPane.children.add(value)
+            AnchorPane.setTopAnchor(value, 50.0)
+            AnchorPane.setBottomAnchor(value, 50.0)
+            AnchorPane.setRightAnchor(value, 50.0)
+            AnchorPane.setLeftAnchor(value, 50.0)
+        }
 }

@@ -9,10 +9,9 @@ import com.ulyp.ui.looknfeel.ThemeManager
 import javafx.scene.Scene
 import javafx.stage.FileChooser
 import javafx.stage.Stage
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.ApplicationContext
+import org.springframework.context.annotation.*
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Lazy
 
 @Configuration
 @ComponentScan(value = ["com.ulyp.ui"])
@@ -26,18 +25,18 @@ open class Configuration {
     @Bean
     @Lazy
     open fun viewController(
+            applicationContext: ApplicationContext,
             sourceCodeView: SourceCodeView,
             processTabPane: ProcessTabPane,
-            fontSizeChanger: FontSizeChanger,
             themeManager: ThemeManager,
             stage: Stage
     ): PrimaryViewController {
         val fileChooser = FileChooser()
 
         return PrimaryViewController(
+                applicationContext,
                 sourceCodeView,
                 processTabPane,
-                fontSizeChanger,
                 themeManager,
                 { fileChooser.showOpenDialog(stage) }
         )

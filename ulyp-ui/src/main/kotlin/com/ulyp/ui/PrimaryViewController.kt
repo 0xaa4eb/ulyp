@@ -2,11 +2,9 @@ package com.ulyp.ui
 
 import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.ui.code.SourceCodeView
-import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
-import com.ulyp.ui.util.CssClass
-import com.ulyp.ui.util.StyledText
+import com.ulyp.ui.menu.ControlsPopup
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event
@@ -14,6 +12,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
+import org.springframework.context.ApplicationContext
 import java.io.File
 import java.net.URL
 import java.util.*
@@ -21,6 +20,7 @@ import java.util.function.Supplier
 
 
 class PrimaryViewController(
+        private val applicationContext: ApplicationContext,
         private val sourceCodeView: SourceCodeView,
         private val processTabPane: ProcessTabPane,
         private val themeManager: ThemeManager,
@@ -56,12 +56,12 @@ class PrimaryViewController(
     }
 
     fun showAboutPopup(event: Event?) {
-        val popup = Popup(StyledText.of("This is a text", CssClass.HELP_TEXT))
-        popup.show()
+
     }
 
     fun showControlsPopup(event: Event?) {
-
+        val popup = applicationContext.getBean(ControlsPopup::class.java)
+        popup.show()
     }
 
     fun changeTheme(event: Event?) {
