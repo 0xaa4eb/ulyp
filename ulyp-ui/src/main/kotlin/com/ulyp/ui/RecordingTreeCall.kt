@@ -1,7 +1,7 @@
 package com.ulyp.ui
 
 import com.ulyp.storage.CallRecord
-import com.ulyp.ui.renderers.RenderedObject.Companion.of
+import com.ulyp.ui.renderers.RecordedObject.Companion.of
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.TextBuilder
@@ -20,14 +20,14 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
         private fun renderReturnValue(node: CallRecord, renderSettings: RenderSettings): List<Node> {
             return if (node.method.returnsSomething() || node.hasThrown()) {
                 val output: MutableList<Node> = ArrayList()
-                var renderedReturnValue = WithStylesPane(
+                var returnValue = WithStylesPane(
                         of(node.returnValue, renderSettings),
                         CssClass.CALL_TREE_ALL,
                         CssClass.CALL_TREE_RETURN_VALUE
                 ).get()
                 if (node.hasThrown()) {
-                    renderedReturnValue = WithStylesPane(
-                        renderedReturnValue,
+                    returnValue = WithStylesPane(
+                        returnValue,
                         CssClass.CALL_TREE_ALL,
                         CssClass.CALL_TREE_THROWN
                     ).get()
@@ -38,7 +38,7 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                             .build()
                     )
                 }
-                output.add(renderedReturnValue)
+                output.add(returnValue)
                 output.add(
                         text().text(" : ")
                                 .style(CssClass.CALL_TREE_ALL)

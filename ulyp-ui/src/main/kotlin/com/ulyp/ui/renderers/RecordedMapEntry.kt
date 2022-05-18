@@ -6,7 +6,7 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings?) : RenderedObject(record.type) {
+class RecordedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings?) : RecordedObject(record.type) {
 
     init {
         val texts: MutableList<Node> = ArrayList()

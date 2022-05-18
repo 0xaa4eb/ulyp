@@ -7,8 +7,8 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
 
-class RenderedString internal constructor(record: StringObjectRecord, classDescription: Type?, renderSettings: RenderSettings?)
-    : RenderedObject(classDescription) {
+class RecordedString internal constructor(record: StringObjectRecord, classDescription: Type?, renderSettings: RenderSettings?)
+    : RecordedObject(classDescription) {
 
     init {
         val text: Text = MultilinedText("\"" + record.value() + "\"")

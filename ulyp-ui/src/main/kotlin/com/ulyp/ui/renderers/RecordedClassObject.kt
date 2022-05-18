@@ -6,7 +6,7 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.text.Text
 
-class RenderedClassObject(record: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
+class RecordedClassObject(record: ClassObjectRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
 
     init {
         if (renderSettings.showTypes()) {

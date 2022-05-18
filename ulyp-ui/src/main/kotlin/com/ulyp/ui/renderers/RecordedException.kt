@@ -8,7 +8,7 @@ import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RenderedThrowable(record: ThrowableRecord, renderSettings: RenderSettings) : RenderedObject(record.type) {
+class RecordedException(record: ThrowableRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
 
     init {
         val className =

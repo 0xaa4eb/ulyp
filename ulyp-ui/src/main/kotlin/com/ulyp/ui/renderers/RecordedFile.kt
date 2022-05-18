@@ -5,7 +5,7 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.CssClass
 import com.ulyp.ui.util.StyledText
 
-class RenderedFile(filePath: String, type: Type, renderSettings: RenderSettings) : RenderedObject(type) {
+class RecordedFile(filePath: String, type: Type, renderSettings: RenderSettings) : RecordedObject(type) {
 
     init {
         if (renderSettings.showTypes()) {
