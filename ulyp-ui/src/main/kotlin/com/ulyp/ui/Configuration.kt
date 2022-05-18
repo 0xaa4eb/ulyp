@@ -1,7 +1,5 @@
-package com.ulyp.ui.config
+package com.ulyp.ui
 
-import com.ulyp.ui.Main
-import com.ulyp.ui.PrimaryViewController
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.ThemeManager

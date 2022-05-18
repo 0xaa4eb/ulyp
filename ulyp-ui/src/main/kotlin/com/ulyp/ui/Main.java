@@ -1,6 +1,5 @@
 package com.ulyp.ui;
 
-import com.ulyp.ui.config.Configuration;
 import com.ulyp.ui.looknfeel.Theme;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
