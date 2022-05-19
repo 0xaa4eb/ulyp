@@ -6,7 +6,7 @@ import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.CollectionRecorder;
 import com.ulyp.core.recorders.MapRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.ToStringRecorder;
+import com.ulyp.core.recorders.ToStringPrintingRecorder;
 import com.ulyp.core.util.*;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -63,7 +63,7 @@ public class Agent {
         MapRecorder mapRecorder = (MapRecorder) ObjectRecorderRegistry.MAP_RECORDER.getInstance();
         mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
-        ToStringRecorder toStringRecorder = (ToStringRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
+        ToStringPrintingRecorder toStringRecorder = (ToStringPrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getClassesToPrint());
 
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = null;

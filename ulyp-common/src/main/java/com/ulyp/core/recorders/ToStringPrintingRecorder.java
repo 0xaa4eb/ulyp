@@ -10,15 +10,16 @@ import com.ulyp.core.util.ClassMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-public class ToStringRecorder extends ObjectRecorder {
+public class ToStringPrintingRecorder extends ObjectRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
-    private final Set<ClassMatcher> classesToPrint = new HashSet<>();
+    private final Set<ClassMatcher> classesToPrint = new CopyOnWriteArraySet<>();
 
-    protected ToStringRecorder(byte id) {
+    protected ToStringPrintingRecorder(byte id) {
         super(id);
     }
 
