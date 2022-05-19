@@ -100,8 +100,6 @@ public class AsyncFileStorageReader implements StorageReader {
                             break;
                         case RecordingCompleteMark.WIRE_ID:
                             ForkJoinPool.commonPool().execute(executorService::shutdownNow);
-                            if (true)
-                                throw new StorageException("Unknown binary data id " + data.getBytes().id());
                             finishedReadingFuture.complete(true);
                             return;
                         default:
