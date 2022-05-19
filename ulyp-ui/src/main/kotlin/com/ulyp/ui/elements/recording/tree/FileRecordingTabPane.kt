@@ -19,6 +19,8 @@ class FileRecordingTabPane : TabPane() {
     @Autowired
     private lateinit var renderSettings: RenderSettings
 
+    private var lastSelectedOnShowTypes: RecordingTreeNode? = null
+
     fun clear() {
         for (tab in tabs) {
             val fileRecordingsTab = tab as FileRecordingsTab
@@ -51,6 +53,7 @@ class FileRecordingTabPane : TabPane() {
             val selected = selectedTab.selectedTreeTab.getSelected()
             if (selected != null) {
                 renderSettings.setShowTypes(true)
+                lastSelectedOnShowTypes = selected
                 selected.refresh()
             }
         } else {
@@ -73,10 +76,14 @@ class FileRecordingTabPane : TabPane() {
 
     fun keyReleased(event: KeyEvent) {
         if (event.code == KeyCode.SHIFT) {
-            val selected = selectedTab.selectedTreeTab.getSelected()
-            if (selected != null) {
-                renderSettings.setShowTypes(false)
-                selected.refresh()
+            renderSettings.setShowTypes(false)
+            if (lastSelectedOnShowTypes != null) {
+                lastSelectedOnShowTypes!!.refresh()
+            } else {
+                val selected = selectedTab.selectedTreeTab.getSelected()
+                if (selected != null) {
+                    selected.refresh()
+                }
             }
         }
     }
