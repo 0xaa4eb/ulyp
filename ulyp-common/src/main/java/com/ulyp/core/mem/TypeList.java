@@ -45,6 +45,10 @@ public class TypeList implements Iterable<Type> {
         return bytes.size();
     }
 
+    public int byteLength() {
+        return bytes.byteLength();
+    }
+
     public BinaryList getRawBytes() {
         return bytes;
     }

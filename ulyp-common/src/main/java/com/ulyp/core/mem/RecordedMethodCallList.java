@@ -146,6 +146,10 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         return bytes.size();
     }
 
+    public int byteLength() {
+        return bytes.byteLength();
+    }
+
     public BinaryList getRawBytes() {
         return bytes;
     }

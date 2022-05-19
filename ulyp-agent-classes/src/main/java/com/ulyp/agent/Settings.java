@@ -51,7 +51,11 @@ public class Settings {
                 storageWriterSupplier = new Supplier<StorageWriter>() {
                     @Override
                     public StorageWriter get() {
-                        return StorageWriter.async(StorageWriter.forFile(Paths.get(filePath).toFile()));
+                        return StorageWriter.async(
+                                StorageWriter.statsRecording(
+                                        StorageWriter.forFile(Paths.get(filePath).toFile())
+                                )
+                        );
                     }
 
                     @Override

@@ -8,10 +8,15 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.impl.AsyncFileStorageWriter;
 import com.ulyp.storage.impl.DevNullStorageWriter;
 import com.ulyp.storage.impl.FileStorageWriter;
+import com.ulyp.storage.impl.StatsRecordingStorageWriter;
 
 import java.io.File;
 
 public interface StorageWriter extends AutoCloseable {
+
+    static StorageWriter statsRecording(StorageWriter delegate) {
+        return new StatsRecordingStorageWriter(delegate);
+    }
 
     static StorageWriter async(StorageWriter delegate) {
         return new AsyncFileStorageWriter(delegate);

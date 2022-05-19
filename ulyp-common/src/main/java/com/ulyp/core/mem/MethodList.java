@@ -46,6 +46,10 @@ public class MethodList implements Iterable<Method> {
         return bytes.size();
     }
 
+    public int byteLength() {
+        return bytes.byteLength();
+    }
+
     public BinaryList getRawBytes() {
         return bytes;
     }

@@ -22,12 +22,10 @@ import java.io.IOException;
 @Slf4j
 public class FileStorageWriter implements StorageWriter {
 
-    private final File file;
     private final BinaryListFileWriter fileWriter;
 
     public FileStorageWriter(File file) throws StorageException {
         try {
-            this.file = file;
             this.fileWriter = new BinaryListFileWriter(file);
         } catch (IOException e) {
             throw new StorageException("Could not build storage for file " + file, e);

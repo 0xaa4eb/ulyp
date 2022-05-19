@@ -55,7 +55,7 @@ public class BenchmarksForSomeProfileMain {
 
     private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
 
-        try (TimeMeasurer _ = new TimeMeasurer(procTimeHistogram)) {
+        try (TimeMeasurer $ = new TimeMeasurer(procTimeHistogram)) {
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
 
             if (profile.shouldWriteRecording()) {
