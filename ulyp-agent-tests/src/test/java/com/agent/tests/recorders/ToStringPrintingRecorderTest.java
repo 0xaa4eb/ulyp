@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.PrintedObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -20,7 +21,7 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("foo")
+                        .withMethodToRecord("returnPrintableObject")
         );
 
 
@@ -33,7 +34,7 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = run(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("foo")
+                        .withMethodToRecord("returnPrintableObject")
                         .withPrintClasses("**.X")
         );
 
@@ -44,6 +45,23 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
         StringObjectRecord value = printed.getPrinted();
 
         assertThat(value.value(), is("X{val=5}"));
+    }
+
+    @Test
+    public void shouldRecordAtLeastIdentityIfToStringCallFailed() {
+
+        CallRecord root = run(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnNonPrintableObject")
+                        .withPrintClasses("**.ToStringThrowingClass")
+        );
+
+
+        assertThat(root.getReturnValue(), instanceOf(IdentityObjectRecord.class));
+
+        IdentityObjectRecord printed = (IdentityObjectRecord) root.getReturnValue();
+        assertThat(printed.getType().getName(), Matchers.is(ToStringThrowingClass.class.getName()));
     }
 
     static class X {
@@ -61,14 +79,28 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
         }
     }
 
+    static class ToStringThrowingClass {
+        @Override
+        public String toString() {
+            throw new RuntimeException("ToString() failed...");
+        }
+    }
+
     static class TestCase {
 
-        public static X foo() {
+        public static X returnPrintableObject() {
             return new X(5);
         }
 
+        public static ToStringThrowingClass returnNonPrintableObject() {
+            return new ToStringThrowingClass();
+        }
+
         public static void main(String[] args) {
-            System.out.println(foo());
+            System.out.println(returnPrintableObject());
+
+            // Do not call toString() as it will throw exception
+            System.out.println(returnNonPrintableObject().hashCode());
         }
     }
 }
