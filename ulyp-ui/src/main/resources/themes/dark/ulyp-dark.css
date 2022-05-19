@@ -76,6 +76,10 @@
     -fx-fill: rgb(169, 183, 198);
 }
 
+.ulyp-ctt-identity-hash-code {
+    -fx-font-size: 0.8em;
+}
+
 .ulyp-ctt-string {
     -fx-fill: rgb(0, 120, 0);
 }

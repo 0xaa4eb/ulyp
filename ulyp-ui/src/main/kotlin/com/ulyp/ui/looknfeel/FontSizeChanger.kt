@@ -32,10 +32,15 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
             path.toFile().deleteOnExit()
             Files.write(
                 path,
-                """.ulyp-ctt {
-                -fx-font-family: ${fontChooser.getFontName()};
-                -fx-font-size: ${font}em;
-                }""".toByteArray(StandardCharsets.UTF_8),
+                """
+                .ulyp-ctt {
+                    -fx-font-family: ${fontChooser.getFontName()};
+                    -fx-font-size: ${font}em;
+                }
+                .ulyp-ctt-identity-hash-code {
+                    -fx-font-size: ${font * 0.8}em;
+                }
+                """.toByteArray(StandardCharsets.UTF_8),
                 StandardOpenOption.WRITE
             )
             var index: Int? = null
