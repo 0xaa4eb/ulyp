@@ -13,6 +13,6 @@ class ExceptionAsText(exception: Throwable): Text() {
         val printWriter = PrintWriter(stringWriter)
         exception.printStackTrace(printWriter)
         this.text = stringWriter.toString()
-        styleClass.addAll(CssClass.ERROR_TEXT.cssClasses)
+        styleClass.addAll(CssClass.ERROR_TEXT_CSS.cssClasses)
     }
 }

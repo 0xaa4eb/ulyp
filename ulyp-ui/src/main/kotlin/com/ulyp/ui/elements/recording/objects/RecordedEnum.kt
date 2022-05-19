@@ -13,9 +13,9 @@ class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : Recorde
 
         super.getChildren().addAll(
             listOf(
-                of(className, CssClass.CALL_TREE_TYPE_NAME),
-                of(".", CssClass.CALL_TREE_NODE_SEPARATOR),
-                of(record.name, CssClass.CALL_TREE_NODE_SEPARATOR)
+                of(className, CssClass.CALL_TREE_TYPE_NAME_CSS),
+                of(".", CssClass.CALL_TREE_NODE_SEPARATOR_CSS),
+                of(record.name, CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
             )
         )
     }

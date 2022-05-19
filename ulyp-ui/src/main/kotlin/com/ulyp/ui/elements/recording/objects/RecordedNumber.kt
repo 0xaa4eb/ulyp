@@ -9,9 +9,9 @@ class RecordedNumber(numberPrinted: String, type: Type, renderSettings: RenderSe
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(StyledText.of(type.name, CssClass.CALL_TREE_TYPE_NAME))
-            super.getChildren().add(StyledText.of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
+            super.getChildren().add(StyledText.of(type.name, CssClass.CALL_TREE_TYPE_NAME_CSS))
+            super.getChildren().add(StyledText.of(": ", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
         }
-        super.getChildren().add(StyledText.of(numberPrinted, CssClass.CALL_TREE_NUMBER))
+        super.getChildren().add(StyledText.of(numberPrinted, CssClass.CALL_TREE_NUMBER_CSS))
     }
 }

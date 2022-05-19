@@ -17,20 +17,20 @@ class RecordedMap(record: MapRecord, renderSettings: RenderSettings) : RecordedO
             .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {
-            texts.add(of(record.type.name, CssClass.CALL_TREE_TYPE_NAME))
-            texts.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
+            texts.add(of(record.type.name, CssClass.CALL_TREE_TYPE_NAME_CSS))
+            texts.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
         }
-        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET))
+        texts.add(of("{", CssClass.CALL_TREE_COLLECTION_BRACKET_CSS))
         for (i in entries.indices) {
             texts.add(entries[i])
             if (i != entries.size - 1 || entries.size < record.size) {
-                texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR))
+                texts.add(of(", ", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
             }
         }
         if (entries.size < record.size) {
-            texts.add(of((record.size - entries.size).toString() + " more...", CssClass.CALL_TREE_NODE_SEPARATOR))
+            texts.add(of((record.size - entries.size).toString() + " more...", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
         }
-        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACKET))
+        texts.add(of("}", CssClass.CALL_TREE_COLLECTION_BRACKET_CSS))
         super.getChildren().addAll(texts)
     }
 }

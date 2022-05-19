@@ -17,12 +17,12 @@ class RecordedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderS
 
 
         if (record.printed.value().contains(typeName)) {
-            nodes.add(of(typeName, CssClass.CALL_TREE_TYPE_NAME))
-            nodes.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR))
+            nodes.add(of(typeName, CssClass.CALL_TREE_TYPE_NAME_CSS))
+            nodes.add(of(": ", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
         }
         nodes.add(of(record.printed, renderSettings))
-        nodes.add(of("@", CssClass.CALL_TREE_IDENTITY))
-        nodes.add(of(Integer.toHexString(record.identityHashCode), CssClass.CALL_TREE_IDENTITY))
+        nodes.add(of("@", CssClass.CALL_TREE_IDENTITY_CSS))
+        nodes.add(of(Integer.toHexString(record.identityHashCode), CssClass.CALL_TREE_IDENTITY_CSS))
 
         super.getChildren().addAll(nodes)
     }

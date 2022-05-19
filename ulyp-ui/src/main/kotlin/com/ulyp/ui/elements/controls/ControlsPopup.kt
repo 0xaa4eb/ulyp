@@ -13,9 +13,9 @@ class ControlsPopup() : Popup() {
 
     init {
         val items = FXCollections.observableArrayList(
-                StyledText.of("+: Increase font size", CssClass.HELP_TEXT),
-                StyledText.of("-: Decrease font size", CssClass.HELP_TEXT),
-                StyledText.of("Hold shift: Show full type names", CssClass.HELP_TEXT)
+                StyledText.of("+: Increase font size", CssClass.HELP_TEXT_CSS),
+                StyledText.of("-: Decrease font size", CssClass.HELP_TEXT_CSS),
+                StyledText.of("Hold shift: Show full type names", CssClass.HELP_TEXT_CSS)
         )
 
         val list = ListView(items)

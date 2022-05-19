@@ -14,12 +14,12 @@ class RecordedException(record: ThrowableRecord, renderSettings: RenderSettings)
         val className =
             if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
         val children: MutableList<Node> = ArrayList()
-        children.add(of(className, CssClass.CALL_TREE_TYPE_NAME))
-        children.add(of("(", CssClass.CALL_TREE_IDENTITY))
+        children.add(of(className, CssClass.CALL_TREE_TYPE_NAME_CSS))
+        children.add(of("(", CssClass.CALL_TREE_IDENTITY_CSS))
         if (record.message !is NullObjectRecord) {
             children.add(of(record.message, renderSettings))
         }
-        children.add(of(")", CssClass.CALL_TREE_IDENTITY))
+        children.add(of(")", CssClass.CALL_TREE_IDENTITY_CSS))
         super.getChildren().addAll(children)
     }
 }

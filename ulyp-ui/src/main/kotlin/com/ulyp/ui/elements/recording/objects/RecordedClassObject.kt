@@ -10,7 +10,7 @@ class RecordedClassObject(record: ClassObjectRecord, renderSettings: RenderSetti
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(of(Class::class.java.name + ": ", CssClass.CALL_TREE_TYPE_NAME))
+            super.getChildren().add(of(Class::class.java.name + ": ", CssClass.CALL_TREE_TYPE_NAME_CSS))
         }
         val text: Text = MultilinedText("class " + record.carriedType.name)
         super.getChildren().add(text)

@@ -12,6 +12,6 @@ class RecordedString internal constructor(record: StringObjectRecord, classDescr
 
     init {
         val text: Text = MultilinedText("\"" + record.value() + "\"")
-        super.getChildren().add(StyledText.of(text.text, CssClass.CALL_TREE_STRING_LITERAL))
+        super.getChildren().add(StyledText.of(text.text, CssClass.CALL_TREE_STRING_LITERAL_CSS))
     }
 }

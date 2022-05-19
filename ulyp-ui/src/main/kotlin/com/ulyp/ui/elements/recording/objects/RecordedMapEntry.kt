@@ -11,7 +11,7 @@ class RecordedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings?) 
     init {
         val texts: MutableList<Node> = ArrayList()
         texts.add(of(record.key, renderSettings))
-        texts.add(of(" -> ", CssClass.CALL_TREE_NODE_SEPARATOR))
+        texts.add(of(" -> ", CssClass.CALL_TREE_NODE_SEPARATOR_CSS))
         texts.add(of(record.value, renderSettings))
         super.getChildren().addAll(texts)
     }
