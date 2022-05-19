@@ -20,6 +20,10 @@ public interface StorageReader extends AutoCloseable {
 
     CompletableFuture<ProcessMetadata> getProcessMetadataFuture();
 
+    /**
+     * If reading finishes successfully, then the returned future will be completed
+     * with true value, otherwise it completes exceptionally
+     */
     CompletableFuture<Boolean> getFinishedReadingFuture();
 
     void subscribe(RecordingListener listener);

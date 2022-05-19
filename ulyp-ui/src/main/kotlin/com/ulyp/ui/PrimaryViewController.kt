@@ -5,8 +5,11 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.elements.controls.ControlsPopup
+import com.ulyp.ui.elements.controls.ErrorPopup
+import com.ulyp.ui.elements.misc.ExceptionAsText
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
+import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.Event
@@ -85,5 +88,17 @@ class PrimaryViewController(
         }
 
         storageReader.start()
+
+        storageReader.finishedReadingFuture.exceptionally {
+            FxThreadExecutor.execute {
+                val errorPopup = applicationContext.getBean(
+                        ErrorPopup::class.java,
+                        "Stopped reading recording file $file with error: " + it.message,
+                        ExceptionAsText(it)
+                )
+                errorPopup.show()
+            }
+            true
+        }
     }
 }
