@@ -3,7 +3,7 @@ package com.ulyp.ui.elements.recording.objects
 import com.ulyp.core.recorders.IdentityObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.CssClass.*
+import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
 class RecordedIdentityObject(record: IdentityObjectRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
@@ -13,9 +13,9 @@ class RecordedIdentityObject(record: IdentityObjectRecord, renderSettings: Rende
 
         super.getChildren().addAll(
             listOf(
-                of(className, CALL_TREE_TYPE_NAME_CSS),
-                of("@", CALL_TREE_IDENTITY_CSS, CALL_TREE_IDENTITY_HASH_CODE_CSS),
-                of(Integer.toHexString(record.hashCode), CALL_TREE_IDENTITY_CSS, CALL_TREE_IDENTITY_HASH_CODE_CSS)
+                of(className, Style.CALL_TREE_TYPE_NAME),
+                of("@", Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE),
+                of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE)
             )
         )
     }

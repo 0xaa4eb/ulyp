@@ -4,7 +4,7 @@ import com.ulyp.storage.CallRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.elements.recording.objects.RecordedObject.Companion.of
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.TextBuilder
 import com.ulyp.ui.util.WithStylesPane
 import javafx.scene.Node
@@ -23,27 +23,27 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                 val output: MutableList<Node> = ArrayList()
                 var returnValue = WithStylesPane(
                         of(node.returnValue, renderSettings),
-                        CssClass.CALL_TREE_ALL_CSS,
-                        CssClass.CALL_TREE_RETURN_VALUE_CSS
+                        Style.CALL_TREE,
+                        Style.CALL_TREE_RETURN_VALUE
                 ).get()
                 if (node.hasThrown()) {
                     returnValue = WithStylesPane(
                         returnValue,
-                        CssClass.CALL_TREE_ALL_CSS,
-                        CssClass.CALL_TREE_THROWN_CSS
+                        Style.CALL_TREE,
+                        Style.CALL_TREE_THROWN
                     ).get()
                     output.add(
                         text().text("\uD83D\uDDF2")
-                            .style(CssClass.CALL_TREE_ALL_CSS)
-                            .style(CssClass.CALL_TREE_THROWN_CSS)
+                            .style(Style.CALL_TREE)
+                            .style(Style.CALL_TREE_THROWN)
                             .build()
                     )
                 }
                 output.add(returnValue)
                 output.add(
                         text().text(" : ")
-                                .style(CssClass.CALL_TREE_ALL_CSS)
-                                .style(CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
+                                .style(Style.CALL_TREE)
+                                .style(Style.CALL_TREE_NODE_SEPARATOR)
                                 .build()
                 )
                 output
@@ -55,8 +55,8 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
         private fun renderArguments(node: CallRecord, renderSettings: RenderSettings): List<Node> {
             val output: MutableList<Node> = ArrayList()
             output.add(text().text("(")
-                    .style(CssClass.CALL_TREE_ALL_CSS)
-                    .style(CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
+                    .style(Style.CALL_TREE)
+                    .style(Style.CALL_TREE_NODE_SEPARATOR)
                     .build()
             )
             for (i in node.args.indices) {
@@ -64,14 +64,14 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                 output.add(of(argValue, renderSettings))
                 if (i < node.args.size - 1) {
                     output.add(text().text(", ")
-                            .style(CssClass.CALL_TREE_ALL_CSS)
-                            .style(CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
+                            .style(Style.CALL_TREE)
+                            .style(Style.CALL_TREE_NODE_SEPARATOR)
                             .build())
                 }
             }
             output.add(text().text(")")
-                    .style(CssClass.CALL_TREE_ALL_CSS)
-                    .style(CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
+                    .style(Style.CALL_TREE)
+                    .style(Style.CALL_TREE_NODE_SEPARATOR)
                     .build())
             return output
         }
@@ -82,16 +82,16 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
             if (node.method.isStatic || node.method.isConstructor) {
                 result.add(
                         text().text(toSimpleName(node.method.declaringType.name))
-                                .style(CssClass.CALL_TREE_ALL_CSS)
-                                .style(CssClass.CALL_TREE_METHOD_NAME_CSS)
+                                .style(Style.CALL_TREE)
+                                .style(Style.CALL_TREE_METHOD_NAME)
                                 .build()
                 )
             } else {
                 val callee = of(node.callee, renderSettings)
                 callee.children.forEach(
                         Consumer { child: Node ->
-                            child.styleClass.addAll(CssClass.CALL_TREE_ALL_CSS.cssClasses)
-                            child.styleClass.addAll(CssClass.CALL_TREE_CALLEE_CSS.cssClasses)
+                            child.styleClass.addAll(Style.CALL_TREE.cssClasses)
+                            child.styleClass.addAll(Style.CALL_TREE_CALLEE.cssClasses)
                         }
                 )
                 result.add(callee)
@@ -99,19 +99,19 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
 
             result.add(
                     text().text(".")
-                            .style(CssClass.CALL_TREE_ALL_CSS)
-                            .style(CssClass.CALL_TREE_METHOD_NAME_CSS)
+                            .style(Style.CALL_TREE)
+                            .style(Style.CALL_TREE_METHOD_NAME)
                             .build()
             )
 
             var methodNameBuilder = text().text(node.method.name)
-                    .style(CssClass.CALL_TREE_ALL_CSS)
-                    .style(CssClass.CALL_TREE_METHOD_NAME_CSS)
+                    .style(Style.CALL_TREE)
+                    .style(Style.CALL_TREE_METHOD_NAME)
 
             if (node.method.isStatic) {
                 methodNameBuilder = methodNameBuilder
-                        .style(CssClass.CALL_TREE_ALL_CSS)
-                        .style(CssClass.CALL_TREE_METHOD_NAME_CSS)
+                        .style(Style.CALL_TREE)
+                        .style(Style.CALL_TREE_METHOD_NAME)
             }
             result.add(methodNameBuilder.build())
             return result

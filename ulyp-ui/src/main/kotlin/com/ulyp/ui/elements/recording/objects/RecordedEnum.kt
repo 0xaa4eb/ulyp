@@ -3,7 +3,7 @@ package com.ulyp.ui.elements.recording.objects
 import com.ulyp.core.recorders.EnumRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
 class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
@@ -13,9 +13,9 @@ class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : Recorde
 
         super.getChildren().addAll(
             listOf(
-                of(className, CssClass.CALL_TREE_TYPE_NAME_CSS),
-                of(".", CssClass.CALL_TREE_NODE_SEPARATOR_CSS),
-                of(record.name, CssClass.CALL_TREE_NODE_SEPARATOR_CSS)
+                of(className, Style.CALL_TREE_TYPE_NAME),
+                of(".", Style.CALL_TREE_NODE_SEPARATOR),
+                of(record.name, Style.CALL_TREE_NODE_SEPARATOR)
             )
         )
     }

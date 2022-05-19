@@ -18,7 +18,7 @@ class TextBuilder {
         return this
     }
 
-    fun style(clazz: CssClass): TextBuilder {
+    fun style(clazz: Style): TextBuilder {
         clazzes.addAll(clazz.cssClasses)
         return this
     }

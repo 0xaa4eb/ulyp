@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.controls
 
-import com.ulyp.ui.util.CssClass
+import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import javafx.collections.FXCollections
 import javafx.scene.control.ListView
@@ -13,9 +13,9 @@ class ControlsPopup() : Popup() {
 
     init {
         val items = FXCollections.observableArrayList(
-                StyledText.of("+: Increase font size", CssClass.HELP_TEXT_CSS),
-                StyledText.of("-: Decrease font size", CssClass.HELP_TEXT_CSS),
-                StyledText.of("Hold shift: Show full type names", CssClass.HELP_TEXT_CSS)
+                StyledText.of("+: Increase font size", Style.HELP_TEXT),
+                StyledText.of("-: Decrease font size", Style.HELP_TEXT),
+                StyledText.of("Hold shift: Show full type names", Style.HELP_TEXT)
         )
 
         val list = ListView(items)
