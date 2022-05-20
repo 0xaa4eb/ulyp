@@ -1,0 +1,19 @@
+.tooltip {
+    -fx-font-size: 0.8em;
+}
+
+.ulyp-help-text {
+    -fx-font-size: 1.2em;
+}
+
+.ulyp-error-text {
+    -fx-font-size: 1.2em;
+}
+
+.ulyp-ctt {
+    -fx-font-size: 1.0em;
+}
+
+.ulyp-ctt-identity-hash-code {
+    -fx-font-size: 0.8em;
+}

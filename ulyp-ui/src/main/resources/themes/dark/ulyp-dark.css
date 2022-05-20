@@ -57,27 +57,16 @@
 
 /* ULYP part */
 
-.tooltip {
-    -fx-font-size: 0.8em;
-}
-
 .ulyp-error-text {
-    -fx-font-size: 1.2em;
     -fx-fill: rgb(255, 30, 30);
 }
 
 .ulyp-help-text {
-    -fx-font-size: 1.2em;
     -fx-fill: rgb(169, 183, 198);
 }
 
 .ulyp-ctt {
-    -fx-font-size: 1.0em;
     -fx-fill: rgb(169, 183, 198);
-}
-
-.ulyp-ctt-identity-hash-code {
-    -fx-font-size: 0.8em;
 }
 
 .ulyp-ctt-string {

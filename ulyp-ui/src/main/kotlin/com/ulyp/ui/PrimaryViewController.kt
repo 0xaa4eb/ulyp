@@ -12,7 +12,6 @@ import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.event.ActionEvent
-import javafx.event.Event
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.layout.AnchorPane
@@ -52,25 +51,25 @@ class PrimaryViewController(
         AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
     }
 
-    fun clearAll(event: Event?) {
+    fun clearAll() {
         fileRecordingTabPane.clear()
     }
 
-    fun changeAggregation(event: Event?) {
+    fun changeAggregation() {
         // TODO maybe implement
     }
 
-    fun showAboutPopup(event: Event?) {
+    fun showAboutPopup() {
 
     }
 
-    fun showControlsPopup(event: Event?) {
+    fun showControlsPopup() {
         val popup = applicationContext.getBean(ControlsPopup::class.java)
         popup.show()
     }
 
-    fun changeTheme(event: Event?) {
-        themeManager.applyTheme(Theme.LIGHT, primaryPane.scene)
+    fun changeTheme() {
+        themeManager.switchToNextTheme(primaryPane.scene)
     }
 
     fun openRecordedDump(actionEvent: ActionEvent?) {

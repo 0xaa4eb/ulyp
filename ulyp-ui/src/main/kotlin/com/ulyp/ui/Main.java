@@ -30,7 +30,7 @@ public class Main extends Application {
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Theme.DARK.getUlypCssPath());
+        scene.getStylesheets().addAll(Theme.DARK.getUlypCssPath());
 
         stage.setScene(scene);
         stage.setMaximized(true);

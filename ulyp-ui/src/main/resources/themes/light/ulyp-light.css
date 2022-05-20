@@ -1,19 +1,6 @@
 
-.tooltip {
-    -fx-font-size: 0.8em;
-}
-
 .ulyp-error-text {
-    -fx-font-size: 1.2em;
     -fx-fill: rgb(255, 30, 30);
-}
-
-.ulyp-help-text {
-    -fx-font-size: 1.2em;
-}
-
-.ulyp-ctt {
-    -fx-font-size: 1.0em;
 }
 
 .ulyp-ctt-string {

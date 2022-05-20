@@ -67,6 +67,6 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
     }
 
     companion object {
-        private const val STYLE_PREFIX = "ulyp-ctt-font-style"
+        private const val STYLE_PREFIX = "ctt-font-style"
     }
 }

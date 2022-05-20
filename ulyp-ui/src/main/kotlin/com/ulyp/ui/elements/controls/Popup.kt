@@ -20,7 +20,8 @@ open class Popup() : Stage() {
         anchorPane.prefWidth = 700.0
 
         val dialogScene = Scene(anchorPane)
-        dialogScene.stylesheets.add(Theme.DARK.ulypCssPath)
+        // TODO get current theme
+        dialogScene.stylesheets.addAll(Theme.DARK.ulypCssPath)
         scene = dialogScene
     }
 
