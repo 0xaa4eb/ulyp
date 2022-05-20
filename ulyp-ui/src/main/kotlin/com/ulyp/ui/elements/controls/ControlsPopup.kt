@@ -1,15 +1,17 @@
 package com.ulyp.ui.elements.controls
 
+import com.ulyp.ui.SceneRegistry
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import javafx.collections.FXCollections
 import javafx.scene.control.ListView
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 @Component
 @Scope(value = "prototype")
-class ControlsPopup() : Popup() {
+class ControlsPopup(@Autowired sceneRegistry: SceneRegistry) : Popup(sceneRegistry) {
 
     init {
         val items = FXCollections.observableArrayList(

@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox fx:id="primaryPane" prefHeight="469.0" prefWidth="713.4" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ulyp.ui.PrimaryViewController">
+<VBox fx:id="primaryPane" prefHeight="469.0" prefWidth="713.4" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ulyp.ui.PrimaryView">
     <children>
         <MenuBar>
             <menus>
@@ -13,6 +13,7 @@
                    <items>
                       <MenuItem mnemonicParsing="false" onAction="#openRecordedDump" text="Open dump" />
                       <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Close all recordings" />
+                       <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Settings" />
                    </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Tabs">

@@ -20,19 +20,19 @@ open class Configuration {
 
     @Bean
     @Lazy
-    open fun viewController(
+    open fun primaryView(
             applicationContext: ApplicationContext,
             sourceCodeView: SourceCodeView,
-            processTabPane: FileRecordingTabPane,
+            fileRecordingTabPane: FileRecordingTabPane,
             themeManager: ThemeManager,
             stage: Stage
-    ): PrimaryViewController {
+    ): PrimaryView {
         val fileChooser = FileChooser()
 
-        return PrimaryViewController(
+        return PrimaryView(
                 applicationContext,
                 sourceCodeView,
-                processTabPane,
+                fileRecordingTabPane,
                 themeManager,
                 { fileChooser.showOpenDialog(stage) }
         )
@@ -40,7 +40,17 @@ open class Configuration {
 
     @Bean
     @Lazy
-    open fun processTabPane(): FileRecordingTabPane {
+    open fun settingsView(
+            applicationContext: ApplicationContext,
+            themeManager: ThemeManager,
+            stage: Stage
+    ): SettingsView {
+        return SettingsView(applicationContext, themeManager)
+    }
+
+    @Bean
+    @Lazy
+    open fun fileRecordingTabPane(): FileRecordingTabPane {
         val tabPane = FileRecordingTabPane()
 
         tabPane.prefHeight = 408.0

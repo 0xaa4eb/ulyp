@@ -1,6 +1,6 @@
 package com.ulyp.ui;
 
-import com.ulyp.ui.looknfeel.Theme;
+import com.ulyp.ui.looknfeel.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,11 +27,14 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(Main.class.getClassLoader().getResource("PrimaryView.fxml"));
         loader.setControllerFactory(cl -> context.getBean(cl));
 
+        SceneRegistry sceneRegistry = context.getBean(SceneRegistry.class);
+
+        ThemeManager themeManager = context.getBean(ThemeManager.class);
+        themeManager.setSceneRegistry(sceneRegistry);
+
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);
-        scene.getStylesheets().addAll(Theme.DARK.getUlypCssPath());
-
+        Scene scene = sceneRegistry.newScene(root);
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.setOnCloseRequest(event -> System.exit(0));

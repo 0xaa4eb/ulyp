@@ -1,5 +1,6 @@
 package com.ulyp.ui.code.find
 
+import com.ulyp.core.exception.UlypException
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.util.file.TmpFile
 import org.jetbrains.java.decompiler.main.decompiler.ConsoleDecompiler
@@ -29,7 +30,7 @@ class ByteCode(private val className: String, private val bytecode: ByteArray) {
         return try {
             SourceCode(className, Files.readAllLines(output).stream().collect(Collectors.joining("\n")))
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw UlypException(e)
         } finally {
             output.toFile().delete()
         }

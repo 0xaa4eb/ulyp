@@ -12,6 +12,11 @@ import java.nio.file.StandardOpenOption
 
 @Component
 class FontSizeChanger(private val applicationContext: ApplicationContext) {
+
+    companion object {
+        private const val STYLE_PREFIX = "ctt-font-style"
+    }
+
     private var currentFontSize = 1.0
     private val fontChooser = FontNameResolver()
 
@@ -64,9 +69,5 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
             )
             errorPopup.show()
         }
-    }
-
-    companion object {
-        private const val STYLE_PREFIX = "ctt-font-style"
     }
 }

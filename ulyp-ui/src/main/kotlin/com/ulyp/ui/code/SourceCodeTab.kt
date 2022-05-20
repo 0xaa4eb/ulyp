@@ -90,12 +90,16 @@ class SourceCodeTab : Tab() {
     }
 
     fun setTheme(themePath: String) {
-        val theme: Theme
-        try {
-            theme = Theme.load(javaClass.getResourceAsStream(themePath))
-            theme.apply(textArea)
-        } catch (e: IOException) {
-            throw RuntimeException("Could not load theme", e)
+        SwingUtilities.invokeLater {
+            synchronized(this) {
+                val theme: Theme
+                try {
+                    theme = Theme.load(javaClass.getResourceAsStream(themePath))
+                    theme.apply(textArea)
+                } catch (e: IOException) {
+                    throw RuntimeException("Could not load theme", e)
+                }
+            }
         }
     }
 }

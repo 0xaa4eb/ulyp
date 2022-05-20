@@ -1,6 +1,7 @@
 package com.ulyp.ui.elements.controls
 
 import com.ulyp.ui.Main
+import com.ulyp.ui.SceneRegistry
 import com.ulyp.ui.looknfeel.Theme
 import javafx.scene.Node
 import javafx.scene.Scene
@@ -8,7 +9,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.stage.Modality
 import javafx.stage.Stage
 
-open class Popup() : Stage() {
+open class Popup(sceneRegistry: SceneRegistry) : Stage() {
 
     private val anchorPane = AnchorPane()
 
@@ -19,9 +20,7 @@ open class Popup() : Stage() {
         anchorPane.prefHeight = 500.0
         anchorPane.prefWidth = 700.0
 
-        val dialogScene = Scene(anchorPane)
-        // TODO get current theme
-        dialogScene.stylesheets.addAll(Theme.DARK.ulypCssPath)
+        val dialogScene = sceneRegistry.newScene(anchorPane)
         scene = dialogScene
     }
 
