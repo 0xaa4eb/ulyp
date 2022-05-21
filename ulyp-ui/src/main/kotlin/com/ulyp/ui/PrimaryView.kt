@@ -26,6 +26,7 @@ import java.io.File
 import java.net.URL
 import java.util.*
 import java.util.function.Supplier
+import kotlin.system.exitProcess
 
 
 class PrimaryView(
@@ -66,6 +67,10 @@ class PrimaryView(
 
     fun showAboutPopup() {
 
+    }
+
+    fun exit() {
+        exitProcess(0)
     }
 
     fun showSettings() {
