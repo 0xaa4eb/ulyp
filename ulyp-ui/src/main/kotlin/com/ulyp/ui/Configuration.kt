@@ -3,6 +3,7 @@ package com.ulyp.ui
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.looknfeel.ThemeManager
+import com.ulyp.ui.util.Settings
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.springframework.context.ApplicationContext
@@ -43,9 +44,10 @@ open class Configuration {
     open fun settingsView(
             applicationContext: ApplicationContext,
             themeManager: ThemeManager,
-            stage: Stage
+            stage: Stage,
+            settings: Settings
     ): SettingsView {
-        return SettingsView(applicationContext, themeManager)
+        return SettingsView(applicationContext, themeManager, settings)
     }
 
     @Bean

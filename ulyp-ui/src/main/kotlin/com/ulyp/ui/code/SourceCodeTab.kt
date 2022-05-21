@@ -1,7 +1,7 @@
 package com.ulyp.ui.code
 
 import com.ulyp.ui.code.util.MethodLineNumberFinder
-import com.ulyp.ui.looknfeel.FontNameResolver
+import com.ulyp.ui.looknfeel.DefaultFontNameResolver
 import javafx.embed.swing.SwingNode
 import javafx.scene.control.Tab
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities
 @Component
 class SourceCodeTab : Tab() {
     private val textScrollPane: RTextScrollPane
-    private val fontChooser = FontNameResolver()
+    private val fontChooser = DefaultFontNameResolver()
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
 
     private var stamp: Long = 0
@@ -41,7 +41,7 @@ class SourceCodeTab : Tab() {
                             SwingUtilities.invokeLater {
                                 synchronized(this) {
                                     font++
-                                    textArea.font = Font(fontChooser.getFontName(), Font.PLAIN, font)
+                                    textArea.font = Font(fontChooser.resolve(), Font.PLAIN, font)
                                 }
                             }
                         }
@@ -49,7 +49,7 @@ class SourceCodeTab : Tab() {
                             SwingUtilities.invokeLater {
                                 synchronized(this) {
                                     font--
-                                    textArea.font = Font(fontChooser.getFontName(), Font.PLAIN, font)
+                                    textArea.font = Font(fontChooser.resolve(), Font.PLAIN, font)
                                 }
                             }
                         }

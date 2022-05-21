@@ -17,7 +17,13 @@
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
             <TextArea prefHeight="200.0" prefWidth="200.0" text="Theme" />
-            <ChoiceBox fx:id="settingsChoiceBox" prefWidth="150.0" />
+            <ChoiceBox fx:id="themeChoiceBox" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <TextArea prefHeight="200.0" prefWidth="200.0" text="Font" />
+            <ChoiceBox fx:id="fontChoiceBox" prefWidth="150.0" />
          </children>
       </HBox>
       <Button mnemonicParsing="false" text="Ok">

@@ -2,6 +2,7 @@ package com.ulyp.ui.looknfeel
 
 import com.ulyp.ui.elements.controls.ErrorPopup
 import com.ulyp.ui.elements.misc.ExceptionAsText
+import com.ulyp.ui.util.Settings
 import javafx.scene.Scene
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
@@ -17,20 +18,7 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
         private const val STYLE_PREFIX = "ctt-font-style"
     }
 
-    private var currentFontSize = 1.0
-    private val fontChooser = FontNameResolver()
-
-    fun upscale(scene: Scene) {
-        currentFontSize += 0.05
-        refreshFont(scene, currentFontSize)
-    }
-
-    fun downscale(scene: Scene) {
-        currentFontSize -= 0.05
-        refreshFont(scene, currentFontSize)
-    }
-
-    private fun refreshFont(scene: Scene, font: Double) {
+    fun refresh(scene: Scene, fontSize: Double, fontName: String) {
         try {
 
             val path = Files.createTempFile(STYLE_PREFIX, null)
@@ -39,11 +27,11 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
                 path,
                 """
                 .ulyp-ctt {
-                    -fx-font-family: ${fontChooser.getFontName()};
-                    -fx-font-size: ${font}em;
+                    -fx-font-family: ${fontName};
+                    -fx-font-size: ${fontSize}em;
                 }
                 .ulyp-ctt-identity-hash-code {
-                    -fx-font-size: ${font * 0.8}em;
+                    -fx-font-size: ${fontSize * 0.8}em;
                 }
                 """.toByteArray(StandardCharsets.UTF_8),
                 StandardOpenOption.WRITE

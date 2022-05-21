@@ -9,6 +9,7 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
+import com.ulyp.ui.util.Settings
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
 import javafx.event.Event
@@ -42,7 +43,7 @@ class RecordingTab(
     @Autowired
     private lateinit var renderSettings: RenderSettings
     @Autowired
-    private lateinit var fontSizeChanger: FontSizeChanger
+    private lateinit var settings: Settings
 
     private var initialized = false
 
@@ -78,10 +79,10 @@ class RecordingTab(
             }
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
-                fontSizeChanger.upscale(parent.scene)
+                settings.increaseFont()
             }
             if (key.code == KeyCode.MINUS) {
-                fontSizeChanger.downscale(parent.scene)
+                settings.decreaseFont()
             }
         }
         text = tabName

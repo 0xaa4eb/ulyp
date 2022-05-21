@@ -1,8 +1,10 @@
 package com.ulyp.ui.looknfeel
 
 import javafx.scene.text.Font
+import org.springframework.stereotype.Component
 
-class FontNameResolver {
+@Component
+class DefaultFontNameResolver {
 
     private val fontName: String
 
@@ -19,7 +21,7 @@ class FontNameResolver {
         fontName = chosenFontName
     }
 
-    fun getFontName(): String {
+    fun resolve(): String {
         return fontName
     }
 }

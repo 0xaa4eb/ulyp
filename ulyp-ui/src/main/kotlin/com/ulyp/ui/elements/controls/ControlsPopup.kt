@@ -15,7 +15,7 @@ class ControlsPopup(@Autowired sceneRegistry: SceneRegistry) : Popup(sceneRegist
 
     init {
         val items = FXCollections.observableArrayList(
-                StyledText.of("+: Increase font size", Style.HELP_TEXT),
+                StyledText.of("=: Increase font size", Style.HELP_TEXT),
                 StyledText.of("-: Decrease font size", Style.HELP_TEXT),
                 StyledText.of("Hold shift: Show full type names", Style.HELP_TEXT)
         )
