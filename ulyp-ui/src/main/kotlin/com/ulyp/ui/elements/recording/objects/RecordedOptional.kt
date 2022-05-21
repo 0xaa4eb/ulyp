@@ -20,6 +20,6 @@ class RecordedOptional(record: OptionalRecord, renderSettings: RenderSettings) :
             content.add(of(record.value, renderSettings))
         }
         content.add(of(">", Style.CALL_TREE_COLLECTION_BRACKET))
-        super.getChildren().addAll(content)
+        children.addAll(content)
     }
 }

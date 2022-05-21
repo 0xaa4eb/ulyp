@@ -8,6 +8,6 @@ import com.ulyp.ui.util.StyledText
 class RecordedNull internal constructor(renderSettings: RenderSettings?) : RecordedObject(Type.unknown()) {
 
     init {
-        super.getChildren().add(StyledText.of("null", Style.CALL_TREE_NULL))
+        children.add(StyledText.of("null", Style.CALL_TREE_NULL))
     }
 }

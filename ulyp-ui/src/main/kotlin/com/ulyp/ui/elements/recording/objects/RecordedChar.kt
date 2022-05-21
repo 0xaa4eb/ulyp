@@ -12,6 +12,6 @@ class RecordedChar internal constructor(value: CharObjectRecord, type: Type?, re
 
     init {
         val text: Text = MultilinedText("'" + value.value + "'")
-        super.getChildren().add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
+        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
     }
 }

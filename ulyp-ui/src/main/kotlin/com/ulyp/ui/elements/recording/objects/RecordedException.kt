@@ -20,6 +20,6 @@ class RecordedException(record: ThrowableRecord, renderSettings: RenderSettings)
             children.add(of(record.message, renderSettings))
         }
         children.add(of(")", Style.CALL_TREE_IDENTITY))
-        super.getChildren().addAll(children)
+        children.addAll(children)
     }
 }

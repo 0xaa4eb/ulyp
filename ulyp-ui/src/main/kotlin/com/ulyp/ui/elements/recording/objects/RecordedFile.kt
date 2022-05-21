@@ -9,9 +9,9 @@ class RecordedFile(filePath: String, type: Type, renderSettings: RenderSettings)
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(StyledText.of(type.name, Style.CALL_TREE_TYPE_NAME))
-            super.getChildren().add(StyledText.of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            children.add(StyledText.of(type.name, Style.CALL_TREE_TYPE_NAME))
+            children.add(StyledText.of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }
-        super.getChildren().add(StyledText.of(filePath, Style.CALL_TREE_NUMBER))
+        children.add(StyledText.of(filePath, Style.CALL_TREE_NUMBER))
     }
 }

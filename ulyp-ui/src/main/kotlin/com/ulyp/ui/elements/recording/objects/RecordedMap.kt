@@ -31,6 +31,6 @@ class RecordedMap(record: MapRecord, renderSettings: RenderSettings) : RecordedO
             texts.add(of((record.size - entries.size).toString() + " more...", Style.CALL_TREE_NODE_SEPARATOR))
         }
         texts.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
-        super.getChildren().addAll(texts)
+        children.addAll(texts)
     }
 }

@@ -9,9 +9,9 @@ class RecordedDate(record: DateRecord, renderSettings: RenderSettings) : Recorde
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            super.getChildren().add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            children.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
+            children.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }
-        super.getChildren().add(of(record.datePrinted, Style.CALL_TREE_NUMBER))
+        children.add(of(record.datePrinted, Style.CALL_TREE_NUMBER))
     }
 }

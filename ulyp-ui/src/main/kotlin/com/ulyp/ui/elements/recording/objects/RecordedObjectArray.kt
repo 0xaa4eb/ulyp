@@ -11,27 +11,32 @@ import java.util.stream.Collectors
 class RecordedObjectArray(record: ObjectArrayRecord, renderSettings: RenderSettings?) : RecordedObject(record.type) {
 
     init {
+
+        val nodes: MutableList<Node> = ArrayList()
+        nodes.add(of("[", Style.CALL_TREE_COLLECTION_BRACKET))
+
         val recordedObjects = record.recordedItems
-            .stream()
-            .map { record: ObjectRecord -> of(record, renderSettings) }
-            .collect(Collectors.toList())
-        val texts: MutableList<Node> = ArrayList()
-        texts.add(of("[", Style.CALL_TREE_COLLECTION_BRACKET))
+                .stream()
+                .map { record: ObjectRecord -> of(record, renderSettings) }
+                .collect(Collectors.toList())
+
         for (i in recordedObjects.indices) {
-            texts.add(recordedObjects[i])
+
+            nodes.add(recordedObjects[i])
+
             if (i != recordedObjects.size - 1 || recordedObjects.size < record.length) {
-                texts.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
+                nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
             }
         }
         if (recordedObjects.size < record.length) {
-            texts.add(
+            nodes.add(
                 of(
                     (record.length - recordedObjects.size).toString() + " more...",
                     Style.CALL_TREE_NODE_SEPARATOR
                 )
             )
         }
-        texts.add(of("]", Style.CALL_TREE_COLLECTION_BRACKET))
-        super.getChildren().addAll(texts)
+        nodes.add(of("]", Style.CALL_TREE_COLLECTION_BRACKET))
+        children.addAll(nodes)
     }
 }

@@ -24,6 +24,6 @@ class RecordedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderS
         nodes.add(of("@", Style.CALL_TREE_IDENTITY))
         nodes.add(of(Integer.toHexString(record.identityHashCode), Style.CALL_TREE_IDENTITY))
 
-        super.getChildren().addAll(nodes)
+        children.addAll(nodes)
     }
 }

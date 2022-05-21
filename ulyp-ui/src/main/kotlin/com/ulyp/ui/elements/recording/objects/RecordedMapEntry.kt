@@ -13,6 +13,6 @@ class RecordedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings?) 
         texts.add(of(record.key, renderSettings))
         texts.add(of(" -> ", Style.CALL_TREE_NODE_SEPARATOR))
         texts.add(of(record.value, renderSettings))
-        super.getChildren().addAll(texts)
+        children.addAll(texts)
     }
 }

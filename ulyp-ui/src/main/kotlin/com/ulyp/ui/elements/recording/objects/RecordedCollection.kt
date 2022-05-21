@@ -15,27 +15,33 @@ class RecordedCollection(record: CollectionRecord, renderSettings: RenderSetting
             .stream()
             .map { record: ObjectRecord -> of(record, renderSettings) }
             .collect(Collectors.toList())
-        val texts: MutableList<Node> = ArrayList()
+
+        val nodes: MutableList<Node> = ArrayList()
+
         if (renderSettings.showTypes()) {
-            texts.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            texts.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
+            nodes.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }
-        texts.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
+
+        nodes.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
+
         for (i in recordedObjects.indices) {
-            texts.add(recordedObjects[i])
+
+            nodes.add(recordedObjects[i])
+
             if (i != recordedObjects.size - 1 || recordedObjects.size < record.length) {
-                texts.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
+                nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
             }
         }
         if (recordedObjects.size < record.length) {
-            texts.add(
+            nodes.add(
                 of(
                     (record.length - recordedObjects.size).toString() + " more...",
                     Style.CALL_TREE_NODE_SEPARATOR
                 )
             )
         }
-        texts.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
-        super.getChildren().addAll(texts)
+        nodes.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
+        children.addAll(nodes)
     }
 }

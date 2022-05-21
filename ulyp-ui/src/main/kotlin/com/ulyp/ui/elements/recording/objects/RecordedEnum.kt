@@ -11,7 +11,7 @@ class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : Recorde
 
         val className = if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
 
-        super.getChildren().addAll(
+        children.addAll(
             listOf(
                 of(className, Style.CALL_TREE_TYPE_NAME),
                 of(".", Style.CALL_TREE_NODE_SEPARATOR),

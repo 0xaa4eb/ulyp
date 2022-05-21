@@ -9,9 +9,9 @@ class RecordedBoolean(record: BooleanRecord, renderSettings: RenderSettings) : R
 
     init {
         if (renderSettings.showTypes()) {
-            super.getChildren().add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            super.getChildren().add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            children.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
+            children.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }
-        super.getChildren().add(of(record.value().toString(), Style.CALL_TREE_NUMBER))
+        children.add(of(record.value().toString(), Style.CALL_TREE_NUMBER))
     }
 }
