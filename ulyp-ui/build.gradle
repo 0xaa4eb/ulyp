@@ -16,8 +16,8 @@ buildscript {
 plugins {
     id 'java'
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
-    id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'io.freefair.lombok' version '5.3.0'
     id 'org.openjfx.javafxplugin' version '0.0.10' apply false
 }
@@ -43,16 +43,16 @@ dependencies {
 
     implementation files('libs/fernflower.jar')
     implementation "javax.annotation:javax.annotation-api:1.3.2"
-    implementation group: 'com.google.guava', name: 'guava', version: '28.1-android'
+    implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
     compile group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
     compile group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
     compile group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
-    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '6.20.3'
+    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
 
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
     compile group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
     compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
@@ -65,8 +65,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
     testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-    testCompileOnly 'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 jar.baseName = 'ulyp-ui'

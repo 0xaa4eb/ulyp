@@ -24,7 +24,7 @@ dependencies {
     compile project(':ulyp-storage')
 
     testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
-    testCompileOnly "javax.annotation:javax.annotation-api:1.2"
+    testCompileOnly 'javax.annotation:javax.annotation-api:1.3.2'
 
     testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
     testCompile group: 'org.buildobjects', name: 'jproc', version: '2.3.0'
