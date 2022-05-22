@@ -8,9 +8,6 @@ buildscript {
             dirs 'ulyp-ui/fernflower.jar'
         }
     }
-    dependencies {
-        classpath group: 'commons-codec', name: 'commons-codec', version: '1.2'
-    }
 }
 
 plugins {
