@@ -23,7 +23,7 @@ jobs:
           command: "chmod +x gradlew && ./gradlew ulyp-agent-classes:check -i"
 
 workflows:
-  say-hello-workflow:
+  build-workflow:
     jobs:
       - jdk-8-build
       - jdk-14-build
