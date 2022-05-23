@@ -22,12 +22,6 @@
                         <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Clear all" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Settings">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#changeAggregation" text="Aggregate by thread" />
-                        <MenuItem mnemonicParsing="false" onAction="#changeTheme" text="Change theme" />
-                    </items>
-                </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#showControlsPopup" text="Controls" />
