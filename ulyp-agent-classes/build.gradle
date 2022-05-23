@@ -75,7 +75,7 @@ shadowJar {
 }
 
 tasks.register('copyShadowJar', Copy) {
-    from layout.buildDirectory.file('libs/ulyp-agent-classes-0.2.jar')
+    from layout.buildDirectory.file('libs/ulyp-agent-classes-' + rootProject.version + '.jar')
     into layout.buildDirectory.file('libs')
     rename { String fileName ->
         fileName = fileName.replace("-$project.version", "")

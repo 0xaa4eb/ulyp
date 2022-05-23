@@ -8,7 +8,7 @@ subprojects {
 }
 
 allprojects {
-    version = 0.2
+    version = major_version + '.' + minor_version + '.' + patch
 
     repositories {
         mavenCentral()
