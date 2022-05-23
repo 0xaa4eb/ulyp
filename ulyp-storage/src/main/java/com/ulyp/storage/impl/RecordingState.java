@@ -7,6 +7,7 @@ import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingListener;
+import com.ulyp.storage.StorageException;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -59,9 +60,16 @@ public class RecordingState implements Closeable {
                     memCallStack.push(callState);
                 } else {
 
-                    RecordedCallState callState = memCallStack.pop();
-                    callState.setExitMethodCallAddr(fileAddr + relativeAddress);
-                    index.store(callState.getCallId(), callState);
+                    RecordedCallState lastCallState = memCallStack.peek();
+                    if (lastCallState == null || lastCallState.getCallId() != value.getCallId()) {
+                        throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
+                                "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
+                                " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.constructors option)");
+                    }
+
+                    memCallStack.pop();
+                    lastCallState.setExitMethodCallAddr(fileAddr + relativeAddress);
+                    index.store(lastCallState.getCallId(), lastCallState);
                 }
             }
         }

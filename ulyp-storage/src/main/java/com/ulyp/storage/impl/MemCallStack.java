@@ -3,6 +3,7 @@ package com.ulyp.storage.impl;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
+import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -32,5 +33,10 @@ public class MemCallStack {
         RecordedCallState top = deque.removeLast();
         lookupIndex.remove(top.getCallId());
         return top;
+    }
+
+    @Nullable
+    public RecordedCallState peek() {
+        return deque.peekLast();
     }
 }

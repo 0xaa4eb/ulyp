@@ -121,6 +121,7 @@ class PrimaryView(
             FxThreadExecutor.execute {
                 val errorPopup = applicationContext.getBean(
                         ErrorPopup::class.java,
+                        applicationContext.getBean(SceneRegistry::class.java),
                         "Stopped reading recording file $file with error: " + it.message,
                         ExceptionAsText(it)
                 )
