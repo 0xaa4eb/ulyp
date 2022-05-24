@@ -5,6 +5,7 @@ import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.util.Settings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
 import javafx.scene.control.ChoiceBox
 import javafx.scene.text.Font
 import org.springframework.context.ApplicationContext
@@ -20,7 +21,6 @@ class SettingsView(
 
     @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>
-
     @FXML
     lateinit var fontChoiceBox: ChoiceBox<String>
 
