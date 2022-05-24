@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
  * Takes ulyp-agent-classes.jar added as a file into the ulyp-agent.jar and extracts it into
  * temporary jar file.
  *
- * It then appends ulyp-agent-classes.jar to bootstrap loader search. This is necessary for user-defined
- * class laoders to deal with ulyp
+ * It then appends ulyp-agent-classes.jar to bootstrap loader search. This is necessary because some classes are
+ * defined by custom class loaders which should be later recorded by the agent.
  */
 public class AgentBootstrap {
 
@@ -42,7 +42,7 @@ public class AgentBootstrap {
 
     private static File copyJarToTmp() {
 
-        Path tmpJarFile = null;
+        Path tmpJarFile;
         try {
             tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar");
         } catch (IOException e) {

@@ -62,7 +62,6 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
                 toPrint = value;
             }
 
-            // TODO optimize for ASCII only strings
             byte[] bytes = toPrint.getBytes(StandardCharsets.UTF_8);
             append(bytes.length);
             for (byte b : bytes) {
@@ -112,27 +111,27 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     }
 
     @Override
-    public void writeBool(boolean val) throws Exception {
+    public void writeBool(boolean val) {
         append(val);
     }
 
     @Override
-    public void writeChar(char val) throws Exception {
+    public void writeChar(char val) {
         append(val);
     }
 
     @Override
-    public void writeInt(int val) throws Exception {
+    public void writeInt(int val) {
         append(val);
     }
 
     @Override
-    public void writeLong(long val) throws Exception {
+    public void writeLong(long val) {
         append(val);
     }
 
     @Override
-    public void writeString(String value) throws Exception {
+    public void writeString(String value) {
         append(value);
     }
 }

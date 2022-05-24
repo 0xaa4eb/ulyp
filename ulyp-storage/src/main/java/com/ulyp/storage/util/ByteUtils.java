@@ -12,25 +12,12 @@ public class ByteUtils {
         }
     }
 
-    public static byte[] longToBytes(long value) {
-        byte[] result = new byte[Long.BYTES];
-        for (int i = Long.BYTES - 1; i >= 0; i--) {
-            result[i] = (byte)(value & 0xFF);
-            value >>= Byte.SIZE;
-        }
-        return result;
-    }
-
     public static byte[] longsToBytes(LongList list) {
         byte[] result = new byte[Long.BYTES * list.size()];
         for (int i = 0; i < list.size(); i++) {
             longToBytes(list.getLong(i), result, i * Long.BYTES);
         }
         return result;
-    }
-
-    public static long bytesToLong(final byte[] bytes) {
-        return bytesToLong(bytes, 0);
     }
 
     public static long bytesToLong(final byte[] bytes, int offset) {

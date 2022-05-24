@@ -12,7 +12,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
 
 /**
- * Allows to wire method id into advice classes {@link ConstructorCallRecordingAdvice} and {@link MethodCallRecordingAdvice}
+ * Allows wiring method id into advice classes {@link ConstructorCallRecordingAdvice} and {@link MethodCallRecordingAdvice}
  *
  * Uses a singleton instance of {@link MethodRepository} to store methods into it.
  */

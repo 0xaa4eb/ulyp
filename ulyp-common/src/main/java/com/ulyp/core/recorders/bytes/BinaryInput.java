@@ -5,10 +5,6 @@ import com.ulyp.core.recorders.ObjectRecord;
 
 public interface BinaryInput {
 
-    static BinaryInput from(byte[] value) {
-        return new BinaryInputImpl(value);
-    }
-
     boolean readBoolean();
 
     byte readByte();

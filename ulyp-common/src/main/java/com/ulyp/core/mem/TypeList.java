@@ -10,6 +10,9 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A list of serialized {@link Type} instances
+ */
 public class TypeList implements Iterable<Type> {
 
     public static final int WIRE_ID = 1;

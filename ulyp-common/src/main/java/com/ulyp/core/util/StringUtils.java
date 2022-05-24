@@ -9,14 +9,6 @@ public class StringUtils {
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    public static String nullToEmpty(String str) {
-        return str != null ? str : "";
-    }
-
-    public static String[] tokenizeToStringArray(String str, String delimiters) {
-        return tokenizeToStringArray(str, delimiters, true, true);
-    }
-
     public static String[] tokenizeToStringArray(
             String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens) {
 

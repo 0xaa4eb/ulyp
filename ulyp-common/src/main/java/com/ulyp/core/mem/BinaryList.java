@@ -19,7 +19,6 @@ import java.util.function.Consumer;
  */
 public class BinaryList implements Iterable<BinaryDataDecoder> {
 
-    // TODO move to BinaryListHeader
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int MAGIC_OFFSET = 0;
     private static final int SIZE_OFFSET = Integer.BYTES;

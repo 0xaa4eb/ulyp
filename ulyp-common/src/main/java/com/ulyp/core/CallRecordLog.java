@@ -3,9 +3,14 @@ package com.ulyp.core;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A collection of enter and exit recorded method calls for a certain recording session.
+ */
+@NotThreadSafe
 public class CallRecordLog {
 
     public static final AtomicInteger idGenerator = new AtomicInteger(-1);
@@ -15,7 +20,7 @@ public class CallRecordLog {
     private final StackTraceElement[] stackTrace;
     private final long rootCallId;
 
-    private RecordingMetadata recordingMetadata;
+    private final RecordingMetadata recordingMetadata;
     private boolean inProcessOfRecording = true;
 
     private long lastExitCallId = -1;
@@ -134,10 +139,6 @@ public class CallRecordLog {
 
     public RecordingMetadata getRecordingMetadata() {
         return recordingMetadata;
-    }
-
-    public StackTraceElement[] getStackTrace() {
-        return stackTrace;
     }
 
     public int size() {

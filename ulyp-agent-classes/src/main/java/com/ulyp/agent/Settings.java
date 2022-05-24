@@ -15,7 +15,22 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * Agent settings which define what packages to instrument, at which method recording should start, etc.
+ * It's only possible to set settings via JMV system properties at the time.
+ */
 public class Settings {
+
+    public static final String PACKAGES_PROPERTY = "ulyp.packages";
+    public static final String START_RECORDING_DELAY_PROPERTY = "ulyp.delay";
+    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
+    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
+    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
+    public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
+    public static final String FILE_PATH_PROPERTY = "ulyp.file";
+    public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
+    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
+    public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
     public static Settings fromSystemProperties() {
 
@@ -68,11 +83,7 @@ public class Settings {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
-        boolean shouldRecordConstructors = false;
-        if (System.getProperty(RECORD_CONSTRUCTORS_PROPERTY) != null) {
-            shouldRecordConstructors = true;
-        }
-
+        boolean shouldRecordConstructors = System.getProperty(RECORD_CONSTRUCTORS_PROPERTY) != null;
         boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
 
         String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
@@ -100,17 +111,6 @@ public class Settings {
                 agentDisabled
         );
     }
-
-    public static final String PACKAGES_PROPERTY = "ulyp.packages";
-    public static final String START_RECORDING_DELAY_PROPERTY = "ulyp.delay";
-    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
-    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
-    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
-    public static final String FILE_PATH_PROPERTY = "ulyp.file";
-    public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
-    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
-    public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
     @NotNull private final Supplier<StorageWriter> storageWriterSupplier;
     private final PackageList instrumentatedPackages;

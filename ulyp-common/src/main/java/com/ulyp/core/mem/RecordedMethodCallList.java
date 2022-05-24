@@ -16,6 +16,9 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * A list of serialized {@link RecordedMethodCall} instances
+ */
 public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     public static final int WIRE_ID = 2;

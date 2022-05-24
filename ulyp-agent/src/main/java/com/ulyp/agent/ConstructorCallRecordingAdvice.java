@@ -4,6 +4,10 @@ import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 
+/**
+ * Advice which instructs how to instrument constructors. The byte buddy library copies the bytecode of methods into
+ * constructors being instrumented.
+ */
 public class ConstructorCallRecordingAdvice {
 
     /**

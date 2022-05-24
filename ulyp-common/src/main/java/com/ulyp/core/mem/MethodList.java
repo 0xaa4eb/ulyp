@@ -10,6 +10,9 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A list of serialized {@link Method} instances
+ */
 public class MethodList implements Iterable<Method> {
 
     public static final int WIRE_ID = 3;

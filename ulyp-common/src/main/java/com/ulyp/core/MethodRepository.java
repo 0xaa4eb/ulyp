@@ -5,9 +5,7 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Comment
- */
+
 public class MethodRepository {
 
     private static final MethodRepository INSTANCE = new MethodRepository();

@@ -1,5 +1,6 @@
 package com.ulyp.agent.util;
 
+import com.ulyp.core.Method;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.TypeTrait;
 import com.ulyp.core.Type;
@@ -15,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+/**
+ * Converts byte buddy type description to internal domain class {@link Type}
+ */
 @Slf4j
 public class ByteBuddyTypeResolver implements TypeResolver {
 

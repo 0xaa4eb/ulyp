@@ -5,6 +5,10 @@ import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
+/**
+ * Advice which instructs how to instrument methods. The byte buddy library copies the bytecode of methods into
+ * constructors being instrumented.
+ */
 public class MethodCallRecordingAdvice {
 
     /**
@@ -18,6 +22,8 @@ public class MethodCallRecordingAdvice {
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
         if (methodId < 0) {
+            // local variable callId is used by exit() method
+            // noinspection UnusedAssignment
             callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
                     ByteBuddyTypeResolver.getInstance(),
                     MethodRepository.getInstance().get(methodId),
@@ -26,6 +32,7 @@ public class MethodCallRecordingAdvice {
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
+                //noinspection UnusedAssignment
                 callId = Recorder.getInstance().onMethodEnter(MethodRepository.getInstance().get(methodId), callee, arguments);
             }
         }

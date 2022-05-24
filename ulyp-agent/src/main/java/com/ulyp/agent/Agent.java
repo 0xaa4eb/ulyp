@@ -16,6 +16,9 @@ import net.bytebuddy.matcher.ElementMatchers;
 
 import java.lang.instrument.Instrumentation;
 
+/**
+ * The agent entry point which is invoked by JVM itself
+ */
 public class Agent {
 
     private static final String ULYP_LOGO =
