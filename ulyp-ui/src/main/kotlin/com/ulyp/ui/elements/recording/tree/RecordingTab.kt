@@ -7,7 +7,6 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
-import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Settings
 import javafx.application.Platform
@@ -64,14 +63,14 @@ class RecordingTab(
                 val selectedNode = newValue as RecordingTreeNode?
                 if (selectedNode?.callRecord != null) {
                     val sourceCodeFuture = sourceCodeFinder.find(
-                        selectedNode.callRecord!!.method.declaringType.name
+                        selectedNode.callRecord.method.declaringType.name
                     )
                     sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                         Platform.runLater {
                             val currentlySelected = treeView!!.selectionModel.selectedItem
                             val currentlySelectedNode = currentlySelected as RecordingTreeNode
-                            if (selectedNode.callRecord!!.id == currentlySelectedNode.callRecord!!.id) {
-                                sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord!!.method.name)
+                            if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
+                                sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
                             }
                         }
                     }
@@ -112,21 +111,6 @@ class RecordingTab(
                 .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
                 .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
 
-/*
-            builder.append("Stack trace: ").append("\n")
-            for (element in recordingMetadata!!.stackTrace.elementList) {
-                builder.append("\tat ")
-                    .append(element.declaringClass)
-                    .append(".")
-                    .append(element.methodName)
-                    .append("(")
-                    .append(element.fileName)
-                    .append(":")
-                    .append(element.lineNumber)
-                    .append(")")
-                    .append("\n")
-            }
-            */
             return Tooltip(builder.toString())
         }
 
@@ -135,7 +119,6 @@ class RecordingTab(
     }
 
     fun dispose() {
-//        database.close()
     }
 
     @Synchronized

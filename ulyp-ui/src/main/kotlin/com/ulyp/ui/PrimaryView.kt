@@ -15,7 +15,6 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.image.Image
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
@@ -33,7 +32,6 @@ class PrimaryView(
         private val applicationContext: ApplicationContext,
         private val sourceCodeView: SourceCodeView,
         private val fileRecordingTabPane: FileRecordingTabPane,
-        private val themeManager: ThemeManager,
         private val fileChooser: Supplier<File>
 ) : Initializable {
 
@@ -61,10 +59,6 @@ class PrimaryView(
         fileRecordingTabPane.clear()
     }
 
-    fun changeAggregation() {
-        // TODO maybe implement
-    }
-
     fun showAboutPopup() {
 
     }
@@ -82,12 +76,12 @@ class PrimaryView(
         val scene = applicationContext.getBean(SceneRegistry::class.java).newScene(root)
 
         val stage = Stage()
-        stage.setScene(scene)
-        stage.setMaximized(false)
-        stage.setTitle("Ulyp Settings")
+        stage.scene = scene
+        stage.isMaximized = false
+        stage.title = "Ulyp Settings"
         val iconStream = Main::class.java.classLoader.getResourceAsStream("icons/ulyp-logo-icon.png")
                 ?: throw UlypException("Icon not found")
-        stage.getIcons().add(Image(iconStream))
+        stage.icons.add(Image(iconStream))
 
         stage.show()
     }
@@ -95,10 +89,6 @@ class PrimaryView(
     fun showControlsPopup() {
         val popup = applicationContext.getBean(ControlsPopup::class.java)
         popup.show()
-    }
-
-    fun changeTheme() {
-
     }
 
     fun openRecordedDump() {

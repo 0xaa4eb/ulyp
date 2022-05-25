@@ -29,7 +29,7 @@ class FileRecordingTabPane : TabPane() {
         tabs.clear()
     }
 
-    val selectedTab: FileRecordingsTab
+    private val selectedTab: FileRecordingsTab
         get() = selectionModel.selectedItem as FileRecordingsTab
 
     fun getOrCreateProcessTab(name: FileRecordingsTabName): FileRecordingsTab {
@@ -51,6 +51,7 @@ class FileRecordingTabPane : TabPane() {
     fun keyPressed(event: KeyEvent) {
         if (event.code == KeyCode.SHIFT) {
             val selected = selectedTab.selectedTreeTab.getSelected()
+            @Suppress("SENSELESS_COMPARISON")
             if (selected != null) {
                 renderSettings.setShowTypes(true)
                 lastSelectedOnShowTypes = selected
@@ -62,11 +63,12 @@ class FileRecordingTabPane : TabPane() {
                 val selectedTab: FileRecordingsTab? = selectedTab
                 if (selectedTab != null) {
                     val selectedCallRecord = selectedTab.selectedTreeTab.getSelected()
+                    @Suppress("SENSELESS_COMPARISON")
                     if (selectedCallRecord != null) {
                         val clipboard = Clipboard.getSystemClipboard()
                         val content = ClipboardContent()
                         val callRecord = selectedCallRecord.callRecord
-                        content.putString(callRecord!!.method.declaringType.name + "." + callRecord.method.name)
+                        content.putString(callRecord.method.declaringType.name + "." + callRecord.method.name)
                         clipboard.setContent(content)
                     }
                 }

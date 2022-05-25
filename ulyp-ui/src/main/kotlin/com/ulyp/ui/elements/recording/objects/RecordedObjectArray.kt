@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RecordedObjectArray(record: ObjectArrayRecord, renderSettings: RenderSettings?) : RecordedObject() {
+class RecordedObjectArray(record: ObjectArrayRecord, renderSettings: RenderSettings) : RecordedObject() {
 
     init {
 

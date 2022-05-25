@@ -2,9 +2,7 @@ package com.ulyp.ui.elements.controls
 
 import com.ulyp.ui.Main
 import com.ulyp.ui.SceneRegistry
-import com.ulyp.ui.looknfeel.Theme
 import javafx.scene.Node
-import javafx.scene.Scene
 import javafx.scene.layout.AnchorPane
 import javafx.stage.Modality
 import javafx.stage.Stage
@@ -25,7 +23,6 @@ open class Popup(sceneRegistry: SceneRegistry) : Stage() {
     }
 
     var content: Node? = null
-        get() = field
         set(value) {
             field = value
 

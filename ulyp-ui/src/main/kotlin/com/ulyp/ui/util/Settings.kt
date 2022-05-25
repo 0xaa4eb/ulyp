@@ -11,13 +11,12 @@ class Settings(
         private val fontSizeChanger: FontSizeChanger) {
 
     var fontName: String = defaultFontNameResolver.resolve()
-        get() = field
         set(value) {
             fontSizeChanger.refresh(Main.stage.scene, currentFontSize, value)
             field = value
         }
 
-    var currentFontSize = 1.0
+    private var currentFontSize = 1.0
         set(value) {
             fontSizeChanger.refresh(Main.stage.scene, value, fontName)
             field = value

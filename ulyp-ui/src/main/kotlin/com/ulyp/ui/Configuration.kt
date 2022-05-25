@@ -25,7 +25,6 @@ open class Configuration {
             applicationContext: ApplicationContext,
             sourceCodeView: SourceCodeView,
             fileRecordingTabPane: FileRecordingTabPane,
-            themeManager: ThemeManager,
             stage: Stage
     ): PrimaryView {
         val fileChooser = FileChooser()
@@ -33,10 +32,8 @@ open class Configuration {
         return PrimaryView(
                 applicationContext,
                 sourceCodeView,
-                fileRecordingTabPane,
-                themeManager,
-                { fileChooser.showOpenDialog(stage) }
-        )
+                fileRecordingTabPane
+        ) { fileChooser.showOpenDialog(stage) }
     }
 
     @Bean
@@ -47,7 +44,7 @@ open class Configuration {
             stage: Stage,
             settings: Settings
     ): SettingsView {
-        return SettingsView(applicationContext, themeManager, settings)
+        return SettingsView(themeManager, settings)
     }
 
     @Bean

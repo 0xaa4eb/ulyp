@@ -8,7 +8,7 @@ import javafx.event.EventHandler
 import javafx.scene.control.TreeItem
 import java.util.function.Consumer
 
-class RecordingTreeNode(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings?) :
+class RecordingTreeNode(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings) :
     TreeItem<RecordingTreeNodeContent> (
         RecordingTreeNodeContent(
             recording.getCallRecord(callRecordId),
@@ -21,7 +21,7 @@ class RecordingTreeNode(private val recording: Recording, private val callRecord
     private var currentCallRecord: CallRecord = recording.getCallRecord(callRecordId)
 
     init {
-        this.addEventHandler(TreeItem.branchCollapsedEvent(), EventHandler<TreeModificationEvent<RecordingTreeNodeContent>> {
+        this.addEventHandler(branchCollapsedEvent(), EventHandler<TreeModificationEvent<RecordingTreeNodeContent>> {
             val s = it.treeItem as RecordingTreeNode
             s.unloadChildren()
         })

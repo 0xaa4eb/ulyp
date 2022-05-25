@@ -5,16 +5,13 @@ import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.util.Settings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
-import javafx.scene.control.Button
 import javafx.scene.control.ChoiceBox
 import javafx.scene.text.Font
-import org.springframework.context.ApplicationContext
 import java.net.URL
 import java.util.*
 
 
 class SettingsView(
-        private val applicationContext: ApplicationContext,
         private val themeManager: ThemeManager,
         private val settings: Settings
 ) : Initializable {

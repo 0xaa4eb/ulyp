@@ -6,7 +6,6 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
-import java.util.function.Predicate
 import java.util.stream.Collectors
 
 class SourceCodeFinder(classpath: List<String>) {
@@ -26,7 +25,7 @@ class SourceCodeFinder(classpath: List<String>) {
                         return@map null
                     }
                 }
-                .filter(Predicate { obj: JarFile? -> Objects.nonNull(obj) })
+                .filter { obj: JarFile? -> Objects.nonNull(obj) }
                 .collect(Collectors.toList())
         val sourcesJars: MutableList<JarFile> = ArrayList()
         for (jarFile in jars) {

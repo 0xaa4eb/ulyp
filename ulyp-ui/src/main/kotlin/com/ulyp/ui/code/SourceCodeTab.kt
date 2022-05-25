@@ -13,6 +13,7 @@ import java.awt.Font
 import java.awt.event.KeyListener
 import java.io.IOException
 import javax.swing.SwingUtilities
+import kotlin.math.max
 
 @Component
 class SourceCodeTab : Tab() {
@@ -73,7 +74,7 @@ class SourceCodeTab : Tab() {
                 SwingUtilities.invokeLater {
                     synchronized(this) {
                         if (stamp == genertedStamp) {
-                            val newVerticalPos = Math.max(
+                            val newVerticalPos = max(
                                 ((MethodLineNumberFinder(code).getLine(
                                     methodNameToScrollTo!!,
                                     0

@@ -114,13 +114,6 @@ public class BinaryListTest {
         assertTrue(iterator.hasNext());
         iterator.next();
 
-/*
-        BinaryDataDecoder value = iterator.next();
-
-        int valLength = value.getValue(buf, 0, buf.length);
-        assertEquals("ABC", new String(buf, 0, valLength, StandardCharsets.UTF_8));
-*/
-
         BinaryDataDecoder decoder = new BinaryDataDecoder();
         decoder.wrap(underlyingBuffer, (int) iterator.address(), BinaryDataEncoder.BLOCK_LENGTH, 0);
         assertEquals(3, decoder.valueLength());

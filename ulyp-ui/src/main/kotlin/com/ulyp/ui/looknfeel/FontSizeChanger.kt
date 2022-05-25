@@ -2,7 +2,6 @@ package com.ulyp.ui.looknfeel
 
 import com.ulyp.ui.elements.controls.ErrorPopup
 import com.ulyp.ui.elements.misc.ExceptionAsText
-import com.ulyp.ui.util.Settings
 import javafx.scene.Scene
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
