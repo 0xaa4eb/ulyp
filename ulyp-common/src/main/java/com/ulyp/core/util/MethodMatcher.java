@@ -25,9 +25,9 @@ public class MethodMatcher {
 
     public static MethodMatcher parse(String text) {
         int separatorPos = text.lastIndexOf(SEPARATOR);
-        // TODO regexp?
         if (separatorPos < 0) {
-            throw new SettingsException("Invalid method matcher: " + text);
+            throw new SettingsException("Invalid method matcher: " + text +
+                    ". It should look something like this: **.Runnable.run");
         }
 
         return new MethodMatcher(ClassMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));

@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class OptionalRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         boolean hasSomething = input.readBoolean();
         if (hasSomething) {
             ObjectRecord value = input.readObject(typeResolver);

@@ -7,7 +7,7 @@ import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RecordedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
+class RecordedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderSettings) : RecordedObject() {
 
     init {
         val typeName =

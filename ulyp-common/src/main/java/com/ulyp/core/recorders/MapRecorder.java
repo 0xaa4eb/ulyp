@@ -8,6 +8,7 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {

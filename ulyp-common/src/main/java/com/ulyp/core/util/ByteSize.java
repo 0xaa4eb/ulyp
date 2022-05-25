@@ -4,6 +4,9 @@ import com.google.common.base.Preconditions;
 
 import java.text.DecimalFormat;
 
+/**
+ * Prints byte size to human-readable format
+ */
 public class ByteSize {
 
     private static final long BYTE = 1L;

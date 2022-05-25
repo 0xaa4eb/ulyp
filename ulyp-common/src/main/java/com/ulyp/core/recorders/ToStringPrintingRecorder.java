@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.util.ClassMatcher;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         int result = input.readInt();
         if (result == TO_STRING_CALL_SUCCESS) {
             int identityHashCode = input.readInt();

@@ -1,11 +1,10 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.core.Method;
+import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.TypeTrait;
-import com.ulyp.core.Type;
-import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.ClassUtils;
+import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.type.TypeDefinition;
 import net.bytebuddy.description.type.TypeDescription;

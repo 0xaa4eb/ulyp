@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RecordedMap(record: MapRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
+class RecordedMap(record: MapRecord, renderSettings: RenderSettings) : RecordedObject() {
 
     init {
         val entries = record.entries

@@ -9,6 +9,7 @@ import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +41,7 @@ public class CollectionRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS_FLAG) {

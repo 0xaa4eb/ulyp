@@ -6,7 +6,7 @@ import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
-class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
+class RecordedEnum(record: EnumRecord, renderSettings: RenderSettings) : RecordedObject() {
     init {
 
         val className = if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)

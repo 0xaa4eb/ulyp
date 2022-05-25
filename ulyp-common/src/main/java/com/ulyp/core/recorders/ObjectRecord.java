@@ -1,6 +1,8 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 
 /**
  * Recorded object value. Depending on the recorder chosen for recording
@@ -11,16 +13,19 @@ import com.ulyp.core.Type;
  */
 public abstract class ObjectRecord {
 
+    @NotNull
     private final Type type;
 
-    protected ObjectRecord(Type type) {
+    protected ObjectRecord(@NotNull Type type) {
         this.type = type;
     }
 
+    @NotNull
     public Type getType() {
         return type;
     }
 
     // Only used in unit tests
+    @TestOnly
     public abstract String toString();
 }

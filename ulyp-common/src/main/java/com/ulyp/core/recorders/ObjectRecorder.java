@@ -5,6 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Object recorder which does what it is named for. It essentially encodes some java object of
@@ -30,7 +31,7 @@ public abstract class ObjectRecorder {
 
     abstract boolean supports(Type type);
 
-    public abstract ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
+    public abstract ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
 
     public abstract void write(Object object, Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception;
 

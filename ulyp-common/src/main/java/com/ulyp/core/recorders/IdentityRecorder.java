@@ -5,6 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import org.jetbrains.annotations.NotNull;
 
 public class IdentityRecorder extends ObjectRecorder {
 
@@ -18,7 +19,7 @@ public class IdentityRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         int identityHashCode = input.readInt();
         return new IdentityObjectRecord(objectType, identityHashCode);
     }

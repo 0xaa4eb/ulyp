@@ -29,10 +29,9 @@ public class MemCallStack {
         lookupIndex.put(value.getCallId(), value);
     }
 
-    public RecordedCallState pop() {
+    public void pop() {
         RecordedCallState top = deque.removeLast();
         lookupIndex.remove(top.getCallId());
-        return top;
     }
 
     @Nullable

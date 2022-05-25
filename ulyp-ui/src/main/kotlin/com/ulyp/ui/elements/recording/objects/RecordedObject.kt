@@ -1,13 +1,12 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.Type
 import com.ulyp.core.recorders.*
 import com.ulyp.ui.RenderSettings
 import javafx.scene.Node
 import javafx.scene.text.TextFlow
 import java.util.function.Consumer
 
-abstract class RecordedObject protected constructor(private val type: Type?) : TextFlow() {
+abstract class RecordedObject protected constructor() : TextFlow() {
     companion object {
         @JvmStatic
         fun of(record: ObjectRecord, renderSettings: RenderSettings?): RecordedObject {

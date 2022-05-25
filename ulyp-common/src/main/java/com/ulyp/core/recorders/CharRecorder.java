@@ -6,6 +6,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ public class CharRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new CharObjectRecord(objectType, input.readChar());
     }
 

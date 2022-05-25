@@ -5,7 +5,7 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
-class RecordedBoolean(record: BooleanRecord, renderSettings: RenderSettings) : RecordedObject(record.type) {
+class RecordedBoolean(record: BooleanRecord, renderSettings: RenderSettings) : RecordedObject() {
 
     init {
         if (renderSettings.showTypes()) {

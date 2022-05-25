@@ -25,7 +25,7 @@ public class RecordedObject {
         return objectRecorder.read(
                 type,
                 new BinaryInputImpl(value),
-                typeResolver::get
+                id -> Optional.ofNullable(typeResolver.get(id)).orElse(Type.unknown())
         );
     }
 }

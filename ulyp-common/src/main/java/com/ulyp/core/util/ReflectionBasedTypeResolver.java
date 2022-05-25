@@ -4,6 +4,7 @@ import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.Collection;
@@ -45,7 +46,12 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
     }
 
     @Override
-    public Type getType(long id) {
-        return byIdIndex.get(id);
+    public @NotNull Type getType(long id) {
+        Type type = byIdIndex.get(id);
+        if (type != null) {
+            return type;
+        } else {
+            return Type.unknown();
+        }
     }
 }

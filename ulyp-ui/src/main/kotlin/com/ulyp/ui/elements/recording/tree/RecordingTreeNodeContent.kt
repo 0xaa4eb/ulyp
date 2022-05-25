@@ -5,7 +5,7 @@ import com.ulyp.ui.RenderSettings
 import javafx.geometry.Pos
 import javafx.scene.layout.StackPane
 
-// TODO should be a better name
+
 class RecordingTreeNodeContent(node: CallRecord, renderSettings: RenderSettings?, totalNodeCountInTree: Int) : StackPane() {
 
     init {

@@ -7,6 +7,7 @@ import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
+import org.jetbrains.annotations.NotNull;
 
 public class ThrowableRecorder extends ObjectRecorder {
 
@@ -20,7 +21,7 @@ public class ThrowableRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new ThrowableRecord(type, input.readObject(typeResolver));
     }
 

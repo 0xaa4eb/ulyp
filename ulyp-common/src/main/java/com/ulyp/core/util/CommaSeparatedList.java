@@ -8,10 +8,7 @@ import java.util.stream.Collectors;
 public class CommaSeparatedList {
 
     public static List<String> parse(String text) {
-
-        // TODO maybe validate a bit
-
-        String[] split = text.split(",");
+        String[] split = text.trim().split(",");
         if (split.length == 1 && split[0].trim().isEmpty()) {
             return Collections.emptyList();
         } else {

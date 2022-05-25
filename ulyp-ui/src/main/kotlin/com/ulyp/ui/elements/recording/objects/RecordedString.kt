@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
 
 class RecordedString internal constructor(record: StringObjectRecord, classDescription: Type?, renderSettings: RenderSettings?)
-    : RecordedObject(classDescription) {
+    : RecordedObject() {
 
     init {
         val text: Text = MultilinedText("\"" + record.value() + "\"")

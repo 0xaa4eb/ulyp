@@ -7,6 +7,7 @@ import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readInt();
         List<ObjectRecord> items = new ArrayList<>();
         int recordedItemsCount = input.readInt();

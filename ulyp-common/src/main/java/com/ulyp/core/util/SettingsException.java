@@ -1,6 +1,8 @@
 package com.ulyp.core.util;
 
-public class SettingsException extends RuntimeException {
+import com.ulyp.core.exception.UlypException;
+
+public class SettingsException extends UlypException {
 
     public SettingsException(String message) {
         super(message);

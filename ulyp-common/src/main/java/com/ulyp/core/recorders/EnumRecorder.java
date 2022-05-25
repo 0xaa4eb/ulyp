@@ -5,6 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
+import org.jetbrains.annotations.NotNull;
 
 public class EnumRecorder extends ObjectRecorder {
 
@@ -18,7 +19,7 @@ public class EnumRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new EnumRecord(type, input.readString());
     }
 
