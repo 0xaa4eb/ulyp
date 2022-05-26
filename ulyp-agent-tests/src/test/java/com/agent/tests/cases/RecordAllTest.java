@@ -20,6 +20,21 @@ public class RecordAllTest extends AbstractInstrumentationTest {
         recordingResult.assertRecordingSessionCount(3);
     }
 
+    public interface Interface {
+
+        default int foo() {
+            return 42;
+        }
+
+        default int bar() {
+            return 1;
+        }
+
+        default int zoo() {
+            return 2;
+        }
+    }
+
     public static class MultithreadedExample {
 
         public static void main(String[] args) throws InterruptedException {
@@ -33,21 +48,6 @@ public class RecordAllTest extends AbstractInstrumentationTest {
             t2.join();
 
             System.out.println(new Clazz().foo());
-        }
-    }
-
-    public interface Interface {
-
-        default int foo() {
-            return 42;
-        }
-
-        default int bar() {
-            return 1;
-        }
-
-        default int zoo() {
-            return 2;
         }
     }
 

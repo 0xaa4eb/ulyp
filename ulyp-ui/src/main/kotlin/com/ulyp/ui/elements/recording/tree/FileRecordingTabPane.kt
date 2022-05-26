@@ -16,6 +16,7 @@ class FileRecordingTabPane : TabPane() {
 
     @Autowired
     private lateinit var context: ApplicationContext
+
     @Autowired
     private lateinit var renderSettings: RenderSettings
 
@@ -35,9 +36,9 @@ class FileRecordingTabPane : TabPane() {
     fun getOrCreateProcessTab(name: FileRecordingsTabName): FileRecordingsTab {
         return execute {
             val processTab = tabs
-                .stream()
-                .filter { tab: Tab -> name == (tab as FileRecordingsTab).name }
-                .findFirst()
+                    .stream()
+                    .filter { tab: Tab -> name == (tab as FileRecordingsTab).name }
+                    .findFirst()
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab
             } else {

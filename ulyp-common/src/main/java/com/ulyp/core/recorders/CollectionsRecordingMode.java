@@ -22,8 +22,8 @@ public enum CollectionsRecordingMode {
         }
     },
     /**
-    * The most intrusive mode: try to record items on every collection
-    */
+     * The most intrusive mode: try to record items on every collection
+     */
     ALL {
         @Override
         public boolean supports(Type type) {

@@ -13,6 +13,17 @@ public class H2MemDatabaseBenchmark implements Benchmark {
 
     private Connection connection;
 
+    public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
+
+        H2MemDatabaseBenchmark benchmark = new H2MemDatabaseBenchmark();
+        benchmark.setUp();
+        benchmark.run();
+        benchmark.tearDown();
+
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
+    }
+
     @Override
     public List<BenchmarkProfile> getProfiles() {
         return Arrays.asList(
@@ -69,16 +80,5 @@ public class H2MemDatabaseBenchmark implements Benchmark {
             prep.setString(2, "Hello");
             prep.execute();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        long start = System.currentTimeMillis();
-
-        H2MemDatabaseBenchmark benchmark = new H2MemDatabaseBenchmark();
-        benchmark.setUp();
-        benchmark.run();
-        benchmark.tearDown();
-
-        System.out.println("Took: " + (System.currentTimeMillis() - start));
     }
 }

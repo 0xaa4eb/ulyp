@@ -23,6 +23,20 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
 
     private static final int PEOPLE_PER_DEPT = 30;
     private static final int DEPT_COUNT = 20;
+    private DepartmentService departmentService;
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(ManagementFactory.getRuntimeMXBean().getInputArguments());
+
+        long start = System.currentTimeMillis();
+
+        SpringHibernateMediumBenchmark benchmark = new SpringHibernateMediumBenchmark();
+        benchmark.setUp();
+        benchmark.run();
+        benchmark.tearDown();
+
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
+    }
 
     @Override
     public List<BenchmarkProfile> getProfiles() {
@@ -37,8 +51,6 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
                         .build()
         );
     }
-
-    private DepartmentService departmentService;
 
     @Override
     public void setUp() {
@@ -83,18 +95,5 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
         }
 
         histogram.outputPercentileDistribution(System.out, 1.0);
-    }
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(ManagementFactory.getRuntimeMXBean().getInputArguments());
-
-        long start = System.currentTimeMillis();
-
-        SpringHibernateMediumBenchmark benchmark = new SpringHibernateMediumBenchmark();
-        benchmark.setUp();
-        benchmark.run();
-        benchmark.tearDown();
-
-        System.out.println("Took: " + (System.currentTimeMillis() - start));
     }
 }

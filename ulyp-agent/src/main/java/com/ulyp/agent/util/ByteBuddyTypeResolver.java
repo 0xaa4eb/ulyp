@@ -34,6 +34,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     private static final TypeDescription THROWABLE_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Throwable.class).asErasure();
     private static final TypeDescription.Generic PRIMITIVE_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(boolean.class);
     private static final TypeDescription.Generic BOXED_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Boolean.class);
+    private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
 
     static {
         PRIMITIVE_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(long.class));
@@ -50,17 +51,11 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         BOXED_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Byte.class));
     }
 
-    private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
-
-    private static class InstanceHolder {
-        private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();
-    }
+    private final Map<Class<?>, Type> types = new ConcurrentHashMap<>();
 
     public static ByteBuddyTypeResolver getInstance() {
         return InstanceHolder.context;
     }
-
-    private final Map<Class<?>, Type> types = new ConcurrentHashMap<>();
 
     @NotNull
     @Override
@@ -241,5 +236,9 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     @Override
     public Collection<Type> getAllResolved() {
         return types.values();
+    }
+
+    private static class InstanceHolder {
+        private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();
     }
 }

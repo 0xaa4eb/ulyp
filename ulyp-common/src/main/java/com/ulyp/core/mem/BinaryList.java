@@ -27,18 +27,8 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
 
     public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
     private static final int RECORD_HEADER_LENGTH = 2 * Integer.BYTES;
-
-    public static BinaryList of(int id, byte[]... data) {
-        BinaryList list = new BinaryList(id);
-        for (byte[] v : data) {
-            list.add(v);
-        }
-        return list;
-    }
-
-    private final BinaryDataEncoder encoder = new BinaryDataEncoder();
-
     protected final MutableDirectBuffer buffer;
+    private final BinaryDataEncoder encoder = new BinaryDataEncoder();
 
     public BinaryList(byte[] buf) {
         buffer = new UnsafeBuffer(buf);
@@ -60,6 +50,14 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         setSize(0);
         setId(id);
         setByteLength(HEADER_LENGTH);
+    }
+
+    public static BinaryList of(int id, byte[]... data) {
+        BinaryList list = new BinaryList(id);
+        for (byte[] v : data) {
+            list.add(v);
+        }
+        return list;
     }
 
     public void add(byte[] data) {
@@ -147,37 +145,6 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
         return size() == 0;
     }
 
-    private class Iterator implements AddressableItemIterator<BinaryDataDecoder> {
-
-        private int recordAddress = HEADER_LENGTH;
-        private int currentRecordAddress = -1;
-
-        @Override
-        public boolean hasNext() {
-            return recordAddress < byteLength() && buffer.getInt(recordAddress) > 0;
-        }
-
-        @Override
-        public BinaryDataDecoder next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            int encodedLength = buffer.getInt(recordAddress);
-            int blockLength = buffer.getInt(recordAddress + Integer.BYTES);
-
-            BinaryDataDecoder decoder = new BinaryDataDecoder();
-            decoder.wrap(buffer, recordAddress + RECORD_HEADER_LENGTH, blockLength, 0);
-            currentRecordAddress = recordAddress + RECORD_HEADER_LENGTH;
-            recordAddress += RECORD_HEADER_LENGTH + encodedLength;
-            return decoder;
-        }
-
-        @Override
-        public long address() {
-            return currentRecordAddress;
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -209,5 +176,36 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
     @Override
     public String toString() {
         return "BinaryList{byteLength=" + byteLength() + ", size=" + size() + ", id=" + id() + "}";
+    }
+
+    private class Iterator implements AddressableItemIterator<BinaryDataDecoder> {
+
+        private int recordAddress = HEADER_LENGTH;
+        private int currentRecordAddress = -1;
+
+        @Override
+        public boolean hasNext() {
+            return recordAddress < byteLength() && buffer.getInt(recordAddress) > 0;
+        }
+
+        @Override
+        public BinaryDataDecoder next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            int encodedLength = buffer.getInt(recordAddress);
+            int blockLength = buffer.getInt(recordAddress + Integer.BYTES);
+
+            BinaryDataDecoder decoder = new BinaryDataDecoder();
+            decoder.wrap(buffer, recordAddress + RECORD_HEADER_LENGTH, blockLength, 0);
+            currentRecordAddress = recordAddress + RECORD_HEADER_LENGTH;
+            recordAddress += RECORD_HEADER_LENGTH + encodedLength;
+            return decoder;
+        }
+
+        @Override
+        public long address() {
+            return currentRecordAddress;
+        }
     }
 }

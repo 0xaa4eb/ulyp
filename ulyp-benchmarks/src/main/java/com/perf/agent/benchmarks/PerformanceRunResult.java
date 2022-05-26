@@ -48,7 +48,7 @@ public class PerformanceRunResult {
     }
 
     private void padTo(StringBuilder builder, int length) {
-        while(builder.length() < length) {
+        while (builder.length() < length) {
             builder.append(' ');
         }
     }

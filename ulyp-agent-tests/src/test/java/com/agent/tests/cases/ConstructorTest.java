@@ -14,24 +14,6 @@ public class ConstructorTest extends AbstractInstrumentationTest {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    public static class Base {
-
-    }
-
-    public static class X extends Base {
-
-        public X() {
-            System.out.println(43);
-        }
-    }
-
-    public static class TestCases {
-
-        public static void main(String[] args) {
-            System.out.println(new X());
-        }
-    }
-
     @Test
     public void testHappyPathConstructor() {
         CallRecord root = run(
@@ -50,26 +32,6 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         assertThat(xConstructorCall.getChildren(), Matchers.hasSize(1));
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
-    public static class X3 extends Base {
-
-        public X3() {
-            throw new RuntimeException("a");
-        }
-    }
-
-    public static class TestCasesThrows {
-
-        public static void main(String[] args) {
-            try {
-                System.out.println(new X3());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Test
     public void testConstructorThrown() {
         CallRecord root = run(
@@ -86,7 +48,61 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         assertThat(ctr.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
     }
 
+    @Test
+    public void testConstructorThrownInsideMethodCalls() {
+        CallRecord root = run(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCasesThrows2.class)
+                        .withMethodToRecord("main")
+        );
+
+        assertThat(root.getChildren(), Matchers.hasSize(1));
+
+        CallRecord ctr = root.getChildren().get(0);
+
+        assertThat(ctr.getMethod().getName(), Matchers.is("<init>"));
+        assertThat(ctr.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
+    }
+
+    public static class Base {
+
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
+
+    public static class X extends Base {
+
+        public X() {
+            System.out.println(43);
+        }
+    }
+
+    public static class TestCases {
+
+        public static void main(String[] args) {
+            System.out.println(new X());
+        }
+    }
+
+    public static class X3 extends Base {
+
+        public X3() {
+            throw new RuntimeException("a");
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public static class TestCasesThrows {
+
+        public static void main(String[] args) {
+            try {
+                System.out.println(new X3());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static class TBase {
 
@@ -120,21 +136,5 @@ public class ConstructorTest extends AbstractInstrumentationTest {
         public static void main(String[] args) {
             bar();
         }
-    }
-
-    @Test
-    public void testConstructorThrownInsideMethodCalls() {
-        CallRecord root = run(
-                new ForkProcessBuilder()
-                        .withMainClassName(TestCasesThrows2.class)
-                        .withMethodToRecord("main")
-        );
-
-        assertThat(root.getChildren(), Matchers.hasSize(1));
-
-        CallRecord ctr = root.getChildren().get(0);
-
-        assertThat(ctr.getMethod().getName(), Matchers.is("<init>"));
-        assertThat(ctr.getMethod().getDeclaringType().getName(), Matchers.is("com.agent.tests.cases.ConstructorTest$X3"));
     }
 }

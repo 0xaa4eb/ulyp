@@ -15,17 +15,6 @@ import static org.junit.Assert.assertThat;
 
 public class OptionalRecorderTest extends AbstractInstrumentationTest {
 
-    static class TestCase {
-
-        public static Optional<String> returnStringOptional() {
-            return Optional.of("ABC");
-        }
-
-        public static void main(String[] args) {
-            System.out.println(returnStringOptional());
-        }
-    }
-
     @Test
     public void testReturnOptionalWithSomeString() {
         CallRecord root = run(
@@ -46,17 +35,6 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
         assertThat(string.value(), is("ABC"));
     }
 
-    static class TestCase2 {
-
-        public static Optional<String> returnStringOptional() {
-            return Optional.empty();
-        }
-
-        public static void main(String[] args) {
-            System.out.println(returnStringOptional());
-        }
-    }
-
     @Test
     public void testReturnEmptyOptional() {
         CallRecord root = run(
@@ -72,5 +50,27 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
         OptionalRecord optional = (OptionalRecord) returnValue;
         assertThat(optional.isEmpty(), is(true));
         assertThat(optional.getValue(), nullValue());
+    }
+
+    static class TestCase {
+
+        public static Optional<String> returnStringOptional() {
+            return Optional.of("ABC");
+        }
+
+        public static void main(String[] args) {
+            System.out.println(returnStringOptional());
+        }
+    }
+
+    static class TestCase2 {
+
+        public static Optional<String> returnStringOptional() {
+            return Optional.empty();
+        }
+
+        public static void main(String[] args) {
+            System.out.println(returnStringOptional());
+        }
     }
 }

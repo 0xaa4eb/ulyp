@@ -22,31 +22,31 @@ import javax.sql.DataSource;
 @EnableJpaRepositories("com.perf.agent.benchmarks.benchmarks.util")
 public class ApplicationConfiguration {
 
-	@Bean
-	public DataSource dataSource() {
-		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
-	}
+    @Bean
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+    }
 
-	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter bean = new HibernateJpaVendorAdapter();
-		bean.setDatabase(Database.H2);
-		bean.setGenerateDdl(true);
-		return bean;
-	}
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter bean = new HibernateJpaVendorAdapter();
+        bean.setDatabase(Database.H2);
+        bean.setGenerateDdl(true);
+        return bean;
+    }
 
-	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-			DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-		LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
-		bean.setDataSource(dataSource);
-		bean.setJpaVendorAdapter(jpaVendorAdapter);
-		bean.setPackagesToScan("com.perf.agent.benchmarks.benchmarks.util");
-		return bean;
-	}
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
+        bean.setDataSource(dataSource);
+        bean.setJpaVendorAdapter(jpaVendorAdapter);
+        bean.setPackagesToScan("com.perf.agent.benchmarks.benchmarks.util");
+        return bean;
+    }
 
-	@Bean
-	public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
-		return new JpaTransactionManager(emf);
-	}
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
 }

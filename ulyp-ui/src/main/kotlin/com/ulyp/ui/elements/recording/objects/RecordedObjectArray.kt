@@ -30,10 +30,10 @@ class RecordedObjectArray(record: ObjectArrayRecord, renderSettings: RenderSetti
         }
         if (recordedObjects.size < record.length) {
             nodes.add(
-                of(
-                    (record.length - recordedObjects.size).toString() + " more...",
-                    Style.CALL_TREE_NODE_SEPARATOR
-                )
+                    of(
+                            (record.length - recordedObjects.size).toString() + " more...",
+                            Style.CALL_TREE_NODE_SEPARATOR
+                    )
             )
         }
         nodes.add(of("]", Style.CALL_TREE_COLLECTION_BRACKET))

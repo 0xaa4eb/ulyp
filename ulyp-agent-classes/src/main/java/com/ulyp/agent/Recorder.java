@@ -17,8 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ThreadSafe
 public class Recorder {
 
-    private static final Recorder instance = new Recorder(AgentContext.getInstance());
-
     /**
      * Keeps current active recording session count. Based on the fact that most of the time there is no
      * recording sessions and this counter is equal to 0, it's possible to make a small performance optimization.
@@ -27,20 +25,19 @@ public class Recorder {
      * This helps minimizing unneeded thread local lookups in the advice code
      */
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
-
-    public static Recorder getInstance() {
-        return instance;
-    }
-
+    private static final Recorder instance = new Recorder(AgentContext.getInstance());
     private final EnhancedThreadLocal<CallRecordLog> threadLocalRecordsLog = new EnhancedThreadLocal<>();
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final AgentContext context;
-
     public Recorder(AgentContext context) {
         this.context = context;
         this.startRecordingPolicy = context.getSettings().getStartRecordingPolicy();
         this.initialCallIdGenerator = context.getCallIdGenerator();
+    }
+
+    public static Recorder getInstance() {
+        return instance;
     }
 
     public boolean recordingIsActiveInCurrentThread() {
@@ -155,7 +152,7 @@ public class Recorder {
     }
 
     public void onConstructorExit(TypeResolver typeResolver, Method method, Object result, long callId) {
-        onMethodExit(typeResolver, method, result,null, callId);
+        onMethodExit(typeResolver, method, result, null, callId);
     }
 
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
@@ -167,8 +164,8 @@ public class Recorder {
             if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
                     (
                             (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
-                            &&
-                            currentRecordLog.size() > 0
+                                    &&
+                                    currentRecordLog.size() > 0
                     )) {
                 CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
 

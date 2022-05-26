@@ -18,6 +18,7 @@ class SettingsView(
 
     @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>
+
     @FXML
     lateinit var fontChoiceBox: ChoiceBox<String>
 

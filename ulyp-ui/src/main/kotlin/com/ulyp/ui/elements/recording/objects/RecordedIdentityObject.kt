@@ -12,11 +12,11 @@ class RecordedIdentityObject(record: IdentityObjectRecord, renderSettings: Rende
         val className = if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
 
         children.addAll(
-            listOf(
-                of(className, Style.CALL_TREE_TYPE_NAME),
-                of("@", Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE),
-                of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE)
-            )
+                listOf(
+                        of(className, Style.CALL_TREE_TYPE_NAME),
+                        of("@", Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE),
+                        of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE)
+                )
         )
     }
 }

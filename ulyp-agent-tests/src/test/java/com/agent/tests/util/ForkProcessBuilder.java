@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ForkProcessBuilder {
 
+    private final List<SystemProp> systemProps = new ArrayList<>();
     private Class<?> mainClassName;
     private MethodMatcher methodToRecord;
     private OutputFile outputFile = new OutputFile();
@@ -20,7 +21,6 @@ public class ForkProcessBuilder {
     private String printClasses = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
-    private final List<SystemProp> systemProps = new ArrayList<>();
 
     public Class<?> getMainClassName() {
         return mainClassName;

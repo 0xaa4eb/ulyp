@@ -9,13 +9,13 @@ import javafx.scene.control.TreeItem
 import java.util.function.Consumer
 
 class RecordingTreeNode(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings) :
-    TreeItem<RecordingTreeNodeContent> (
-        RecordingTreeNodeContent(
-            recording.getCallRecord(callRecordId),
-            renderSettings,
-            recording.callCount()
-        )
-    ) {
+        TreeItem<RecordingTreeNodeContent>(
+                RecordingTreeNodeContent(
+                        recording.getCallRecord(callRecordId),
+                        renderSettings,
+                        recording.callCount()
+                )
+        ) {
 
     private var loaded = false
     private var currentCallRecord: CallRecord = recording.getCallRecord(callRecordId)

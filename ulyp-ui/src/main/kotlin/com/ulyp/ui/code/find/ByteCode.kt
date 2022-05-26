@@ -21,10 +21,10 @@ class ByteCode(private val className: String, private val bytecode: ByteArray) {
             e.printStackTrace()
         }
         ConsoleDecompiler.main(
-            arrayOf(
-                classfile.path.toAbsolutePath().toString(),
-                classfile.path.parent.toAbsolutePath().toString()
-            )
+                arrayOf(
+                        classfile.path.toAbsolutePath().toString(),
+                        classfile.path.parent.toAbsolutePath().toString()
+                )
         )
         val output = Paths.get(classfile.path.parent.toAbsolutePath().toString(), "$className.java")
         return try {

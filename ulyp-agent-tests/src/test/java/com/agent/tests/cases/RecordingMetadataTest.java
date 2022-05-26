@@ -14,22 +14,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class RecordingMetadataTest extends AbstractInstrumentationTest {
 
-    public static class TestCase {
-
-        public static int foo() {
-            try {
-                Thread.sleep(220);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return 42;
-        }
-
-        public static void main(String[] args) throws InterruptedException {
-            System.out.println(TestCase.foo());
-        }
-    }
-
     @Test
     public void shouldRecordAllMethods() {
         RecordingResult recordingResult = runForkProcess(
@@ -44,5 +28,21 @@ public class RecordingMetadataTest extends AbstractInstrumentationTest {
 
         Assert.assertThat(recordings, hasSize(1));
         Assert.assertThat(recordings.iterator().next().getLifetime().toMillis(), greaterThan(200L));
+    }
+
+    public static class TestCase {
+
+        public static int foo() {
+            try {
+                Thread.sleep(220);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 42;
+        }
+
+        public static void main(String[] args) throws InterruptedException {
+            System.out.println(TestCase.foo());
+        }
     }
 }

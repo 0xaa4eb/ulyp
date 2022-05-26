@@ -55,9 +55,11 @@ class SourceCodeTab : Tab() {
                             }
                         }
                     }
+
                     override fun keyPressed(e: java.awt.event.KeyEvent) {
 
                     }
+
                     override fun keyReleased(e: java.awt.event.KeyEvent) {
 
                     }
@@ -75,12 +77,12 @@ class SourceCodeTab : Tab() {
                     synchronized(this) {
                         if (stamp == genertedStamp) {
                             val newVerticalPos = max(
-                                ((MethodLineNumberFinder(code).getLine(
-                                    methodNameToScrollTo!!,
+                                    ((MethodLineNumberFinder(code).getLine(
+                                            methodNameToScrollTo!!,
+                                            0
+                                    ) - 10) * textScrollPane.verticalScrollBar
+                                            .maximum * 1.0 / code.getLineCount()).toInt(),
                                     0
-                                ) - 10) * textScrollPane.verticalScrollBar
-                                    .maximum * 1.0 / code.getLineCount()).toInt(),
-                                0
                             )
                             textScrollPane.verticalScrollBar.value = newVerticalPos
                         }

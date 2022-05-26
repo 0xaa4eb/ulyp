@@ -11,7 +11,7 @@ import java.util.jar.JarFile;
 /**
  * Takes ulyp-agent-classes.jar added as a file into the ulyp-agent.jar and extracts it into
  * temporary jar file.
- *
+ * <p>
  * It then appends ulyp-agent-classes.jar to bootstrap loader search. This is necessary because some classes are
  * defined by custom class loaders which should be later recorded by the agent.
  */

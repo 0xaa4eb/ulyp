@@ -31,7 +31,7 @@ repositories {
 
 if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
     javafx {
-        modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.swing' ]
+        modules = ['javafx.controls', 'javafx.fxml', 'javafx.swing']
     }
 }
 

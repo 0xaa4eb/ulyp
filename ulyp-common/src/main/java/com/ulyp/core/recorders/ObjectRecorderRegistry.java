@@ -4,17 +4,17 @@ import com.ulyp.core.Type;
 
 /**
  * All object recorer registry. Every recorder is provided with two values: a unique id and an order.
- *
+ * <p>
  * An order is used to sort all recorders. When ulyp wants to find out which recorder should be used
  * for a particular {@link Type} it checks all available recorders sorted with the order
  * using method {@link ObjectRecorder#supports(Type)}.
  * Recorders which support certain frequently used types come first, before rare types recorders to optimize
  * check time. The more specific (i.e. narrow) recorder is, the earlier it should be checked for any type.
- *
+ * <p>
  * Then {@link DynamicObjectRecorder} comes with order 10000, which can resolve a recorder to use
  * at runtime if, let's say, a method has {@link Object} argument.
  * The last one to come is {@link IdentityRecorder} which can record any type.
- *
+ * <p>
  * The resolution of recorders is done only once for each method and cached within {@link com.ulyp.core.Method}
  */
 public enum ObjectRecorderRegistry {
@@ -50,16 +50,15 @@ public enum ObjectRecorderRegistry {
         }
     }
 
-    public static ObjectRecorder recorderForId(byte id) {
-        return recorderInstances[id];
-    }
-
     private final ObjectRecorder instance;
     private final int order;
-
     ObjectRecorderRegistry(ObjectRecorder instance, int order) {
         this.instance = instance;
         this.order = order;
+    }
+
+    public static ObjectRecorder recorderForId(byte id) {
+        return recorderInstances[id];
     }
 
     public ObjectRecorder getInstance() {

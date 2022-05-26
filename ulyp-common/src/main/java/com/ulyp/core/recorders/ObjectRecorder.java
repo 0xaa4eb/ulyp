@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
  * Object recorder which does what it is named for. It essentially encodes some java object of
  * certain type at runtime into bytes which can later be read and decoded.
  * The decoded value is some implementation of {@link ObjectRecord}.
- *
+ * <p>
  * Depending on the particular implementation used for serialization
  * some amount of information may (and for some data types certainly will) be lost.
  */
 public abstract class ObjectRecorder {
 
-    private final byte id;
     protected final String simpleClassName;
+    private final byte id;
 
     protected ObjectRecorder(byte id) {
         this.id = id;

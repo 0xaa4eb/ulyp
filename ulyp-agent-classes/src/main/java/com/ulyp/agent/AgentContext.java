@@ -9,19 +9,6 @@ public class AgentContext {
     private static final AgentContext instance = new AgentContext();
 
     private static volatile boolean agentLoaded = false;
-
-    public static boolean isLoaded() {
-        return agentLoaded;
-    }
-
-    public static void setLoaded() {
-        agentLoaded = true;
-    }
-
-    public static AgentContext getInstance() {
-        return instance;
-    }
-
     private final Settings settings;
     private final CallIdGenerator callIdGenerator;
     private final StorageWriter storage;
@@ -42,6 +29,18 @@ public class AgentContext {
             Thread shutdown = new Thread(storage::close);
             Runtime.getRuntime().addShutdownHook(shutdown);
         }
+    }
+
+    public static boolean isLoaded() {
+        return agentLoaded;
+    }
+
+    public static void setLoaded() {
+        agentLoaded = true;
+    }
+
+    public static AgentContext getInstance() {
+        return instance;
     }
 
     public StorageWriter getStorage() {

@@ -33,8 +33,7 @@ public class RecordingState implements Closeable {
             DataReader dataReader,
             ReadableRepository<Long, Method> methodRepository,
             ReadableRepository<Long, Type> typeRepository,
-            RecordingListener recordingListener)
-    {
+            RecordingListener recordingListener) {
         this.index = index;
         this.metadata = metadata;
         this.reader = dataReader;

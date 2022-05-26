@@ -50,8 +50,7 @@ public class CallRecordLog {
             StackTraceElement[] stackTrace,
             boolean inProcessOfRecording,
             long nextCallId,
-            long rootCallId)
-    {
+            long rootCallId) {
         this.recordingMetadata = RecordingMetadata.builder()
                 .id(id)
                 .logCreatedEpochMillis(System.currentTimeMillis())

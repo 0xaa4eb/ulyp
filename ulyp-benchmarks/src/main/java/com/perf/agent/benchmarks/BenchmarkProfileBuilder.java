@@ -12,13 +12,13 @@ import java.util.List;
 
 public class BenchmarkProfileBuilder {
 
+    private final List<String> additionalProcessArgs = new ArrayList<>();
     private MethodMatcher methodToRecord;
     @NotNull
     private PackageList instrumentedPackages = new PackageList();
     private boolean agentEnabled = true;
     @Nullable
     private OutputFile outputFile = new OutputFile("ulyp-benchmark", "dat");
-    private final List<String> additionalProcessArgs = new ArrayList<>();
 
     public BenchmarkProfileBuilder withAdditionalArgs(String... args) {
         additionalProcessArgs.addAll(Arrays.asList(args));

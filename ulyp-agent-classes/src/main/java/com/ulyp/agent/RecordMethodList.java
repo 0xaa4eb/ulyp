@@ -15,16 +15,16 @@ public class RecordMethodList {
 
     private final List<MethodMatcher> methods;
 
+    private RecordMethodList(List<MethodMatcher> methods) {
+        this.methods = methods;
+    }
+
     public static RecordMethodList parse(String text) {
         return new RecordMethodList(CommaSeparatedList.parse(text).stream().map(MethodMatcher::parse).collect(Collectors.toList()));
     }
 
     public static RecordMethodList of(MethodMatcher matcher) {
         return new RecordMethodList(Collections.singletonList(matcher));
-    }
-
-    private RecordMethodList(List<MethodMatcher> methods) {
-        this.methods = methods;
     }
 
     public boolean isEmpty() {

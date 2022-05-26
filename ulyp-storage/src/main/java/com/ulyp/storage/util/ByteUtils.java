@@ -7,7 +7,7 @@ public class ByteUtils {
 
     public static void longToBytes(long value, byte[] dst, int offset) {
         for (int i = Long.BYTES - 1; i >= 0; i--) {
-            dst[offset + i] = (byte)(value & 0xFF);
+            dst[offset + i] = (byte) (value & 0xFF);
             value >>= Byte.SIZE;
         }
     }

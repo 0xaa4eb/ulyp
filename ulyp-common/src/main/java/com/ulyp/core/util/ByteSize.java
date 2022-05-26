@@ -25,15 +25,6 @@ public class ByteSize {
         this.byteSize = byteSize;
     }
 
-    public ByteSize addBytes(long byteSize) {
-        return new ByteSize(this.byteSize + byteSize);
-    }
-
-    @Override
-    public String toString() {
-        return toHumanReadable(byteSize);
-    }
-
     public static String toHumanReadable(long size) {
         if (size >= EB) return formatSize(size, EB, "EB");
         if (size >= PB) return formatSize(size, PB, "PB");
@@ -46,5 +37,14 @@ public class ByteSize {
 
     private static String formatSize(long size, long divider, String unitName) {
         return DEC_FORMAT.format((double) size / divider) + " " + unitName;
+    }
+
+    public ByteSize addBytes(long byteSize) {
+        return new ByteSize(this.byteSize + byteSize);
+    }
+
+    @Override
+    public String toString() {
+        return toHumanReadable(byteSize);
     }
 }

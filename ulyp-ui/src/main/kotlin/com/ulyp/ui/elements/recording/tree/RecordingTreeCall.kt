@@ -28,15 +28,15 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
                 ).get()
                 if (node.hasThrown()) {
                     returnValue = WithStylesPane(
-                        returnValue,
-                        Style.CALL_TREE,
-                        Style.CALL_TREE_THROWN
+                            returnValue,
+                            Style.CALL_TREE,
+                            Style.CALL_TREE_THROWN
                     ).get()
                     output.add(
-                        text().text("\uD83D\uDDF2")
-                            .style(Style.CALL_TREE)
-                            .style(Style.CALL_TREE_THROWN)
-                            .build()
+                            text().text("\uD83D\uDDF2")
+                                    .style(Style.CALL_TREE)
+                                    .style(Style.CALL_TREE_THROWN)
+                                    .build()
                     )
                 }
                 output.add(returnValue)

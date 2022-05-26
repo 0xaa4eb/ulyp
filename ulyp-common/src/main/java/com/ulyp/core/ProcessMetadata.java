@@ -20,15 +20,6 @@ public class ProcessMetadata {
     private final List<String> classPathFiles;
     private final long pid;
 
-    public void serialize(BinaryProcessMetadataEncoder encoder) {
-        encoder.pid(pid);
-        BinaryProcessMetadataEncoder.ClassPathFilesEncoder classPathFilesEncoder = encoder.classPathFilesCount(classPathFiles.size());
-        for (String val : classPathFiles) {
-            classPathFilesEncoder.next().value(val);
-        }
-        encoder.mainClassName(mainClassName);
-    }
-
     public static ProcessMetadata deserialize(BinaryProcessMetadataDecoder decoder) {
         List<String> classPathFiles = new ArrayList<>();
         decoder.classPathFiles().forEachRemaining(val -> classPathFiles.add(val.value()));
@@ -52,5 +43,14 @@ public class ProcessMetadata {
         } else {
             return "Unknown";
         }
+    }
+
+    public void serialize(BinaryProcessMetadataEncoder encoder) {
+        encoder.pid(pid);
+        BinaryProcessMetadataEncoder.ClassPathFilesEncoder classPathFilesEncoder = encoder.classPathFilesCount(classPathFiles.size());
+        for (String val : classPathFiles) {
+            classPathFilesEncoder.next().value(val);
+        }
+        encoder.mainClassName(mainClassName);
     }
 }

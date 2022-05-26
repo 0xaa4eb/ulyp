@@ -7,7 +7,7 @@ import org.jetbrains.annotations.TestOnly;
 /**
  * Recorded object value. Depending on the recorder chosen for recording
  * some amount of information might (and for some data types certainly will) be lost
- *
+ * <p>
  * For example, for strings the corresponding recorder {@link StringRecorder} will only record first 200 symbols, for complex objects
  * only type and identity hash code are recorded, see {@link IdentityRecorder}.
  */

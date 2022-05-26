@@ -11,8 +11,8 @@ class RecordingTreeNodeContent(node: CallRecord, renderSettings: RenderSettings,
     init {
         alignment = Pos.CENTER_LEFT
         children.addAll(
-            RecordingTreeNodeWeight(node, totalNodeCountInTree),
-            RecordingTreeCall(node, renderSettings)
+                RecordingTreeNodeWeight(node, totalNodeCountInTree),
+                RecordingTreeCall(node, renderSettings)
         )
     }
 }

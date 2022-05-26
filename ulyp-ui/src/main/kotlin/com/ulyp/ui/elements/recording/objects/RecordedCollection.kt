@@ -12,9 +12,9 @@ class RecordedCollection(record: CollectionRecord, renderSettings: RenderSetting
 
     init {
         val recordedObjects = record.recordedItems
-            .stream()
-            .map { record: ObjectRecord -> of(record, renderSettings) }
-            .collect(Collectors.toList())
+                .stream()
+                .map { record: ObjectRecord -> of(record, renderSettings) }
+                .collect(Collectors.toList())
 
         val nodes: MutableList<Node> = ArrayList()
 
@@ -35,10 +35,10 @@ class RecordedCollection(record: CollectionRecord, renderSettings: RenderSetting
         }
         if (recordedObjects.size < record.length) {
             nodes.add(
-                of(
-                    (record.length - recordedObjects.size).toString() + " more...",
-                    Style.CALL_TREE_NODE_SEPARATOR
-                )
+                    of(
+                            (record.length - recordedObjects.size).toString() + " more...",
+                            Style.CALL_TREE_NODE_SEPARATOR
+                    )
             )
         }
         nodes.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))

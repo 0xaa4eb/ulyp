@@ -18,6 +18,10 @@ public class Main extends Application {
 
     private AnnotationConfigApplicationContext context;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         Main.stage = stage;
@@ -46,9 +50,5 @@ public class Main extends Application {
         stage.getIcons().add(new Image(iconStream));
 
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

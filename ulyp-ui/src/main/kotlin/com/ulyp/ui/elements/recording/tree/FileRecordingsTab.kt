@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct
 class FileRecordingsTab internal constructor(
         val name: FileRecordingsTabName,
         private val applicationContext: ApplicationContext
-        ) : Tab(name.toString()) {
+) : Tab(name.toString()) {
 
     private lateinit var recordingTabs: TabPane
 
@@ -35,10 +35,10 @@ class FileRecordingsTab internal constructor(
         return execute {
             tabsByRecordingId.computeIfAbsent(id) { recordingId: Int ->
                 val tab = applicationContext.getBean(
-                    RecordingTab::class.java,
-                    recordingTabs,
-                    processMetadata,
-                    recording
+                        RecordingTab::class.java,
+                        recordingTabs,
+                        processMetadata,
+                        recording
                 )
                 recordingTabs.tabs.add(tab)
                 tab.onClosed = EventHandler { tabsByRecordingId.remove(recordingId) }

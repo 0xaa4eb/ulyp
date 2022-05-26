@@ -18,11 +18,28 @@ public class RecordedCallState {
     private final long callId;
     private final long enterMethodCallAddr;
     @Builder.Default
+    private final LongList childrenCallIds = new LongArrayList();
+    @Builder.Default
     private int subtreeSize = 1;
     @Builder.Default
     private long exitMethodCallAddr = -1;
-    @Builder.Default
-    private final LongList childrenCallIds = new LongArrayList();
+
+    public static RecordedCallState deserialize(BinaryRecordedCallStateDecoder decoder) {
+
+        BinaryRecordedCallStateDecoder.ChildrenCallIdsDecoder childrenCallIdsDecoder = decoder.childrenCallIds();
+        LongList childrenCallIds = new LongArrayList(childrenCallIdsDecoder.count());
+        for (int i = 0; i < childrenCallIdsDecoder.count(); i++) {
+            childrenCallIds.add(childrenCallIdsDecoder.next().callId());
+        }
+
+        return RecordedCallState.builder()
+                .callId(decoder.callId())
+                .enterMethodCallAddr(decoder.enterMethodCallAddr())
+                .subtreeSize(decoder.subtreeSize())
+                .exitMethodCallAddr(decoder.exitMethodCallAddr())
+                .childrenCallIds(childrenCallIds)
+                .build();
+    }
 
     public void incrementSubtreeSize() {
         subtreeSize++;
@@ -46,22 +63,5 @@ public class RecordedCallState {
         for (int i = 0; i < childrenCallIds.size(); i++) {
             childrenCallIdsEncoder.next().callId(childrenCallIds.getLong(i));
         }
-    }
-
-    public static RecordedCallState deserialize(BinaryRecordedCallStateDecoder decoder) {
-
-        BinaryRecordedCallStateDecoder.ChildrenCallIdsDecoder childrenCallIdsDecoder = decoder.childrenCallIds();
-        LongList childrenCallIds = new LongArrayList(childrenCallIdsDecoder.count());
-        for (int i = 0; i < childrenCallIdsDecoder.count(); i++) {
-            childrenCallIds.add(childrenCallIdsDecoder.next().callId());
-        }
-
-        return RecordedCallState.builder()
-                .callId(decoder.callId())
-                .enterMethodCallAddr(decoder.enterMethodCallAddr())
-                .subtreeSize(decoder.subtreeSize())
-                .exitMethodCallAddr(decoder.exitMethodCallAddr())
-                .childrenCallIds(childrenCallIds)
-                .build();
     }
 }

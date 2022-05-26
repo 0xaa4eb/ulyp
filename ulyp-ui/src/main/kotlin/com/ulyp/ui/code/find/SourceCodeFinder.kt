@@ -54,8 +54,8 @@ class SourceCodeFinder(classpath: List<String>) {
                 val byteCode = jar.findByteCodeByClassName(javaClassName!!)
                 if (byteCode != null) {
                     result.complete(
-                        byteCode.decompile()
-                            .prependToSource(String.format("// Decompiled from: %s \n", jar.absolutePath))
+                            byteCode.decompile()
+                                    .prependToSource(String.format("// Decompiled from: %s \n", jar.absolutePath))
                     )
                 }
             }

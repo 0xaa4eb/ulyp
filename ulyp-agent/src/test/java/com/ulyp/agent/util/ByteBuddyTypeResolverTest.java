@@ -18,35 +18,15 @@ public class ByteBuddyTypeResolverTest {
 
     private final ByteBuddyTypeResolver typeResolver = new ByteBuddyTypeResolver();
 
-    static class BaseClass implements I2, I3 {
-
-    }
-
-    interface I1 {
-
-    }
-
-    interface I2 {
-
-    }
-
-    interface I5 {
-
-    }
-
-    interface I4 extends I5 {
-
-    }
-
-    interface I3 extends I4 {
-
-    }
-
-    static class TestClass extends BaseClass implements I1 {
-
-    }
-
     public static <T> void takesGenericArray(T[] array) {
+
+    }
+
+    public static void takesObjectArray(Object[] array) {
+
+    }
+
+    public static void takesClass(Class<?> x) {
 
     }
 
@@ -98,10 +78,6 @@ public class ByteBuddyTypeResolverTest {
         assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.NON_PRIMITIVE_ARRAY));
     }
 
-    public static void takesObjectArray(Object[] array) {
-
-    }
-
     @Test
     public void testObjectArrayTraitsWhenUsedAsParameter() throws NoSuchMethodException {
         MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod method = new MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod(
@@ -114,10 +90,6 @@ public class ByteBuddyTypeResolverTest {
 
 
         assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.NON_PRIMITIVE_ARRAY));
-    }
-
-    public static void takesClass(Class<?> x) {
-
     }
 
     @Test
@@ -179,10 +151,6 @@ public class ByteBuddyTypeResolverTest {
         assertThat(typeResolver.get(CustomList.class).getTraits(), hasItem(TypeTrait.COLLECTION));
     }
 
-    public abstract class CustomList implements List<String> {
-
-    }
-
     @Test
     public void testMapTraits() {
 
@@ -222,5 +190,37 @@ public class ByteBuddyTypeResolverTest {
                 }},
                 type.getSuperTypeSimpleNames()
         );
+    }
+
+    interface I1 {
+
+    }
+
+    interface I2 {
+
+    }
+
+    interface I5 {
+
+    }
+
+    interface I4 extends I5 {
+
+    }
+
+    interface I3 extends I4 {
+
+    }
+
+    static class BaseClass implements I2, I3 {
+
+    }
+
+    static class TestClass extends BaseClass implements I1 {
+
+    }
+
+    public abstract class CustomList implements List<String> {
+
     }
 }

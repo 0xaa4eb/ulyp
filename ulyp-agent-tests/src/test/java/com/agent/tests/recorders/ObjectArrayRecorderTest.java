@@ -16,16 +16,6 @@ import static org.junit.Assert.assertThat;
 
 public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
-    public static class TakesEmptyObjectArray {
-
-        public static void main(String[] args) {
-            new TakesEmptyObjectArray().accept(new Object[]{});
-        }
-
-        public void accept(Object[] array) {
-        }
-    }
-
     @Test
     public void shouldProvideArgumentTypes() {
         CallRecord root = run(
@@ -40,20 +30,6 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         assertThat(objectRepresentation.getLength(), is(0));
         assertThat(objectRepresentation.getRecordedItems(), Matchers.empty());
-    }
-
-    public static class TakesStringArrayWithSomeString {
-
-        public static void main(String[] args) {
-            new TakesStringArrayWithSomeString().accept(new String[]{
-                    "sddsad",
-                    "zx",
-                    "sdsd"
-            });
-        }
-
-        public void accept(String[] array) {
-        }
     }
 
     @Test
@@ -84,28 +60,6 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         assertEquals(str2.value(), "sdsd");
     }
 
-    public static class TakesVariousItemsArray {
-
-        public static void main(String[] args) {
-            new TakesVariousItemsArray().accept(new Object[]{
-                    new X(),
-                    664,
-                    Object.class,
-                    "asdd",
-                    new X()
-            });
-        }
-
-        public void accept(Object[] array) {
-            System.out.println(array);
-        }
-    }
-
-    private static class X {
-        public X() {
-        }
-    }
-
     @Test
     public void testUserDefinedClassArrayWith3Elements() {
         CallRecord root = run(
@@ -131,19 +85,6 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         assertThat(arg4.getCarriedType().getName(), is(Object.class.getName()));
     }
 
-    public static class VaragsTestCase {
-
-        public static void main(String[] args) {
-            takeVararg(new Object[] {Byte[].class, String.class, Integer.class, int[].class, int.class});
-        }
-
-        private static void takeVararg(Object[] commonClasses) {
-            for (Object b : commonClasses) {
-                System.out.println(b);
-            }
-        }
-    }
-
     @Test
     public void testVarargs() {
         CallRecord root = run(
@@ -158,5 +99,64 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         Assert.assertThat(arrayRecord.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
         Assert.assertThat(arrayRecord.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
         Assert.assertThat(arrayRecord.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
+    }
+
+    public static class TakesEmptyObjectArray {
+
+        public static void main(String[] args) {
+            new TakesEmptyObjectArray().accept(new Object[]{});
+        }
+
+        public void accept(Object[] array) {
+        }
+    }
+
+    public static class TakesStringArrayWithSomeString {
+
+        public static void main(String[] args) {
+            new TakesStringArrayWithSomeString().accept(new String[]{
+                    "sddsad",
+                    "zx",
+                    "sdsd"
+            });
+        }
+
+        public void accept(String[] array) {
+        }
+    }
+
+    public static class TakesVariousItemsArray {
+
+        public static void main(String[] args) {
+            new TakesVariousItemsArray().accept(new Object[]{
+                    new X(),
+                    664,
+                    Object.class,
+                    "asdd",
+                    new X()
+            });
+        }
+
+        public void accept(Object[] array) {
+            System.out.println(array);
+        }
+    }
+
+    private static class X {
+        public X() {
+        }
+    }
+
+    public static class VaragsTestCase {
+
+        public static void main(String[] args) {
+            takeVararg(new Object[]{Byte[].class, String.class, Integer.class, int[].class, int.class});
+        }
+
+        private static void takeVararg(Object[] commonClasses) {
+            for (Object b : commonClasses) {
+                System.out.println(b);
+            }
+        }
     }
 }

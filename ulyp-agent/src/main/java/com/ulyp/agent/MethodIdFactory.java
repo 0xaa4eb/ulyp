@@ -13,7 +13,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
 /**
  * Allows wiring method id into advice classes {@link ConstructorCallRecordingAdvice} and {@link MethodCallRecordingAdvice}
- *
+ * <p>
  * Uses a singleton instance of {@link MethodRepository} to store methods into it.
  */
 public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {

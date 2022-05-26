@@ -26,8 +26,7 @@ public class BenchmarkProfile {
             @NotNull PackageList instrumentedPackages,
             List<String> additionalProcessArgs,
             OutputFile outputFile,
-            boolean agentEnabled)
-    {
+            boolean agentEnabled) {
         this.methodToRecord = methodToRecord;
         this.instrumentedPackages = instrumentedPackages;
         this.additionalProcessArgs = additionalProcessArgs;
@@ -68,7 +67,7 @@ public class BenchmarkProfile {
     @Override
     public String toString() {
         return "Agent: " + (agentEnabled ? "Y" : "N") +
-                "/" + (agentEnabled ? (instrumentedPackages.isEmpty() ? "*" : instrumentedPackages) : "-")  +
+                "/" + (agentEnabled ? (instrumentedPackages.isEmpty() ? "*" : instrumentedPackages) : "-") +
                 "/" + (methodToRecord != null ? methodToRecord : (agentEnabled ? "main method" : "-"));
     }
 }

@@ -32,6 +32,25 @@ public class ConcurrentReaderWriterBinaryListTest {
         executorService.awaitTermination(5, TimeUnit.SECONDS);
     }
 
+    @Test
+    public void shouldBeAbleToConcurrentlyWriteAndRead() throws Exception {
+        verify(500, Duration.ofMillis(0));
+
+        verify(500, Duration.ofMillis(1));
+
+        verify(500, Duration.ofMillis(10));
+    }
+
+    private void verify(int listsCount, Duration maxSleep) throws Exception {
+        Future<WriteResult> writeResultFuture = executorService.submit(new Writer(file, listsCount, maxSleep));
+        Future<ReadResult> readResultFuture = executorService.submit(new Reader(file, listsCount));
+
+        WriteResult writeResult = writeResultFuture.get(10, TimeUnit.SECONDS);
+        ReadResult readResult = readResultFuture.get(10, TimeUnit.SECONDS);
+
+        Assert.assertEquals(writeResult.getItemsWritten(), readResult.getItemsCount());
+    }
+
     @Value
     @Builder
     public static class ReadResult {
@@ -102,24 +121,5 @@ public class ConcurrentReaderWriterBinaryListTest {
 
             return WriteResult.builder().itemsWritten(itemsWritten).build();
         }
-    }
-
-    @Test
-    public void shouldBeAbleToConcurrentlyWriteAndRead() throws Exception {
-        verify(500, Duration.ofMillis(0));
-
-        verify(500, Duration.ofMillis(1));
-
-        verify(500, Duration.ofMillis(10));
-    }
-
-    private void verify(int listsCount, Duration maxSleep) throws Exception {
-        Future<WriteResult> writeResultFuture = executorService.submit(new Writer(file, listsCount, maxSleep));
-        Future<ReadResult> readResultFuture = executorService.submit(new Reader(file, listsCount));
-
-        WriteResult writeResult = writeResultFuture.get(10, TimeUnit.SECONDS);
-        ReadResult readResult = readResultFuture.get(10, TimeUnit.SECONDS);
-
-        Assert.assertEquals(writeResult.getItemsWritten(), readResult.getItemsCount());
     }
 }

@@ -44,8 +44,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
             Method method,
             TypeResolver typeResolver,
             boolean thrown,
-            Object returnValue)
-    {
+            Object returnValue) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -88,8 +87,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
             Method method,
             TypeResolver typeResolver,
             Object callee,
-            Object[] args)
-    {
+            Object[] args) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();

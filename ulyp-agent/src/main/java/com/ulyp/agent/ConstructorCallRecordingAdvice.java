@@ -19,8 +19,7 @@ public class ConstructorCallRecordingAdvice {
     static void enter(
             @Advice.Local("callId") long callId,
             @MethodId int methodId,
-            @Advice.AllArguments Object[] arguments)
-    {
+            @Advice.AllArguments Object[] arguments) {
         if (methodId < 0) {
             callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
                     ByteBuddyTypeResolver.getInstance(),
@@ -43,8 +42,7 @@ public class ConstructorCallRecordingAdvice {
     static void exit(
             @Advice.Local("callId") long callId,
             @MethodId int methodId,
-            @Advice.This Object returnValue)
-    {
+            @Advice.This Object returnValue) {
         if (callId >= 0) {
             if (methodId < 0) {
                 Recorder.getInstance().endRecordingIfPossibleOnConstructorExit(

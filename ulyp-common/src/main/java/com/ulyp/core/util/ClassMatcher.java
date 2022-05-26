@@ -5,21 +5,19 @@ import com.ulyp.core.Type;
 public class ClassMatcher {
 
     private static final String WILDCARD = "*";
-
-    public static ClassMatcher parse(String text) {
-        return new ClassMatcher(text);
-    }
-
     private final String patternText;
     private final AntPathMatcher antMatcher;
     private final boolean isWildcard;
-
     private ClassMatcher(String patternText) {
         this.antMatcher = new AntPathMatcher(".");
 
         // '.' is used for nested class name matching instead of '$'
         this.patternText = patternText.replace('$', '.');
         this.isWildcard = patternText.equals(WILDCARD);
+    }
+
+    public static ClassMatcher parse(String text) {
+        return new ClassMatcher(text);
     }
 
     public boolean matches(Type type) {

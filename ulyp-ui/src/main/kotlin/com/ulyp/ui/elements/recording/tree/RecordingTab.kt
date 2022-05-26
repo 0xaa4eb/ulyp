@@ -29,9 +29,9 @@ import java.sql.Timestamp
 @Component
 @Scope(value = "prototype")
 class RecordingTab(
-    private val parent: Region,
-    private val processMetadata: ProcessMetadata,
-    private val recording: Recording
+        private val parent: Region,
+        private val processMetadata: ProcessMetadata,
+        private val recording: Recording
 ) : Tab() {
 
     private var root: CallRecord? = null
@@ -40,8 +40,10 @@ class RecordingTab(
 
     @Autowired
     private lateinit var sourceCodeView: SourceCodeView
+
     @Autowired
     private lateinit var renderSettings: RenderSettings
+
     @Autowired
     private lateinit var settings: Settings
 
@@ -60,23 +62,23 @@ class RecordingTab(
 
         val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
         treeView!!.selectionModel.selectedItemProperty()
-            .addListener { observable: ObservableValue<out TreeItem<RecordingTreeNodeContent>?>?, oldValue: TreeItem<RecordingTreeNodeContent>?, newValue: TreeItem<RecordingTreeNodeContent>? ->
-                val selectedNode = newValue as RecordingTreeNode?
-                if (selectedNode?.callRecord != null) {
-                    val sourceCodeFuture = sourceCodeFinder.find(
-                        selectedNode.callRecord.method.declaringType.name
-                    )
-                    sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
-                        Platform.runLater {
-                            val currentlySelected = treeView!!.selectionModel.selectedItem
-                            val currentlySelectedNode = currentlySelected as RecordingTreeNode
-                            if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
-                                sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
+                .addListener { observable: ObservableValue<out TreeItem<RecordingTreeNodeContent>?>?, oldValue: TreeItem<RecordingTreeNodeContent>?, newValue: TreeItem<RecordingTreeNodeContent>? ->
+                    val selectedNode = newValue as RecordingTreeNode?
+                    if (selectedNode?.callRecord != null) {
+                        val sourceCodeFuture = sourceCodeFinder.find(
+                                selectedNode.callRecord.method.declaringType.name
+                        )
+                        sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
+                            Platform.runLater {
+                                val currentlySelected = treeView!!.selectionModel.selectedItem
+                                val currentlySelectedNode = currentlySelected as RecordingTreeNode
+                                if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
+                                    sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
+                                }
                             }
                         }
                     }
                 }
-            }
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
                 settings.increaseFont()
@@ -106,11 +108,11 @@ class RecordingTab(
                 return Tooltip("")
             }
             val builder = StringBuilder()
-                .append("Thread: ").append(recordingMetadata!!.threadName).append("\n")
-                .append("Created at: ").append(Timestamp(recordingMetadata!!.recordingStartedEpochMillis)).append("\n")
-                .append("Finished at: ")
-                .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
-                .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
+                    .append("Thread: ").append(recordingMetadata!!.threadName).append("\n")
+                    .append("Created at: ").append(Timestamp(recordingMetadata!!.recordingStartedEpochMillis)).append("\n")
+                    .append("Finished at: ")
+                    .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
+                    .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
 
             return Tooltip(builder.toString())
         }

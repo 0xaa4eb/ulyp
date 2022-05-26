@@ -25,7 +25,7 @@ import java.lang.instrument.Instrumentation;
 public class Agent {
 
     private static final String ULYP_LOGO =
-                    "   __  __    __ __  __    ____ \n" +
+            "   __  __    __ __  __    ____ \n" +
                     "  / / / /   / / \\ \\/ /   / __ \\\n" +
                     " / / / /   / /   \\  /   / /_/ /\n" +
                     "/ /_/ /   / /___ / /   / ____/ \n" +

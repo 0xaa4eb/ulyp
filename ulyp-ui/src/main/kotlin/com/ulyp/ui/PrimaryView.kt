@@ -36,8 +36,10 @@ class PrimaryView(
 
     @FXML
     lateinit var primaryPane: VBox
+
     @FXML
     lateinit var fileTabPaneAnchorPane: AnchorPane
+
     @FXML
     lateinit var sourceCodeViewAnchorPane: AnchorPane
 

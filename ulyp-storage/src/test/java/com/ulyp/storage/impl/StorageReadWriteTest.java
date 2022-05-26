@@ -27,11 +27,7 @@ import static org.junit.Assert.*;
 
 public class StorageReadWriteTest {
 
-    private StorageReader reader;
-    private StorageWriter writer;
-
     private final int recordingId = 42;
-    private RecordingMetadata recordingMetadata;
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
@@ -43,18 +39,15 @@ public class StorageReadWriteTest {
             .isStatic(false)
             .returnsSomething(true)
             .parameterRecorders(
-                    new ObjectRecorder[] { ObjectRecorderRegistry.STRING_RECORDER.getInstance() }
+                    new ObjectRecorder[]{ObjectRecorderRegistry.STRING_RECORDER.getInstance()}
             )
             .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-
-    public static class T {
-        public String foo(String in) {
-            return in;
-        }
-    }
+    private StorageReader reader;
+    private StorageWriter writer;
+    private RecordingMetadata recordingMetadata;
 
     @Before
     public void setUp() throws IOException {
@@ -92,7 +85,7 @@ public class StorageReadWriteTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "ABC" }
+                new Object[]{"ABC"}
         );
 
 
@@ -139,7 +132,7 @@ public class StorageReadWriteTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "ABC" }
+                new Object[]{"ABC"}
         );
 
         methodCalls.addExitMethodCall(
@@ -215,7 +208,7 @@ public class StorageReadWriteTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "ABC" }
+                new Object[]{"ABC"}
         );
 
         methodCalls.addEnterMethodCall(
@@ -224,7 +217,7 @@ public class StorageReadWriteTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "XYZ" }
+                new Object[]{"XYZ"}
         );
 
         methodCalls.addExitMethodCall(
@@ -242,7 +235,7 @@ public class StorageReadWriteTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "BHJ" }
+                new Object[]{"BHJ"}
         );
 
 
@@ -323,5 +316,11 @@ public class StorageReadWriteTest {
                             assertTrue(child2.isFullyRecorded());
                         }
                 );
+    }
+
+    public static class T {
+        public String foo(String in) {
+            return in;
+        }
     }
 }

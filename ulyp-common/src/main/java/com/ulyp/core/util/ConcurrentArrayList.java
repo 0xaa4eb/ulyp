@@ -22,6 +22,64 @@ public class ConcurrentArrayList<V> {
         chunks.set(0, new Chunk<>());
     }
 
+    public V get(int index) {
+        int chunkIndex = index >> CHUNK_SIZE_BITS;
+        int slot = index & (CHUNK_SIZE - 1);
+
+        Chunk<V> chunk = chunks.get(chunkIndex);
+        if (chunk == null) {
+            return null;
+        } else {
+            return chunk.get(slot);
+        }
+    }
+
+    public int add(V value) {
+
+        for (; ; ) {
+            int currentChunkIndex = chunksCount.get() - 1;
+
+            Chunk<V> chunk = chunks.get(currentChunkIndex);
+
+            int slotTaken = chunk.tryAdd(value);
+            if (slotTaken >= 0) {
+
+                return (currentChunkIndex << CHUNK_SIZE_BITS) | slotTaken;
+            } else {
+
+                // try allocate a new chunk
+                int nextChunkIndex = currentChunkIndex + 1;
+                if (chunks.get(nextChunkIndex) == null) {
+                    chunks.compareAndSet(nextChunkIndex, null, new Chunk<>());
+                }
+
+                // update chunkCount even if other thread succeeded
+                // set a new value only it's less than a current value, protect from long stalls like GC
+                int newChunkCount = nextChunkIndex + 1;
+                for (; ; ) {
+                    int currentValue = chunksCount.get();
+                    if (newChunkCount > currentValue) {
+                        if (chunksCount.compareAndSet(currentValue, newChunkCount)) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public int size() {
+        for (; ; ) {
+            int currentChunkIndex = chunksCount.get() - 1;
+            Chunk<V> currentChunk = chunks.get(currentChunkIndex);
+            if (currentChunk != null) {
+                return currentChunkIndex * CHUNK_SIZE + currentChunk.size();
+            }
+        }
+    }
+
     private static class Chunk<V> {
         private final AtomicReferenceArray<V> values = new AtomicReferenceArray<>(CHUNK_SIZE);
         private final AtomicInteger nextSlot = new AtomicInteger(-1);
@@ -44,64 +102,6 @@ public class ConcurrentArrayList<V> {
         public int size() {
             int elementsTaken = nextSlot.get() + 1;
             return Math.min(elementsTaken, CHUNK_SIZE);
-        }
-    }
-
-    public V get(int index) {
-        int chunkIndex = index >> CHUNK_SIZE_BITS;
-        int slot = index & (CHUNK_SIZE - 1);
-
-        Chunk<V> chunk = chunks.get(chunkIndex);
-        if (chunk == null) {
-            return null;
-        } else {
-            return chunk.get(slot);
-        }
-    }
-
-    public int add(V value) {
-
-        for (;;) {
-            int currentChunkIndex = chunksCount.get() - 1;
-
-            Chunk<V> chunk = chunks.get(currentChunkIndex);
-
-            int slotTaken = chunk.tryAdd(value);
-            if (slotTaken >= 0) {
-
-                return (currentChunkIndex << CHUNK_SIZE_BITS) | slotTaken;
-            } else {
-
-                // try allocate a new chunk
-                int nextChunkIndex = currentChunkIndex + 1;
-                if (chunks.get(nextChunkIndex) == null) {
-                    chunks.compareAndSet(nextChunkIndex, null, new Chunk<>());
-                }
-
-                // update chunkCount even if other thread succeeded
-                // set a new value only it's less than a current value, protect from long stalls like GC
-                int newChunkCount = nextChunkIndex + 1;
-                for(;;) {
-                    int currentValue = chunksCount.get();
-                    if (newChunkCount > currentValue) {
-                        if (chunksCount.compareAndSet(currentValue, newChunkCount)) {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    public int size() {
-        for (;;) {
-            int currentChunkIndex = chunksCount.get() - 1;
-            Chunk<V> currentChunk = chunks.get(currentChunkIndex);
-            if (currentChunk != null) {
-                return currentChunkIndex * CHUNK_SIZE + currentChunk.size();
-            }
         }
     }
 }

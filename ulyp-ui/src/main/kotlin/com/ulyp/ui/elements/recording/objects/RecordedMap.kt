@@ -12,9 +12,9 @@ class RecordedMap(record: MapRecord, renderSettings: RenderSettings) : RecordedO
 
     init {
         val entries = record.entries
-            .stream()
-            .map { record: MapEntryRecord -> of(record, renderSettings) }
-            .collect(Collectors.toList())
+                .stream()
+                .map { record: MapEntryRecord -> of(record, renderSettings) }
+                .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
         if (renderSettings.showTypes()) {
             texts.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))

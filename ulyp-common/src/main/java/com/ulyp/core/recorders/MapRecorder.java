@@ -17,13 +17,11 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    private CollectionsRecordingMode mode;
-    private volatile boolean active = true;
-
     public static final int MAX_ITEMS_TO_RECORD = 3;
-
     private static final int RECORDED_ITEMS = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
+    private CollectionsRecordingMode mode;
+    private volatile boolean active = true;
 
     protected MapRecorder(byte id) {
         super(id);

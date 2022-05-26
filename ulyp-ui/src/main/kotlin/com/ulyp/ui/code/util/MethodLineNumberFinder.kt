@@ -10,17 +10,17 @@ class MethodLineNumberFinder(private val sourceCode: SourceCode) {
 
     fun getLine(methodName: String, defaultValue: Int): Int {
 
-        val parsed : CompilationUnit = StaticJavaParser.parse(sourceCode.code)
+        val parsed: CompilationUnit = StaticJavaParser.parse(sourceCode.code)
 
         val voidVisitorAdapter = object : VoidVisitorAdapter<MutableList<MethodDeclaration>>() {
-                override fun visit(method: MethodDeclaration, collector: MutableList<MethodDeclaration>) {
-                    super.visit(method, collector)
-                    if (methodName == method.name.asString() && method.range.isPresent) {
-                        collector.add(method)
-                    }
+            override fun visit(method: MethodDeclaration, collector: MutableList<MethodDeclaration>) {
+                super.visit(method, collector)
+                if (methodName == method.name.asString() && method.range.isPresent) {
+                    collector.add(method)
                 }
+            }
         }
-        val methods : MutableList<MethodDeclaration> = ArrayList()
+        val methods: MutableList<MethodDeclaration> = ArrayList()
         voidVisitorAdapter.visit(parsed, methods)
         return if (methods.isEmpty()) {
             defaultValue

@@ -9,14 +9,8 @@ import java.util.Collection;
 public class MethodRepository {
 
     private static final MethodRepository INSTANCE = new MethodRepository();
-
-    public static MethodRepository getInstance() {
-        return INSTANCE;
-    }
-
     private final ConcurrentArrayList<Method> continueRecordingMethods = new ConcurrentArrayList<>(64_000);
     private final ConcurrentArrayList<Method> startRecordingMethods = new ConcurrentArrayList<>(64_000);
-
     private MethodRepository() {
         // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
         // or "continue recording only" bucket
@@ -24,11 +18,15 @@ public class MethodRepository {
         startRecordingMethods.add(null);
     }
 
+    public static MethodRepository getInstance() {
+        return INSTANCE;
+    }
+
     public Method get(int id) {
         if (id > 0) {
             return continueRecordingMethods.get(id);
         } else {
-           return startRecordingMethods.get(-id);
+            return startRecordingMethods.get(-id);
         }
     }
 

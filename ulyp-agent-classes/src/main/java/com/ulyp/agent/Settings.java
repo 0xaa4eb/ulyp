@@ -31,11 +31,45 @@ public class Settings {
     public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
+    @NotNull
+    private final Supplier<StorageWriter> storageWriterSupplier;
+    private final PackageList instrumentatedPackages;
+    private final PackageList excludedFromInstrumentationPackages;
+    @NotNull
+    private final RecordMethodList recordMethodList;
+    private final List<ClassMatcher> excludeFromInstrumentationClasses;
+    private final boolean shouldRecordConstructors;
+    private final StartRecordingPolicy startRecordingPolicy;
+    private final CollectionsRecordingMode collectionsRecordingMode;
+    private final Set<ClassMatcher> classesToPrint;
+    private final boolean agentDisabled;
+    public Settings(
+            @NotNull Supplier<StorageWriter> storageWriterSupplier,
+            PackageList instrumentedPackages,
+            PackageList excludedFromInstrumentationPackages,
+            @NotNull RecordMethodList recordMethodList,
+            boolean shouldRecordConstructors,
+            CollectionsRecordingMode collectionsRecordingMode,
+            Set<ClassMatcher> classesToPrint,
+            StartRecordingPolicy startRecordingPolicy,
+            List<ClassMatcher> excludeFromInstrumentationClasses,
+            boolean agentDisabled) {
+        this.storageWriterSupplier = storageWriterSupplier;
+        this.instrumentatedPackages = instrumentedPackages;
+        this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
+        this.recordMethodList = recordMethodList;
+        this.shouldRecordConstructors = shouldRecordConstructors;
+        this.collectionsRecordingMode = collectionsRecordingMode;
+        this.classesToPrint = classesToPrint;
+        this.startRecordingPolicy = startRecordingPolicy;
+        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
+        this.agentDisabled = agentDisabled;
+    }
 
     public static Settings fromSystemProperties() {
 
         Duration delay = Duration.ofSeconds(Integer.parseInt(System.getProperty(START_RECORDING_DELAY_PROPERTY, "0")));
-        StartRecordingPolicy startRecordingPolicy = delay.isZero() ? StartRecordingPolicy.alwaysStartRecordingPolicy(): StartRecordingPolicy.withDelayStartRecordingPolicy(delay);
+        StartRecordingPolicy startRecordingPolicy = delay.isZero() ? StartRecordingPolicy.alwaysStartRecordingPolicy() : StartRecordingPolicy.withDelayStartRecordingPolicy(delay);
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
@@ -94,9 +128,9 @@ public class Settings {
 
         Set<ClassMatcher> classesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_CLASSES_PROPERTY, ""))
-                    .stream()
-                    .map(ClassMatcher::parse)
-                    .collect(Collectors.toSet());
+                        .stream()
+                        .map(ClassMatcher::parse)
+                        .collect(Collectors.toSet());
 
         return new Settings(
                 storageWriterSupplier,
@@ -110,41 +144,6 @@ public class Settings {
                 excludeClassesFromInstrumentation,
                 agentDisabled
         );
-    }
-
-    @NotNull private final Supplier<StorageWriter> storageWriterSupplier;
-    private final PackageList instrumentatedPackages;
-    private final PackageList excludedFromInstrumentationPackages;
-    @NotNull private final RecordMethodList recordMethodList;
-    private final List<ClassMatcher> excludeFromInstrumentationClasses;
-    private final boolean shouldRecordConstructors;
-    private final StartRecordingPolicy startRecordingPolicy;
-    private final CollectionsRecordingMode collectionsRecordingMode;
-    private final Set<ClassMatcher> classesToPrint;
-    private final boolean agentDisabled;
-
-    public Settings(
-            @NotNull Supplier<StorageWriter> storageWriterSupplier,
-            PackageList instrumentedPackages,
-            PackageList excludedFromInstrumentationPackages,
-            @NotNull RecordMethodList recordMethodList,
-            boolean shouldRecordConstructors,
-            CollectionsRecordingMode collectionsRecordingMode,
-            Set<ClassMatcher> classesToPrint,
-            StartRecordingPolicy startRecordingPolicy,
-            List<ClassMatcher> excludeFromInstrumentationClasses,
-            boolean agentDisabled)
-    {
-        this.storageWriterSupplier = storageWriterSupplier;
-        this.instrumentatedPackages = instrumentedPackages;
-        this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
-        this.recordMethodList = recordMethodList;
-        this.shouldRecordConstructors = shouldRecordConstructors;
-        this.collectionsRecordingMode = collectionsRecordingMode;
-        this.classesToPrint = classesToPrint;
-        this.startRecordingPolicy = startRecordingPolicy;
-        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
-        this.agentDisabled = agentDisabled;
     }
 
     public PackageList getInstrumentatedPackages() {

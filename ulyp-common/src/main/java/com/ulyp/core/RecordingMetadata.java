@@ -22,15 +22,6 @@ public class RecordingMetadata {
     private String threadName;
     private long threadId;
 
-    public void serialize(BinaryRecordingMetadataEncoder encoder) {
-        encoder.recordingStartedEpochMillis(recordingStartedEpochMillis);
-        encoder.logCreatedEpochMillis(logCreatedEpochMillis);
-        encoder.recordingCompletedEpochMillis(recordingCompletedEpochMillis);
-        encoder.recordingId(id);
-        encoder.threadId(threadId);
-        encoder.threadName(threadName);
-    }
-
     public static RecordingMetadata deserialize(BinaryRecordingMetadataDecoder decoder) {
         return RecordingMetadata.builder()
                 .recordingStartedEpochMillis(decoder.recordingStartedEpochMillis())
@@ -40,5 +31,14 @@ public class RecordingMetadata {
                 .threadId(decoder.threadId())
                 .threadName(decoder.threadName())
                 .build();
+    }
+
+    public void serialize(BinaryRecordingMetadataEncoder encoder) {
+        encoder.recordingStartedEpochMillis(recordingStartedEpochMillis);
+        encoder.logCreatedEpochMillis(logCreatedEpochMillis);
+        encoder.recordingCompletedEpochMillis(recordingCompletedEpochMillis);
+        encoder.recordingId(id);
+        encoder.threadId(threadId);
+        encoder.threadName(threadName);
     }
 }

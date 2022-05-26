@@ -47,8 +47,8 @@ open class JarFile(private val file: File) {
             try {
                 jarFile.getInputStream(zipEntry).use { inputStream ->
                     return SourceCode(
-                        className,
-                        String(StreamDrainer.DEFAULT.drain(inputStream))
+                            className,
+                            String(StreamDrainer.DEFAULT.drain(inputStream))
                     )
                 }
             } catch (e: IOException) {
@@ -64,7 +64,7 @@ open class JarFile(private val file: File) {
         } else {
             try {
                 jarFile.getInputStream(zipEntry)
-                    .use { inputStream -> return ByteCode(className, StreamDrainer.DEFAULT.drain(inputStream)) }
+                        .use { inputStream -> return ByteCode(className, StreamDrainer.DEFAULT.drain(inputStream)) }
             } catch (e: IOException) {
                 throw RuntimeException("Could not read jar file: " + e.message, e)
             }

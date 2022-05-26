@@ -36,8 +36,8 @@ class DataReader implements Closeable {
         } catch (IOException e) {
             throw new StorageException(
                     "Could not read " + RecordedEnterMethodCall.class.getSimpleName() +
-                    " at address " + addr +
-                    " in file " + reader
+                            " at address " + addr +
+                            " in file " + reader
             );
         }
     }
@@ -58,8 +58,8 @@ class DataReader implements Closeable {
         } catch (IOException e) {
             throw new StorageException(
                     "Could not read " + RecordedExitMethodCall.class.getSimpleName() +
-                    " at address " + addr +
-                    " in file " + reader
+                            " at address " + addr +
+                            " in file " + reader
             );
         }
     }

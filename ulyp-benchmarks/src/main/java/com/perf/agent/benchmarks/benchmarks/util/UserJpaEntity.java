@@ -7,61 +7,61 @@ import javax.persistence.Id;
 @Entity
 public class UserJpaEntity {
 
-	@Id
-	@GeneratedValue
-	private int		id;
-	private String	firstname;
-	private String	lastname;
+    @Id
+    @GeneratedValue
+    private int id;
+    private String firstname;
+    private String lastname;
 
-	public UserJpaEntity() {
-	}
+    public UserJpaEntity() {
+    }
 
-	public UserJpaEntity(final String firstname, final String lastname) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-	}
+    public UserJpaEntity(final String firstname, final String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
 
-	public UserJpaEntity(final User user) {
-		this.id = user.getId();
-		this.firstname = user.getFirstName();
-		this.lastname = user.getLastName();
-	}
+    public UserJpaEntity(final User user) {
+        this.id = user.getId();
+        this.firstname = user.getFirstName();
+        this.lastname = user.getLastName();
+    }
 
-	// getters
+    // getters
 
-	public String getFirstname() {
-		return firstname;
-	}
+    public String getFirstname() {
+        return firstname;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 
-	public String getLastname() {
-		return lastname;
-	}
+    public int getId() {
+        return id;
+    }
 
-	// setters
+    // setters
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getLastname() {
+        return lastname;
+    }
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	
-	// type conversion
-	
-	public User toUser() {
-		User user = new User();
-		user.setId(id);
-		user.setFirstName(firstname);
-		user.setLastName(lastname);
-		return user;
-	}
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    // type conversion
+
+    public User toUser() {
+        User user = new User();
+        user.setId(id);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        return user;
+    }
 }

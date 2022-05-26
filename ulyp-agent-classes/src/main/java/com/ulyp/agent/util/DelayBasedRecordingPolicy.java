@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 public class DelayBasedRecordingPolicy implements StartRecordingPolicy {
 
-    private volatile boolean canStartRecording = false;
     private final LocalDateTime startRecordingTimestamp;
+    private volatile boolean canStartRecording = false;
 
     public DelayBasedRecordingPolicy(Duration delay) {
         this.startRecordingTimestamp = LocalDateTime.now().plusSeconds(delay.toMillis());

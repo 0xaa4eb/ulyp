@@ -23,8 +23,8 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
             val path = Files.createTempFile(STYLE_PREFIX, null)
             path.toFile().deleteOnExit()
             Files.write(
-                path,
-                """
+                    path,
+                    """
                 .ulyp-ctt {
                     -fx-font-family: ${fontName};
                     -fx-font-size: ${fontSize}em;
@@ -33,7 +33,7 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
                     -fx-font-size: ${fontSize * 0.8}em;
                 }
                 """.toByteArray(StandardCharsets.UTF_8),
-                StandardOpenOption.WRITE
+                    StandardOpenOption.WRITE
             )
             var index: Int? = null
             for (i in scene.stylesheets.indices) {

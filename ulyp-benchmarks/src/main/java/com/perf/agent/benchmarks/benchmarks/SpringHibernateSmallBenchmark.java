@@ -15,6 +15,19 @@ import java.util.List;
 
 public class SpringHibernateSmallBenchmark implements Benchmark {
 
+    private UserService saver;
+
+    public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
+
+        SpringHibernateSmallBenchmark benchmark = new SpringHibernateSmallBenchmark();
+        benchmark.setUp();
+        benchmark.run();
+        benchmark.tearDown();
+
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
+    }
+
     @Override
     public List<BenchmarkProfile> getProfiles() {
         return Arrays.asList(
@@ -32,8 +45,6 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
                         .build()
         );
     }
-
-    private UserService saver;
 
     @Override
     public void setUp() {
@@ -53,16 +64,5 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
     public void run() {
         User user = new User("Test", "User");
         saver.save(user);
-    }
-
-    public static void main(String[] args) throws Exception {
-        long start = System.currentTimeMillis();
-
-        SpringHibernateSmallBenchmark benchmark = new SpringHibernateSmallBenchmark();
-        benchmark.setUp();
-        benchmark.run();
-        benchmark.tearDown();
-
-        System.out.println("Took: " + (System.currentTimeMillis() - start));
     }
 }

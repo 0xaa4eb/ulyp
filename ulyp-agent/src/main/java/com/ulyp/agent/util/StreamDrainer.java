@@ -10,7 +10,7 @@ public class StreamDrainer {
     /**
      * The default size of the buffer for draining a stream.
      */
-    public static final int DEFAULT_BUFFER_SIZE =  8 * 1024;
+    public static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
 
     /**
      * A default instance using the {@link StreamDrainer#DEFAULT_BUFFER_SIZE}.

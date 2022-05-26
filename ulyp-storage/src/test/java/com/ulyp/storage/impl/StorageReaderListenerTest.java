@@ -26,11 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StorageReaderListenerTest {
 
-    private AsyncFileStorageReader reader;
-    private StorageWriter writer;
-
-    private RecordingMetadata recordingMetadata1;
-    private RecordingMetadata recordingMetadata2;
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
@@ -42,18 +37,16 @@ public class StorageReaderListenerTest {
             .isStatic(false)
             .returnsSomething(true)
             .parameterRecorders(
-                    new ObjectRecorder[] { ObjectRecorderRegistry.STRING_RECORDER.getInstance() }
+                    new ObjectRecorder[]{ObjectRecorderRegistry.STRING_RECORDER.getInstance()}
             )
             .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-
-    public static class T {
-        public String foo(String in) {
-            return in;
-        }
-    }
+    private AsyncFileStorageReader reader;
+    private StorageWriter writer;
+    private RecordingMetadata recordingMetadata1;
+    private RecordingMetadata recordingMetadata2;
 
     @Before
     public void setUp() throws IOException {
@@ -126,7 +119,7 @@ public class StorageReaderListenerTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "ABC" }
+                new Object[]{"ABC"}
         );
 
         writer.write(recordingMetadata1);
@@ -153,7 +146,7 @@ public class StorageReaderListenerTest {
                 method,
                 typeResolver,
                 callee,
-                new Object[] { "ABC" }
+                new Object[]{"ABC"}
         );
 
         writer.write(recordingMetadata2);
@@ -168,5 +161,11 @@ public class StorageReaderListenerTest {
                             Assert.assertNotEquals(recordings.get(0).getId(), recordings.get(1).getId());
                         }
                 );
+    }
+
+    public static class T {
+        public String foo(String in) {
+            return in;
+        }
     }
 }

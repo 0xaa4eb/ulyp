@@ -37,6 +37,19 @@ public class Type {
     @Builder.Default
     private volatile boolean writtenToFile = false;
 
+    public static Type unknown() {
+        return UNKNOWN;
+    }
+
+    public static Type deserialize(BinaryTypeDecoder decoder) {
+        String name = decoder.name();
+
+        return Type.builder()
+                .id(decoder.id())
+                .name(name)
+                .build();
+    }
+
     public ObjectRecorder getSuggestedRecorder() {
         ObjectRecorder recorder = suggestedRecorder;
         if (recorder != null) {
@@ -44,10 +57,6 @@ public class Type {
         } else {
             return suggestedRecorder = RecorderChooser.getInstance().chooseForType(this);
         }
-    }
-
-    public static Type unknown() {
-        return UNKNOWN;
     }
 
     public Set<TypeTrait> getTraits() {
@@ -109,14 +118,5 @@ public class Type {
     public void serialize(BinaryTypeEncoder encoder) {
         encoder.id(this.id);
         encoder.name(this.name);
-    }
-
-    public static Type deserialize(BinaryTypeDecoder decoder) {
-        String name = decoder.name();
-
-        return Type.builder()
-                .id(decoder.id())
-                .name(name)
-                .build();
     }
 }

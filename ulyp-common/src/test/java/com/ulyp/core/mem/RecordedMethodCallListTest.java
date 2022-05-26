@@ -12,12 +12,6 @@ import java.util.stream.Collectors;
 
 public class RecordedMethodCallListTest {
 
-    public static class A {
-        public String convert(int x) {
-            return String.valueOf(x);
-        }
-    }
-
     private final RecordedMethodCallList list = new RecordedMethodCallList();
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
@@ -64,5 +58,11 @@ public class RecordedMethodCallListTest {
 
         Assert.assertEquals(5, recordedExitMethodCall.getRecordingId());
         Assert.assertEquals(134L, recordedExitMethodCall.getCallId());
+    }
+
+    public static class A {
+        public String convert(int x) {
+            return String.valueOf(x);
+        }
     }
 }

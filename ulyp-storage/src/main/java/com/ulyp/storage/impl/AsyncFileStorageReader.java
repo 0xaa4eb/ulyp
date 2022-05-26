@@ -60,6 +60,42 @@ public class AsyncFileStorageReader implements StorageReader {
         }
     }
 
+    public InMemoryRepository<Long, Type> getTypes() {
+        return types;
+    }
+
+    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
+        return processMetadataFuture;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> getFinishedReadingFuture() {
+        return finishedReadingFuture;
+    }
+
+    @Override
+    public void subscribe(RecordingListener listener) {
+        this.recordingListener = listener;
+    }
+
+    @Override
+    public List<Recording> availableRecordings() {
+        return recordingStates.values()
+                .stream()
+                .map(Recording::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void close() throws StorageException {
+        executorService.shutdownNow();
+        try {
+            executorService.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new StorageException("Interrupted", e);
+        }
+    }
+
     private class StorageReaderTask implements Runnable, Closeable {
 
         private final BinaryListFileReader reader;
@@ -75,14 +111,14 @@ public class AsyncFileStorageReader implements StorageReader {
             while (!Thread.currentThread().isInterrupted()) {
 
                 try {
-                    BinaryListWithAddress data  = this.reader.readWithAddress();
+                    BinaryListWithAddress data = this.reader.readWithAddress();
 
                     if (data == null) {
                         backoff.await();
                         continue;
                     }
 
-                    switch(data.getBytes().id()) {
+                    switch (data.getBytes().id()) {
                         case ProcessMetadata.WIRE_ID:
                             onProcessMetadata(data.getBytes());
                             break;
@@ -160,42 +196,6 @@ public class AsyncFileStorageReader implements StorageReader {
 
         private void onMethods(BinaryList data) {
             new MethodList(data).forEach(type -> methods.store(type.getId(), type));
-        }
-    }
-
-    public InMemoryRepository<Long, Type> getTypes() {
-        return types;
-    }
-
-    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
-        return processMetadataFuture;
-    }
-
-    @Override
-    public CompletableFuture<Boolean> getFinishedReadingFuture() {
-        return finishedReadingFuture;
-    }
-
-    @Override
-    public void subscribe(RecordingListener listener) {
-        this.recordingListener = listener;
-    }
-
-    @Override
-    public List<Recording> availableRecordings() {
-        return recordingStates.values()
-                .stream()
-                .map(Recording::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void close() throws StorageException {
-        executorService.shutdownNow();
-        try {
-            executorService.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new StorageException("Interrupted", e);
         }
     }
 }

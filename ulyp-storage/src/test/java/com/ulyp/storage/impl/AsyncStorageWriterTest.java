@@ -22,12 +22,6 @@ public class AsyncStorageWriterTest {
     private AsyncFileStorageReader reader;
     private StorageWriter writer;
 
-    public static class T {
-        public String foo(String in) {
-            return in;
-        }
-    }
-
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(AsyncStorageWriterTest.class.getSimpleName(), "a").toFile();
@@ -78,5 +72,11 @@ public class AsyncStorageWriterTest {
                             Assert.assertEquals(typeListsCount * typesPerListCount, reader.getTypes().values().size());
                         }
                 );
+    }
+
+    public static class T {
+        public String foo(String in) {
+            return in;
+        }
     }
 }

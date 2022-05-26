@@ -35,7 +35,7 @@ public class BenchmarksForSomeProfileMain {
 
     private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkProfile profile) {
         List<PerformanceRunResult> runResults = new ArrayList<>();
-        
+
         Histogram procTimeHistogram = emptyHistogram();
         Histogram recordingTimeHistogram = emptyHistogram();
         Histogram callsCountHistogram = emptyHistogram();
