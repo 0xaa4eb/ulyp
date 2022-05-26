@@ -16,5 +16,5 @@ public interface BinaryOutput {
 
     void writeLong(long val);
 
-    void writeString(final String value)w;
+    void writeString(final String value);
 }
