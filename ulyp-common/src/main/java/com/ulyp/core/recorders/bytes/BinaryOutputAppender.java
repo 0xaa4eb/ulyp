@@ -1,9 +1,9 @@
 package com.ulyp.core.recorders.bytes;
 
+import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.Type;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
@@ -87,7 +87,7 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         recursionDepth--;
         if (recursionDepth == 0) {
             binaryOutput.write(tmpBuffer, bytePos);

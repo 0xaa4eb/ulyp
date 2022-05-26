@@ -1,10 +1,10 @@
 package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.ByIdTypeResolver;
+import com.ulyp.core.Type;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.Type;
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 

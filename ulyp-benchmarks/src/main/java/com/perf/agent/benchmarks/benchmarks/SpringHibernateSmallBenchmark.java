@@ -33,17 +33,16 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
         );
     }
 
-    private ApplicationContext context;
     private UserService saver;
 
     @Override
-    public void setUp() throws Exception {
-        context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         saver = context.getBean(UserService.class);
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown() {
         int count = saver.findAll().size();
         if (count != 1) {
             throw new RuntimeException("Doesn't work, users found: " + count);
@@ -51,7 +50,7 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         User user = new User("Test", "User");
         saver.save(user);
     }

@@ -2,14 +2,16 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.OptionalRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class OptionalRecorderTest extends AbstractInstrumentationTest {
 

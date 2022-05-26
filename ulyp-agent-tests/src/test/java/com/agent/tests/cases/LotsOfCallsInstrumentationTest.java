@@ -51,7 +51,7 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
 
     public static class LotsOfCallsTestCases {
 
-        private static volatile int calls = 1000;
+        private static final int calls = 1000;
         private static volatile int value;
 
         public static void main(String[] args) {

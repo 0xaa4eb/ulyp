@@ -8,8 +8,6 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Date;
-
 public class CharRecorder extends ObjectRecorder {
 
     protected CharRecorder(byte id) {

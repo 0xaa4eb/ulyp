@@ -9,7 +9,6 @@ import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.util.ClassMatcher;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 

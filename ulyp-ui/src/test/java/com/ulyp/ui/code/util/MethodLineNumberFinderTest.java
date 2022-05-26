@@ -1,7 +1,6 @@
 package com.ulyp.ui.code.util;
 
 import com.ulyp.ui.code.SourceCode;
-import com.ulyp.ui.code.util.MethodLineNumberFinder;
 import org.junit.Assert;
 import org.junit.Test;
 

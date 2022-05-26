@@ -3,7 +3,7 @@ package com.ulyp.agent;
 import org.junit.Test;
 
 import static com.ulyp.agent.CallIdGenerator.MAX_CALLS_PER_RECORD_LOG;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CallIdGeneratorTest {
 

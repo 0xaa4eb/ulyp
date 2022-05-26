@@ -2,11 +2,9 @@ package com.ulyp.storage.impl.util;
 
 import com.google.common.base.Preconditions;
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.util.Backoff;
 import com.ulyp.storage.impl.BinaryListWithAddress;
 
 import java.io.*;
-import java.time.Duration;
 
 
 public class BinaryListFileReader implements AutoCloseable {
@@ -21,7 +19,7 @@ public class BinaryListFileReader implements AutoCloseable {
         this.randomAccessFile = new RandomAccessFile(file, "rw");
     }
 
-    public BinaryListWithAddress readWithAddress() throws IOException, InterruptedException {
+    public BinaryListWithAddress readWithAddress() throws IOException {
         long desired = address + 1 + BinaryList.HEADER_LENGTH;
         if (randomAccessFile.length() < desired) {
             return null;
@@ -55,7 +53,7 @@ public class BinaryListFileReader implements AutoCloseable {
                 .build();
     }
 
-    public BinaryList read() throws IOException, InterruptedException {
+    public BinaryList read() throws IOException {
         BinaryListWithAddress data = readWithAddress();
         return data != null ? data.getBytes() : null;
     }

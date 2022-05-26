@@ -4,9 +4,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeTrait;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -14,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class ByteBuddyTypeResolverTest {
 
@@ -81,7 +79,7 @@ public class ByteBuddyTypeResolverTest {
     }
 
     @Test
-    public void testTraitsForPrimitiveArray() throws NoSuchMethodException {
+    public void testTraitsForPrimitiveArray() {
 
 
         Type byteBuddyType = typeResolver.get(new int[]{45});
@@ -91,7 +89,7 @@ public class ByteBuddyTypeResolverTest {
     }
 
     @Test
-    public void testTraitsForObjectArray() throws NoSuchMethodException {
+    public void testTraitsForObjectArray() {
 
 
         Type byteBuddyType = typeResolver.get(new String[]{"A"});

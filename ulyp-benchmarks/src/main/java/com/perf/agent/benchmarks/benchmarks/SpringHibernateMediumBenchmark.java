@@ -3,7 +3,10 @@ package com.perf.agent.benchmarks.benchmarks;
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkProfile;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
-import com.perf.agent.benchmarks.benchmarks.util.*;
+import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
+import com.perf.agent.benchmarks.benchmarks.util.Department;
+import com.perf.agent.benchmarks.benchmarks.util.DepartmentService;
+import com.perf.agent.benchmarks.benchmarks.util.Person;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 import org.HdrHistogram.Histogram;
@@ -35,12 +38,11 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
         );
     }
 
-    private ApplicationContext context;
     private DepartmentService departmentService;
 
     @Override
-    public void setUp() throws Exception {
-        context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         departmentService = context.getBean(DepartmentService.class);
 
         for (int i = 0; i < DEPT_COUNT; i++) {
@@ -70,7 +72,7 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         Histogram histogram = new Histogram(1, TimeUnit.MINUTES.toMillis(5), 2);
 
         for (int i = 0; i < 100; i++) {

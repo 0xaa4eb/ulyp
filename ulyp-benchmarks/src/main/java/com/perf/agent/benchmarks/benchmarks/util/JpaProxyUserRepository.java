@@ -15,8 +15,7 @@ public class JpaProxyUserRepository implements UserRepository {
 	public User save(User newUser) {
 		UserJpaEntity newEntity = new UserJpaEntity(newUser);
 		UserJpaEntity savedEntity = jpaRepository.save(newEntity);
-		User savedUser = savedEntity.toUser();
-		return savedUser;
+		return savedEntity.toUser();
 	}
 
 	public List<User> all() {

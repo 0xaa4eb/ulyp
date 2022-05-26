@@ -21,31 +21,31 @@ public abstract class AbstractBinaryOutput implements BinaryOutput {
         return appender.checkpoint();
     }
 
-    public void writeBool(boolean val) throws Exception {
+    public void writeBool(boolean val) {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(val);
         }
     }
 
-    public void writeChar(char val) throws Exception {
+    public void writeChar(char val) {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(val);
         }
     }
 
-    public void writeInt(int val) throws Exception {
+    public void writeInt(int val) {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(val);
         }
     }
 
-    public void writeLong(long val) throws Exception {
+    public void writeLong(long val) {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(val);
         }
     }
 
-    public void writeString(final String value) throws Exception {
+    public void writeString(final String value) {
         try (BinaryOutputAppender appender = appender()) {
             appender.append(value);
         }

@@ -1,7 +1,5 @@
 package com.ulyp.ui.util
 
-import java.util.*
-
 enum class Style(vararg classes: String) {
 
     ERROR_TEXT("ulyp-error-text"),

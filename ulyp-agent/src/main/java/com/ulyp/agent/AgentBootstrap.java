@@ -4,16 +4,9 @@ import com.ulyp.agent.util.StreamDrainer;
 
 import java.io.*;
 import java.lang.instrument.Instrumentation;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Takes ulyp-agent-classes.jar added as a file into the ulyp-agent.jar and extracts it into

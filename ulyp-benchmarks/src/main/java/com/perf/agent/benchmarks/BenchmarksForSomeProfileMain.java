@@ -15,7 +15,7 @@ public class BenchmarksForSomeProfileMain {
 
     private static final int ITERATIONS_PER_PROFILE = 5;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         BenchmarkProfile trueProfile = new BenchmarkProfileBuilder()
                 .withInstrumentedPackages(new PackageList("com", "org"))
@@ -33,12 +33,9 @@ public class BenchmarksForSomeProfileMain {
         }
     }
 
-    private static List<PerformanceRunResult> runBench(
-            Class<? extends Benchmark> benchmarkClazz,
-            BenchmarkProfile profile) throws Exception {
+    private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkProfile profile) {
         List<PerformanceRunResult> runResults = new ArrayList<>();
-
-
+        
         Histogram procTimeHistogram = emptyHistogram();
         Histogram recordingTimeHistogram = emptyHistogram();
         Histogram callsCountHistogram = emptyHistogram();

@@ -8,7 +8,6 @@ import com.ulyp.ui.elements.controls.ErrorPopup
 import com.ulyp.ui.elements.misc.ExceptionAsText
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
-import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.fxml.FXML

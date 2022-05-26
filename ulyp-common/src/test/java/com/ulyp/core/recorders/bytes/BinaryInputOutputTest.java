@@ -20,7 +20,7 @@ public class BinaryInputOutputTest {
     private final BinaryInput binaryInput = new BinaryInputImpl(buffer);
 
     @Test
-    public void testSimpleReadWriteString() throws Exception {
+    public void testSimpleReadWriteString() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             appender.append("abc");
         }
@@ -29,7 +29,7 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testRollingBack() throws Exception {
+    public void testRollingBack() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             Checkpoint checkpoint = appender.checkpoint();
             appender.append("abc");
@@ -44,7 +44,7 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testSimpleReadWriteUtf8String() throws Exception {
+    public void testSimpleReadWriteUtf8String() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             appender.append("АБЦ");
         }
@@ -53,7 +53,7 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testSimpleReadWriteUtf8StringChineese() throws Exception {
+    public void testSimpleReadWriteUtf8StringChineese() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             appender.append("早上好");
         }
@@ -62,7 +62,7 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testComplexReadWrite() throws Exception {
+    public void testComplexReadWrite() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             appender.append(2L);
             appender.append(null);
@@ -75,7 +75,7 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testNestedAppender() throws Exception {
+    public void testNestedAppender() {
         try (BinaryOutputAppender appender = binaryOutput.appender()) {
             appender.append(2L);
             try (BinaryOutputAppender appender2 = appender.appender()) {

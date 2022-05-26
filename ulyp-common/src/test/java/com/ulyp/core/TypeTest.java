@@ -6,9 +6,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 public class TypeTest {
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[1024 * 4]);

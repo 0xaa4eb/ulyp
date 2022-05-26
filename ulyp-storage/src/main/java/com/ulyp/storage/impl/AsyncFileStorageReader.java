@@ -1,20 +1,20 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.core.repository.InMemoryRepository;
-import com.ulyp.core.repository.Repository;
-import com.ulyp.core.util.Backoff;
-import com.ulyp.core.util.FixedDelayBackoff;
-import com.ulyp.storage.RecordingListener;
-import com.ulyp.storage.impl.util.BinaryListFileReader;
-import com.ulyp.storage.util.NamedThreadFactory;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.repository.InMemoryRepository;
+import com.ulyp.core.repository.Repository;
+import com.ulyp.core.util.Backoff;
+import com.ulyp.core.util.FixedDelayBackoff;
 import com.ulyp.storage.Recording;
+import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
+import com.ulyp.storage.impl.util.BinaryListFileReader;
+import com.ulyp.storage.util.NamedThreadFactory;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import org.agrona.concurrent.UnsafeBuffer;
@@ -113,7 +113,7 @@ public class AsyncFileStorageReader implements StorageReader {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
 
         }
 

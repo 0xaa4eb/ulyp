@@ -65,7 +65,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
             try {
                 System.out.println(new X3());
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }
@@ -113,7 +113,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
             try {
                 System.out.println(new T());
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
 

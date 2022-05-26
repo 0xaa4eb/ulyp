@@ -43,12 +43,12 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
             try {
                 new ThrowableTestCases().throwsRuntimeException();
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
             try {
                 new ThrowableTestCases().throwsNullPointerException();
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
 

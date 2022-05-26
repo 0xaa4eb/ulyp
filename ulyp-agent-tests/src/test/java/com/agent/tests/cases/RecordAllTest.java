@@ -6,9 +6,6 @@ import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-
 public class RecordAllTest extends AbstractInstrumentationTest {
 
     @Test
@@ -81,51 +78,6 @@ public class RecordAllTest extends AbstractInstrumentationTest {
             System.out.println(new Clazz().foo());
         }
     }
-
-/*
-//    TODO
-    @Test
-    public void test() {
-
-        RecordingResult recordingResult = runForkProcess(
-                new ForkProcessBuilder()
-                        .setMainClassName(MultithreadedExample2.class)
-                        .setMethodToRecord(MethodMatcher.parse("*.*"))
-        );
-
-        Map<Integer, Recording> results = recordingResult.aggregateByThread();
-
-        Recording recorded = results.values()
-                .stream()
-                .filter(database -> database.getRoot().getChildren().size() == 3)
-                .findAny()
-                .orElseThrow(() -> new AssertionError("Could not find recording result for"));
-    }
-
-    @Test
-    public void shouldAggregateByThread() throws StorageException {
-
-        RecordingResult recordingResult = runForkProcess(
-                new ForkProcessBuilder()
-                        .setMainClassName(X.class)
-                        .setMethodToRecord("*")
-        );
-
-        Map<Long, CallRecordDatabase> longCallRecordDatabaseMap = recordingResult.aggregateByThread();
-
-        Assert.assertEquals(2, longCallRecordDatabaseMap.size());
-
-        CallRecordDatabase callRecordDatabase = longCallRecordDatabaseMap.values().stream().filter(db -> db.countAll() == 3L).findFirst().orElseThrow(
-                () -> new AssertionError("Could not find db with 3 call recods")
-        );
-
-        CallRecord root = callRecordDatabase.getRoot();
-
-        Assert.assertThat(root.getMethodName(), is("run"));
-        Assert.assertThat(root.getClassName(), is("java.lang.Thread"));
-        Assert.assertThat(root.getChildren(), hasSize(2));
-    }
- */
 
     static class X {
 

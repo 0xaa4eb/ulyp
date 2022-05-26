@@ -9,7 +9,8 @@ import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public class ObjectInstrumentationTest extends AbstractInstrumentationTest {

@@ -1,8 +1,8 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
-import com.ulyp.core.MethodRepository;
 import com.ulyp.core.Method;
+import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.description.method.MethodDescription;

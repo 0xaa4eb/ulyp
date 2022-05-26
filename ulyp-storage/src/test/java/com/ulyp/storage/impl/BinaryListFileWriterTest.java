@@ -76,7 +76,7 @@ public class BinaryListFileWriterTest {
     }
 
     @Test
-    public void shouldAllowToNavigateToArbitraryListInFile() throws IOException, InterruptedException {
+    public void shouldAllowToNavigateToArbitraryListInFile() throws IOException {
         BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
         writer.append(list1);
 
@@ -95,7 +95,7 @@ public class BinaryListFileWriterTest {
     }
 
     @Test
-    public void shouldAllowToNavigateToAnyItemInAnyListInFile() throws IOException, InterruptedException {
+    public void shouldAllowToNavigateToAnyItemInAnyListInFile() throws IOException {
         BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
         writer.append(list1);
 

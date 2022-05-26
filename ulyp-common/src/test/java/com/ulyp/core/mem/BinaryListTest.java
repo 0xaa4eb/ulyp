@@ -6,7 +6,6 @@ import com.ulyp.transport.BinaryDataEncoder;
 import org.agrona.MutableDirectBuffer;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
@@ -43,7 +42,7 @@ public class BinaryListTest {
     }
 
     @Test
-    public void testWriteAndReadByWire() throws IOException {
+    public void testWriteAndReadByWire() {
 
         binaryList.add(
                 encoder -> {

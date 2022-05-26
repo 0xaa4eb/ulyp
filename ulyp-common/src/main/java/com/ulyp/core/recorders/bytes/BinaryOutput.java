@@ -8,13 +8,13 @@ public interface BinaryOutput {
 
     Checkpoint checkpoint();
 
-    void writeBool(boolean val) throws Exception;
+    void writeBool(boolean val);
 
-    void writeChar(char val) throws Exception;
+    void writeChar(char val);
 
-    void writeInt(int val) throws Exception;
+    void writeInt(int val);
 
-    void writeLong(long val) throws Exception;
+    void writeLong(long val);
 
-    void writeString(final String value) throws Exception;
+    void writeString(final String value)w;
 }

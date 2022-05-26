@@ -8,27 +8,26 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class HibernateShowcase {
 
-    private ApplicationContext context;
     private UserService saver;
 
-    public void setUp() throws Exception {
-        context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         saver = context.getBean(UserService.class);
     }
 
-    public void tearDown() throws Exception {
+    public void tearDown() {
         int count = saver.findAll().size();
         if (count != 1) {
             throw new RuntimeException("Doesn't work, users found: " + count);
         }
     }
 
-    public void save() throws Exception {
+    public void save() {
         User user = new User("Test", "User");
         saver.save(user);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         HibernateShowcase benchmark = new HibernateShowcase();
         benchmark.setUp();
         benchmark.save();

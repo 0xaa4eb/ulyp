@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class InMemoryRepositoryTest {
 
     private final InMemoryRepository<Long, String> repository = new InMemoryRepository<>();

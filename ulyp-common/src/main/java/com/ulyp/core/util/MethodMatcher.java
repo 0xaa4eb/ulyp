@@ -1,7 +1,6 @@
 package com.ulyp.core.util;
 
 import com.ulyp.core.Method;
-import lombok.ToString;
 
 /**
  * User provided matcher for the method where recording should start.

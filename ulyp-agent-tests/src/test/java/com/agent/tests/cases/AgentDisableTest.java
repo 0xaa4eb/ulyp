@@ -23,7 +23,7 @@ public class AgentDisableTest extends AbstractInstrumentationTest {
 
     public static class AgentDisableTestCase {
 
-        public static void main(String[] args) throws InterruptedException {
+        public static void main(String[] args) {
             System.out.println("Hello");
         }
     }

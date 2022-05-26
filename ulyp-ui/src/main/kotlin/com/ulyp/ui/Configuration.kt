@@ -1,14 +1,16 @@
 package com.ulyp.ui
 
-import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.code.SourceCodeView
+import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.util.Settings
 import javafx.stage.FileChooser
 import javafx.stage.Stage
 import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.*
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 
 @Configuration
 @ComponentScan(value = ["com.ulyp.ui"])
