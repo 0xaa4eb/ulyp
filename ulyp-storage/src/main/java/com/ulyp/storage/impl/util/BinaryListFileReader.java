@@ -15,8 +15,7 @@ public class BinaryListFileReader implements AutoCloseable {
 
     public BinaryListFileReader(File file) throws IOException {
         this.inputStream = new BufferedInputStream(new FileInputStream(file));
-        // TODO read only permission
-        this.randomAccessFile = new RandomAccessFile(file, "rw");
+        this.randomAccessFile = new RandomAccessFile(file, "r");
     }
 
     public BinaryListWithAddress readWithAddress() throws IOException {

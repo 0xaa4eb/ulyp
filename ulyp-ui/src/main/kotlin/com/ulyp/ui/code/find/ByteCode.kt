@@ -17,7 +17,6 @@ class ByteCode(private val className: String, private val bytecode: ByteArray) {
         try {
             FileOutputStream(classfile.path.toFile()).use { fileOutputStream -> fileOutputStream.write(bytecode) }
         } catch (e: Exception) {
-            // TODO show warning
             e.printStackTrace()
         }
         ConsoleDecompiler.main(

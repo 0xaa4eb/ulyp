@@ -66,7 +66,6 @@ public class CollectionRecorder extends ObjectRecorder {
     public void write(Object object, Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
-            // TODO per type statistics
             if (active) {
                 appender.append(RECORDED_ITEMS_FLAG);
                 Checkpoint checkpoint = appender.checkpoint();

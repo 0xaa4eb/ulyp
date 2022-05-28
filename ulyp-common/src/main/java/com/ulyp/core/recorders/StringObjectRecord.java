@@ -2,7 +2,6 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 
-// TODO rename
 public class StringObjectRecord extends ObjectRecord {
 
     private final String value;
