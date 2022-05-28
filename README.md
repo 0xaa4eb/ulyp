@@ -2,7 +2,9 @@
 [![Build Status](https://circleci.com/gh/0xaa4eb/ulyp/tree/master.svg?style=svg)](https://circleci.com/gh/0xaa4eb/ulyp/tree/master)
 [![](https://tokei.rs/b1/github/0xaa4eb/ulyp)](https://github.com/0xaa4eb/ulyp)
 
-## TL;DR
+# TL;DR
+
+### Example of usage
 
 Ulyp is a Java recording debugger. Usage is relatively simple.
 
@@ -34,14 +36,14 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
 
 ![Ulyp UI](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
-## How to build
+### How to build
 
 Build with gradle:
     `./gradlew build`
 
 Currently, all JDKs are supported since java 8. However, there is one caveat. JavaFX was removed since Java 9, so in order to run the UI one will need a command `./gradlew :ulyp-ui:run`
 
-## Key details
+### Key details
 
 All instrumentation is done using [byte buddy](https://github.com/raphw/byte-buddy) library. 
 All Java objects are recorded by the [recorders](https://github.com/0xaa4eb/ulyp/tree/master/ulyp-common/src/main/java/com/ulyp/core/recorders). 
@@ -55,3 +57,34 @@ All data is written to file in a flat format. UI later uses [RocksDB](https://gi
 
 The agent has functional tests. The agent is built and then used to record Java subprocess execution. 
 The recording is then later analyzed and verified. [Here](https://github.com/0xaa4eb/ulyp/blob/master/ulyp-agent-tests/src/test/java/com/agent/tests/recorders/CharRecorderTest.java) is the example of test. 
+
+## What's not recorded
+
+Currently, none of java classes are instrumented. This means calls of, let's say, `add` method of java
+collections are not recorded. However, Ulyp does record system java objects like strings, numbers, etc.
+
+
+Constructors are not recorded by default, but may be recorded by specifying system prop `-Dulyp.constructors`. The reason why constructors
+are not recorded by default, is simply that it's not possible to instrument constructors in such fashion that any exception thrown inside the constructor
+is caught and rethrown. But this is exactly what should be done, but is not possible. Therefore, when such case happens, the corresponding recording file 
+may become invalid. 
+
+Collections are not recorded by default but can be with system prop `-Dulyp.collections`. The available values are `JAVA` 
+and `ALL`. When set to `ALL` all collection values will be recorded (actually only first three items are recorded). This means Ulyp
+will iterate any object which implements `java.util.Collection` interface. This may be too much especially for certain programs
+where there are a lot of proxy collections (like Hibernate or Hazelcast proxy collections when iteration triggers network calls).
+Hence the `JAVA` option value which only records Java collections.
+
+# UI
+
+### UI Controls
+
+<table border="1">
+<tr>
+		<th>Hotkey</th>
+		<th>Action</th>
+</tr>
+<tr><td>Hold Shift</td><td>Show full type names</td></tr>
+<tr><td>Press =</td><td>Increase font size</td></tr>
+<tr><td>Press -</td><td>Decrease font size</td></tr>
+</table>
