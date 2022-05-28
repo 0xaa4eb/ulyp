@@ -15,7 +15,7 @@ public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldStopRecordingInfiniteRecursionAtSomeLevel() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnArray")

@@ -14,7 +14,7 @@ public class IdentityRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testIdentityRepresentation() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("pass")

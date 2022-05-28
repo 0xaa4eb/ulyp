@@ -13,7 +13,7 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordThrowableWithMessage() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ThrowableTestCases.class)
                         .withMethodToRecord("throwsRuntimeException")
@@ -26,7 +26,7 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldHandleNullMessageInThrowable() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ThrowableTestCases.class)
                         .withMethodToRecord("throwsNullPointerException")

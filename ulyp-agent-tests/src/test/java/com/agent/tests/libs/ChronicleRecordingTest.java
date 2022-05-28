@@ -21,7 +21,7 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
     @Test
     public void testChronicleLibraryWithSingleMessage() {
 
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
@@ -40,7 +40,7 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
     @Test
     public void testChronicleLibraryWithSingleMessage2() {
 
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))

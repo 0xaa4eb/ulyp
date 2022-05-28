@@ -15,7 +15,7 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleMap() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnHashMap")
@@ -37,7 +37,7 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldNotRecordCustomMapIfOnlyJavaMapsAreRecorded() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnHashMap")
@@ -50,7 +50,7 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnMapThrowingOnIteration")

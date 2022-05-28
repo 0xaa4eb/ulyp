@@ -16,7 +16,7 @@ public class RecordingMetadataTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordAllMethods() {
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("foo")

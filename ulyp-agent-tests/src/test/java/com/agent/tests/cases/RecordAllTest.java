@@ -10,7 +10,7 @@ public class RecordAllTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordAllMethods() {
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(MultithreadedExample.class)
                         .withMethodToRecord(MethodMatcher.parse("*.*"))

@@ -18,7 +18,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldProvideArgumentTypes() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesEmptyObjectArray.class)
                         .withMethodToRecord("accept")
@@ -34,7 +34,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordSimpleArrayWithString() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesStringArrayWithSomeString.class)
                         .withMethodToRecord("accept")
@@ -62,7 +62,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testUserDefinedClassArrayWith3Elements() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesVariousItemsArray.class)
                         .withMethodToRecord("accept")
@@ -87,7 +87,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testVarargs() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(VaragsTestCase.class)
                         .withMethodToRecord("takeVararg")

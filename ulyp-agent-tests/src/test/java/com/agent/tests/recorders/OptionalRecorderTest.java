@@ -17,7 +17,7 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testReturnOptionalWithSomeString() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnStringOptional")
@@ -37,7 +37,7 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void testReturnEmptyOptional() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase2.class)
                         .withMethodToRecord("returnStringOptional")

@@ -15,7 +15,7 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
 
     @Test
     public void shouldMake1000Calls() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(LotsOfCallsTestCases.class)
                         .withMethodToRecord("make1000CallsSep")
@@ -26,7 +26,7 @@ public class LotsOfCallsInstrumentationTest extends AbstractInstrumentationTest 
 
     @Test
     public void shouldHaveCompleteTree() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(LotsOfCallsTestCases.class)
                         .withMethodToRecord("level0")

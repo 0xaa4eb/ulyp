@@ -14,7 +14,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldUseBooleanRecorderIfBooleanIsPassed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("passBoolean")
@@ -28,7 +28,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldUseStringRecorderIfBooleanIsPassed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("passString")
@@ -42,7 +42,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldUseClassRecorderIfClassIsPassed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("passClass")

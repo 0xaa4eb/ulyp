@@ -17,7 +17,7 @@ public class FileRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordFileObject() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnFile")
@@ -30,7 +30,7 @@ public class FileRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordPathObject() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnPath")

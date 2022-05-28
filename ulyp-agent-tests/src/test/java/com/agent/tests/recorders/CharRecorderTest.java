@@ -12,7 +12,7 @@ public class CharRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordFileObject() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnChar")

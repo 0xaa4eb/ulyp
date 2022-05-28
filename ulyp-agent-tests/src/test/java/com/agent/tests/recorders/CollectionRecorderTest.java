@@ -20,7 +20,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleItemsProperly() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnArrayListOfString")
@@ -41,7 +41,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnArrayListOfString")
@@ -54,7 +54,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordSimpleListIfJavaCollectionsAreRecorded() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnArrayListOfString")
@@ -67,7 +67,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldNotRecordAnythingIfSpecifiedToRecordOnlyJavaCollection() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnCustomList")
@@ -80,7 +80,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordCustomListIfSpecifiedAllCollectionsToRecord() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnCustomList")
@@ -94,7 +94,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     @Ignore
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnThrowingOnIteratorList")

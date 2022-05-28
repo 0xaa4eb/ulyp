@@ -12,7 +12,7 @@ public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void testFibonacciMethodCall() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(RecursionTestCases.class)
                         .withMethodToRecord("fibonacci")

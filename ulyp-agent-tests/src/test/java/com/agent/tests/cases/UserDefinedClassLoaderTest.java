@@ -20,7 +20,7 @@ public class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
     @Test
     public void testUserDefinedClassLoader() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(UserDefinedClassLoaderTestCase.class)
                         .withMethodToRecord("runInOwnClassLoader")

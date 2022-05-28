@@ -16,7 +16,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
 
     @Test
     public void testHappyPathConstructor() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCases.class)
                         .withMethodToRecord("main")
@@ -34,7 +34,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
 
     @Test
     public void testConstructorThrown() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCasesThrows.class)
                         .withMethodToRecord("main")
@@ -50,7 +50,7 @@ public class ConstructorTest extends AbstractInstrumentationTest {
 
     @Test
     public void testConstructorThrownInsideMethodCalls() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCasesThrows2.class)
                         .withMethodToRecord("main")

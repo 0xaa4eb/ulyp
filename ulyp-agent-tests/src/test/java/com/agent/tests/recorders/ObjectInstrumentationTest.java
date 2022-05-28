@@ -17,7 +17,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldPrintObjects() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)
                         .withMethodToRecord("acceptsTwoObjects")
@@ -30,7 +30,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldChooseValidRecorderForJavaLangObjectAtRuntime() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)
                         .withMethodToRecord("acceptsTwoObjects2")
@@ -43,7 +43,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldPrintNullArguments() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)
                         .withMethodToRecord("acceptsTwoNulls")

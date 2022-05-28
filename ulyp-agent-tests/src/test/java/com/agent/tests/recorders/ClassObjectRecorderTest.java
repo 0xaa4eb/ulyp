@@ -14,7 +14,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testClassTypeReturning() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(PassClazz.class)
                         .withMethodToRecord("returnClass")
@@ -28,7 +28,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testClassTypePassing() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(PassClazz.class)
                         .withMethodToRecord("takeClass")

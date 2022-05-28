@@ -17,7 +17,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     public void shouldNotRecordWithInvalidMatcher() {
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("**.TestCasesAZASdasd.main"))
@@ -26,7 +26,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         );
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("a.b.c.RecordingMatcherTest.TestCases.main"))
@@ -39,7 +39,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     public void shouldRecordMainMethodIfMatcherIsNotSpecified() {
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("*.*"))
@@ -48,7 +48,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         );
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("**.TestCases.main"))
@@ -57,7 +57,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         );
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("com.agent.tests.cases.RecordingMatcherTest.TestCases.main"))
@@ -66,7 +66,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
         );
 
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("**.RecordingMatcherTest.TestCases.main"))
@@ -79,7 +79,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     // Not yet supported with default methods
     public void shouldBeAbleToMatchInterfaceMethodUsingImplementingClassName() {
 
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCases.class)
                         .withMethodToRecord(MethodMatcher.parse("**.Clazz.bar"))
@@ -96,7 +96,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     // Not yet supported with default methods
     public void shouldBeAbleToMatchDefaultMethod() {
 
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCases.class)
                         .withMethodToRecord(MethodMatcher.parse("**.Clazz.foo"))
@@ -111,7 +111,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
     @Test
     public void testRecordViaInterfaceMatcher() {
         assertThat(
-                runForkProcess(
+                runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
                                 .withMethodToRecord(MethodMatcher.parse("**.Interface.foo"))
@@ -122,7 +122,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldRecordAllMethods() {
-        RecordingResult recordingResult = runForkProcess(
+        RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(MultithreadedExample.class)
                         .withMethodToRecord(MethodMatcher.parse("*.*"))

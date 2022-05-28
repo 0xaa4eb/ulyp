@@ -18,7 +18,7 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldNotPrintObjectIfSettingNotSet() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
@@ -31,7 +31,7 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldPrintObjectIfSettingSet() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
@@ -50,7 +50,7 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void shouldRecordAtLeastIdentityIfToStringCallFailed() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnNonPrintableObject")

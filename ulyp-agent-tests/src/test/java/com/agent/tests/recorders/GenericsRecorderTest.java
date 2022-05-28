@@ -15,7 +15,7 @@ public class GenericsRecorderTest extends AbstractInstrumentationTest {
     @Test
     public void testAtomicIntegerSum() {
 
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(X.class)
                         .withMethodToRecord(MethodMatcher.parse("**.Box.get"))

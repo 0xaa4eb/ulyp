@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 public class AbstractInstrumentationTest {
 
     @NotNull
-    protected CallRecord run(ForkProcessBuilder settings) {
+    protected CallRecord runSubprocessAndReadFile(ForkProcessBuilder settings) {
         try {
             return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
         } catch (Exception e) {
@@ -23,7 +23,7 @@ public class AbstractInstrumentationTest {
     }
 
     @NotNull
-    protected RecordingResult runForkProcess(ForkProcessBuilder settings) {
+    protected RecordingResult runSubprocess(ForkProcessBuilder settings) {
         return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings));
     }
 

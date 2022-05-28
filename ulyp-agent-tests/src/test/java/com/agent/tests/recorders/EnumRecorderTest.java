@@ -17,7 +17,7 @@ public class EnumRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldPrintEnumNames() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(EnumTestCases.class)
                         .withMethodToRecord("consumesMapAndEnums")

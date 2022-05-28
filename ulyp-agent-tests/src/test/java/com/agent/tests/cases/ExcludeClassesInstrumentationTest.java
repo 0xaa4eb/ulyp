@@ -16,7 +16,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldNotExcludeAnyClassesIfOptionIsNotSet() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
         );
@@ -29,7 +29,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldExcludeFromInstrumentationOneClass() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
                         .withExcludeClassesProperty("com.agent.tests.cases.a.b.B")
@@ -42,7 +42,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldExcludeFromInstrumentationOneClassByInterface() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
                         .withExcludeClassesProperty("**.BInterface")
@@ -55,7 +55,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldExcludeTwoClassesFromInstrumentation() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
                         .withExcludeClassesProperty("com.agent.tests.cases.a.b.B, com.agent.tests.cases.a.c.C")
@@ -67,7 +67,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldExcludeOneClassFromInstrumentationByAntPattern() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
                         .withExcludeClassesProperty("com.agent.tests.cases.a.b.**")
@@ -79,7 +79,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
 
     @Test
     public void shouldExcludeTwoClassesFromInstrumentationByAntPattern() {
-        CallRecord root = run(
+        CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
                         .withExcludeClassesProperty("com.agent.tests.cases.a.b.**, com.agent.tests.cases.a.c.**")
