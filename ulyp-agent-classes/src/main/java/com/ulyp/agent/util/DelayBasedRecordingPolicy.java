@@ -23,7 +23,6 @@ public class DelayBasedRecordingPolicy implements StartRecordingPolicy {
 
         scheduledExecutorService.schedule(
                 () -> {
-                    System.out.println("ULYP: recording can start now");
                     canStartRecording = true;
                 },
                 delay.toMillis(),

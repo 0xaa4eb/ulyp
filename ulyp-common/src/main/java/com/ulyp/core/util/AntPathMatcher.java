@@ -87,16 +87,6 @@ public class AntPathMatcher {
         this.pathSeparatorPatternCache = new PathSeparatorPatternCache(pathSeparator);
     }
 
-    public static void main(String[] args) {
-
-        AntPathMatcher antPathMatcher = new AntPathMatcher();
-        antPathMatcher.setPathSeparator(".");
-
-
-        System.out.println(antPathMatcher.match("*.?BC", "a.ABC"));
-        System.out.println(antPathMatcher.match("**ABC", "ab.ABC"));
-    }
-
     /**
      * Set the path separator to use for pattern parsing.
      * <p>Default is "/", as in Ant.

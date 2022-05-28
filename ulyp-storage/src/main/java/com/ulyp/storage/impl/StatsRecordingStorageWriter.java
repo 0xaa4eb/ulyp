@@ -8,10 +8,12 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class StatsRecordingStorageWriter implements StorageWriter {
 
@@ -53,15 +55,11 @@ public class StatsRecordingStorageWriter implements StorageWriter {
         methodStats.addBytes(methods.byteLength());
     }
 
-    public List<PerTypeStats> getAllPerTypeStats() {
-        return Arrays.asList(typeStats, methodStats, callStats);
-    }
-
     @Override
     public void close() throws StorageException {
-        System.out.println(typeStats);
-        System.out.println(methodStats);
-        System.out.println(callStats);
+        log.info("File stats: {}", typeStats);
+        log.info("File stats: {}", methodStats);
+        log.info("File stats: {}", callStats);
         delegate.close();
     }
 }
