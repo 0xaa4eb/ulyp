@@ -7,20 +7,28 @@
 Ulyp is a Java recording debugger. Usage is relatively simple.
 
 * First, download or build the agent
-* Second, use system properties in order to enable the recording. The properties should tell what method should be recorded and where recording result should be saved.
+* Second, use system properties in order to enable the recording. Here is the minimum set of options one will need for recording.
     
     
+    ```
     -javaagent:~/Work/ulyp/ulyp-agent/build/libs/ulyp-agent-0.2.1.0.jar
-    -Dulyp.file=/tmp/hibernate-recording.dat
     -Dulyp.methods=**.HibernateShowcase.save
+    -Dulyp.file=/tmp/hibernate-recording.dat
+    ```
+    
+    
+All methods with name `save` and class name `HibernateShowcase` (regardless of the package) will be recorded including all nested method calls.
+    
 
 * Run your code with system properties set.
     
     
+    ```
     public void save() throws Exception {
         User user = new User("Test", "User");
         saver.save(user);
     }
+    ```
 
 * Run the UI and open the recording file. Enjoy the view
 
