@@ -67,11 +67,12 @@ The recording is then later analyzed and verified. [Here](https://github.com/0xa
 Currently, none of java classes are instrumented. This means calls of, let's say, `add` method of java
 collections are not recorded. However, Ulyp does record system java objects like strings, numbers, etc.
 
+Type initializers (`static` blocks) are not recorded and there are no plans to support this.
 
-Constructors are not recorded by default, but may be recorded by specifying system prop `-Dulyp.constructors`. The reason why constructors
+Constructors are not recorded by default (which may distort the view), but may be recorded by specifying system prop `-Dulyp.constructors`. The reason why constructors
 are not recorded by default, is simply that it's not possible to instrument constructors in such fashion that any exception thrown inside the constructor
 is caught and rethrown. But this is exactly what should be done, but is not possible. Therefore, when such case happens, the corresponding recording file 
-may become invalid. 
+may become invalid. In that case UI will show error, and a user should disable the option and run the code again without constructors recorded.
 
 Collections are not recorded by default but can be with system prop `-Dulyp.collections`. The available values are `JAVA` 
 and `ALL`. When set to `ALL` all collection values will be recorded (actually only first three items are recorded). This means Ulyp
