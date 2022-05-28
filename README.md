@@ -41,7 +41,11 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
 Build with gradle:
     `./gradlew build`
 
-Currently, all JDKs are supported since java 8. However, there is one caveat. JavaFX was removed since Java 9, so in order to run the UI one will need a command `./gradlew :ulyp-ui:run`
+Build without tests:
+`./gradlew build -x test`
+
+Run UI:
+    `./gradlew :ulyp-ui:run`
 
 ### Key details
 
