@@ -12,15 +12,14 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#openRecordedDump" text="Open dump"/>
-                        <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Close all recordings"/>
+                        <MenuItem mnemonicParsing="false" onAction="#openRecordedDump" text="Open recording file"/>
                         <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Settings"/>
                         <MenuItem mnemonicParsing="false" onAction="#exit" text="Quit Ulyp"/>
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Tabs">
+                <Menu mnemonicParsing="false" text="Recordings">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Clear all"/>
+                        <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Close all"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

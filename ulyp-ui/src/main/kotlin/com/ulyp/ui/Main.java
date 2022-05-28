@@ -42,7 +42,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.setOnCloseRequest(event -> System.exit(0));
-        stage.setTitle("ULYP");
+        stage.setTitle("Ulyp");
         InputStream iconStream = Main.class.getClassLoader().getResourceAsStream("icons/ulyp-logo-icon.png");
         if (iconStream == null) {
             throw new RuntimeException("Icon not found");
