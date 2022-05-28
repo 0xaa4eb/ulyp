@@ -80,7 +80,7 @@ class PrimaryView(
         stage.scene = scene
         stage.isMaximized = false
         stage.title = "Ulyp Settings"
-        val iconStream = Main::class.java.classLoader.getResourceAsStream("icons/ulyp-logo-icon.png")
+        val iconStream = Main::class.java.classLoader.getResourceAsStream("icons/settings-icon.png")
                 ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
 
