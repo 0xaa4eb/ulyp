@@ -34,7 +34,7 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
 
 * Run the UI and open the recording file. Enjoy the view
 
-![Ulyp UI](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
+![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
 ### How to build
 
@@ -78,6 +78,10 @@ and `ALL`. When set to `ALL` all collection values will be recorded (actually on
 will iterate any object which implements `java.util.Collection` interface. This may be too much especially for certain programs
 where there are a lot of proxy collections (like Hibernate or Hazelcast proxy collections when iteration triggers network calls).
 Hence the `JAVA` option value which only records Java collections.
+
+Try running some code with additional properties `-Dulyp.constructors -Dulyp.collections=JAVA` to see the difference:
+
+![Hibernate call recorded with constructors](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate_constructors.png)
 
 # UI
 
