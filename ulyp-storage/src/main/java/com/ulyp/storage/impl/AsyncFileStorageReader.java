@@ -33,14 +33,19 @@ public class AsyncFileStorageReader implements StorageReader {
     private final ExecutorService executorService;
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
-    private final RocksdbIndex index = new RocksdbIndex();
+    private final Repository<Long, RecordedCallState> index;
     private final InMemoryRepository<Long, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
     public AsyncFileStorageReader(File file, boolean autoStart) {
+        this(file, autoStart, new RocksdbIndex());
+    }
+
+    public AsyncFileStorageReader(File file, boolean autoStart, Repository<Long, RecordedCallState> index) {
         this.file = file;
+        this.index = index;
         this.executorService = Executors.newFixedThreadPool(
                 1,
                 new NamedThreadFactory("Reader-" + file.toString(), true)

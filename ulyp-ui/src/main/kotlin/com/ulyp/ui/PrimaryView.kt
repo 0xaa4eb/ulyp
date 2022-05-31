@@ -1,7 +1,11 @@
 package com.ulyp.ui
 
 import com.ulyp.core.exception.UlypException
+import com.ulyp.core.repository.InMemoryRepository
+import com.ulyp.core.repository.Repository
 import com.ulyp.storage.impl.AsyncFileStorageReader
+import com.ulyp.storage.impl.RecordedCallState
+import com.ulyp.storage.impl.RocksdbIndex
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsPopup
 import com.ulyp.ui.elements.controls.ErrorPopup
@@ -94,8 +98,14 @@ class PrimaryView(
 
     fun openRecordedDump() {
         // Without those calls font style won't be applied until user changes font for the first time
-        val file = fileChooser.get()
-        val storageReader = AsyncFileStorageReader(file, false)
+        val file = fileChooser.get() ?: return
+        val rocksdbAvailable = RocksdbIndex.checkIfRocksdbAvailable()
+        val index: Repository<Long, RecordedCallState> = if (rocksdbAvailable.isSuccess) {
+            RocksdbIndex()
+        } else {
+            InMemoryRepository()
+        }
+        val storageReader = AsyncFileStorageReader(file, false, index)
 
         storageReader.processMetadataFuture.thenAccept { processMetadata ->
             storageReader.subscribe { recording ->
@@ -119,6 +129,16 @@ class PrimaryView(
                 errorPopup.show()
             }
             true
+        }
+
+        if (rocksdbAvailable.isFailure) {
+            val errorPopup = applicationContext.getBean(
+                ErrorPopup::class.java,
+                applicationContext.getBean(SceneRegistry::class.java),
+                "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
+                ExceptionAsText(rocksdbAvailable.cause!!)
+            )
+            errorPopup.show()
         }
     }
 }

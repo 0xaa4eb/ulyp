@@ -5,6 +5,10 @@ import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.ByteUtils;
 import com.ulyp.transport.BinaryRecordedCallStateDecoder;
 import com.ulyp.transport.BinaryRecordedCallStateEncoder;
+import io.vavr.Function0;
+import io.vavr.control.Try;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongList;
 import org.agrona.ExpandableDirectByteBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
@@ -88,5 +92,36 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
             valueBuffer.set(buf);
         }
         return buf;
+    }
+
+    private static final Function0<Try<Boolean>> rocksdbAvailableChecker = Function0.of(
+            () -> {
+                try {
+                    RocksdbIndex index = new RocksdbIndex();
+
+                    LongList childrenCallIds = new LongArrayList();
+                    childrenCallIds.add(32L);
+                    childrenCallIds.add(62L);
+
+                    long callId = 555L;
+
+                    RecordedCallState value = RecordedCallState.builder()
+                            .callId(callId)
+                            .childrenCallIds(childrenCallIds)
+                            .build();
+
+                    index.store(callId, value);
+
+                    RecordedCallState valueRead = index.get(callId);
+
+                    return Try.success(valueRead.getCallId() == value.getCallId() && childrenCallIds.equals(valueRead.getChildrenCallIds()));
+                } catch (Throwable err) {
+                    return Try.<Boolean>failure(err);
+                }
+            }
+    ).memoized();
+
+    public static Try<Boolean> checkIfRocksdbAvailable() {
+        return rocksdbAvailableChecker.get();
     }
 }
