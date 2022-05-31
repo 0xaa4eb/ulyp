@@ -64,8 +64,9 @@ The recording is then later analyzed and verified. [Here](https://github.com/0xa
 
 ## What's not recorded
 
-Currently, none of java classes are instrumented. This means calls of, let's say, `add` method of java
-collections are not recorded. However, Ulyp does record system java objects like strings, numbers, etc.
+Currently, none of java standard library classes are instrumented. This means calls of, let's say, `add` method of java
+collections are not recorded. However, Ulyp does record **object values** of java system library classes like strings, numbers,
+collections (more on that below) etc.
 
 Type initializers (`static` blocks) are not recorded and there are no plans to support this.
 
