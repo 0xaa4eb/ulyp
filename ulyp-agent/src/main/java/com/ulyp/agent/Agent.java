@@ -54,7 +54,7 @@ public class Agent {
         PackageList excludedPackages = settings.getExcludedFromInstrumentationPackages();
         RecordMethodList recordMethodList = settings.getRecordMethodList();
 
-        if (recordMethodList == null || recordMethodList.isEmpty()) {
+        if (recordMethodList.isEmpty()) {
             recordMethodList = RecordMethodList.of(
                     new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
             );

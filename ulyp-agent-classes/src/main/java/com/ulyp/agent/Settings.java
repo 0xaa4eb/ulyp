@@ -31,6 +31,7 @@ public class Settings {
     public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
+
     @NotNull
     private final Supplier<StorageWriter> storageWriterSupplier;
     private final PackageList instrumentatedPackages;
@@ -43,6 +44,7 @@ public class Settings {
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<ClassMatcher> classesToPrint;
     private final boolean agentDisabled;
+
     public Settings(
             @NotNull Supplier<StorageWriter> storageWriterSupplier,
             PackageList instrumentedPackages,
@@ -154,6 +156,7 @@ public class Settings {
         return excludedFromInstrumentationPackages;
     }
 
+    @NotNull
     public RecordMethodList getRecordMethodList() {
         return recordMethodList;
     }

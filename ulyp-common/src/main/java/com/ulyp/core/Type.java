@@ -50,6 +50,11 @@ public class Type {
                 .build();
     }
 
+    public void serialize(BinaryTypeEncoder encoder) {
+        encoder.id(this.id);
+        encoder.name(this.name);
+    }
+
     public ObjectRecorder getSuggestedRecorder() {
         ObjectRecorder recorder = suggestedRecorder;
         if (recorder != null) {
@@ -113,10 +118,5 @@ public class Type {
 
     public boolean isClassObject() {
         return typeTraits.contains(TypeTrait.CLASS_OBJECT);
-    }
-
-    public void serialize(BinaryTypeEncoder encoder) {
-        encoder.id(this.id);
-        encoder.name(this.name);
     }
 }
