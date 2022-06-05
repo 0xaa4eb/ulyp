@@ -7,12 +7,15 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static com.agent.tests.util.RecordingMatchers.*;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
@@ -35,6 +38,16 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
                 singleRoot.getSubtreeSize(),
                 greaterThan(100)
         );
+
+        assertThat(
+                DebugCallRecordTreePrinter.printTree(singleRoot),
+                singleRoot,
+                allOf(
+                        hasChildCall(hasMethod(hasName("startExcerpt"))),
+                        hasChildCall(hasMethod(hasName("writeInt"))),
+                        hasChildCall(hasMethod(hasName("readInt")))
+                )
+        );
     }
 
     @Test
@@ -54,6 +67,16 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
                 DebugCallRecordTreePrinter.printTree(singleRoot),
                 singleRoot.getSubtreeSize(),
                 greaterThan(300)
+        );
+
+        assertThat(
+                DebugCallRecordTreePrinter.printTree(singleRoot),
+                singleRoot,
+                allOf(
+                        hasChildCall(hasMethod(hasName("startExcerpt"))),
+                        hasChildCall(hasMethod(hasName("writeInt"))),
+                        hasChildCall(hasMethod(hasName("readInt")))
+                )
         );
     }
 
