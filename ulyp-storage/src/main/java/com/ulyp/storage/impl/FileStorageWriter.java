@@ -49,8 +49,8 @@ public class FileStorageWriter implements StorageWriter {
                 }
         );
         fileWriter.append(binaryList);
-        if (LoggingSettings.INFO_ENABLED) {
-            log.info("Has written {} to storage", processMetadata);
+        if (LoggingSettings.DEBUG_ENABLED) {
+            log.debug("Has written {} to storage", processMetadata);
         }
     }
 
@@ -71,8 +71,8 @@ public class FileStorageWriter implements StorageWriter {
                 }
         );
         fileWriter.append(binaryList);
-        if (LoggingSettings.INFO_ENABLED) {
-            log.info("Has written {} to storage", recordingMetadata);
+        if (LoggingSettings.DEBUG_ENABLED) {
+            log.debug("Has written {} to storage", recordingMetadata);
         }
     }
 
@@ -91,8 +91,8 @@ public class FileStorageWriter implements StorageWriter {
             return;
         }
         fileWriter.append(callsBytes);
-        if (LoggingSettings.INFO_ENABLED) {
-            log.info("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
+        if (LoggingSettings.DEBUG_ENABLED) {
+            log.debug("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
         }
     }
 

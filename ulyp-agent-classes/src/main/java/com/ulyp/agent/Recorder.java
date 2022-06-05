@@ -49,8 +49,8 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -64,8 +64,8 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -81,8 +81,8 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
+            if (LoggingSettings.DEBUG_ENABLED) {
+                log.debug("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
             }
 
             write(typeResolver, recordLog);
@@ -96,8 +96,8 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
+            if (LoggingSettings.DEBUG_ENABLED) {
+                log.debug("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
             }
 
             write(typeResolver, recordLog);
@@ -112,7 +112,7 @@ public class Recorder {
                 methods.add(method);
                 method.setWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {
-                    log.info("Will write {} to storage", method);
+                    log.debug("Will write {} to storage", method);
                 }
             }
         }
@@ -124,7 +124,7 @@ public class Recorder {
                 types.add(type);
                 type.setWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {
-                    log.info("Will write {} to storage", type);
+                    log.debug("Will write {} to storage", type);
                 }
             }
         }
