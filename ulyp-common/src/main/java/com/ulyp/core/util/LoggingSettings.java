@@ -18,14 +18,20 @@ public class LoggingSettings {
     public static final boolean ERROR_ENABLED;
 
     static {
+        boolean defaultLogging = false;
         if (System.getProperty(LOG_LEVEL_PROPERTY) == null) {
-            System.setProperty(LOG_LEVEL_PROPERTY, "OFF");
+            System.setProperty(LOG_LEVEL_PROPERTY, "INFO");
+            defaultLogging = true;
         }
         if (System.getProperty(SHOW_DATETIME_PROPERTY) == null) {
             System.setProperty(SHOW_DATETIME_PROPERTY, "true");
         }
 
         Logger logger = LoggerFactory.getLogger(LoggingSettings.class);
+
+        if (defaultLogging) {
+            logger.info("ULYP logging is enabled. One can disable it with {}", ("-D" + LOG_LEVEL_PROPERTY + "=OFF"));
+        }
 
         TRACE_ENABLED = logger.isTraceEnabled();
         DEBUG_ENABLED = logger.isDebugEnabled();
