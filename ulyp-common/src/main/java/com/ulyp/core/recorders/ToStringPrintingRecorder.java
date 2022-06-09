@@ -45,7 +45,7 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, @NotNull Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try {
             String printed = object.toString();
 

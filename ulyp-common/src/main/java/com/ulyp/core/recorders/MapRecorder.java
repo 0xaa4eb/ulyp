@@ -60,7 +60,7 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, @NotNull Type classDescription, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
 
             if (active) {
