@@ -81,7 +81,12 @@ class RecordingTreeCall(node: CallRecord, renderSettings: RenderSettings) : Text
 
             if (node.method.isStatic || node.method.isConstructor) {
                 result.add(
-                        text().text(toSimpleName(node.method.declaringType.name))
+                        text().text(
+                                if (renderSettings.showTypes()) {
+                                    node.method.declaringType.name
+                                } else {
+                                    toSimpleName(node.method.declaringType.name)
+                                })
                                 .style(Style.CALL_TREE)
                                 .style(Style.CALL_TREE_METHOD_NAME)
                                 .build()
