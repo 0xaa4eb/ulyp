@@ -4,6 +4,7 @@ import com.ulyp.ui.Main
 import com.ulyp.ui.looknfeel.DefaultFontNameResolver
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import org.springframework.stereotype.Component
+import kotlin.math.roundToInt
 
 @Component
 class Settings(
@@ -12,21 +13,22 @@ class Settings(
 
     var fontName: String = defaultFontNameResolver.resolve()
         set(value) {
-            fontSizeChanger.refresh(Main.stage.scene, currentFontSize, value)
+            fontSizeChanger.refresh(Main.stage.scene, recordingTreeFontSize, value)
             field = value
         }
 
-    private var currentFontSize = 1.0
+    var recordingTreeFontSize: Double = 1.0
         set(value) {
-            fontSizeChanger.refresh(Main.stage.scene, value, fontName)
-            field = value
+            val valueRounded = (value * 20.0).roundToInt() * 1.0 / 20.0
+            fontSizeChanger.refresh(Main.stage.scene, valueRounded, fontName)
+            field = valueRounded
         }
 
     fun increaseFont() {
-        currentFontSize += 0.05
+        recordingTreeFontSize += 0.05
     }
 
     fun decreaseFont() {
-        currentFontSize -= 0.05
+        recordingTreeFontSize -= 0.05
     }
 }
