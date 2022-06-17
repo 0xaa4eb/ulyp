@@ -3,9 +3,11 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e76192efb9583aca1170/maintainability)](https://codeclimate.com/github/0xaa4eb/ulyp/maintainability)
 [![](https://tokei.rs/b1/github/0xaa4eb/ulyp)](https://github.com/0xaa4eb/ulyp)
 
-# TL;DR
+## TL;DR
 
-### Example of usage
+TBD
+
+## Example of usage
 
 Ulyp is a Java recording debugger. Usage is relatively simple.
 
@@ -37,7 +39,7 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
 
 ![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
-### How to build
+## Build from source
 
 Build with gradle:
     `./gradlew build`
@@ -48,7 +50,7 @@ Build without tests:
 Run UI:
     `./gradlew :ulyp-ui:run`
 
-### Key details
+## Key details
 
 All instrumentation is done using [byte buddy](https://github.com/raphw/byte-buddy) library. 
 All Java objects are recorded by the [recorders](https://github.com/0xaa4eb/ulyp/tree/master/ulyp-common/src/main/java/com/ulyp/core/recorders). 
