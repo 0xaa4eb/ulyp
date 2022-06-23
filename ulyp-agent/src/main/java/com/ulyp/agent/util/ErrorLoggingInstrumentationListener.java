@@ -1,5 +1,6 @@
 package com.ulyp.agent.util;
 
+import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
@@ -26,7 +27,9 @@ public class ErrorLoggingInstrumentationListener implements AgentBuilder.Listene
 
     @Override
     public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-        log.error("Failed to instrument " + typeName, throwable);
+        if (LoggingSettings.DEBUG_ENABLED) {
+            log.error("Failed to instrument class " + typeName, throwable);
+        }
     }
 
     @Override
