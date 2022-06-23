@@ -25,7 +25,10 @@ public class AsyncFileStorageWriter implements StorageWriter {
         this.delegate = delegate;
         this.executorService = Executors.newFixedThreadPool(
                 1,
-                new NamedThreadFactory("AsyncWriter-" + delegate.toString(), true)
+                NamedThreadFactory.builder()
+                        .name("AsyncWriter-" + delegate.toString())
+                        .daemon(true)
+                        .build()
         );
     }
 

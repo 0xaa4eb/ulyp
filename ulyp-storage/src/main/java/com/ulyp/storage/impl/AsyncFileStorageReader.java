@@ -48,7 +48,10 @@ public class AsyncFileStorageReader implements StorageReader {
         this.index = index;
         this.executorService = Executors.newFixedThreadPool(
                 1,
-                new NamedThreadFactory("Reader-" + file.toString(), true)
+                NamedThreadFactory.builder()
+                        .name("Reader-" + file.toString())
+                        .daemon(true)
+                        .build()
         );
 
         if (autoStart) {

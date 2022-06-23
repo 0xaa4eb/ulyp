@@ -1,22 +1,20 @@
 package com.ulyp.storage.util;
 
+import lombok.Builder;
+
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Builder
 public class NamedThreadFactory implements ThreadFactory {
 
     private final String name;
     private final boolean daemon;
-    private final AtomicLong ctr = new AtomicLong(-1);
-
-    public NamedThreadFactory(String name, boolean daemon) {
-        this.name = name;
-        this.daemon = daemon;
-    }
+    private final AtomicLong nextIndex = new AtomicLong(-1);
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread t = new Thread(r, name + "-" + ctr.incrementAndGet());
+        Thread t = new Thread(r, name + "-" + nextIndex.incrementAndGet());
         t.setDaemon(daemon);
         return t;
     }

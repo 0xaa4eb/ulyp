@@ -18,7 +18,10 @@ public class DelayBasedRecordingPolicy implements StartRecordingPolicy {
 
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(
                 1,
-                new NamedThreadFactory("Ulyp-DelayBasedRecordingPolicy", true)
+                NamedThreadFactory.builder()
+                        .name("Ulyp-DelayBasedRecordingPolicy")
+                        .daemon(true)
+                        .build()
         );
 
         scheduledExecutorService.schedule(
