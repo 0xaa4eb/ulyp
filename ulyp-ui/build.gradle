@@ -16,23 +16,17 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'io.freefair.lombok' version '5.3.0'
-    id 'org.openjfx.javafxplugin' version '0.0.10' apply false
+    id 'org.openjfx.javafxplugin' version '0.0.10' apply(false)
 }
 
-if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
-    apply plugin: 'org.openjfx.javafxplugin'
-}
+def javaVersion = JavaVersion.current()
 
-mainClassName = 'com.ulyp.ui.Main'
-
-repositories {
-    mavenCentral()
-}
-
-if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
-    javafx {
-        modules = ['javafx.controls', 'javafx.fxml', 'javafx.swing']
-    }
+if (javaVersion >= JavaVersion.VERSION_1_7 && javaVersion < JavaVersion.VERSION_1_9) {
+    apply from: "build-jdk7.gradle"
+} else if (javaVersion >= JavaVersion.VERSION_11) {
+    apply from: "build-jdk11.gradle"
+} else {
+    throw new GradleException("JITWatch is unsupported on Java $javaVersion")
 }
 
 dependencies {
@@ -43,50 +37,52 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
     implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
 
-    compile group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
-    compile group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
-    compile group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
-    compile group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
-    compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
-    compile group: 'org.agrona', name: 'agrona', version: '0.9.22'
-    compile group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
+    implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
+    implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
+    implementation group: 'org.agrona', name: 'agrona', version: '0.9.22'
+    implementation group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
 
-    compile group: 'org.apache.logging.log4j', name: 'log4j', version: '2.13.1'
-    compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.13.1'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
     testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
 
-jar.baseName = 'ulyp-ui'
+mainClassName = 'com.ulyp.ui.UIStarter'
 
 sourceSets {
     main.java.srcDirs = ['src/main/java', '../src/main/java', 'src/main/kotlin', '../src/main/kotlin']
 }
 
-jar {
-    mainClassName = 'com.ulyp.ui.Main'
-    archiveName = "ulyp-ui-${rootProject.version}.jar"
+run {
+    workingDir = rootDir
+}
 
+task fatJar(type: Jar) {
     manifest {
         attributes(
-                'Main-Class': 'com.ulyp.ui.Main',
+                'Main-Class': mainClassName,
                 'Implementation-Title': "Ulyp UI",
                 'Implementation-Version': rootProject.version,
-                'Built-By': 0xaa4eb,
+                'Built-By': '0xaa4eb',
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version')
         )
     }
-}
 
-compileJava {
-    options.debug = true
+    group = 'build'
+    archiveName = "ulyp-ui-${rootProject.version}.jar"
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

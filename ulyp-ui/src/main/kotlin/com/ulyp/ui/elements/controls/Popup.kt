@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.controls
 
-import com.ulyp.ui.Main
+import com.ulyp.ui.UIApplication
 import com.ulyp.ui.SceneRegistry
 import javafx.scene.Node
 import javafx.scene.layout.AnchorPane
@@ -13,7 +13,7 @@ open class Popup(sceneRegistry: SceneRegistry) : Stage() {
 
     init {
         initModality(Modality.APPLICATION_MODAL)
-        initOwner(Main.stage)
+        initOwner(UIApplication.stage)
 
         anchorPane.prefHeight = 500.0
         anchorPane.prefWidth = 700.0

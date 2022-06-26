@@ -73,7 +73,7 @@ class PrimaryView(
     }
 
     fun showSettings() {
-        val loader = FXMLLoader(Main::class.java.classLoader.getResource("SettingsView.fxml"))
+        val loader = FXMLLoader(UIApplication::class.java.classLoader.getResource("SettingsView.fxml"))
         loader.controllerFactory = Callback { cl: Class<*>? -> applicationContext.getBean(cl) }
 
         val root = loader.load<Parent>()
@@ -84,7 +84,7 @@ class PrimaryView(
         stage.scene = scene
         stage.isMaximized = false
         stage.title = "Ulyp Settings"
-        val iconStream = Main::class.java.classLoader.getResourceAsStream("icons/settings-icon.png")
+        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png")
                 ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
 

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.io.InputStream;
 
-public class Main extends Application {
+public class UIApplication extends Application {
 
     // Guaranteed to be non-null and initialized
     public static Stage stage;
@@ -24,11 +24,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Main.stage = stage;
+        UIApplication.stage = stage;
 
         context = new AnnotationConfigApplicationContext(Configuration.class);
 
-        FXMLLoader loader = new FXMLLoader(Main.class.getClassLoader().getResource("PrimaryView.fxml"));
+        FXMLLoader loader = new FXMLLoader(UIApplication.class.getClassLoader().getResource("PrimaryView.fxml"));
         loader.setControllerFactory(cl -> context.getBean(cl));
 
         SceneRegistry sceneRegistry = context.getBean(SceneRegistry.class);
@@ -43,7 +43,7 @@ public class Main extends Application {
         stage.setMaximized(true);
         stage.setOnCloseRequest(event -> System.exit(0));
         stage.setTitle("Ulyp");
-        InputStream iconStream = Main.class.getClassLoader().getResourceAsStream("icons/ulyp-logo-icon.png");
+        InputStream iconStream = UIApplication.class.getClassLoader().getResourceAsStream("icons/ulyp-logo-icon.png");
         if (iconStream == null) {
             throw new RuntimeException("Icon not found");
         }

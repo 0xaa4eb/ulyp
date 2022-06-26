@@ -1,6 +1,6 @@
 package com.ulyp.ui.util
 
-import com.ulyp.ui.Main
+import com.ulyp.ui.UIApplication
 import com.ulyp.ui.looknfeel.DefaultFontNameResolver
 import com.ulyp.ui.looknfeel.FontSizeChanger
 import org.springframework.stereotype.Component
@@ -13,14 +13,14 @@ class Settings(
 
     var fontName: String = defaultFontNameResolver.resolve()
         set(value) {
-            fontSizeChanger.refresh(Main.stage.scene, recordingTreeFontSize, value)
+            fontSizeChanger.refresh(UIApplication.stage.scene, recordingTreeFontSize, value)
             field = value
         }
 
     var recordingTreeFontSize: Double = 1.0
         set(value) {
             val valueRounded = (value * 20.0).roundToInt() * 1.0 / 20.0
-            fontSizeChanger.refresh(Main.stage.scene, valueRounded, fontName)
+            fontSizeChanger.refresh(UIApplication.stage.scene, valueRounded, fontName)
             field = valueRounded
         }
 

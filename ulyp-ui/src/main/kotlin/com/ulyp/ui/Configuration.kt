@@ -18,7 +18,7 @@ open class Configuration {
 
     @Bean
     open fun stage(): Stage {
-        return Main.stage
+        return UIApplication.stage
     }
 
     @Bean

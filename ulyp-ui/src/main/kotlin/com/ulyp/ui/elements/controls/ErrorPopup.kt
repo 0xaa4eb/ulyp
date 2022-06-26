@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.controls
 
-import com.ulyp.ui.Main
+import com.ulyp.ui.UIApplication
 import com.ulyp.ui.SceneRegistry
 import javafx.scene.Node
 import javafx.scene.image.Image
@@ -17,7 +17,7 @@ class ErrorPopup(@Autowired sceneRegistry: SceneRegistry, errorTitle: String, co
         this.content = content
         this.title = errorTitle
 
-        val iconStream = Main::class.java.classLoader.getResourceAsStream("icons/error-icon.png")
+        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/error-icon.png")
                 ?: throw RuntimeException("Icon not found")
         icons.add(Image(iconStream))
     }
