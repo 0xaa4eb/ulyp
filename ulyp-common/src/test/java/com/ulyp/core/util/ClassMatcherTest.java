@@ -12,8 +12,6 @@ public class ClassMatcherTest {
         Type type = Type.builder().name("com.pckg.SomeClass").build();
 
         assertTrue(ClassMatcher.parse("*").matches(type));
-
-//        assertTrue(ClassMatcher.parse("**").matches(type));
     }
 
     @Test
