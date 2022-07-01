@@ -167,7 +167,6 @@ public class ByteBuddyTypeResolverTest {
 
         Assert.assertEquals(
                 new HashSet<String>() {{
-                    add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.TestClass");
                     add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.BaseClass");
                     add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I1");
                     add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I2");
@@ -181,7 +180,6 @@ public class ByteBuddyTypeResolverTest {
         Assert.assertEquals(
                 new HashSet<String>() {{
                     add("BaseClass");
-                    add("TestClass");
                     add("I1");
                     add("I2");
                     add("I3");

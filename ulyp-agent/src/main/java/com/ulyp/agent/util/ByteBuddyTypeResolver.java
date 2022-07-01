@@ -183,22 +183,29 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     private Set<String> getSuperTypes(TypeDescription.Generic type) {
         Set<String> superTypes = new HashSet<>();
         try {
-            TypeDefinition.Sort sort = type.getSort();
-            if (sort != TypeDefinition.Sort.VARIABLE && sort != TypeDefinition.Sort.VARIABLE_SYMBOLIC && sort != TypeDefinition.Sort.WILDCARD) {
-                while (type != null && !type.equals(TypeDescription.Generic.OBJECT)) {
 
-                    String actualName = type.asErasure().getActualName();
-                    if (actualName.contains("$")) {
-                        actualName = actualName.replace('$', '.');
+            TypeDefinition.Sort sort = type.getSort();
+            TypeDescription.Generic superTypeToCheck = type;
+
+            if (sort != TypeDefinition.Sort.VARIABLE && sort != TypeDefinition.Sort.VARIABLE_SYMBOLIC && sort != TypeDefinition.Sort.WILDCARD) {
+                while (superTypeToCheck != null && !superTypeToCheck.equals(TypeDescription.Generic.OBJECT)) {
+
+                    // do not add type name to super types
+                    if (type != superTypeToCheck) {
+
+                        String actualName = superTypeToCheck.asErasure().getActualName();
+                        if (actualName.contains("$")) {
+                            actualName = actualName.replace('$', '.');
+                        }
+
+                        superTypes.add(actualName);
                     }
 
-                    superTypes.add(actualName);
-
-                    for (TypeDescription.Generic interfface : type.getInterfaces()) {
+                    for (TypeDescription.Generic interfface : superTypeToCheck.getInterfaces()) {
                         addInterfaceAndAllParentInterfaces(superTypes, interfface);
                     }
 
-                    type = type.getSuperClass();
+                    superTypeToCheck = superTypeToCheck.getSuperClass();
                 }
             }
         } catch (Exception e) {

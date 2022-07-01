@@ -5,9 +5,11 @@ import com.ulyp.core.Type;
 public class ClassMatcher {
 
     private static final String WILDCARD = "*";
+
     private final String patternText;
     private final AntPathMatcher antMatcher;
     private final boolean isWildcard;
+
     private ClassMatcher(String patternText) {
         this.antMatcher = new AntPathMatcher(".");
 
@@ -22,6 +24,9 @@ public class ClassMatcher {
 
     public boolean matches(Type type) {
         if (isWildcard) {
+            return true;
+        }
+        if (antMatcher.match(patternText, type.getName())) {
             return true;
         }
         for (String superType : type.getSuperTypeNames()) {
