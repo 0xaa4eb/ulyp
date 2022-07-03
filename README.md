@@ -29,6 +29,7 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
     
     
     ```
+    @Transactional
     public void save() throws Exception {
         User user = new User("Test", "User");
         saver.save(user);
