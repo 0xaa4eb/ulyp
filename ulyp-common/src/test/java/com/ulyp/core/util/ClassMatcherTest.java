@@ -8,6 +8,17 @@ import static org.junit.Assert.*;
 public class ClassMatcherTest {
 
     @Test
+    public void testMatchingForNestedClass() {
+        Type type = Type.builder().name("com.pckg.SomeClass$X").build();
+
+        assertTrue(ClassMatcher.parse("**.X").matches(type));
+
+        assertTrue(ClassMatcher.parse("**.SomeClass.X").matches(type));
+
+        assertTrue(ClassMatcher.parse("**.SomeClass$X").matches(type));
+    }
+
+    @Test
     public void testMatchByWildcard() {
         Type type = Type.builder().name("com.pckg.SomeClass").build();
 
