@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.instrument.Instrumentation;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.jar.JarFile;
 
 /**
@@ -18,6 +19,7 @@ import java.util.jar.JarFile;
 public class AgentBootstrap {
 
     private static final String AGENT_CLASSES_JAR_RESOURCE_NAME = "ulyp-agent-classes.jarr";
+    private static final String ULYP_TMP_DIR_PROPERTY = "ulyp.tmp-dir";
     private static final Class<?> thisClass = AgentBootstrap.class;
 
     public static void premain(String args, Instrumentation instrumentation) {
@@ -37,7 +39,12 @@ public class AgentBootstrap {
 
         Path tmpJarFile;
         try {
-            tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar");
+            String tmpDir = System.getProperty(ULYP_TMP_DIR_PROPERTY);
+            if (tmpDir != null) {
+                tmpJarFile = Files.createTempFile(Paths.get(tmpDir), "ulyp-agent-classes", ".jar");
+            } else {
+                tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Could not create tmp file", e);
         }
