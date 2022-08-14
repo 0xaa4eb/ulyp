@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Component
 @Scope(value = "prototype")
@@ -33,6 +35,8 @@ class RecordingTab(
         private val processMetadata: ProcessMetadata,
         private val recording: Recording
 ) : Tab() {
+
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss.SSS")
 
     private var root: CallRecord? = null
     private var recordingMetadata: RecordingMetadata? = null
@@ -98,8 +102,11 @@ class RecordingTab(
     val tabName: String
         get() = if (root == null || recordingMetadata == null) {
             "?"
-        } else recordingMetadata!!.threadName + " " +
-                toSimpleName(root!!.method.declaringType.name) + "." + root!!.method.name + "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
+        } else Timestamp(recordingMetadata!!.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter) + " " +
+                recordingMetadata!!.threadName + " " +
+                toSimpleName(root!!.method.declaringType.name) +
+                "." + root!!.method.name +
+                "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
 
     @get:Synchronized
     private val tooltipText: Tooltip
