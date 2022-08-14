@@ -30,9 +30,10 @@ public class Recorder {
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final AgentContext context;
+
     public Recorder(AgentContext context) {
         this.context = context;
-        this.startRecordingPolicy = context.getSettings().getStartRecordingPolicy();
+        this.startRecordingPolicy = context.getStartRecordingPolicy();
         this.initialCallIdGenerator = context.getCallIdGenerator();
     }
 

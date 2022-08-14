@@ -1,5 +1,8 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.util.AlwaysStartRecordingPolicy;
+import com.ulyp.agent.util.DelayBasedRecordingPolicy;
+import com.ulyp.agent.util.FileBasedStartRecordingPolicy;
 import com.ulyp.agent.util.StartRecordingPolicy;
 import com.ulyp.core.recorders.CollectionsRecordingMode;
 import com.ulyp.core.util.ClassMatcher;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 public class Settings {
 
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
-    public static final String START_RECORDING_DELAY_PROPERTY = "ulyp.delay";
+    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
@@ -40,7 +43,7 @@ public class Settings {
     private final RecordMethodList recordMethodList;
     private final List<ClassMatcher> excludeFromInstrumentationClasses;
     private final boolean shouldRecordConstructors;
-    private final StartRecordingPolicy startRecordingPolicy;
+    private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<ClassMatcher> classesToPrint;
     private final boolean agentDisabled;
@@ -53,7 +56,7 @@ public class Settings {
             boolean shouldRecordConstructors,
             CollectionsRecordingMode collectionsRecordingMode,
             Set<ClassMatcher> classesToPrint,
-            StartRecordingPolicy startRecordingPolicy,
+            String startRecordingPolicyPropertyValue,
             List<ClassMatcher> excludeFromInstrumentationClasses,
             boolean agentDisabled) {
         this.storageWriterSupplier = storageWriterSupplier;
@@ -63,15 +66,14 @@ public class Settings {
         this.shouldRecordConstructors = shouldRecordConstructors;
         this.collectionsRecordingMode = collectionsRecordingMode;
         this.classesToPrint = classesToPrint;
-        this.startRecordingPolicy = startRecordingPolicy;
+        this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
         this.agentDisabled = agentDisabled;
     }
 
     public static Settings fromSystemProperties() {
 
-        Duration delay = Duration.ofSeconds(Integer.parseInt(System.getProperty(START_RECORDING_DELAY_PROPERTY, "0")));
-        StartRecordingPolicy startRecordingPolicy = delay.isZero() ? StartRecordingPolicy.alwaysStartRecordingPolicy() : StartRecordingPolicy.withDelayStartRecordingPolicy(delay);
+        String startRecordingPolicy = System.getProperty(START_RECORDING_POLICY_PROPERTY);
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
@@ -177,8 +179,8 @@ public class Settings {
         return classesToPrint;
     }
 
-    public StartRecordingPolicy getStartRecordingPolicy() {
-        return startRecordingPolicy;
+    public String getStartRecordingPolicyPropertyValue() {
+        return startRecordingPolicyPropertyValue;
     }
 
     public List<ClassMatcher> getExcludeFromInstrumentationClasses() {
@@ -196,7 +198,7 @@ public class Settings {
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + recordMethodList +
                 ",\nrecord constructors: " + shouldRecordConstructors +
-                ",\nrecording policy: " + startRecordingPolicy +
+                ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
                 ",\nclassesToPrintWithToString(TBD)=" + classesToPrint;
     }

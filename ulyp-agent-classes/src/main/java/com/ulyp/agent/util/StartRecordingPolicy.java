@@ -1,19 +1,12 @@
 package com.ulyp.agent.util;
 
-import java.time.Duration;
-
 /**
- * Strategy to define when recording can start
+ * Strategy to define when recording can start.
  */
 public interface StartRecordingPolicy {
 
-    static StartRecordingPolicy alwaysStartRecordingPolicy() {
-        return new AlwaysStartRecordingPolicy();
-    }
-
-    static StartRecordingPolicy withDelayStartRecordingPolicy(Duration delay) {
-        return new DelayBasedRecordingPolicy(delay);
-    }
-
+    /**
+     * @return true if recording can start right now. Otherwise returns false
+     */
     boolean canStartRecording();
 }
