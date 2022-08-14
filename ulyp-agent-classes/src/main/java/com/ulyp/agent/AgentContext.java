@@ -1,9 +1,9 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.AlwaysStartRecordingPolicy;
-import com.ulyp.agent.util.DelayBasedRecordingPolicy;
-import com.ulyp.agent.util.FileBasedStartRecordingPolicy;
-import com.ulyp.agent.util.StartRecordingPolicy;
+import com.ulyp.agent.policy.AlwaysStartRecordingPolicy;
+import com.ulyp.agent.policy.DelayBasedRecordingPolicy;
+import com.ulyp.agent.policy.FileBasedStartRecordingPolicy;
+import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.util.Classpath;
 import com.ulyp.storage.StorageWriter;

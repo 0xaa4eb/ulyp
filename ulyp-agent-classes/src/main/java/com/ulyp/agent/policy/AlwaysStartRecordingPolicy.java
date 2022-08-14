@@ -1,4 +1,4 @@
-package com.ulyp.agent.util;
+package com.ulyp.agent.policy;
 
 public class AlwaysStartRecordingPolicy implements StartRecordingPolicy {
 
