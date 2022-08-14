@@ -14,7 +14,7 @@ public class DelayBasedRecordingPolicy implements StartRecordingPolicy {
     private volatile boolean canStartRecording = false;
 
     public DelayBasedRecordingPolicy(Duration delay) {
-        this.startRecordingTimestamp = LocalDateTime.now().plusSeconds(delay.toMillis());
+        this.startRecordingTimestamp = LocalDateTime.now().plusSeconds(delay.getSeconds());
 
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(
                 1,
