@@ -50,8 +50,8 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                if (LoggingSettings.INFO_ENABLED) {
+                    log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -65,8 +65,8 @@ public class Recorder {
             threadLocalRecordsLog.computeIfAbsent(() -> {
                 CallRecordLog callRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                if (LoggingSettings.INFO_ENABLED) {
+                    log.info("Started recording {} at method {}", callRecordLog.getRecordingMetadata().getId(), method.toShortString());
                 }
                 return callRecordLog;
             });
@@ -82,8 +82,8 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.DEBUG_ENABLED) {
-                log.debug("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
+            if (LoggingSettings.INFO_ENABLED) {
+                log.info("Finished recording {} at method {}, recorded {} calls", recordLog.getRecordingMetadata().getId(), method.toShortString(), recordLog.size());
             }
 
             write(typeResolver, recordLog);
@@ -97,8 +97,8 @@ public class Recorder {
         if (recordLog != null && recordLog.isComplete()) {
             threadLocalRecordsLog.clear();
             currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.DEBUG_ENABLED) {
-                log.debug("Finished recording {} , recorded {} calls", recordLog.getRecordingMetadata().getId(), recordLog.size());
+            if (LoggingSettings.INFO_ENABLED) {
+                log.info("Finished recording {} at method {}, recorded {} calls", recordLog.getRecordingMetadata().getId(), method, recordLog.size());
             }
 
             write(typeResolver, recordLog);
