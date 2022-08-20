@@ -44,7 +44,7 @@ public class AgentContext {
             return new AlwaysStartRecordingPolicy();
         }
         if (value.startsWith("delay:")) {
-            return new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay=", ""))));
+            return new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
         }
         if (value.startsWith("file:")) {
             return new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));
