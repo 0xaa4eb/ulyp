@@ -6,7 +6,7 @@ enum class Style(vararg classes: String) {
     HELP_TEXT("ulyp-help-text"),
     CALL_TREE("ulyp-call-tree"),
     CALL_TREE_TYPE_NAME("ulyp-call-tree-typename"),
-    CALL_TREE_STRING_LITERAL("ulyp-call-tree-string"),
+    CALL_TREE_STRING("ulyp-call-tree-string"),
     CALL_TREE_NUMBER("ulyp-call-tree-number"),
     CALL_TREE_NULL("ulyp-call-tree-null"),
     CALL_TREE_NODE_SEPARATOR("ulyp-call-tree-sep"),

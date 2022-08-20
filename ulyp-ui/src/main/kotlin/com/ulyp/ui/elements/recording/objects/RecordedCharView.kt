@@ -10,6 +10,6 @@ class RecordedCharView internal constructor(value: CharObjectRecord)
 
     init {
         val text: Text = TrimmedTextView("'" + value.value + "'")
-        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
+        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING))
     }
 }

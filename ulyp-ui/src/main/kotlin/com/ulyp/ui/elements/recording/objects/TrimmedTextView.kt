@@ -2,18 +2,16 @@ package com.ulyp.ui.elements.recording.objects
 
 import javafx.scene.text.Text
 
-class TrimmedTextView(value: String) : Text(trimText(value)) {
+class TrimmedTextView(value: String) : Text() {
 
-    companion object {
-        fun trimText(text: String): String {
-            var value = text
-                    .replace("\t", "\\t")
-                    .replace("\r", "\\r")
-                    .replace("\n", "\\n")
-            if (value.length > 50) {
-                value = value.substring(0..50) + "..."
-            }
-            return value
+    init {
+        var trimmed = value
+                .replace("\t", "\\t")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+        if (trimmed.length > 50) {
+            trimmed = trimmed.substring(0..50) + "..."
         }
+        this.text = trimmed
     }
 }

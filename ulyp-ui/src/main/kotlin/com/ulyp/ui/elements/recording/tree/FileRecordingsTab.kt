@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.PostConstruct
 
+/**
+ * A tab which contains all recordings for a particular recording file. It itself contains
+ * a set of tabs of type {@link RecordingTab} in it (one such tab per every recording)
+ */
 @Component
 @Scope(scopeName = "prototype")
 class FileRecordingsTab internal constructor(

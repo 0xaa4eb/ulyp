@@ -26,8 +26,11 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
+/**
+ * A tab which contains a particular recording (i.e. particular recorded method call including
+ * all its nested calls)
+ */
 @Component
 @Scope(value = "prototype")
 class RecordingTab(
@@ -40,14 +43,12 @@ class RecordingTab(
 
     private var root: CallRecord? = null
     private var recordingMetadata: RecordingMetadata? = null
-    private var treeView: TreeView<RecordingTreeNodeContent>? = null
+    private var treeView: TreeView<RecordedCallNodeContent>? = null
 
     @Autowired
     private lateinit var sourceCodeView: SourceCodeView
-
     @Autowired
     private lateinit var renderSettings: RenderSettings
-
     @Autowired
     private lateinit var settings: Settings
 
@@ -59,7 +60,7 @@ class RecordingTab(
             return
         }
 
-        treeView = TreeView(RecordingTreeNode(recording, root!!.id, renderSettings))
+        treeView = TreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings))
         treeView!!.styleClass += "ulyp-tree-view"
 
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
@@ -67,8 +68,8 @@ class RecordingTab(
 
         val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
         treeView!!.selectionModel.selectedItemProperty()
-                .addListener { observable: ObservableValue<out TreeItem<RecordingTreeNodeContent>?>?, oldValue: TreeItem<RecordingTreeNodeContent>?, newValue: TreeItem<RecordingTreeNodeContent>? ->
-                    val selectedNode = newValue as RecordingTreeNode?
+                .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
+                    val selectedNode = newValue as RecordedCallTreeItem?
                     if (selectedNode?.callRecord != null) {
                         val sourceCodeFuture = sourceCodeFinder.find(
                                 selectedNode.callRecord.method.declaringType.name
@@ -76,7 +77,7 @@ class RecordingTab(
                         sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                             Platform.runLater {
                                 val currentlySelected = treeView!!.selectionModel.selectedItem
-                                val currentlySelectedNode = currentlySelected as RecordingTreeNode
+                                val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
                                 if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
                                     sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
                                 }
@@ -125,8 +126,8 @@ class RecordingTab(
             return Tooltip(builder.toString())
         }
 
-    fun getSelected(): RecordingTreeNode {
-        return treeView!!.selectionModel.selectedItem as RecordingTreeNode
+    fun getSelected(): RecordedCallTreeItem {
+        return treeView!!.selectionModel.selectedItem as RecordedCallTreeItem
     }
 
     fun dispose() {
@@ -135,7 +136,7 @@ class RecordingTab(
     @Synchronized
     fun refreshTreeView() {
         init()
-        val root = treeView!!.root as RecordingTreeNode
+        val root = treeView!!.root as RecordedCallTreeItem
         text = tabName
         tooltip = tooltipText
         root.refresh()

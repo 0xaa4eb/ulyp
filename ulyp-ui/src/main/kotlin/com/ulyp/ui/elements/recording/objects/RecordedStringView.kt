@@ -9,6 +9,6 @@ class RecordedStringView internal constructor(record: StringObjectRecord) : Reco
 
     init {
         val text: Text = TrimmedTextView("\"" + record.value() + "\"")
-        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
+        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING))
     }
 }
