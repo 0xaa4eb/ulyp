@@ -10,7 +10,7 @@ class RecordingTreeNodeWeight(node: CallRecord, totalNodeCountInTree: Int) : Reg
     init {
         val width = (600.0 * node.subtreeSize / totalNodeCountInTree).toInt()
 
-        styleClass.add("ulyp-ctt-call-node")
+        styleClass.add("ulyp-call-tree-call-node")
 
         style = String.format("-fx-min-width: %d; ", width) +
                 "\n" +

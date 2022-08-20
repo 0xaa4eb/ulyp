@@ -32,7 +32,7 @@ abstract class RecordedObject protected constructor() : TextFlow() {
                 else -> throw RuntimeException("Not supported for rendering: $record")
             }
             objectValue.children.forEach(Consumer { node: Node ->
-                node.styleClass.add("ulyp-ctt")
+                node.styleClass.add("ulyp-call-tree")
             })
             return objectValue
         }

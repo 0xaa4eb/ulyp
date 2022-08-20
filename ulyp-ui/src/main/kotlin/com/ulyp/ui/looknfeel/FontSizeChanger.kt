@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption
 class FontSizeChanger(private val applicationContext: ApplicationContext) {
 
     companion object {
-        private const val STYLE_PREFIX = "ctt-font-style"
+        private const val STYLE_PREFIX = "call-tree-font-style"
     }
 
     fun refresh(scene: Scene, fontSize: Double, fontName: String) {
@@ -25,11 +25,11 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
             Files.write(
                     path,
                     """
-                .ulyp-ctt {
+                .ulyp-call-tree {
                     -fx-font-family: ${fontName};
                     -fx-font-size: ${fontSize}em;
                 }
-                .ulyp-ctt-identity-hash-code {
+                .ulyp-call-tree-identity-hash-code {
                     -fx-font-size: ${fontSize * 0.8}em;
                 }
                 """.toByteArray(StandardCharsets.UTF_8),
