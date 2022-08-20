@@ -4,13 +4,13 @@ import com.ulyp.storage.CallRecord
 import javafx.scene.layout.Region
 
 /**
- * A background rectangle which shows how much nested calls every call record tree node has.
+ * A background rectangle which approximately shows how many nested calls every call tree node has.
  */
 class RecordingTreeNodeWeight(node: CallRecord, totalNodeCountInTree: Int) : Region() {
     init {
         val width = (600.0 * node.subtreeSize / totalNodeCountInTree).toInt()
 
-        styleClass.add("ulyp-call-tree-call-node")
+        styleClass += "ulyp-call-tree-call-node"
 
         style = String.format("-fx-min-width: %d; ", width) +
                 "\n" +
