@@ -5,7 +5,7 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
-class RecordedDate(record: DateRecord, renderSettings: RenderSettings) : RecordedObject() {
+class RecordedDateView(record: DateRecord, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
         if (renderSettings.showTypes()) {

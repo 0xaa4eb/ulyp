@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @Scope(value = "prototype")
-class ControlsPopup(@Autowired sceneRegistry: SceneRegistry) : Popup(sceneRegistry) {
+class ControlsPopupView(@Autowired sceneRegistry: SceneRegistry) : PopupView(sceneRegistry) {
 
     init {
         val items = FXCollections.observableArrayList(

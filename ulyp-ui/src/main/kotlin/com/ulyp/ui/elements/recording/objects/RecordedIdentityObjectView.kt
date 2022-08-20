@@ -6,7 +6,7 @@ import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 
-class RecordedIdentityObject(record: IdentityObjectRecord, renderSettings: RenderSettings) : RecordedObject() {
+class RecordedIdentityObjectView(record: IdentityObjectRecord, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
         val className = if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)

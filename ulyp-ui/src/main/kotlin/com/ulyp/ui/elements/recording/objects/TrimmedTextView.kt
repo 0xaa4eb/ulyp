@@ -2,7 +2,7 @@ package com.ulyp.ui.elements.recording.objects
 
 import javafx.scene.text.Text
 
-class TrimmedText(value: String) : Text(trimText(value)) {
+class TrimmedTextView(value: String) : Text(trimText(value)) {
 
     companion object {
         fun trimText(text: String): String {

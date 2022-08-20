@@ -5,11 +5,11 @@ import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
 
-class RecordedChar internal constructor(value: CharObjectRecord)
-    : RecordedObject() {
+class RecordedCharView internal constructor(value: CharObjectRecord)
+    : RecordedObjectView() {
 
     init {
-        val text: Text = TrimmedText("'" + value.value + "'")
+        val text: Text = TrimmedTextView("'" + value.value + "'")
         children.add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
     }
 }

@@ -7,9 +7,9 @@ import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.storage.impl.RecordedCallState
 import com.ulyp.storage.impl.RocksdbIndex
 import com.ulyp.ui.code.SourceCodeView
-import com.ulyp.ui.elements.controls.ControlsPopup
-import com.ulyp.ui.elements.controls.ErrorPopup
-import com.ulyp.ui.elements.misc.ExceptionAsText
+import com.ulyp.ui.elements.controls.ControlsPopupView
+import com.ulyp.ui.elements.controls.ErrorPopupView
+import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
 import com.ulyp.ui.util.FxThreadExecutor
@@ -92,7 +92,7 @@ class PrimaryView(
     }
 
     fun showControlsPopup() {
-        val popup = applicationContext.getBean(ControlsPopup::class.java)
+        val popup = applicationContext.getBean(ControlsPopupView::class.java)
         popup.show()
     }
 
@@ -121,10 +121,10 @@ class PrimaryView(
         storageReader.finishedReadingFuture.exceptionally {
             FxThreadExecutor.execute {
                 val errorPopup = applicationContext.getBean(
-                        ErrorPopup::class.java,
+                        ErrorPopupView::class.java,
                         applicationContext.getBean(SceneRegistry::class.java),
                         "Stopped reading recording file $file with error: " + it.message,
-                        ExceptionAsText(it)
+                        ExceptionAsTextView(it)
                 )
                 errorPopup.show()
             }
@@ -133,10 +133,10 @@ class PrimaryView(
 
         if (rocksdbAvailable.isFailure) {
             val errorPopup = applicationContext.getBean(
-                ErrorPopup::class.java,
+                ErrorPopupView::class.java,
                 applicationContext.getBean(SceneRegistry::class.java),
                 "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
-                ExceptionAsText(rocksdbAvailable.cause!!)
+                ExceptionAsTextView(rocksdbAvailable.cause!!)
             )
             errorPopup.show()
         }

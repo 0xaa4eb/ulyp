@@ -1,7 +1,7 @@
 package com.ulyp.ui.looknfeel
 
-import com.ulyp.ui.elements.controls.ErrorPopup
-import com.ulyp.ui.elements.misc.ExceptionAsText
+import com.ulyp.ui.elements.controls.ErrorPopupView
+import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import javafx.scene.Scene
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
@@ -53,9 +53,9 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
         } catch (e: IOException) {
 
             val errorPopup = applicationContext.getBean(
-                    ErrorPopup::class.java,
+                    ErrorPopupView::class.java,
                     "Could not change font size: " + e.message,
-                    ExceptionAsText(e)
+                    ExceptionAsTextView(e)
             )
             errorPopup.show()
         }

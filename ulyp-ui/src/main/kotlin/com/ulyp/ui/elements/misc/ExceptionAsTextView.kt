@@ -6,7 +6,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 
-class ExceptionAsText(exception: Throwable) : Text() {
+class ExceptionAsTextView(exception: Throwable) : Text() {
 
     init {
         val stringWriter = StringWriter()

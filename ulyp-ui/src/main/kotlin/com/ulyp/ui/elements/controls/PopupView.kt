@@ -7,7 +7,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.stage.Modality
 import javafx.stage.Stage
 
-open class Popup(sceneRegistry: SceneRegistry) : Stage() {
+open class PopupView(sceneRegistry: SceneRegistry) : Stage() {
 
     private val anchorPane = AnchorPane()
 

@@ -5,10 +5,10 @@ import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
 
-class RecordedString internal constructor(record: StringObjectRecord) : RecordedObject() {
+class RecordedStringView internal constructor(record: StringObjectRecord) : RecordedObjectView() {
 
     init {
-        val text: Text = TrimmedText("\"" + record.value() + "\"")
+        val text: Text = TrimmedTextView("\"" + record.value() + "\"")
         children.add(StyledText.of(text.text, Style.CALL_TREE_STRING_LITERAL))
     }
 }

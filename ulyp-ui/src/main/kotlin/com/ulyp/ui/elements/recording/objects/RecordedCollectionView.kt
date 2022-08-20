@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 import java.util.stream.Collectors
 
-class RecordedCollection(record: CollectionRecord, renderSettings: RenderSettings) : RecordedObject() {
+class RecordedCollectionView(record: CollectionRecord, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
         val recordedObjects = record.recordedItems

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component
 
 @Component
 @Scope(value = "prototype")
-class ErrorPopup(@Autowired sceneRegistry: SceneRegistry, errorTitle: String, content: Node)
-    : Popup(sceneRegistry) {
+class ErrorPopupView(@Autowired sceneRegistry: SceneRegistry, errorTitle: String, content: Node)
+    : PopupView(sceneRegistry) {
 
     init {
         this.content = content
