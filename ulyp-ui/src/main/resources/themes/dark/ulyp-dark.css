@@ -65,84 +65,84 @@
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt {
+.ulyp-call-tree {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-string {
+.ulyp-call-tree-string {
     -fx-fill: rgb(0, 120, 0);
 }
 
-.ulyp-ctt-bracket {
+.ulyp-call-tree-bracket {
     -fx-fill: rgb(255,140,0);
     -fx-font-weight: bold;
 }
 
-.ulyp-ctt-typename {
+.ulyp-call-tree-typename {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-typename.ulyp-ctt-callee {
+.ulyp-call-tree-typename.ulyp-call-tree-callee {
     -fx-fill: rgb(255, 198, 109);
 }
 
-.ulyp-ctt-identity.ulyp-ctt-callee {
+.ulyp-call-tree-identity.ulyp-call-tree-callee {
     -fx-fill: rgb(255, 198, 109);
 }
 
-.ulyp-ctt-number {
+.ulyp-call-tree-number {
     -fx-fill: rgb(74, 133, 186);
 }
 
-.ulyp-ctt-file {
+.ulyp-call-tree-file {
     -fx-fill: rgb(32, 187, 191);
 }
 
-.ulyp-ctt-null {
+.ulyp-call-tree-null {
     -fx-fill: rgb(255,140,0);
 }
 
-.ulyp-ctt-identity {
+.ulyp-call-tree-identity {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-object-value {
+.ulyp-call-tree-object-value {
     -fx-fill: rgb(169, 183, 198);
 }
 
 
-.ulyp-ctt-thrown {
+.ulyp-call-tree-thrown {
     -fx-fill: rgb(255, 84, 80);
 }
 
-.ulyp-ctt-method-name {
+.ulyp-call-tree-method-name {
     -fx-fill: rgb(255, 198, 109);
 }
 
-.ulyp-ctt-method-name.ulyp-ctt-instance-method-name {
+.ulyp-call-tree-method-name.ulyp-call-tree-instance-method-name {
 }
 
-.ulyp-ctt-object-repr {
+.ulyp-call-tree-object-repr {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-arg-name {
+.ulyp-call-tree-arg-name {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-sep {
+.ulyp-call-tree-sep {
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-ctt-sep {
+.ulyp-call-tree-sep {
     -fx-text-fill: white;
 }
 
-.ulyp-ctt-class-name {
+.ulyp-call-tree-class-name {
     -fx-text-fill: rgb(220, 220, 220);
 }
 
-.ulyp-ctt-call-node {
+.ulyp-call-tree-call-node {
     -fx-background-color: black;
     -fx-border-style: solid;
     -fx-border-width: 2;

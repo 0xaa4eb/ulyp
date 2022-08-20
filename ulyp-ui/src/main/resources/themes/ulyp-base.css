@@ -10,10 +10,10 @@
     -fx-font-size: 1.2em;
 }
 
-.ulyp-ctt {
+.ulyp-call-tree {
     -fx-font-size: 1.0em;
 }
 
-.ulyp-ctt-identity-hash-code {
+.ulyp-call-tree-identity-hash-code {
     -fx-font-size: 0.8em;
 }
