@@ -29,6 +29,9 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
                     -fx-font-family: ${fontName};
                     -fx-font-size: ${fontSize}em;
                 }
+                .ulyp-tree-view {
+                    -fx-fixed-cell-size: ${fontSize * 2.0}em;
+                }
                 .ulyp-call-tree-identity-hash-code {
                     -fx-font-size: ${fontSize * 0.8}em;
                 }

@@ -12,7 +12,7 @@ class RecordedClassObject(record: ClassObjectRecord, renderSettings: RenderSetti
         if (renderSettings.showTypes()) {
             children.add(of(Class::class.java.name + ": ", Style.CALL_TREE_TYPE_NAME))
         }
-        val text: Text = MultilinedText("class " + record.carriedType.name)
+        val text: Text = TrimmedText("class " + record.carriedType.name)
         children.add(text)
     }
 }

@@ -60,6 +60,7 @@ class RecordingTab(
         }
 
         treeView = TreeView(RecordingTreeNode(recording, root!!.id, renderSettings))
+        treeView!!.styleClass += "ulyp-tree-view"
 
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
