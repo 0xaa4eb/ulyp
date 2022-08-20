@@ -7,8 +7,8 @@ import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.storage.impl.RecordedCallState
 import com.ulyp.storage.impl.RocksdbIndex
 import com.ulyp.ui.code.SourceCodeView
-import com.ulyp.ui.elements.controls.ControlsPopupView
-import com.ulyp.ui.elements.controls.ErrorPopupView
+import com.ulyp.ui.elements.controls.ControlsModalView
+import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
@@ -40,10 +40,8 @@ class PrimaryView(
 
     @FXML
     lateinit var primaryPane: VBox
-
     @FXML
     lateinit var fileTabPaneAnchorPane: AnchorPane
-
     @FXML
     lateinit var sourceCodeViewAnchorPane: AnchorPane
 
@@ -92,7 +90,7 @@ class PrimaryView(
     }
 
     fun showControlsPopup() {
-        val popup = applicationContext.getBean(ControlsPopupView::class.java)
+        val popup = applicationContext.getBean(ControlsModalView::class.java)
         popup.show()
     }
 
@@ -121,7 +119,7 @@ class PrimaryView(
         storageReader.finishedReadingFuture.exceptionally {
             FxThreadExecutor.execute {
                 val errorPopup = applicationContext.getBean(
-                        ErrorPopupView::class.java,
+                        ErrorModalView::class.java,
                         applicationContext.getBean(SceneRegistry::class.java),
                         "Stopped reading recording file $file with error: " + it.message,
                         ExceptionAsTextView(it)
@@ -133,7 +131,7 @@ class PrimaryView(
 
         if (rocksdbAvailable.isFailure) {
             val errorPopup = applicationContext.getBean(
-                ErrorPopupView::class.java,
+                ErrorModalView::class.java,
                 applicationContext.getBean(SceneRegistry::class.java),
                 "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
                 ExceptionAsTextView(rocksdbAvailable.cause!!)

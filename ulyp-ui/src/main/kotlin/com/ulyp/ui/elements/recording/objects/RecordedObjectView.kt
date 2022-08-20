@@ -2,6 +2,7 @@ package com.ulyp.ui.elements.recording.objects
 
 import com.ulyp.core.recorders.*
 import com.ulyp.ui.RenderSettings
+import com.ulyp.ui.util.Style
 import javafx.scene.Node
 import javafx.scene.text.TextFlow
 import java.util.function.Consumer
@@ -32,7 +33,7 @@ abstract class RecordedObjectView protected constructor() : TextFlow() {
                 else -> throw RuntimeException("Not supported for rendering: $record")
             }
             objectValue.children.forEach(Consumer { node: Node ->
-                node.styleClass.add("ulyp-call-tree")
+                node.styleClass.addAll(Style.CALL_TREE.cssClasses)
             })
             return objectValue
         }

@@ -1,14 +1,44 @@
 package com.ulyp.ui.elements.recording.objects
 
 import com.ulyp.core.recorders.StringObjectRecord
+import com.ulyp.ui.util.SingleLineTextView
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
+import com.ulyp.ui.util.TrimmedTextView
+import javafx.event.EventHandler
 import javafx.scene.text.Text
 
 class RecordedStringView internal constructor(record: StringObjectRecord) : RecordedObjectView() {
 
     init {
-        val text: Text = TrimmedTextView("\"" + record.value() + "\"")
-        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING))
+        val fullText: Text = StyledText.of(
+                SingleLineTextView(
+                        Text("\"" + record.value() + "\"")
+                ),
+                Style.CALL_TREE,
+                Style.CALL_TREE_STRING
+        )
+        val trimmedText: Text = StyledText.of(
+                SingleLineTextView(
+                        TrimmedTextView(
+                                Text("\"" + record.value() + "\"")
+                        )
+                ),
+                Style.CALL_TREE,
+                Style.CALL_TREE_STRING
+        )
+        children.add(trimmedText)
+
+        if (trimmedText.text.length != fullText.text.length) {
+
+            this.onMouseEntered = EventHandler {
+                children.clear()
+                children.add(fullText)
+            }
+            this.onMouseExited = EventHandler {
+                children.clear()
+                children.add(trimmedText)
+            }
+        }
     }
 }
