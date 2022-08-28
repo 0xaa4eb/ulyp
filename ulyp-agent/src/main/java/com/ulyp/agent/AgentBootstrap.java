@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.StreamDrainer;
+import com.ulyp.agent.util.Version;
 
 import java.io.*;
 import java.lang.instrument.Instrumentation;
@@ -18,7 +19,7 @@ import java.util.jar.JarFile;
  */
 public class AgentBootstrap {
 
-    private static final String AGENT_CLASSES_JAR_RESOURCE_NAME = "ulyp-agent-classes.jarr";
+    private static final String AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME = "ulyp-agent-classes.jarr";
     private static final String ULYP_TMP_DIR_PROPERTY = "ulyp.tmp-dir";
     private static final Class<?> thisClass = AgentBootstrap.class;
 
@@ -37,29 +38,44 @@ public class AgentBootstrap {
 
     private static File copyJarToTmp() {
 
-        Path tmpJarFile;
+        File tmpJarFile;
         try {
             String tmpDir = System.getProperty(ULYP_TMP_DIR_PROPERTY);
+            String fileName = "ulyp-agent-classes-" + Version.get() + ".jar";
             if (tmpDir != null) {
-                tmpJarFile = Files.createTempFile(Paths.get(tmpDir), "ulyp-agent-classes", ".jar");
+                tmpJarFile = Paths.get(tmpDir, fileName).toFile();
             } else {
-                tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar");
+                tmpJarFile = Paths.get(System.getProperty("java.io.tmpdir"), fileName).toFile();
+            }
+
+            if (tmpJarFile.exists() && tmpJarFile.length() == 0L) {
+                if (!tmpJarFile.delete()) {
+                    if (tmpDir != null) {
+                        tmpJarFile = Files.createTempFile(Paths.get(tmpDir), "ulyp-agent-classes", ".jar").toFile();
+                    } else {
+                        tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar").toFile();
+                    }
+                }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Could not create tmp file", e);
+            throw new RuntimeException("Error ocurred while bootstrapping agent", e);
+        }
+
+        if (tmpJarFile.exists() && tmpJarFile.length() > 0) {
+            return tmpJarFile;
         }
 
         try (
-                InputStream inputStream = thisClass.getClassLoader().getResourceAsStream(AGENT_CLASSES_JAR_RESOURCE_NAME);
-                OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tmpJarFile.toFile(), false))
+                InputStream inputStream = thisClass.getClassLoader().getResourceAsStream(AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME);
+                OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tmpJarFile, false))
         ) {
             outputStream.write(new StreamDrainer().drain(inputStream));
-            File classesJar = tmpJarFile.toFile();
+            File classesJar = tmpJarFile;
             System.out.println("Unpacking ulyp-agent-classes jar file to " + classesJar);
             classesJar.deleteOnExit();
             return classesJar;
         } catch (IOException e) {
-            throw new RuntimeException("Could not copy classpath resource " + AGENT_CLASSES_JAR_RESOURCE_NAME, e);
+            throw new RuntimeException("Could not copy classpath resource " + AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME, e);
         }
     }
 }
