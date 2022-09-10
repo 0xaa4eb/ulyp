@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Benchmark {
 
-    List<BenchmarkProfile> getProfiles();
+    List<BenchmarkScenario> getProfiles();
 
     void setUp() throws Exception;
 

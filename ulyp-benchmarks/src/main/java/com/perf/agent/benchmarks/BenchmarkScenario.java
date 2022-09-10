@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class BenchmarkProfile {
+public class BenchmarkScenario {
 
     @Nullable
     private final MethodMatcher methodToRecord;
@@ -21,7 +21,7 @@ public class BenchmarkProfile {
     private final OutputFile outputFile;
     private final boolean agentEnabled;
 
-    public BenchmarkProfile(
+    public BenchmarkScenario(
             @Nullable MethodMatcher methodToRecord,
             @NotNull PackageList instrumentedPackages,
             List<String> additionalProcessArgs,

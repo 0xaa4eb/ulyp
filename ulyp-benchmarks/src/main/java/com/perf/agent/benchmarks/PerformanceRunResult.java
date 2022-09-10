@@ -5,14 +5,14 @@ import org.HdrHistogram.Histogram;
 public class PerformanceRunResult {
 
     private final Class<?> benchmarkClazz;
-    private final BenchmarkProfile profile;
+    private final BenchmarkScenario profile;
     private final Histogram procTimeHistogram;
     private final Histogram recordTimeHistogram;
     private final Histogram recordsCountHistogram;
 
     public PerformanceRunResult(
             Class<?> benchmarkClazz,
-            BenchmarkProfile profile,
+            BenchmarkScenario profile,
             Histogram procTimeHistogram,
             Histogram recordTimeHistogram,
             Histogram recordsCountHistogram) {

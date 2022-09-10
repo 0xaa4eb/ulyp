@@ -1,7 +1,7 @@
 package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
-import com.perf.agent.benchmarks.BenchmarkProfile;
+import com.perf.agent.benchmarks.BenchmarkScenario;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
 import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.benchmarks.util.Department;
@@ -39,7 +39,7 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
     }
 
     @Override
-    public List<BenchmarkProfile> getProfiles() {
+    public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
                 new BenchmarkProfileBuilder()
                         .withInstrumentedPackages(new PackageList("com", "org"))

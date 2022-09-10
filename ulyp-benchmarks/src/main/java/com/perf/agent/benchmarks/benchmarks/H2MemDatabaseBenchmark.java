@@ -1,7 +1,7 @@
 package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
-import com.perf.agent.benchmarks.BenchmarkProfile;
+import com.perf.agent.benchmarks.BenchmarkScenario;
 import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
 import com.ulyp.core.util.MethodMatcher;
 
@@ -25,7 +25,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
     }
 
     @Override
-    public List<BenchmarkProfile> getProfiles() {
+    public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
                 new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))

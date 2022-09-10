@@ -33,7 +33,7 @@ public class BenchmarksMain {
 
         Benchmark benchmark = benchmarkClazz.newInstance();
 
-        for (BenchmarkProfile profile : benchmark.getProfiles()) {
+        for (BenchmarkScenario profile : benchmark.getProfiles()) {
             Histogram procTimeHistogram = emptyHistogram();
             Histogram recordTimeHistogram = emptyHistogram();
             Histogram recordsCountHistogram = new Histogram(1, 10_000_000, 2);
@@ -49,7 +49,7 @@ public class BenchmarksMain {
         return runResults;
     }
 
-    private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordsTimeHistogram) {
+    private static int run(Class<?> benchmarkClazz, BenchmarkScenario profile, Histogram procTimeHistogram, Histogram recordsTimeHistogram) {
 
         try (TimeMeasurer measured = new TimeMeasurer(procTimeHistogram)) {
 

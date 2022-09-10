@@ -46,7 +46,7 @@ public class BenchmarkProfileBuilder {
         return this;
     }
 
-    public BenchmarkProfile build() {
-        return new BenchmarkProfile(methodToRecord, instrumentedPackages, additionalProcessArgs, outputFile, agentEnabled);
+    public BenchmarkScenario build() {
+        return new BenchmarkScenario(methodToRecord, instrumentedPackages, additionalProcessArgs, outputFile, agentEnabled);
     }
 }

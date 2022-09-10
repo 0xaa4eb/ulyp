@@ -17,7 +17,7 @@ public class BenchmarksForSomeProfileMain {
 
     public static void main(String[] args) {
 
-        BenchmarkProfile trueProfile = new BenchmarkProfileBuilder()
+        BenchmarkScenario trueProfile = new BenchmarkProfileBuilder()
                 .withInstrumentedPackages(new PackageList("com", "org"))
 //                .withAdditionalArgs(
 //                        "-XX:+UnlockDiagnosticVMOptions",
@@ -33,7 +33,7 @@ public class BenchmarksForSomeProfileMain {
         }
     }
 
-    private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkProfile profile) {
+    private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkScenario profile) {
         List<PerformanceRunResult> runResults = new ArrayList<>();
 
         Histogram procTimeHistogram = emptyHistogram();
@@ -50,7 +50,7 @@ public class BenchmarksForSomeProfileMain {
         return runResults;
     }
 
-    private static int run(Class<?> benchmarkClazz, BenchmarkProfile profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
+    private static int run(Class<?> benchmarkClazz, BenchmarkScenario profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
 
         try (TimeMeasurer $ = new TimeMeasurer(procTimeHistogram)) {
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);

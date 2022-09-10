@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks.proc;
 
-import com.perf.agent.benchmarks.BenchmarkProfile;
+import com.perf.agent.benchmarks.BenchmarkScenario;
 import org.buildobjects.process.ProcBuilder;
 import org.buildobjects.process.ProcResult;
 
@@ -13,7 +13,7 @@ public class BenchmarkProcessRunner {
 
     private static final boolean VERBOSE = true;
 
-    public static void runClassInSeparateJavaProcess(Class<?> benchmarkClazz, BenchmarkProfile profile) {
+    public static void runClassInSeparateJavaProcess(Class<?> benchmarkClazz, BenchmarkScenario profile) {
         String classPath = System.getProperty("java.class.path");
 
         try {
