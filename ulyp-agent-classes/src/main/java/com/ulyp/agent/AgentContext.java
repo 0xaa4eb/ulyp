@@ -16,6 +16,7 @@ public class AgentContext {
     private static final AgentContext instance = new AgentContext();
 
     private static volatile boolean agentLoaded = false;
+
     private final Settings settings;
     private final StartRecordingPolicy startRecordingPolicy;
     private final CallIdGenerator callIdGenerator;

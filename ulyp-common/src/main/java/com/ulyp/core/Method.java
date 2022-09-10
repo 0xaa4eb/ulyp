@@ -21,6 +21,7 @@ public class Method {
     private final ObjectRecorder[] parameterRecorders;
     private final ObjectRecorder returnValueRecorder;
 
+    private volatile boolean shouldStartRecording;
     // If was dumped to the output file
     @Builder.Default
     private volatile boolean writtenToFile = false;
@@ -61,6 +62,14 @@ public class Method {
                 .isConstructor(decoder.constructor() == BooleanType.T)
                 .returnsSomething(decoder.returnsSomething() == BooleanType.T)
                 .build();
+    }
+
+    public boolean shouldStartRecording() {
+        return shouldStartRecording;
+    }
+
+    public void setShouldStartRecording(boolean shouldStartRecording) {
+        this.shouldStartRecording = shouldStartRecording;
     }
 
     public boolean wasWrittenToFile() {

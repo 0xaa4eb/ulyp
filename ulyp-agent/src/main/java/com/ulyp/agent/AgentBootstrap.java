@@ -41,7 +41,7 @@ public class AgentBootstrap {
         File tmpJarFile;
         try {
             String tmpDir = System.getProperty(ULYP_TMP_DIR_PROPERTY);
-            String fileName = "ulyp-agent-classes-" + Version.get() + ".jar";
+            String fileName = "ulyp-agent-classes-" + Version.get() + "-" + Version.getBuildTimeEpochMilli() + ".jar";
             if (tmpDir != null) {
                 tmpJarFile = Paths.get(tmpDir, fileName).toFile();
             } else {

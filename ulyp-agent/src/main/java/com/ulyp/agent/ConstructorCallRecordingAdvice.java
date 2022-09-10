@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
+import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 
@@ -20,15 +21,18 @@ public class ConstructorCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @MethodId int methodId,
             @Advice.AllArguments Object[] arguments) {
-        if (methodId < 0) {
+
+        Method method = MethodRepository.getInstance().get(methodId);
+
+        if (method.shouldStartRecording()) {
             callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    MethodRepository.getInstance().get(methodId),
+                    method,
                     arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                callId = Recorder.getInstance().onConstructorEnter(MethodRepository.getInstance().get(methodId), arguments);
+                callId = Recorder.getInstance().onConstructorEnter(method, arguments);
             }
         }
     }
@@ -44,22 +48,14 @@ public class ConstructorCallRecordingAdvice {
             @MethodId int methodId,
             @Advice.This Object returnValue) {
         if (callId >= 0) {
-            if (methodId < 0) {
-                Recorder.getInstance().endRecordingIfPossibleOnConstructorExit(
+
+            if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
+                Recorder.getInstance().onConstructorExit(
                         ByteBuddyTypeResolver.getInstance(),
                         MethodRepository.getInstance().get(methodId),
-                        callId,
-                        returnValue
+                        returnValue,
+                        callId
                 );
-            } else {
-                if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                    Recorder.getInstance().onConstructorExit(
-                            ByteBuddyTypeResolver.getInstance(),
-                            MethodRepository.getInstance().get(methodId),
-                            returnValue,
-                            callId
-                    );
-                }
             }
         }
     }

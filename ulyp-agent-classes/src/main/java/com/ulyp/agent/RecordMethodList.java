@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 /**
  * All methods specified by the user where recording should start
  */
-public class RecordMethodList {
+public final class RecordMethodList {
 
     private final List<MethodMatcher> methods;
 
     private RecordMethodList(List<MethodMatcher> methods) {
-        this.methods = methods;
+        this.methods = Collections.unmodifiableList(methods);
     }
 
     public static RecordMethodList parse(String text) {

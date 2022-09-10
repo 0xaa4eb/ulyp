@@ -9,13 +9,13 @@ import java.util.Collection;
 public class MethodRepository {
 
     private static final MethodRepository INSTANCE = new MethodRepository();
-    private final ConcurrentArrayList<Method> continueRecordingMethods = new ConcurrentArrayList<>(64_000);
-    private final ConcurrentArrayList<Method> startRecordingMethods = new ConcurrentArrayList<>(64_000);
+
+    private final ConcurrentArrayList<Method> methods = new ConcurrentArrayList<>(64_000);
+
     private MethodRepository() {
         // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
         // or "continue recording only" bucket
-        continueRecordingMethods.add(null);
-        startRecordingMethods.add(null);
+        methods.add(null);
     }
 
     public static MethodRepository getInstance() {
@@ -23,31 +23,18 @@ public class MethodRepository {
     }
 
     public Method get(int id) {
-        if (id > 0) {
-            return continueRecordingMethods.get(id);
-        } else {
-            return startRecordingMethods.get(-id);
-        }
+        return methods.get(id);
     }
 
-    public int putAndGetId(Method method, boolean shouldStartRecording) {
-        if (shouldStartRecording) {
-            return -startRecordingMethods.add(method);
-        } else {
-            return continueRecordingMethods.add(method);
-        }
+    public int putAndGetId(Method method) {
+        return methods.add(method);
     }
 
     public Collection<Method> values() {
         Collection<Method> values = new ArrayList<>();
-        for (int i = 1; i < startRecordingMethods.size(); i++) {
-            Method method = startRecordingMethods.get(i);
-            if (method != null && !method.wasWrittenToFile()) {
-                values.add(method);
-            }
-        }
-        for (int i = 1; i < continueRecordingMethods.size(); i++) {
-            Method method = continueRecordingMethods.get(i);
+
+        for (int i = 1; i < methods.size(); i++) {
+            Method method = methods.get(i);
             if (method != null && !method.wasWrittenToFile()) {
                 values.add(method);
             }

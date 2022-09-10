@@ -24,8 +24,10 @@ public class Recorder {
      * If there are any, then advice code will check thread local and know if there is recording session in this thread precisely.
      * This helps minimizing unneeded thread local lookups in the advice code
      */
+
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
     private static final Recorder instance = new Recorder(AgentContext.getInstance());
+
     private final EnhancedThreadLocal<CallRecordLog> threadLocalRecordsLog = new EnhancedThreadLocal<>();
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
@@ -73,36 +75,6 @@ public class Recorder {
         }
 
         return onConstructorEnter(method, args);
-    }
-
-    public void endRecordingIfPossibleOnMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
-        onMethodExit(typeResolver, method, result, thrown, callId);
-
-        CallRecordLog recordLog = threadLocalRecordsLog.get();
-        if (recordLog != null && recordLog.isComplete()) {
-            threadLocalRecordsLog.clear();
-            currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} at method {}, recorded {} calls", recordLog.getRecordingMetadata().getId(), method.toShortString(), recordLog.size());
-            }
-
-            write(typeResolver, recordLog);
-        }
-    }
-
-    public void endRecordingIfPossibleOnConstructorExit(TypeResolver typeResolver, Method method, long callId, Object result) {
-        onConstructorExit(typeResolver, method, result, callId);
-
-        CallRecordLog recordLog = threadLocalRecordsLog.get();
-        if (recordLog != null && recordLog.isComplete()) {
-            threadLocalRecordsLog.clear();
-            currentRecordingSessionCount.decrementAndGet();
-            if (LoggingSettings.INFO_ENABLED) {
-                log.info("Finished recording {} at method {}, recorded {} calls", recordLog.getRecordingMetadata().getId(), method, recordLog.size());
-            }
-
-            write(typeResolver, recordLog);
-        }
     }
 
     private void write(TypeResolver typeResolver, CallRecordLog recordLog) {
@@ -162,7 +134,8 @@ public class Recorder {
             if (currentRecordLog == null) return;
             currentRecordLog.onMethodExit(method, result, thrown, callId);
 
-            if (currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
+            if (currentRecordLog.isComplete() ||
+                    currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
                     (
                             (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
                                     &&
@@ -174,6 +147,10 @@ public class Recorder {
                     threadLocalRecordsLog.set(newRecordLog);
                 } else {
                     threadLocalRecordsLog.clear();
+                    currentRecordingSessionCount.decrementAndGet();
+                    if (LoggingSettings.INFO_ENABLED) {
+                        log.info("Finished recording {} at method {}, recorded {} calls", currentRecordLog.getRecordingMetadata().getId(), method.toShortString(), currentRecordLog.size());
+                    }
                 }
 
                 write(typeResolver, currentRecordLog);

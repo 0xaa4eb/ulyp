@@ -74,7 +74,10 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
                 id = idMapping.methodId;
             } else {
                 Method method = byteBuddyMethodResolver.resolve(instrumentedType, instrumentedMethod);
-                id = methodRepository.putAndGetId(method, recordMethodList.shouldStartRecording(method));
+                if (recordMethodList.shouldStartRecording(method)) {
+                    method.setShouldStartRecording(true);
+                }
+                id = methodRepository.putAndGetId(method);
                 lastMethod.set(new IdMapping(instrumentedMethod, id));
             }
 

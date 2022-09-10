@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
+import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
@@ -21,19 +22,23 @@ public class MethodCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
-        if (methodId < 0) {
+
+        // TODO opt local variable?
+        Method method = MethodRepository.getInstance().get(methodId);
+
+        if (method.shouldStartRecording()) {
             // local variable callId is used by exit() method
             // noinspection UnusedAssignment
             callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    MethodRepository.getInstance().get(methodId),
+                    method,
                     callee,
                     arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                 //noinspection UnusedAssignment
-                callId = Recorder.getInstance().onMethodEnter(MethodRepository.getInstance().get(methodId), callee, arguments);
+                callId = Recorder.getInstance().onMethodEnter(method, callee, arguments);
             }
         }
     }
@@ -49,25 +54,16 @@ public class MethodCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
+
         if (callId >= 0) {
-            if (methodId < 0) {
-                Recorder.getInstance().endRecordingIfPossibleOnMethodExit(
+            if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
+                Recorder.getInstance().onMethodExit(
                         ByteBuddyTypeResolver.getInstance(),
                         MethodRepository.getInstance().get(methodId),
                         returnValue,
                         throwable,
                         callId
                 );
-            } else {
-                if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                    Recorder.getInstance().onMethodExit(
-                            ByteBuddyTypeResolver.getInstance(),
-                            MethodRepository.getInstance().get(methodId),
-                            returnValue,
-                            throwable,
-                            callId
-                    );
-                }
             }
         }
     }
