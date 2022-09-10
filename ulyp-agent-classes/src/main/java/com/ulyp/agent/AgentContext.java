@@ -1,12 +1,12 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.policy.AlwaysStartRecordingPolicy;
-import com.ulyp.agent.policy.DelayBasedRecordingPolicy;
-import com.ulyp.agent.policy.FileBasedStartRecordingPolicy;
-import com.ulyp.agent.policy.StartRecordingPolicy;
+import com.ulyp.agent.policy.*;
+import com.ulyp.agent.remote.AgentApiImpl;
+import com.ulyp.agent.remote.AgentApiGrpcServer;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.util.Classpath;
 import com.ulyp.storage.StorageWriter;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -20,6 +20,8 @@ public class AgentContext {
     private final StartRecordingPolicy startRecordingPolicy;
     private final CallIdGenerator callIdGenerator;
     private final StorageWriter storage;
+    @Nullable
+    private final AgentApiGrpcServer server;
 
     private AgentContext() {
         this.callIdGenerator = new CallIdGenerator();
@@ -37,14 +39,23 @@ public class AgentContext {
             Thread shutdown = new Thread(storage::close);
             Runtime.getRuntime().addShutdownHook(shutdown);
         }
+        if (settings.getBindNetworkAddress() != null) {
+            server = new AgentApiGrpcServer(Integer.parseInt(settings.getBindNetworkAddress()), new AgentApiImpl(startRecordingPolicy));
+        } else {
+            server = null;
+        }
     }
 
     private static StartRecordingPolicy initializePolicy(String value) {
         if (value == null || value.isEmpty()) {
-            return new AlwaysStartRecordingPolicy();
+            return new EnabledByDefaultRecordingPolicy();
         }
+        // TODO move string checks to policy implementations
         if (value.startsWith("delay:")) {
             return new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
+        }
+        if (value.equals("api")) {
+            return new DisabledByDefaultRecordingPolicy();
         }
         if (value.startsWith("file:")) {
             return new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));

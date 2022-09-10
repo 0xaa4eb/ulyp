@@ -6,5 +6,6 @@ include 'ulyp-common'
 include 'ulyp-agent'
 include 'ulyp-agent-classes'
 include 'ulyp-agent-tests'
+include 'ulyp-agent-api'
 include 'ulyp-storage'
 

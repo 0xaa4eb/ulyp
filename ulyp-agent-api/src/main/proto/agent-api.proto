@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ulyp.agent.api";
+
+service AgentApi {
+
+    rpc SetRecording (RecordingEnabled) returns (RecordingEnabledResponse) {}
+}
+
+message RecordingEnabled {
+    bool value = 1;
+}
+
+message RecordingEnabledResponse {
+
+}

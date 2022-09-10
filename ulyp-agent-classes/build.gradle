@@ -14,9 +14,19 @@ repositories {
     mavenCentral()
 }
 
+def protobufVersion = '3.11.0'
+def protocVersion = protobufVersion
+def grpcVersion = '1.27.0'
+
 dependencies {
     compile project(':ulyp-common')
+    compile project(':ulyp-agent-api')
     compile project(':ulyp-storage')
+
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    implementation "io.grpc:grpc-netty:${grpcVersion}"
 
     compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     compile group: 'org.agrona', name: 'agrona', version: '0.9.22'

@@ -52,7 +52,7 @@ public class FileBasedStartRecordingPolicy implements StartRecordingPolicy {
         try (FileOutputStream outputStream = new FileOutputStream(file.toFile())) {
             outputStream.write(value);
         } catch (IOException e) {
-            throw new RuntimeException("Could not create file " + file, e);
+            throw new RuntimeException("Could not write to file " + file, e);
         }
     }
 
@@ -111,6 +111,11 @@ public class FileBasedStartRecordingPolicy implements StartRecordingPolicy {
     @Override
     public boolean canStartRecording() {
         return recordingCanStart;
+    }
+
+    @Override
+    public void forceEnableRecording(boolean recordingEnabled) {
+        writeToFile(recordingEnabled ? RECORDING_ENABLED_VALUE : RECORDING_DISABLED_VALUE);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.storage.StorageWriter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Settings {
 
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
     public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
+    public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
@@ -41,6 +43,7 @@ public class Settings {
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<ClassMatcher> classesToPrint;
+    private final String bindNetworkAddress;
     private final boolean agentDisabled;
 
     public Settings(
@@ -53,6 +56,7 @@ public class Settings {
             Set<ClassMatcher> classesToPrint,
             String startRecordingPolicyPropertyValue,
             List<ClassMatcher> excludeFromInstrumentationClasses,
+            String bindNetworkAddress,
             boolean agentDisabled) {
         this.storageWriterSupplier = storageWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
@@ -63,12 +67,14 @@ public class Settings {
         this.classesToPrint = classesToPrint;
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
+        this.bindNetworkAddress = bindNetworkAddress;
         this.agentDisabled = agentDisabled;
     }
 
     public static Settings fromSystemProperties() {
 
         String startRecordingPolicy = System.getProperty(START_RECORDING_POLICY_PROPERTY);
+        String bindNetworkAddress = System.getProperty(BIND_NETWORK_ADDRESS);
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
@@ -141,8 +147,14 @@ public class Settings {
                 classesToPrint,
                 startRecordingPolicy,
                 excludeClassesFromInstrumentation,
+                bindNetworkAddress,
                 agentDisabled
         );
+    }
+
+    @Nullable
+    public String getBindNetworkAddress() {
+        return bindNetworkAddress;
     }
 
     public PackageList getInstrumentatedPackages() {
