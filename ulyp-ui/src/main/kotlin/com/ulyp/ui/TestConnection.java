@@ -2,6 +2,7 @@ package com.ulyp.ui;
 
 import com.ulyp.agent.api.AgentApiGrpc;
 import com.ulyp.agent.api.RecordingEnabled;
+import com.ulyp.agent.api.ResetRecordingFileRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -17,7 +18,7 @@ public class TestConnection {
 
         AgentApiGrpc.AgentApiBlockingStub stub = AgentApiGrpc.newBlockingStub(channel);
 
-        stub.setRecording(RecordingEnabled.newBuilder().setValue(true).build());
+        stub.resetRecordingFile(ResetRecordingFileRequest.newBuilder().build());
 
         Thread.sleep(5000L);
 

@@ -83,13 +83,13 @@ public class Recorder {
         for (Method method : MethodRepository.getInstance().values()) {
             if (!method.wasWrittenToFile()) {
                 methods.add(method);
-                method.setWrittenToFile();
+                method.markWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Will write {} to storage", method);
                 }
             }
         }
-        context.getStorage().write(methods);
+        context.getStorageWriter().write(methods);
 
         TypeList types = new TypeList();
         for (Type type : typeResolver.getAllResolved()) {
@@ -101,10 +101,10 @@ public class Recorder {
                 }
             }
         }
-        context.getStorage().write(types);
+        context.getStorageWriter().write(types);
 
-        context.getStorage().write(recordLog.getRecordingMetadata());
-        context.getStorage().write(recordLog.getRecordedCalls());
+        context.getStorageWriter().write(recordLog.getRecordingMetadata());
+        context.getStorageWriter().write(recordLog.getRecordedCalls());
     }
 
     public long onConstructorEnter(Method method, Object[] args) {

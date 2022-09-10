@@ -30,15 +30,17 @@ public interface StorageWriter extends AutoCloseable {
         return new DevNullStorageWriter();
     }
 
+    void reset(ResetMetadata resetMetadata) throws StorageException;
+
     void write(ProcessMetadata processMetadata) throws StorageException;
 
     void write(RecordingMetadata recordingMetadata) throws StorageException;
 
     void write(TypeList types) throws StorageException;
 
-    void write(RecordedMethodCallList callRecords) throws StorageException;
-
     void write(MethodList methods) throws StorageException;
+
+    void write(RecordedMethodCallList callRecords) throws StorageException;
 
     void close() throws StorageException;
 }

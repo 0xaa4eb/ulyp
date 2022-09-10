@@ -6,6 +6,8 @@ option java_package = "com.ulyp.agent.api";
 service AgentApi {
 
     rpc SetRecording (RecordingEnabled) returns (RecordingEnabledResponse) {}
+
+    rpc ResetRecordingFile (ResetRecordingFileRequest) returns (ResetRecordingFileResponse) {}
 }
 
 message RecordingEnabled {
@@ -13,5 +15,13 @@ message RecordingEnabled {
 }
 
 message RecordingEnabledResponse {
+
+}
+
+message ResetRecordingFileRequest {
+
+}
+
+message ResetRecordingFileResponse {
 
 }

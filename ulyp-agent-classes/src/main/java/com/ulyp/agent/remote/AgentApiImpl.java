@@ -1,25 +1,72 @@
 package com.ulyp.agent.remote;
 
-import com.ulyp.agent.api.AgentApiGrpc;
-import com.ulyp.agent.api.RecordingEnabled;
-import com.ulyp.agent.api.RecordingEnabledResponse;
-import com.ulyp.agent.policy.StartRecordingPolicy;
+import com.ulyp.agent.AgentContext;
+import com.ulyp.agent.api.*;
+import com.ulyp.core.Method;
+import com.ulyp.core.MethodRepository;
+import com.ulyp.core.Type;
+import com.ulyp.core.mem.MethodList;
+import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.storage.ResetMetadata;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
+
+@Slf4j
 public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
 
-    private final StartRecordingPolicy policy;
+    private final AgentContext agentContext;
 
-    public AgentApiImpl(StartRecordingPolicy policy) {
-        this.policy = policy;
+    public AgentApiImpl(AgentContext agentContext) {
+        this.agentContext = agentContext;
     }
 
     @Override
     public void setRecording(RecordingEnabled request, StreamObserver<RecordingEnabledResponse> responseObserver) {
         try {
 
-            policy.forceEnableRecording(request.getValue());
+            agentContext.getStartRecordingPolicy().forceEnableRecording(request.getValue());
+
             responseObserver.onNext(RecordingEnabledResponse.newBuilder().build());
+            responseObserver.onCompleted();
+        } catch (Exception err) {
+            responseObserver.onError(err);
+        }
+    }
+
+    @Override
+    public void resetRecordingFile(ResetRecordingFileRequest request, StreamObserver<ResetRecordingFileResponse> responseObserver) {
+        try {
+
+            MethodList methods = new MethodList();
+            for (Method method : MethodRepository.getInstance().values()) {
+                methods.add(method);
+                method.markWrittenToFile();
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Will write {} to storage", method);
+                }
+            }
+
+            TypeList types = new TypeList();
+            for (Type type : agentContext.getTypeResolver().getAllResolved()) {
+                types.add(type);
+                type.setWrittenToFile();
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Will write {} to storage", type);
+                }
+            }
+
+            agentContext.getStorageWriter().reset(
+                    ResetMetadata.builder()
+                            .methods(methods)
+                            .types(types)
+                            .processMetadata(agentContext.getProcessMetadata())
+                            .build()
+            );
+
+            responseObserver.onNext(ResetRecordingFileResponse.newBuilder().build());
             responseObserver.onCompleted();
         } catch (Exception err) {
             responseObserver.onError(err);

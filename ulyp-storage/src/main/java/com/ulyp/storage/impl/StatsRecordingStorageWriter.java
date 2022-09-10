@@ -5,6 +5,7 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,14 @@ public class StatsRecordingStorageWriter implements StorageWriter {
     private final PerTypeStats typeStats = new PerTypeStats("Type");
     private final PerTypeStats methodStats = new PerTypeStats("Method");
     private final PerTypeStats callStats = new PerTypeStats("Recorded call");
+
+    @Override
+    public void reset(ResetMetadata resetMetadata) throws StorageException {
+        typeStats.reset();
+        methodStats.reset();
+        callStats.reset();
+        delegate.reset(resetMetadata);
+    }
 
     @Override
     public void write(ProcessMetadata processMetadata) throws StorageException {

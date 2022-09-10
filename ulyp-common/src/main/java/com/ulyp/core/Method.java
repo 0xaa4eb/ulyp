@@ -76,8 +76,12 @@ public class Method {
         return writtenToFile;
     }
 
-    public void setWrittenToFile() {
+    public void markWrittenToFile() {
         writtenToFile = true;
+    }
+
+    public void setWrittenToFile(boolean writtenToFile) {
+        this.writtenToFile = writtenToFile;
     }
 
     public long getId() {

@@ -7,13 +7,28 @@ import java.io.*;
 
 public class BinaryListFileWriter implements AutoCloseable {
 
-    private final ByAddressFileWriter byAddressFileWriter;
-    private final OutputStream outputStream;
+    private final File file;
+    private ByAddressFileWriter byAddressFileWriter;
+    private OutputStream outputStream;
     private long address = 0;
 
     public BinaryListFileWriter(File file) throws IOException {
+        this.file = file;
         this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
         this.byAddressFileWriter = new ByAddressFileWriter(file);
+    }
+
+    public void moveToBeginning() throws StorageException {
+        try {
+            this.byAddressFileWriter.close();
+            this.outputStream.close();
+
+            this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
+            this.byAddressFileWriter = new ByAddressFileWriter(file);
+            this.address = 0;
+        } catch (IOException e) {
+            throw new StorageException("Could not move to beginning of file", e);
+        }
     }
 
     public void append(BinaryList values) throws StorageException {

@@ -8,6 +8,7 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import com.ulyp.storage.impl.util.BinaryListFileWriter;
@@ -30,6 +31,14 @@ public class FileStorageWriter implements StorageWriter {
         } catch (IOException e) {
             throw new StorageException("Could not build storage for file " + file, e);
         }
+    }
+
+    @Override
+    public void reset(ResetMetadata resetMetadata) throws StorageException {
+        fileWriter.moveToBeginning();
+        write(resetMetadata.getProcessMetadata());
+        write(resetMetadata.getTypes());
+        write(resetMetadata.getMethods());
     }
 
     @Override

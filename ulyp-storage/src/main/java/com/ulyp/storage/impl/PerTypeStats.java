@@ -11,6 +11,10 @@ public class PerTypeStats {
     private ByteSize totalBytes = new ByteSize(0L);
     private long totalCount = 0L;
 
+    public void reset() {
+
+    }
+
     public void addToCount(long delta) {
         totalCount += delta;
     }

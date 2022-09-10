@@ -2,6 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.CollectionRecorder;
 import com.ulyp.core.recorders.MapRecorder;
@@ -39,8 +40,9 @@ public class Agent {
 
         if (AgentContext.isLoaded()) {
             return;
+        } else {
+            AgentContext.init(ByteBuddyTypeResolver.getInstance());
         }
-        AgentContext.setLoaded();
 
         AgentContext instance = AgentContext.getInstance();
 

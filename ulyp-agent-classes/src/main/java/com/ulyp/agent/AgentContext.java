@@ -4,6 +4,7 @@ import com.ulyp.agent.policy.*;
 import com.ulyp.agent.remote.AgentApiImpl;
 import com.ulyp.agent.remote.AgentApiGrpcServer;
 import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.Classpath;
 import com.ulyp.storage.StorageWriter;
 import org.jetbrains.annotations.Nullable;
@@ -13,37 +14,41 @@ import java.time.Duration;
 
 public class AgentContext {
 
-    private static final AgentContext instance = new AgentContext();
+    private static volatile AgentContext instance;
 
     private static volatile boolean agentLoaded = false;
 
     private final Settings settings;
     private final StartRecordingPolicy startRecordingPolicy;
     private final CallIdGenerator callIdGenerator;
-    private final StorageWriter storage;
+    private final StorageWriter storageWriter;
+    private final ProcessMetadata processMetadata;
+    private final TypeResolver typeResolver;
     @Nullable
-    private final AgentApiGrpcServer server;
+    private final AgentApiGrpcServer apiServer;
 
-    private AgentContext() {
+    private AgentContext(TypeResolver typeResolver) {
         this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
         this.startRecordingPolicy = initializePolicy(settings.getStartRecordingPolicyPropertyValue());
-        this.storage = settings.buildStorageWriter();
-        if (!settings.isAgentDisabled()) {
-            this.storage.write(ProcessMetadata.builder()
-                    .classPathFiles(new Classpath().toList())
-                    .mainClassName(ProcessMetadata.getMainClassNameFromProp())
-                    .pid(System.currentTimeMillis())
-                    .build()
-            );
+        this.storageWriter = settings.buildStorageWriter();
+        this.processMetadata = ProcessMetadata.builder()
+                .classPathFiles(new Classpath().toList())
+                .mainClassName(ProcessMetadata.getMainClassNameFromProp())
+                .pid(System.currentTimeMillis())
+                .build();
+        this.typeResolver = typeResolver;
 
-            Thread shutdown = new Thread(storage::close);
+        if (!settings.isAgentDisabled()) {
+            this.storageWriter.write(processMetadata);
+
+            Thread shutdown = new Thread(storageWriter::close);
             Runtime.getRuntime().addShutdownHook(shutdown);
         }
         if (settings.getBindNetworkAddress() != null) {
-            server = new AgentApiGrpcServer(Integer.parseInt(settings.getBindNetworkAddress()), new AgentApiImpl(startRecordingPolicy));
+            apiServer = new AgentApiGrpcServer(Integer.parseInt(settings.getBindNetworkAddress()), new AgentApiImpl(this));
         } else {
-            server = null;
+            apiServer = null;
         }
     }
 
@@ -64,12 +69,21 @@ public class AgentContext {
         throw new IllegalArgumentException("Unsupported recording policy: " + value);
     }
 
-    public static boolean isLoaded() {
-        return agentLoaded;
+    public static void init(TypeResolver typeResolver) {
+        instance = new AgentContext(typeResolver);
+        agentLoaded = true;
     }
 
-    public static void setLoaded() {
-        agentLoaded = true;
+    public ProcessMetadata getProcessMetadata() {
+        return processMetadata;
+    }
+
+    public TypeResolver getTypeResolver() {
+        return typeResolver;
+    }
+
+    public static boolean isLoaded() {
+        return agentLoaded;
     }
 
     public StartRecordingPolicy getStartRecordingPolicy() {
@@ -80,15 +94,11 @@ public class AgentContext {
         return instance;
     }
 
-    public StorageWriter getStorage() {
-        return storage;
+    public StorageWriter getStorageWriter() {
+        return storageWriter;
     }
 
     public CallIdGenerator getCallIdGenerator() {
         return callIdGenerator;
-    }
-
-    public Settings getSettings() {
-        return settings;
     }
 }

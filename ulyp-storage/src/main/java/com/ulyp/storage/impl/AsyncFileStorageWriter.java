@@ -5,6 +5,8 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.storage.ResetMetadata;
+import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
 import com.ulyp.storage.util.NamedThreadFactory;
 import lombok.SneakyThrows;
@@ -30,6 +32,11 @@ public class AsyncFileStorageWriter implements StorageWriter {
                         .daemon(true)
                         .build()
         );
+    }
+
+    @Override
+    public void reset(ResetMetadata resetMetadata) throws StorageException {
+        writeAsync(() -> delegate.reset(resetMetadata));
     }
 
     @Override

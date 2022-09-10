@@ -35,7 +35,7 @@ public class MethodRepository {
 
         for (int i = 1; i < methods.size(); i++) {
             Method method = methods.get(i);
-            if (method != null && !method.wasWrittenToFile()) {
+            if (method != null) {
                 values.add(method);
             }
         }
