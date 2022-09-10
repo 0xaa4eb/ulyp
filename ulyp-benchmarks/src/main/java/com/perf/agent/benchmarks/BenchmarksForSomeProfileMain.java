@@ -54,18 +54,18 @@ public class BenchmarksForSomeProfileMain {
 
         try (TimeMeasurer $ = new TimeMeasurer(procTimeHistogram)) {
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
-
-            if (profile.shouldWriteRecording()) {
-
-                StorageReader read = profile.getOutputFile().toReader();
-                Recording recording = read.availableRecordings().get(0);
-                recordingTimeHistogram.recordValue(recording.getLifetime().toMillis());
-
-                return recording.getRoot().getSubtreeSize();
-            }
-
-            return 0;
         }
+
+        if (profile.shouldWriteRecording()) {
+
+            StorageReader read = profile.getOutputFile().toReader();
+            Recording recording = read.availableRecordings().get(0);
+            recordingTimeHistogram.recordValue(recording.getLifetime().toMillis());
+
+            return recording.getRoot().getSubtreeSize();
+        }
+
+        return 0;
     }
 
     private static Histogram emptyHistogram() {

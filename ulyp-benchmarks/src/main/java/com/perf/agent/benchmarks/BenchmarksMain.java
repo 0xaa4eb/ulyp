@@ -54,15 +54,16 @@ public class BenchmarksMain {
         try (TimeMeasurer measured = new TimeMeasurer(procTimeHistogram)) {
 
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
+        }
 
-            StorageReader storageReader = Optional.ofNullable(profile.getOutputFile()).map(OutputFile::toReader).orElse(StorageReader.empty());
-            if (!storageReader.availableRecordings().isEmpty()) {
-                recordsTimeHistogram.recordValue(storageReader.availableRecordings().get(0).getLifetime().toMillis());
-                return storageReader.availableRecordings().get(0).callCount();
-            } else {
-                recordsTimeHistogram.recordValue(0L);
-                return 0;
-            }
+
+        StorageReader storageReader = Optional.ofNullable(profile.getOutputFile()).map(OutputFile::toReader).orElse(StorageReader.empty());
+        if (!storageReader.availableRecordings().isEmpty()) {
+            recordsTimeHistogram.recordValue(storageReader.availableRecordings().get(0).getLifetime().toMillis());
+            return storageReader.availableRecordings().get(0).callCount();
+        } else {
+            recordsTimeHistogram.recordValue(0L);
+            return 0;
         }
     }
 
