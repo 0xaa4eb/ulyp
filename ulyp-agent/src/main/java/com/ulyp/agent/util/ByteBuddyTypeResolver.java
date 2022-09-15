@@ -4,6 +4,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.TypeTrait;
 import com.ulyp.core.util.ClassUtils;
+import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.type.TypeDefinition;
@@ -52,6 +53,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     }
 
     private final Map<Class<?>, Type> types = new ConcurrentHashMap<>();
+    private final ConcurrentArrayList<Type> typesList = new ConcurrentArrayList<>();
 
     public static ByteBuddyTypeResolver getInstance() {
         return InstanceHolder.context;
@@ -65,7 +67,11 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         if (object != null) {
             resolvedType = types.computeIfAbsent(
                     object.getClass(),
-                    this::resolve
+                    klazz -> {
+                        Type newResolvedType = this.resolve(klazz);
+                        typesList.add(newResolvedType);
+                        return newResolvedType;
+                    }
             );
         } else {
             resolvedType = Type.unknown();
@@ -86,7 +92,11 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         if (clazz != null) {
             resolvedType = types.computeIfAbsent(
                     clazz,
-                    this::resolve
+                    klazz -> {
+                        Type newResolvedType = this.resolve(klazz);
+                        typesList.add(newResolvedType);
+                        return newResolvedType;
+                    }
             );
         } else {
             resolvedType = Type.unknown();
@@ -244,6 +254,12 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     public Collection<Type> getAllResolved() {
         return types.values();
     }
+
+    @Override
+    public @NotNull ConcurrentArrayList<Type> getAllResolvedAsConcurrentList() {
+        return typesList;
+    }
+
 
     private static class InstanceHolder {
         private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();

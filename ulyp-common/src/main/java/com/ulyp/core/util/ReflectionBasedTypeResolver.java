@@ -45,6 +45,11 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
     }
 
     @Override
+    public @NotNull ConcurrentArrayList<Type> getAllResolvedAsConcurrentList() {
+        return null;
+    }
+
+    @Override
     public @NotNull Type getType(long id) {
         Type type = byIdIndex.get(id);
         if (type != null) {

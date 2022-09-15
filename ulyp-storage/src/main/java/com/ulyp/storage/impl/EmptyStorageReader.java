@@ -27,7 +27,7 @@ public class EmptyStorageReader implements StorageReader {
     }
 
     @Override
-    public List<Recording> availableRecordings() {
+    public List<Recording> getRecordings() {
         return Collections.emptyList();
     }
 

@@ -1,5 +1,6 @@
 package com.ulyp.core;
 
+import com.ulyp.core.util.ConcurrentArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -14,4 +15,7 @@ public interface TypeResolver {
 
     @NotNull
     Collection<Type> getAllResolved();
+
+    @NotNull
+    ConcurrentArrayList<Type> getAllResolvedAsConcurrentList();
 }

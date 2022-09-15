@@ -96,9 +96,9 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.getRecordings().size());
 
-                            Recording recording = reader.availableRecordings().get(0);
+                            Recording recording = reader.getRecordings().get(0);
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 
@@ -152,9 +152,9 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.getRecordings().size());
 
-                            Recording recording = reader.availableRecordings().get(0);
+                            Recording recording = reader.getRecordings().get(0);
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 
@@ -188,7 +188,7 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.getRecordings().size());
                         }
                 );
     }
@@ -247,9 +247,9 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.getRecordings().size());
 
-                            Recording recording = reader.availableRecordings().get(0);
+                            Recording recording = reader.getRecordings().get(0);
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 
@@ -294,9 +294,9 @@ public class StorageReadWriteTest {
                 .atMost(Duration.ofSeconds(10))
                 .untilAsserted(
                         () -> {
-                            assertEquals(1, reader.availableRecordings().size());
+                            assertEquals(1, reader.getRecordings().size());
 
-                            Recording recording = reader.availableRecordings().get(0);
+                            Recording recording = reader.getRecordings().get(0);
                             CallRecord root = recording.getRoot();
                             assertNotNull(root);
 

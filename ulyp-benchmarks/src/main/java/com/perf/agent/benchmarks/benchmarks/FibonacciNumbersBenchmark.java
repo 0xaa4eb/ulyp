@@ -1,7 +1,7 @@
 package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
-import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
+import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
 import com.perf.agent.benchmarks.BenchmarkScenario;
 import com.ulyp.core.util.MethodMatcher;
 
@@ -24,10 +24,14 @@ public class FibonacciNumbersBenchmark implements Benchmark {
     @Override
     public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(FibonacciNumbersBenchmark.class, "main"))
                         .build(),
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
+                        .withAdditionalArgs("-Dnum=44")
+                        .withMethodToRecord(new MethodMatcher(FibonacciNumbersBenchmark.class, "doesntExist"))
+                        .build(),
+                new BenchmarkScenarioBuilder()
                         .withAgentDisabled()
                         .build()
         );
@@ -55,6 +59,6 @@ public class FibonacciNumbersBenchmark implements Benchmark {
     }
 
     public void run() {
-        System.out.println(compute(30));
+        System.out.println(compute(Integer.parseInt(System.getProperty("num", "31"))));
     }
 }

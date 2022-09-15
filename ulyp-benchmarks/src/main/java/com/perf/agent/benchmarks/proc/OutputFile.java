@@ -25,7 +25,7 @@ public class OutputFile {
     public StorageReader toReader() {
         StorageReader reader = new AsyncFileStorageReader(file.toFile(), true);
         try {
-            reader.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
+            reader.getFinishedReadingFuture().get(180, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new UlypException("Timed out waiting for recording to finish", e);
         }

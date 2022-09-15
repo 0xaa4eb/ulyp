@@ -18,11 +18,11 @@ public class RecordingResult {
     }
 
     public List<Recording> aggregateByRecordings() {
-        return reader.availableRecordings();
+        return reader.getRecordings();
     }
 
     public List<Recording> recordings() {
-        return new ArrayList<>(reader.availableRecordings());
+        return new ArrayList<>(reader.getRecordings());
     }
 
     public CallRecord getSingleRoot() throws StorageException {

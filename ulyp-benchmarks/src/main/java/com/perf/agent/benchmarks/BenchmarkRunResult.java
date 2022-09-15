@@ -2,25 +2,28 @@ package com.perf.agent.benchmarks;
 
 import org.HdrHistogram.Histogram;
 
-public class PerformanceRunResult {
+public class BenchmarkRunResult {
 
     private final Class<?> benchmarkClazz;
     private final BenchmarkScenario profile;
     private final Histogram procTimeHistogram;
     private final Histogram recordTimeHistogram;
-    private final Histogram recordsCountHistogram;
+    private final Histogram recordedCallsCountHistogram;
+    private final Histogram recordingsCountHistogram;
 
-    public PerformanceRunResult(
+    public BenchmarkRunResult(
             Class<?> benchmarkClazz,
             BenchmarkScenario profile,
             Histogram procTimeHistogram,
             Histogram recordTimeHistogram,
-            Histogram recordsCountHistogram) {
+            Histogram recordedCallsCountHistogram,
+            Histogram recordingsCountHistogram) {
         this.benchmarkClazz = benchmarkClazz;
         this.profile = profile;
         this.procTimeHistogram = procTimeHistogram;
         this.recordTimeHistogram = recordTimeHistogram;
-        this.recordsCountHistogram = recordsCountHistogram;
+        this.recordedCallsCountHistogram = recordedCallsCountHistogram;
+        this.recordingsCountHistogram = recordingsCountHistogram;
     }
 
     public void print() {
@@ -28,9 +31,9 @@ public class PerformanceRunResult {
 
         builder.append(benchmarkClazz.getSimpleName());
         builder.append(": ");
-        padTo(builder, 50);
+        padTo(builder, 35);
         builder.append(profile);
-        padTo(builder, 150);
+        padTo(builder, 135);
 
         builder.append(String.format("%.2f", procTimeHistogram.getMean() / 1000.0))
                 .append(" ± ")
@@ -42,7 +45,9 @@ public class PerformanceRunResult {
                 .append("  ")
                 .append("sec")
                 .append("    ")
-                .append((int) recordsCountHistogram.getMean());
+                .append((int) recordedCallsCountHistogram.getMean())
+                .append("    ")
+                .append((int) recordingsCountHistogram.getMean());
 
         System.out.println(builder);
     }
