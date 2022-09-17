@@ -2,7 +2,7 @@ package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenario;
-import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
+import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
 import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.benchmarks.util.User;
 import com.perf.agent.benchmarks.benchmarks.util.UserService;
@@ -31,16 +31,16 @@ public class SpringHibernateSmallBenchmark implements Benchmark {
     @Override
     public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(SpringHibernateSmallBenchmark.class, "main"))
                         .build(),
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(UserService.class, "save"))
                         .build(),
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(SpringHibernateSmallBenchmark.class, "doesntExist"))
                         .build(),
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withAgentDisabled()
                         .build()
         );

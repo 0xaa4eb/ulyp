@@ -20,18 +20,21 @@ public class BenchmarkScenario {
     private final List<String> additionalProcessArgs;
     private final OutputFile outputFile;
     private final boolean agentEnabled;
+    private final boolean constructorsEnabled;
 
     public BenchmarkScenario(
             @Nullable MethodMatcher methodToRecord,
             @NotNull PackageList instrumentedPackages,
             List<String> additionalProcessArgs,
             OutputFile outputFile,
-            boolean agentEnabled) {
+            boolean agentEnabled,
+            boolean constructorsEnabled) {
         this.methodToRecord = methodToRecord;
         this.instrumentedPackages = instrumentedPackages;
         this.additionalProcessArgs = additionalProcessArgs;
         this.outputFile = outputFile;
         this.agentEnabled = agentEnabled;
+        this.constructorsEnabled = constructorsEnabled;
     }
 
     public boolean shouldWriteRecording() {
@@ -47,6 +50,9 @@ public class BenchmarkScenario {
 
         if (!instrumentedPackages.isEmpty()) {
             args.add("-Dulyp.packages=" + this.instrumentedPackages);
+        }
+        if (constructorsEnabled) {
+            args.add("-Dulyp.constructors");
         }
 
         args.add("-Dulyp.file=" + (outputFile != null ? outputFile.toString() : ""));
@@ -68,6 +74,7 @@ public class BenchmarkScenario {
     public String toString() {
         return "Agent: " + (agentEnabled ? "Y" : "N") +
                 "/" + (agentEnabled ? (instrumentedPackages.isEmpty() ? "*" : instrumentedPackages) : "-") +
-                "/" + (methodToRecord != null ? methodToRecord : (agentEnabled ? "main method" : "-"));
+                "/" + (methodToRecord != null ? methodToRecord : (agentEnabled ? "main method" : "-")) +
+                "/" + additionalProcessArgs;
     }
 }

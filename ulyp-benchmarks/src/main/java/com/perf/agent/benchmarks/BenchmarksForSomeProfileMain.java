@@ -1,8 +1,8 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.benchmarks.SpringHibernateSmallBenchmark;
+import com.perf.agent.benchmarks.benchmarks.FibonacciNumbersBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
-import com.ulyp.core.util.PackageList;
+import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageReader;
 import org.HdrHistogram.Histogram;
@@ -13,28 +13,30 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarksForSomeProfileMain {
 
-    private static final int ITERATIONS_PER_PROFILE = 5;
+    private static final int ITERATIONS_PER_PROFILE = 1;
 
     public static void main(String[] args) {
 
-        BenchmarkScenario trueProfile = new BenchmarkProfileBuilder()
-                .withInstrumentedPackages(new PackageList("com", "org"))
-//                .withAdditionalArgs(
-//                        "-XX:+UnlockDiagnosticVMOptions",
-//                        "-XX:+UnlockCommercialFeatures",
-//                        "-XX:+FlightRecorder",
-//                        "-XX:+DebugNonSafepoints",
-//                        "-XX:StartFlightRecording=name=Profiling,dumponexit=true,delay=2s,filename=C:\\Temp\\myrecording.jfr,settings=profile"
-//                )
+        BenchmarkScenario trueProfile = new BenchmarkScenarioBuilder()
+                .withMethodToRecord(new MethodMatcher(FibonacciNumbersBenchmark.class, "asdsad"))
+                .withAdditionalArgs("-Dnum=42")
+/*                .withAdditionalArgs(
+                        "-XX:+UnlockDiagnosticVMOptions",
+                        "-XX:+UnlockCommercialFeatures",
+                        "-XX:+FlightRecorder",
+                        "-Dnum=50",
+                        "-XX:+DebugNonSafepoints",
+                        "-XX:StartFlightRecording=name=Profiling,duration=30s,delay=1s,filename=C:\\Temp\\myrecording.jfr,settings=profile"
+                )*/
                 .build();
 
-        for (PerformanceRunResult result : runBench(SpringHibernateSmallBenchmark.class, trueProfile)) {
+        for (BenchmarkRunResult result : runBench(FibonacciNumbersBenchmark.class, trueProfile)) {
             result.print();
         }
     }
 
-    private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkScenario profile) {
-        List<PerformanceRunResult> runResults = new ArrayList<>();
+    private static List<BenchmarkRunResult> runBench(Class<? extends Benchmark> benchmarkClazz, BenchmarkScenario profile) {
+        List<BenchmarkRunResult> runResults = new ArrayList<>();
 
         Histogram procTimeHistogram = emptyHistogram();
         Histogram recordingTimeHistogram = emptyHistogram();
@@ -45,7 +47,7 @@ public class BenchmarksForSomeProfileMain {
             callsCountHistogram.recordValue(callsCount);
         }
 
-        runResults.add(new PerformanceRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, callsCountHistogram));
+        runResults.add(new BenchmarkRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, callsCountHistogram));
 
         return runResults;
     }

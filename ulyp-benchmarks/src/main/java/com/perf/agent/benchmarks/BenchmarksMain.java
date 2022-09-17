@@ -1,5 +1,7 @@
 package com.perf.agent.benchmarks;
 
+import com.perf.agent.benchmarks.benchmarks.ActivemqBenchmark;
+import com.perf.agent.benchmarks.benchmarks.FibonacciNumbersBenchmark;
 import com.perf.agent.benchmarks.benchmarks.H2MemDatabaseBenchmark;
 import com.perf.agent.benchmarks.benchmarks.SpringHibernateSmallBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
@@ -14,22 +16,24 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarksMain {
 
-    private static final int ITERATIONS_PER_PROFILE = 5;
+    private static final int ITERATIONS_PER_PROFILE = 2;
 
     public static void main(String[] args) throws Exception {
 
-        List<PerformanceRunResult> runResults = new ArrayList<>();
+        List<BenchmarkRunResult> runResults = new ArrayList<>();
 
         runResults.addAll(runBench(H2MemDatabaseBenchmark.class));
+        runResults.addAll(runBench(ActivemqBenchmark.class));
+        runResults.addAll(runBench(FibonacciNumbersBenchmark.class));
         runResults.addAll(runBench(SpringHibernateSmallBenchmark.class));
 
-        for (PerformanceRunResult runResult : runResults) {
+        for (BenchmarkRunResult runResult : runResults) {
             runResult.print();
         }
     }
 
-    private static List<PerformanceRunResult> runBench(Class<? extends Benchmark> benchmarkClazz) throws Exception {
-        List<PerformanceRunResult> runResults = new ArrayList<>();
+    private static List<BenchmarkRunResult> runBench(Class<? extends Benchmark> benchmarkClazz) throws Exception {
+        List<BenchmarkRunResult> runResults = new ArrayList<>();
 
         Benchmark benchmark = benchmarkClazz.newInstance();
 
@@ -43,7 +47,7 @@ public class BenchmarksMain {
                 recordsCountHistogram.recordValue(recordsCount);
             }
 
-            runResults.add(new PerformanceRunResult(benchmarkClazz, profile, procTimeHistogram, recordTimeHistogram, recordsCountHistogram));
+            runResults.add(new BenchmarkRunResult(benchmarkClazz, profile, procTimeHistogram, recordTimeHistogram, recordsCountHistogram));
         }
 
         return runResults;
