@@ -20,7 +20,6 @@ public class Method {
     private final boolean returnsSomething;
     private final ObjectRecorder[] parameterRecorders;
     private final ObjectRecorder returnValueRecorder;
-
     private volatile boolean shouldStartRecording;
     // If was dumped to the output file
     @Builder.Default

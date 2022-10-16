@@ -17,6 +17,10 @@ public class ConcurrentArrayList<V> {
     private final AtomicReferenceArray<Chunk<V>> chunks;
     private final AtomicInteger chunksCount = new AtomicInteger(1);
 
+    public ConcurrentArrayList() {
+        this(64_000);
+    }
+
     public ConcurrentArrayList(int chunksCapacity) {
         chunks = new AtomicReferenceArray<>(chunksCapacity);
         chunks.set(0, new Chunk<>());

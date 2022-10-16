@@ -5,12 +5,14 @@ import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("unused")
 @Slf4j
@@ -77,31 +79,87 @@ public class Recorder {
         return onConstructorEnter(method, args);
     }
 
+    private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
+    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
+    private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
+
     private void write(TypeResolver typeResolver, CallRecordLog recordLog) {
 
-        MethodList methods = new MethodList();
-        for (Method method : MethodRepository.getInstance().values()) {
-            if (!method.wasWrittenToFile()) {
-                methods.add(method);
-                method.markWrittenToFile();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Will write {} to storage", method);
-                }
-            }
-        }
-        context.getStorageWriter().write(methods);
+        MethodList methodsList = new MethodList();
 
-        TypeList types = new TypeList();
-        for (Type type : typeResolver.getAllResolved()) {
-            if (!type.wasWrittenToFile()) {
-                types.add(type);
-                type.setWrittenToFile();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Will write {} to storage", type);
+        ConcurrentArrayList<Method> methods = MethodRepository.getInstance().getMethods();
+        int upToExcluding = methods.size() - 1;
+        int startFrom = lastIndexOfMethodWritten.get() + 1;
+
+        for (int i = startFrom; i <= upToExcluding; i++) {
+            Method method = methods.get(i);
+            log.debug("Will write {} to storage", method);
+            methodsList.add(method);
+        }
+        if (methodsList.size() > 0) {
+            context.getStorageWriter().write(methodsList);
+            for (;;) {
+                int currentIndex = lastIndexOfMethodWritten.get();
+                if (currentIndex < upToExcluding) {
+                    if (lastIndexOfMethodWritten.compareAndSet(currentIndex, upToExcluding)) {
+                        break;
+                    }
+                } else {
+                    // Someone else must have written methods already
+                    break;
                 }
             }
         }
-        context.getStorageWriter().write(types);
+
+        methodsList = new MethodList();
+        methods = MethodRepository.getInstance().getRecordingStartMethods();
+        upToExcluding = methods.size() - 1;
+        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
+
+        for (int i = startFrom; i <= upToExcluding; i++) {
+            Method method = methods.get(i);
+            log.debug("Will write {} to storage", method);
+            methodsList.add(method);
+        }
+        if (methodsList.size() > 0) {
+            context.getStorageWriter().write(methodsList);
+            for (;;) {
+                int currentIndex = lastIndexOfMethodToRecordWritten.get();
+                if (currentIndex < upToExcluding) {
+                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
+                        break;
+                    }
+                } else {
+                    // Someone else must have written methods already
+                    break;
+                }
+            }
+        }
+
+        TypeList typesList = new TypeList();
+        ConcurrentArrayList<Type> types = typeResolver.getAllResolvedAsConcurrentList();
+        upToExcluding = types.size() - 1;
+        startFrom = lastIndexOfTypeWritten.get() + 1;
+
+        for (int i = startFrom; i <= upToExcluding; i++) {
+            Type type = types.get(i);
+            log.debug("Will write {} to storage", type);
+            typesList.add(type);
+        }
+        if (typesList.size() > 0) {
+            context.getStorageWriter().write(typesList);
+            for (;;) {
+                int currentIndex = lastIndexOfTypeWritten.get();
+                if (currentIndex < upToExcluding) {
+                    if (lastIndexOfTypeWritten.compareAndSet(currentIndex, upToExcluding)) {
+                        break;
+                    }
+                } else {
+                    // Someone else must have written methods already
+                    break;
+                }
+            }
+        }
 
         context.getStorageWriter().write(recordLog.getRecordingMetadata());
         context.getStorageWriter().write(recordLog.getRecordedCalls());

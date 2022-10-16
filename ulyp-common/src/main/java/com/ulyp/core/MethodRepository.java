@@ -8,14 +8,14 @@ import java.util.Collection;
 
 public class MethodRepository {
 
+    public static final int RECORD_METHODS_MIN_ID = 1_000_000_000;
+
     private static final MethodRepository INSTANCE = new MethodRepository();
 
     private final ConcurrentArrayList<Method> methods = new ConcurrentArrayList<>(64_000);
+    private final ConcurrentArrayList<Method> recordingStartMethods = new ConcurrentArrayList<>(64_000);
 
     private MethodRepository() {
-        // Do not use 0 index, so that it's possible to tell if method goes to "start recording"
-        // or "continue recording only" bucket
-        methods.add(null);
     }
 
     public static MethodRepository getInstance() {
@@ -23,18 +23,41 @@ public class MethodRepository {
     }
 
     public Method get(int id) {
-        return methods.get(id);
+        if (id < RECORD_METHODS_MIN_ID) {
+            return methods.get(id);
+        } else {
+            return recordingStartMethods.get(id - RECORD_METHODS_MIN_ID);
+        }
     }
 
     public int putAndGetId(Method method) {
-        return methods.add(method);
+        if (method.shouldStartRecording()) {
+            return RECORD_METHODS_MIN_ID + recordingStartMethods.add(method);
+        } else {
+            return methods.add(method);
+        }
+    }
+
+    public ConcurrentArrayList<Method> getMethods() {
+        return methods;
+    }
+
+    public ConcurrentArrayList<Method> getRecordingStartMethods() {
+        return recordingStartMethods;
     }
 
     public Collection<Method> values() {
         Collection<Method> values = new ArrayList<>();
 
-        for (int i = 1; i < methods.size(); i++) {
+        for (int i = 0; i < methods.size(); i++) {
             Method method = methods.get(i);
+            if (method != null) {
+                values.add(method);
+            }
+        }
+
+        for (int i = 0; i < recordingStartMethods.size(); i++) {
+            Method method = recordingStartMethods.get(i);
             if (method != null) {
                 values.add(method);
             }

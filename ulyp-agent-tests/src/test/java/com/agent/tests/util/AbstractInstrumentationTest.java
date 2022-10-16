@@ -28,7 +28,7 @@ public class AbstractInstrumentationTest {
     }
 
     protected void assertNoRecording(ForkProcessBuilder settings) {
-        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).availableRecordings(), Matchers.empty());
+        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).getRecordings(), Matchers.empty());
     }
 
     protected StorageReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
@@ -46,7 +46,7 @@ public class AbstractInstrumentationTest {
             } catch (TimeoutException e) {
                 Assert.fail("Timed out waiting for process to finish");
             }
-            System.out.println("Got " + reader.availableRecordings().size() + " recordings");
+            System.out.println("Got " + reader.getRecordings().size() + " recordings");
             return reader;
         }
     }

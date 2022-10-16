@@ -61,7 +61,7 @@ public class BenchmarksForSomeProfileMain {
         if (profile.shouldWriteRecording()) {
 
             StorageReader read = profile.getOutputFile().toReader();
-            Recording recording = read.availableRecordings().get(0);
+            Recording recording = read.getRecordings().get(0);
             recordingTimeHistogram.recordValue(recording.getLifetime().toMillis());
 
             return recording.getRoot().getSubtreeSize();

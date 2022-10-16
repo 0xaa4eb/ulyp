@@ -23,22 +23,25 @@ public class MethodCallRecordingAdvice {
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
 
-        // TODO opt local variable?
-        Method method = MethodRepository.getInstance().get(methodId);
+        // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
+        if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
 
-        if (method.shouldStartRecording()) {
-            // local variable callId is used by exit() method
-            // noinspection UnusedAssignment
+            // noinspection UnusedAssignment local variable callId is used by exit() method
             callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
                     ByteBuddyTypeResolver.getInstance(),
-                    method,
+                    MethodRepository.getInstance().get(methodId),
                     callee,
                     arguments
             );
         } else {
+
             if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
                 //noinspection UnusedAssignment
-                callId = Recorder.getInstance().onMethodEnter(method, callee, arguments);
+                callId = Recorder.getInstance().onMethodEnter(
+                        MethodRepository.getInstance().get(methodId),
+                        callee,
+                        arguments
+                );
             }
         }
     }

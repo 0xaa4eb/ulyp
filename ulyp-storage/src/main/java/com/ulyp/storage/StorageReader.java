@@ -28,7 +28,7 @@ public interface StorageReader extends AutoCloseable {
 
     void subscribe(RecordingListener listener);
 
-    List<Recording> availableRecordings();
+    List<Recording> getRecordings();
 
     void close() throws StorageException;
 }

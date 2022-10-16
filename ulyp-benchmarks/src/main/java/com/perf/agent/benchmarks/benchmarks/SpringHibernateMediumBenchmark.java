@@ -2,7 +2,7 @@ package com.perf.agent.benchmarks.benchmarks;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenario;
-import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
+import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
 import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.benchmarks.util.Department;
 import com.perf.agent.benchmarks.benchmarks.util.DepartmentService;
@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SpringHibernateMediumBenchmark implements Benchmark {
 
-    private static final int PEOPLE_PER_DEPT = 30;
-    private static final int DEPT_COUNT = 20;
+    private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));
+    private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "20"));
     private DepartmentService departmentService;
 
     public static void main(String[] args) throws Exception {
@@ -45,6 +45,12 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
                         .withInstrumentedPackages(new PackageList("com", "org"))
                         .build(),
                 new BenchmarkScenarioBuilder()
+                        .withMethodToRecord(new MethodMatcher(DepartmentService.class, "save"))
+                        .withAdditionalArgs("-DdeptCount=250")
+                        .withAdditionalArgs("-DpeoplePerDeptCount=20")
+                        .withInstrumentedPackages(new PackageList("com", "org"))
+                        .build(),
+                new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(DepartmentService.class, "shuffle"))
                         .withWriteDisabled()
                         .withInstrumentedPackages(new PackageList("com", "org"))
@@ -87,7 +93,7 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
     public void run() {
         Histogram histogram = new Histogram(1, TimeUnit.MINUTES.toMillis(5), 2);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             long startNanos = System.nanoTime();
             departmentService.shufflePeople();
             long elapsed = System.nanoTime() - startNanos;

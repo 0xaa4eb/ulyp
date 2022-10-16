@@ -8,19 +8,22 @@ public class BenchmarkRunResult {
     private final BenchmarkScenario profile;
     private final Histogram procTimeHistogram;
     private final Histogram recordTimeHistogram;
-    private final Histogram recordsCountHistogram;
+    private final Histogram recordedCallsCountHistogram;
+    private final Histogram recordingsCountHistogram;
 
     public BenchmarkRunResult(
             Class<?> benchmarkClazz,
             BenchmarkScenario profile,
             Histogram procTimeHistogram,
             Histogram recordTimeHistogram,
-            Histogram recordsCountHistogram) {
+            Histogram recordedCallsCountHistogram,
+            Histogram recordingsCountHistogram) {
         this.benchmarkClazz = benchmarkClazz;
         this.profile = profile;
         this.procTimeHistogram = procTimeHistogram;
         this.recordTimeHistogram = recordTimeHistogram;
-        this.recordsCountHistogram = recordsCountHistogram;
+        this.recordedCallsCountHistogram = recordedCallsCountHistogram;
+        this.recordingsCountHistogram = recordingsCountHistogram;
     }
 
     public void print() {
@@ -42,7 +45,9 @@ public class BenchmarkRunResult {
                 .append("  ")
                 .append("sec")
                 .append("    ")
-                .append((int) recordsCountHistogram.getMean());
+                .append((int) recordedCallsCountHistogram.getMean())
+                .append("    ")
+                .append((int) recordingsCountHistogram.getMean());
 
         System.out.println(builder);
     }
