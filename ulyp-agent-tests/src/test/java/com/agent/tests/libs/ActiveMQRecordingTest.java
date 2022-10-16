@@ -39,7 +39,7 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
         assertThat(
                 DebugCallRecordTreePrinter.printTree(singleRoot),
                 singleRoot.getSubtreeSize(),
-                greaterThan(5000)
+                greaterThan(3000)
         );
     }
 

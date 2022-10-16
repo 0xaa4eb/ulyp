@@ -12,7 +12,6 @@ import java.util.List;
 public class H2MemDatabaseBenchmark implements Benchmark {
 
     private static final int MESSAGE_COUNT = Integer.parseInt(System.getProperty("rowCount", "400"));
-
     private Connection connection;
 
     public static void main(String[] args) throws Exception {
@@ -30,7 +29,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
     @Override
     public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
-                new BenchmarkScenarioBuilder()
+                new BenchmarkProfileBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
                         .build(),
                 new BenchmarkScenarioBuilder()
