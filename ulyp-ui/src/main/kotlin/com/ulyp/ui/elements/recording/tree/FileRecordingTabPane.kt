@@ -63,13 +63,12 @@ class FileRecordingTabPane : TabPane() {
                 // COPY currently selected
                 val selectedTab: FileRecordingsTab? = selectedTab
                 if (selectedTab != null) {
-                    val selectedCallRecord = selectedTab.selectedTreeTab.getSelected()
+                    val selectedCallRecord: RecordedCallTreeItem = selectedTab.selectedTreeTab.getSelected()
                     @Suppress("SENSELESS_COMPARISON")
                     if (selectedCallRecord != null) {
                         val clipboard = Clipboard.getSystemClipboard()
                         val content = ClipboardContent()
-                        val callRecord = selectedCallRecord.callRecord
-                        content.putString(callRecord.method.declaringType.name + "." + callRecord.method.name)
+                        content.putString(selectedCallRecord.toClipboardText())
                         clipboard.setContent(content)
                     }
                 }
