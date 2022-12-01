@@ -6,6 +6,7 @@ import com.ulyp.ui.RenderSettings
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.scene.control.TreeItem
+import java.lang.StringBuilder
 import java.util.function.Consumer
 
 class RecordedCallTreeItem(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings) :
@@ -66,6 +67,31 @@ class RecordedCallTreeItem(private val recording: Recording, private val callRec
         }
         super.getChildren().setAll(children)
         loaded = true
+    }
+
+    /**
+     * @return
+     */
+    fun toClipboardText(): String {
+        val text = StringBuilder()
+
+        text.append(callRecord.returnValue.toString())
+            .append(" ")
+            .append(callRecord.method.declaringType.name)
+            .append(".")
+            .append(callRecord.method.name)
+            .append(" (")
+
+        callRecord.args.forEachIndexed { index, arg ->
+            text.append(arg.toString())
+            if (index != callRecord.args.size - 1) {
+                text.append(", ")
+            }
+        }
+
+        text.append(")")
+
+        return text.toString();
     }
 
     private fun unloadChildren() {
