@@ -7,7 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
-public class DirecyMemLeakTest extends AbstractInstrumentationTest {
+public class DirectMemLeakTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldWithstandLongRecording() {
