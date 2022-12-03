@@ -126,7 +126,7 @@ public class ForkProcessBuilder {
         if (agentDisabled != null && agentDisabled) {
             params.add("-D" + Settings.AGENT_DISABLED_PROPERTY);
         }
-        if (instrumentLambdas) {
+        if (instrumentLambdas != null) {
             params.add("-D" + Settings.INSTRUMENT_LAMBDAS_PROPERTY);
         }
 
