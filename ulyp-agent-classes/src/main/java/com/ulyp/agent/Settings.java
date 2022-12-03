@@ -28,7 +28,8 @@ public class Settings {
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
-    public static final String RECORD_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
+    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
+    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
@@ -39,7 +40,8 @@ public class Settings {
     @NotNull
     private final RecordMethodList recordMethodList;
     private final List<ClassMatcher> excludeFromInstrumentationClasses;
-    private final boolean shouldRecordConstructors;
+    private final boolean instrumentConstructors;
+    private final boolean instrumentLambdas;
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<ClassMatcher> classesToPrint;
@@ -51,7 +53,8 @@ public class Settings {
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
             @NotNull RecordMethodList recordMethodList,
-            boolean shouldRecordConstructors,
+            boolean instrumentConstructors,
+            boolean instrumentLambdas,
             CollectionsRecordingMode collectionsRecordingMode,
             Set<ClassMatcher> classesToPrint,
             String startRecordingPolicyPropertyValue,
@@ -62,7 +65,8 @@ public class Settings {
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.recordMethodList = recordMethodList;
-        this.shouldRecordConstructors = shouldRecordConstructors;
+        this.instrumentConstructors = instrumentConstructors;
+        this.instrumentLambdas = instrumentLambdas;
         this.collectionsRecordingMode = collectionsRecordingMode;
         this.classesToPrint = classesToPrint;
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
@@ -122,7 +126,8 @@ public class Settings {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
-        boolean shouldRecordConstructors = System.getProperty(RECORD_CONSTRUCTORS_PROPERTY) != null;
+        boolean recordConstructors = System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
+        boolean instrumentLambdas = System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
         boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
 
         String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
@@ -142,7 +147,8 @@ public class Settings {
                 instrumentationPackages,
                 excludedPackages,
                 recordingStartMethods,
-                shouldRecordConstructors,
+                recordConstructors,
+                instrumentLambdas,
                 collectionsRecordingMode,
                 classesToPrint,
                 startRecordingPolicy,
@@ -165,6 +171,10 @@ public class Settings {
         return excludedFromInstrumentationPackages;
     }
 
+    public boolean instrumentLambdas() {
+        return instrumentLambdas;
+    }
+
     @NotNull
     public RecordMethodList getRecordMethodList() {
         return recordMethodList;
@@ -174,8 +184,8 @@ public class Settings {
         return storageWriterSupplier.get();
     }
 
-    public boolean shouldRecordConstructors() {
-        return shouldRecordConstructors;
+    public boolean instrumentConstructors() {
+        return instrumentConstructors;
     }
 
     public CollectionsRecordingMode getCollectionsRecordingMode() {
@@ -204,7 +214,8 @@ public class Settings {
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + recordMethodList +
-                ",\nrecord constructors: " + shouldRecordConstructors +
+                ",\ninstrument constructors: " + instrumentConstructors +
+                ",\ninstrument lambdas: " + instrumentLambdas +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
                 ",\nclassesToPrintWithToString(TBD)=" + classesToPrint;

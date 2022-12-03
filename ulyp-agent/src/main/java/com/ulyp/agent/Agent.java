@@ -2,7 +2,6 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.CollectionRecorder;
 import com.ulyp.core.recorders.MapRecorder;
@@ -126,7 +125,7 @@ public class Agent {
                                 )
                 ));
 
-        if (settings.shouldRecordConstructors()) {
+        if (settings.instrumentConstructors()) {
             agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module) -> builder.visit(
                     Advice.withCustomMapping()
                             .bind(methodIdFactory)
@@ -136,7 +135,9 @@ public class Agent {
         }
 
         AgentBuilder agent = agentBuilder.with(AgentBuilder.TypeStrategy.Default.REDEFINE);
-        // .with(AgentBuilder.LambdaInstrumentationStrategy.ENABLED);
+        if (settings.instrumentLambdas()) {
+            agent = agent.with(AgentBuilder.LambdaInstrumentationStrategy.ENABLED);
+        }
 
         if (LoggingSettings.TRACE_ENABLED) {
             agent = agent.with(AgentBuilder.Listener.StreamWriting.toSystemOut());

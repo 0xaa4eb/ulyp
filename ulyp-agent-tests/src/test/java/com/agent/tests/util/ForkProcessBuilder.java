@@ -21,6 +21,7 @@ public class ForkProcessBuilder {
     private String printClasses = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
+    private Boolean instrumentLambdas = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -64,6 +65,11 @@ public class ForkProcessBuilder {
 
     public String getLogLevel() {
         return logLevel;
+    }
+
+    public ForkProcessBuilder withInstrumentLambdas(Boolean instrumentLambdas) {
+        this.instrumentLambdas = instrumentLambdas;
+        return this;
     }
 
     public ForkProcessBuilder withLogLevel(String logLevel) {
@@ -119,6 +125,9 @@ public class ForkProcessBuilder {
         }
         if (agentDisabled != null && agentDisabled) {
             params.add("-D" + Settings.AGENT_DISABLED_PROPERTY);
+        }
+        if (instrumentLambdas) {
+            params.add("-D" + Settings.INSTRUMENT_LAMBDAS_PROPERTY);
         }
 
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());

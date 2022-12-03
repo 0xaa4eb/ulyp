@@ -25,7 +25,6 @@ public abstract class ObjectRecord {
         return type;
     }
 
-    // Only used in unit tests
-    @TestOnly
+    // Only used in unit tests and to print to clipboard when Ctrl+C is pressed
     public abstract String toString();
 }
