@@ -114,7 +114,7 @@ public class Agent {
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
                 .type(finalMatcher)
-                .transform((builder, typeDescription, classLoader, module) -> builder.visit(
+                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
                         Advice.withCustomMapping()
                                 .bind(methodIdFactory)
                                 .to(MethodCallRecordingAdvice.class)
@@ -126,7 +126,7 @@ public class Agent {
                 ));
 
         if (settings.instrumentConstructors()) {
-            agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module) -> builder.visit(
+            agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
                     Advice.withCustomMapping()
                             .bind(methodIdFactory)
                             .to(ConstructorCallRecordingAdvice.class)
