@@ -5,6 +5,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.lang.ref.WeakReference
 
 /**
  * Keeps all currently shown scenes in a single place
@@ -12,21 +13,31 @@ import org.springframework.stereotype.Component
 @Component
 open class SceneRegistry(@Autowired private val themeManager: ThemeManager) {
 
-    private var scenes: MutableSet<Scene> = mutableSetOf()
+    private var scenes: MutableSet<WeakReference<Scene>> = mutableSetOf()
 
     fun newScene(parent: Parent): Scene {
         val scene = Scene(parent)
-        scenes.add(scene)
+
+        scenes.add(WeakReference(scene))
 
         scene.stylesheets.addAll(themeManager.currentTheme.cssPaths)
         return scene
     }
 
-    fun removeScene(scene: Scene) {
-        scenes.remove(scene)
+    private fun cleanup() {
+        val toRemove = mutableSetOf<WeakReference<Scene>>()
+
+        scenes.forEach {
+            if (it.get() == null) {
+                toRemove.add(it)
+            }
+        }
+
+        scenes.removeAll(toRemove)
     }
 
-    fun scenes(): Collection<Scene> {
-        return scenes
+    fun scenes(): List<Scene> {
+        cleanup()
+        return scenes.mapNotNull { it.get() }.toList()
     }
 }
