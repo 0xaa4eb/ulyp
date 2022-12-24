@@ -27,6 +27,7 @@ class FileRecordingTabPane : TabPane() {
             val fileRecordingsTab = tab as FileRecordingsTab
             fileRecordingsTab.dispose()
         }
+        tabs.forEach { it.onClosed.handle(null) }
         tabs.clear()
     }
 
