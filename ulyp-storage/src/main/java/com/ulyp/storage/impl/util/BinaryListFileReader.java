@@ -9,12 +9,10 @@ import java.io.*;
 
 public class BinaryListFileReader implements AutoCloseable {
 
-    private final InputStream inputStream;
     private final RandomAccessFile randomAccessFile;
     private long address = 0;
 
     public BinaryListFileReader(File file) throws IOException {
-        this.inputStream = new BufferedInputStream(new FileInputStream(file));
         this.randomAccessFile = new RandomAccessFile(file, "r");
     }
 
@@ -58,10 +56,6 @@ public class BinaryListFileReader implements AutoCloseable {
     }
 
     public void close() throws IOException {
-        try {
-            inputStream.close();
-        } finally {
-            randomAccessFile.close();
-        }
+        randomAccessFile.close();
     }
 }

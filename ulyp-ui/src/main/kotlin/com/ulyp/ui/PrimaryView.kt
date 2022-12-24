@@ -35,7 +35,7 @@ class PrimaryView(
         private val applicationContext: ApplicationContext,
         private val sourceCodeView: SourceCodeView,
         private val fileRecordingTabPane: FileRecordingTabPane,
-        private val fileChooser: Supplier<File>
+        private val fileChooser: Supplier<File?>
 ) : Initializable {
 
     @FXML
@@ -95,19 +95,25 @@ class PrimaryView(
     }
 
     fun openRecordedDump() {
-        // Without those calls font style won't be applied until user changes font for the first time
         val file = fileChooser.get() ?: return
+
         val rocksdbAvailable = RocksdbIndex.checkIfRocksdbAvailable()
         val index: Repository<Long, RecordedCallState> = if (rocksdbAvailable.isSuccess) {
             RocksdbIndex()
         } else {
             InMemoryRepository()
         }
+
         val storageReader = AsyncFileStorageReader(file, false, index)
 
         storageReader.processMetadataFuture.thenAccept { processMetadata ->
+
+            val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
+            fileRecordingsTab.setOnClosed {
+                storageReader.close()
+            }
+
             storageReader.subscribe { recording ->
-                val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
                 val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(processMetadata, recording)
                 recordingTab.update(recording)
                 Platform.runLater { recordingTab.refreshTreeView() }

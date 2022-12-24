@@ -37,6 +37,7 @@ public class AsyncFileStorageReader implements StorageReader {
     private final InMemoryRepository<Long, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
+    private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
     public AsyncFileStorageReader(File file, boolean autoStart) {
@@ -61,8 +62,8 @@ public class AsyncFileStorageReader implements StorageReader {
 
     public synchronized void start() {
         try {
-            Runnable task = new StorageReaderTask(file);
-            this.executorService.submit(task);
+            readingTask = new StorageReaderTask(file);
+            this.executorService.submit(readingTask);
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
         }
@@ -100,8 +101,20 @@ public class AsyncFileStorageReader implements StorageReader {
         try {
             executorService.awaitTermination(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new StorageException("Interrupted", e);
+            // nop
         }
+        StorageReaderTask readingTaskLocal = readingTask;
+        if (readingTaskLocal != null) {
+            readingTaskLocal.close();
+        }
+
+        recordingStates.values().forEach(state -> {
+            try {
+                state.close();
+            } catch (IOException e) {
+                // TODO log only
+            }
+        });
     }
 
     private class StorageReaderTask implements Runnable, Closeable {
@@ -149,6 +162,8 @@ public class AsyncFileStorageReader implements StorageReader {
                         default:
                             throw new StorageException("Unknown binary data id " + data.getBytes().id());
                     }
+                } catch (InterruptedException ie) {
+                    return;
                 } catch (Exception err) {
                     finishedReadingFuture.completeExceptionally(err);
                     return;
@@ -158,7 +173,12 @@ public class AsyncFileStorageReader implements StorageReader {
 
         @Override
         public void close() {
-
+            try {
+                this.reader.close();
+            } catch (IOException e) {
+                // TODO log only
+                throw new RuntimeException(e);
+            }
         }
 
         private void onProcessMetadata(BinaryList data) {
