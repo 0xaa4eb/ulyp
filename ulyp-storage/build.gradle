@@ -47,7 +47,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
-    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
+    compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
 
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
