@@ -87,10 +87,10 @@ class RecordingTab(
                 }
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
-                settings.increaseFont()
+                settings.increaseRecordingTreeFont()
             }
             if (key.code == KeyCode.MINUS) {
-                settings.decreaseFont()
+                settings.decreaseRecordingTreeFont()
             }
         }
         text = tabName

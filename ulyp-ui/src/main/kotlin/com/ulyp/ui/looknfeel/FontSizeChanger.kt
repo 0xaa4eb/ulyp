@@ -17,7 +17,7 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
         private const val STYLE_PREFIX = "call-tree-font-style"
     }
 
-    fun refresh(scene: Scene, fontSize: Double, fontName: String) {
+    fun refresh(scene: Scene, fontSettings: FontSettings) {
         try {
 
             val path = Files.createTempFile(STYLE_PREFIX, null)
@@ -25,21 +25,24 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
             Files.write(
                     path,
                     """
-                .ulyp-call-tree {
-                    -fx-font-family: ${fontName};
-                    -fx-font-size: ${fontSize}em;
-                }
-                .ulyp-call-tree-call-node {
-                    -fx-min-height: -1;
-                    -fx-max-height: -1;
-                }
-                .ulyp-tree-view {
-                    -fx-fixed-cell-size: ${fontSize * 1.7}em;
-                }
-                .ulyp-call-tree-identity-hash-code {
-                    -fx-font-size: ${fontSize * 0.8}em;
-                }
-                """.toByteArray(StandardCharsets.UTF_8),
+                    .root {
+                        -fx-font-size: ${fontSettings.systemFontSize}em;
+                    }
+                    .ulyp-call-tree {
+                        -fx-font-family: ${fontSettings.recordingTreeFontName};
+                        -fx-font-size: ${fontSettings.recordingTreeFontSize}em;
+                    }
+                    .ulyp-call-tree-call-node {
+                        -fx-min-height: -1;
+                        -fx-max-height: -1;
+                    }
+                    .ulyp-tree-view {
+                        -fx-fixed-cell-size: ${fontSettings.recordingTreeFontSize * 1.7}em;
+                    }
+                    .ulyp-call-tree-identity-hash-code {
+                        -fx-font-size: ${fontSettings.recordingTreeFontSize * 0.8}em;
+                    }
+                    """.toByteArray(StandardCharsets.UTF_8),
                     StandardOpenOption.WRITE
             )
             var index: Int? = null

@@ -1,3 +1,7 @@
+.root {
+    -fx-font-size: 1.0em;
+}
+
 .tooltip {
     -fx-font-size: 0.8em;
 }

@@ -23,6 +23,10 @@ class SettingsView(
     @FXML
     lateinit var fontChoiceBox: ChoiceBox<String>
     @FXML
+    lateinit var systemFontSizeSlider: Slider
+    @FXML
+    lateinit var systemFontSizeLabel: Label
+    @FXML
     lateinit var recordingTreeFontSizeSlider: Slider
     @FXML
     lateinit var recordingTreeFontSizeLabel: Label
@@ -42,11 +46,16 @@ class SettingsView(
             settings.fontName = selectedFont
         }
 
-        recordingTreeFontSizeSlider.blockIncrement = 0.05
+        systemFontSizeLabel.text = settings.systemFontSize.toString()
+        systemFontSizeSlider.value = settings.systemFontSize
+        systemFontSizeSlider.valueProperty().addListener {
+                _, _, newValue ->
+            settings.systemFontSize = newValue.toDouble()
+            systemFontSizeLabel.text = settings.systemFontSize.toString()
+        }
 
-        recordingTreeFontSizeSlider.value = settings.recordingTreeFontSize
         recordingTreeFontSizeLabel.text = settings.recordingTreeFontSize.toString()
-
+        recordingTreeFontSizeSlider.value = settings.recordingTreeFontSize
         recordingTreeFontSizeSlider.valueProperty().addListener {
             _, _, newValue ->
                 settings.recordingTreeFontSize = newValue.toDouble()
