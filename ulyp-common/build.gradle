@@ -38,8 +38,9 @@ repositories {
 
 dependencies {
     compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
+
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version

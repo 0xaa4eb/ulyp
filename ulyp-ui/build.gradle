@@ -42,7 +42,6 @@ dependencies {
     implementation "javax.annotation:javax.annotation-api:1.3.2"
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
@@ -54,6 +53,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-core', version: spring_version
 
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
