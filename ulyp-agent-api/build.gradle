@@ -20,13 +20,12 @@ def protocVersion = protobufVersion
 def grpcVersion = '1.27.0'
 
 dependencies {
+    compileOnly "javax.annotation:javax.annotation-api:1.2"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     compileOnly "io.grpc:grpc-netty:${grpcVersion}"
-
-    compileOnly "javax.annotation:javax.annotation-api:1.2"
-    compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 }

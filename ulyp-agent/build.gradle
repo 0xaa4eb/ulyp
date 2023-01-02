@@ -15,16 +15,20 @@ repositories {
 }
 
 dependencies {
+    implementation project(':ulyp-common')
     compileOnly project(':ulyp-agent-classes')
     runtimeOnly files('../ulyp-agent-classes/build/libs/ulyp-agent-classes.jarr')
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
 
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+    implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
-    testCompile project(':ulyp-agent-classes')
-    testCompile group: 'junit', name: 'junit', version: junit_version
-    testCompile group: 'org.hamcrest', name: 'hamcrest', version: hamcrest_version
+    testImplementation project(':ulyp-agent-classes')
+    testImplementation group: 'junit', name: 'junit', version: junit_version
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrest_version
 }
 
 repositories {

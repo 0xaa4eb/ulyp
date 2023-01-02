@@ -1,7 +1,8 @@
 package com.ulyp.agent.util;
 
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.storage.util.NamedThreadFactory;
+import com.ulyp.core.util.NamedThreadFactory;
+
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
@@ -12,9 +13,6 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.ulyp.core.util.LoggingSettings.LOG_LEVEL_PROPERTY;
 

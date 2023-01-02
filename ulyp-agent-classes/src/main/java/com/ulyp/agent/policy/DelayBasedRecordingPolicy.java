@@ -1,6 +1,6 @@
 package com.ulyp.agent.policy;
 
-import com.ulyp.storage.util.NamedThreadFactory;
+import com.ulyp.core.util.NamedThreadFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-    compile project(':ulyp-storage')
-    compile project(':ulyp-common')
+    implementation project(':ulyp-storage')
+    implementation project(':ulyp-common')
 
     implementation group: 'org.hdrhistogram', name: 'HdrHistogram', version: '2.1.4'
     implementation group: 'org.buildobjects', name: 'jproc', version: jproc_version

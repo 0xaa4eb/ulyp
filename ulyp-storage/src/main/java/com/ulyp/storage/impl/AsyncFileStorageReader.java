@@ -14,7 +14,7 @@ import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.impl.util.BinaryListFileReader;
-import com.ulyp.storage.util.NamedThreadFactory;
+import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import org.agrona.concurrent.UnsafeBuffer;

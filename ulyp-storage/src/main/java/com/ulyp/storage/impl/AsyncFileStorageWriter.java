@@ -8,7 +8,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.StorageWriter;
-import com.ulyp.storage.util.NamedThreadFactory;
+import com.ulyp.core.util.NamedThreadFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
