@@ -1,9 +1,5 @@
 buildscript {
     repositories {
-
-        mavenCentral()
-        jcenter()
-
         flatDir {
             dirs 'ulyp-ui/fernflower.jar'
         }
