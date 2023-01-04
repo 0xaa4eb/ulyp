@@ -16,7 +16,7 @@ class Settings(
         set(value) {
             fontSizeChanger.refresh(
                 UIApplication.stage.scene,
-                FontSettings(recordingTreeFontSize = recordingTreeFontSize, recordingTreeFontName = value, systemFontSize = 1.0)
+                FontSettings(recordingTreeFontSize = recordingTreeFontSize, recordingTreeFontName = value, systemFontSize = systemFontSize)
             )
             field = value
         }
@@ -37,7 +37,7 @@ class Settings(
             val valueRounded = (value * 50.0).roundToInt() * 1.0 / 50.0
             fontSizeChanger.refresh(
                 UIApplication.stage.scene,
-                FontSettings(recordingTreeFontSize = valueRounded, recordingTreeFontName = fontName, systemFontSize = 1.0)
+                FontSettings(recordingTreeFontSize = valueRounded, recordingTreeFontName = fontName, systemFontSize = systemFontSize)
             )
             field = valueRounded
         }
