@@ -32,7 +32,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.B")
+                        .withExcludeClassesProperty("com.agent.tests.general.a.b.B")
         );
 
 
@@ -58,7 +58,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.B, com.agent.tests.cases.a.c.C")
+                        .withExcludeClassesProperty("com.agent.tests.general.a.b.B, com.agent.tests.general.a.c.C")
         );
 
 
@@ -70,7 +70,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.**")
+                        .withExcludeClassesProperty("com.agent.tests.general.a.b.**")
         );
 
 
@@ -82,7 +82,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withExcludeClassesProperty("com.agent.tests.cases.a.b.**, com.agent.tests.cases.a.c.**")
+                        .withExcludeClassesProperty("com.agent.tests.general.a.b.**, com.agent.tests.general.a.c.**")
         );
 
 

@@ -18,7 +18,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withInstrumentedPackages("com.agent.tests.cases.a")
+                        .withInstrumentedPackages("com.agent.tests.general.a")
         );
 
         assertThat(root.getMethod().getName(), is("main"));
@@ -31,12 +31,12 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withInstrumentedPackages("com.agent.tests.cases.a")
-                        .withExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b")
+                        .withInstrumentedPackages("com.agent.tests.general.a")
+                        .withExcludedFromInstrumentationPackages("com.agent.tests.general.a.b")
         );
 
         assertThat(root.getMethod().getName(), is("main"));
-        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.cases.a.A"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.general.a.A"));
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
         CallRecord callRecord = root.getChildren().get(0);
@@ -50,12 +50,12 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
-                        .withInstrumentedPackages("com.agent.tests.cases.a")
-                        .withExcludedFromInstrumentationPackages("com.agent.tests.cases.a.b", "com.agent.tests.cases.a.c")
+                        .withInstrumentedPackages("com.agent.tests.general.a")
+                        .withExcludedFromInstrumentationPackages("com.agent.tests.general.a.b", "com.agent.tests.general.a.c")
         );
 
         assertThat(root.getMethod().getName(), is("main"));
-        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.cases.a.A"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.general.a.A"));
         assertThat(root.getChildren(), Matchers.empty());
     }
 }

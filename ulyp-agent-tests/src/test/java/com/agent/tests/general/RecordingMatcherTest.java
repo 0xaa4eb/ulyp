@@ -60,7 +60,7 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
                 runSubprocess(
                         new ForkProcessBuilder()
                                 .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("com.agent.tests.cases.RecordingMatcherTest.TestCases.main"))
+                                .withMethodToRecord(MethodMatcher.parse("com.agent.tests.general.RecordingMatcherTest.TestCases.main"))
                 ).recordings(),
                 hasSize(1)
         );

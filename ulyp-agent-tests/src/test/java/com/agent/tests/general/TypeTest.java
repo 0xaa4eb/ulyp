@@ -24,8 +24,8 @@ public class TypeTest extends AbstractInstrumentationTest {
 
         CallRecord root = recordingResult.getSingleRoot();
 
-        assertThat(root.getMethod().getImplementingType().getName(), is("com.agent.tests.cases.TypeTest$FooImpl"));
-        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.cases.TypeTest$FooImpl"));
+        assertThat(root.getMethod().getImplementingType().getName(), is("com.agent.tests.general.TypeTest$FooImpl"));
+        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.general.TypeTest$FooImpl"));
     }
 
     public interface Foo {
