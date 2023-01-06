@@ -31,6 +31,7 @@ public class Settings {
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
+    public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
     @NotNull
@@ -126,15 +127,22 @@ public class Settings {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
-        boolean recordConstructors = System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
-        boolean instrumentLambdas = System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
-        boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
+        boolean aggressive = System.getProperty(AGGRESSIVE_PROPERTY) != null;
+        boolean recordConstructors = aggressive || System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
+        boolean instrumentLambdas = aggressive || System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
 
-        String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
-        if (recordCollectionsProp.isEmpty()) {
-            recordCollectionsProp = CollectionsRecordingMode.ALL.name();
+        String recordCollectionsProp;
+        if (aggressive) {
+            recordCollectionsProp = CollectionsRecordingMode.JAVA.name();
+        } else {
+            recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
+            if (recordCollectionsProp.isEmpty()) {
+                recordCollectionsProp = CollectionsRecordingMode.ALL.name();
+            }
         }
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
+
+        boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
 
         Set<ClassMatcher> classesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_CLASSES_PROPERTY, ""))

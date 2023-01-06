@@ -14,6 +14,6 @@ public class SystemProp {
     }
 
     public String toJavaCmdLineProp() {
-        return "-D" + key + "=" + value;
+        return "-D" + key + (value != null ? ("=" + value) : "");
     }
 }
