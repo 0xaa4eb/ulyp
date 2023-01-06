@@ -21,6 +21,7 @@ public class ForkProcessBuilder {
     private String printClasses = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
+    private Boolean recordConstructors = null;
     private Boolean instrumentLambdas = null;
 
     public Class<?> getMainClassName() {
@@ -40,6 +41,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withRecordCollections(CollectionsRecordingMode mode) {
         collectionsRecordingMode = mode;
+        return this;
+    }
+
+    public ForkProcessBuilder withRecordConstructors() {
+        recordConstructors = true;
         return this;
     }
 
@@ -128,6 +134,9 @@ public class ForkProcessBuilder {
         }
         if (instrumentLambdas != null) {
             params.add("-D" + Settings.INSTRUMENT_LAMBDAS_PROPERTY);
+        }
+        if (recordConstructors != null) {
+            params.add("-D" + Settings.INSTRUMENT_CONSTRUCTORS_PROPERTY);
         }
 
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
