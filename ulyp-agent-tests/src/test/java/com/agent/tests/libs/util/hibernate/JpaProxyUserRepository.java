@@ -1,0 +1,32 @@
+package com.agent.tests.libs.util.hibernate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class JpaProxyUserRepository implements UserRepository {
+
+    @Autowired
+    private UserJpaRepository jpaRepository;
+
+    public User save(User newUser) {
+        UserJpaEntity newEntity = new UserJpaEntity(newUser);
+        UserJpaEntity savedEntity = jpaRepository.save(newEntity);
+        return savedEntity.toUser();
+    }
+
+    public List<User> all() {
+        List<UserJpaEntity> entities = jpaRepository.findAll();
+        List<User> users = new ArrayList<User>(entities.size());
+        for (UserJpaEntity entity : entities) {
+            User user = entity.toUser();
+            users.add(user);
+        }
+        return users;
+    }
+
+
+}
