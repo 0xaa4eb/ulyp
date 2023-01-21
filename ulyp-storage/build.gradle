@@ -38,7 +38,7 @@ repositories {
 dependencies {
     implementation project(':ulyp-common')
 
-    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: javax_annotation_version
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
@@ -50,7 +50,7 @@ dependencies {
     compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
 
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
-    testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
+    testImplementation group: 'org.awaitility', name: 'awaitility', version: awaitility_version
     testImplementation group: 'junit', name: 'junit', version: junit_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrest_version
 }
