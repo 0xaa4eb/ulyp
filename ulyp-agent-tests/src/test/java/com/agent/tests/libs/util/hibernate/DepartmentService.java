@@ -1,7 +1,5 @@
 package com.agent.tests.libs.util.hibernate;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,35 +17,7 @@ public class DepartmentService {
         repository.save(department);
     }
 
-    public void shufflePeople() {
-        List<Department> departments = repository.findAll();
-        LinkedList<Person> people = new LinkedList<>();
-
-        for (Department department : departments) {
-            Person person = department.removePerson();
-            people.add(person);
-        }
-
-        Collections.shuffle(people);
-
-        int peoplePerDep = people.size() / departments.size();
-
-        for (Department department : departments) {
-            for (int i = 0; i < peoplePerDep; i++) {
-                department.addPerson(people.removeLast());
-            }
-        }
-    }
-
-    public int countPeople() {
-        int count = 0;
-        for (Department department : repository.findAll()) {
-            count += department.getPeople().size();
-        }
-        return count;
-    }
-
-    public void removeAll() {
-        repository.deleteAll();
+    public List<Department> findAll() {
+        return repository.findAll();
     }
 }

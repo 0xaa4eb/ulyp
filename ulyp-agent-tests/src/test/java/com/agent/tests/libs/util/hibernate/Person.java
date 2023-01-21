@@ -12,7 +12,7 @@ public class Person {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     @Basic
     private String firstName;
     @Basic
@@ -27,11 +27,11 @@ public class Person {
     public Person() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public Person setId(long id) {
+    public Person setId(Long id) {
         this.id = id;
         return this;
     }

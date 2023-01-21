@@ -1,7 +1,10 @@
 package com.agent.tests.libs;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -60,6 +63,16 @@ public class HibernateRecordingTest extends AbstractInstrumentationTest {
             }
 
             departmentService.save(department);
+
+            List<Department> allDepartments = departmentService.findAll();
+
+            Assert.assertEquals(1, allDepartments.size());
+
+            Department departmentFromDb = allDepartments.get(0);
+            Set<Person> people = departmentFromDb.getPeople();
+            for (Person p : people) {
+                Assert.assertNotNull(p.getId());
+            }
         }
     }
 }
