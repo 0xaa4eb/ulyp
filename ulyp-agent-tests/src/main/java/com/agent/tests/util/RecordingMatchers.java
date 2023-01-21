@@ -23,6 +23,20 @@ public class RecordingMatchers {
         };
     }
 
+    public static Matcher<Method> hasSimpleName(String name) {
+        return new TypeSafeMatcher<Method>() {
+            @Override
+            protected boolean matchesSafely(Method item) {
+                return name.equals(item.getName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has method name ").appendValue(name);
+            }
+        };
+    }
+
     public static Matcher<CallRecord> hasMethod(Matcher<Method> methodMatcher) {
         return new TypeSafeMatcher<CallRecord>() {
             @Override
@@ -33,6 +47,20 @@ public class RecordingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("has method ").appendDescriptionOf(methodMatcher);
+            }
+        };
+    }
+
+    public static Matcher<CallRecord> hasAtLeastRecordedCalls(int recordedCalls) {
+        return new TypeSafeMatcher<CallRecord>() {
+            @Override
+            protected boolean matchesSafely(CallRecord item) {
+                return item.getSubtreeSize() >= recordedCalls;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has at least recorded calls ").appendValue(recordedCalls);
             }
         };
     }

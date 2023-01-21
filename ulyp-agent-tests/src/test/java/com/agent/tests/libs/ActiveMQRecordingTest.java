@@ -1,24 +1,25 @@
 package com.agent.tests.libs;
 
-import com.agent.tests.util.*;
-import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.storage.CallRecord;
-import net.openhft.chronicle.Chronicle;
-import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
-import net.openhft.chronicle.ExcerptTailer;
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.IllegalStateException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Test;
 
-import javax.jms.*;
-import javax.jms.IllegalStateException;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import com.agent.tests.util.AbstractInstrumentationTest;
+import com.agent.tests.util.DebugCallRecordTreePrinter;
+import com.agent.tests.util.ForkProcessBuilder;
+import com.agent.tests.util.RecordingResult;
+import com.ulyp.core.util.MethodMatcher;
+import com.ulyp.storage.CallRecord;
 
-import static com.agent.tests.util.RecordingMatchers.*;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
@@ -32,6 +33,7 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
                         .withMainClassName(ActiveMQTestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ActiveMQTestCase.main"))
                         .withInstrumentedPackages()
+                        .withRecordConstructors()
         );
 
         CallRecord singleRoot = recordingResult.getSingleRoot();

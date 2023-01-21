@@ -36,16 +36,4 @@ public class Department {
         this.id = id;
         return this;
     }
-
-    public Person removePerson() {
-        Person person = people.iterator().next();
-        people.remove(person);
-        person.setDepartment(null);
-        return person;
-    }
-
-    public void addPerson(Person person) {
-        people.add(person);
-        person.setDepartment(this);
-    }
 }

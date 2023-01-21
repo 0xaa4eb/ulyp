@@ -5,8 +5,8 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.CallRecord;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
+import net.openhft.chronicle.ExcerptAppender;
 import org.junit.Test;
 
 import java.io.File;
@@ -28,19 +28,16 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
                         .withInstrumentedPackages()
+// TODO fix this
+//                        .withRecordConstructors()
         );
 
-        CallRecord singleRoot = recordingResult.getSingleRoot();
+        CallRecord root = recordingResult.getSingleRoot();
+        String errMsg = DebugCallRecordTreePrinter.printTree(root);
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot.getSubtreeSize(),
-                greaterThan(100)
-        );
+        assertThat(errMsg, root.getSubtreeSize(), greaterThan(100));
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot,
+        assertThat(errMsg, root,
                 allOf(
                         hasChildCall(hasMethod(hasName("startExcerpt"))),
                         hasChildCall(hasMethod(hasName("writeInt"))),

@@ -33,15 +33,13 @@ public class HibernateRecordingTest extends AbstractInstrumentationTest {
                         .withMainClassName(HibernateSaveEntityTest.class)
                         .withMethodToRecord(MethodMatcher.parse("**.HibernateSaveEntityTest.main"))
                         .withInstrumentedPackages()
+                        .withRecordConstructors()
         );
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
+        String assertMsg = DebugCallRecordTreePrinter.printTree(singleRoot);
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot.getSubtreeSize(),
-                greaterThan(3000)
-        );
+        assertThat(assertMsg, singleRoot.getSubtreeSize(), greaterThan(15000));
     }
 
     public static class HibernateSaveEntityTest {
