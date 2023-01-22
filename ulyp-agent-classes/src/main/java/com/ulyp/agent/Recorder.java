@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("unused")
 @Slf4j
@@ -197,7 +196,7 @@ public class Recorder {
                     (
                             (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
                                     &&
-                                    currentRecordLog.size() > 0
+                                    currentRecordLog.getRecordedCallsSize() > 0
                     )) {
                 CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
 
@@ -207,7 +206,7 @@ public class Recorder {
                     threadLocalRecordsLog.clear();
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.INFO_ENABLED) {
-                        log.info("Finished recording {} at method {}, recorded {} calls", currentRecordLog.getRecordingMetadata().getId(), method.toShortString(), currentRecordLog.size());
+                        log.info("Finished recording {} at method {}, recorded {} calls", currentRecordLog.getRecordingMetadata().getId(), method.toShortString(), currentRecordLog.getTotalRecordedEnterCalls());
                     }
                 }
 

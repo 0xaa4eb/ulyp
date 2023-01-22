@@ -140,7 +140,11 @@ public class CallRecordLog {
         return recordingMetadata;
     }
 
-    public int size() {
+    public long getTotalRecordedEnterCalls() {
+        return nextCallId - rootCallId;
+    }
+
+    public int getRecordedCallsSize() {
         return recordedCalls.size();
     }
 
