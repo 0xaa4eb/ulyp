@@ -26,16 +26,32 @@ public class RecordingResult {
     }
 
     public CallRecord getSingleRoot() throws StorageException {
-        assertSingleRecordingSession();
+        assertHasSingleRecording();
 
         return aggregateByRecordings().iterator().next().getRoot();
     }
 
-    public void assertSingleRecordingSession() {
+    public void assertHasRecordings() {
+        List<Recording> recordings = aggregateByRecordings();
+        Assert.assertTrue(
+            "Expect to have at least one recording session, but got " + recordings.size(),
+            !recordings.isEmpty()
+        );
+    }
+
+    public void assertHasSingleRecording() {
         List<Recording> recordings = aggregateByRecordings();
         Assert.assertEquals(
                 "Expect single recording session, but got " + recordings.size(),
                 1, recordings.size()
+        );
+    }
+
+    public void assertNoRecordings() {
+        List<Recording> recordings = aggregateByRecordings();
+        Assert.assertEquals(
+            "Expect no recording sessions, but got " + recordings.size(),
+            0, recordings.size()
         );
     }
 

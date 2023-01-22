@@ -22,8 +22,8 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
     private final ForMethodIdOffsetMapping instance;
 
-    public MethodIdFactory(RecordMethodList recordMethodList) {
-        this.instance = new ForMethodIdOffsetMapping(recordMethodList);
+    public MethodIdFactory(StartRecordingMethods startRecordingMethods) {
+        this.instance = new ForMethodIdOffsetMapping(startRecordingMethods);
     }
 
     @Override
@@ -51,10 +51,10 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
         private final ThreadLocal<IdMapping> lastMethod = new ThreadLocal<>();
         private final ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver();
-        private final RecordMethodList recordMethodList;
+        private final StartRecordingMethods startRecordingMethods;
 
-        ForMethodIdOffsetMapping(RecordMethodList recordMethodList) {
-            this.recordMethodList = recordMethodList;
+        ForMethodIdOffsetMapping(StartRecordingMethods startRecordingMethods) {
+            this.startRecordingMethods = startRecordingMethods;
         }
 
         public Target resolve(TypeDescription instrumentedType,
@@ -74,7 +74,7 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
                 id = idMapping.methodId;
             } else {
                 Method method = byteBuddyMethodResolver.resolve(instrumentedType, instrumentedMethod);
-                if (recordMethodList.shouldStartRecording(method)) {
+                if (startRecordingMethods.shouldStartRecording(method)) {
                     method.setShouldStartRecording(true);
                 }
                 id = methodRepository.putAndGetId(method);

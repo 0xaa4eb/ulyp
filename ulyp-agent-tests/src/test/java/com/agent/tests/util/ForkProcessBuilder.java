@@ -13,6 +13,7 @@ public class ForkProcessBuilder {
     private final List<SystemProp> systemProps = new ArrayList<>();
     private Class<?> mainClassName;
     private MethodMatcher methodToRecord;
+    private String excludeRecordingMethods;
     private OutputFile outputFile = new OutputFile();
     private PackageList instrumentedPackages = new PackageList();
     private String excludeClassesProperty = null;
@@ -61,6 +62,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withAgentDisabled(Boolean agentDisabled) {
         this.agentDisabled = agentDisabled;
+        return this;
+    }
+
+    public ForkProcessBuilder withExcludeStartRecordingMethods(String method) {
+        this.excludeRecordingMethods = method;
         return this;
     }
 
@@ -137,6 +143,9 @@ public class ForkProcessBuilder {
         }
         if (recordConstructors != null) {
             params.add("-D" + Settings.INSTRUMENT_CONSTRUCTORS_PROPERTY);
+        }
+        if (excludeRecordingMethods != null) {
+            params.add("-D" + Settings.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
         }
 
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());

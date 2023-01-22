@@ -53,10 +53,10 @@ public class Agent {
 
         PackageList instrumentedPackages = settings.getInstrumentatedPackages();
         PackageList excludedPackages = settings.getExcludedFromInstrumentationPackages();
-        RecordMethodList recordMethodList = settings.getRecordMethodList();
+        StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
 
-        if (recordMethodList.isEmpty()) {
-            recordMethodList = RecordMethodList.of(
+        if (startRecordingMethods.isEmpty()) {
+            startRecordingMethods = StartRecordingMethods.of(
                     new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
             );
         }
@@ -110,7 +110,7 @@ public class Agent {
             finalMatcher = finalMatcher.and(instrumentationMatcher);
         }
 
-        MethodIdFactory methodIdFactory = new MethodIdFactory(recordMethodList);
+        MethodIdFactory methodIdFactory = new MethodIdFactory(startRecordingMethods);
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
                 .type(finalMatcher)

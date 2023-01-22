@@ -25,6 +25,7 @@ public class Settings {
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
+    public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
@@ -39,7 +40,7 @@ public class Settings {
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull
-    private final RecordMethodList recordMethodList;
+    private final StartRecordingMethods startRecordingMethods;
     private final List<ClassMatcher> excludeFromInstrumentationClasses;
     private final boolean instrumentConstructors;
     private final boolean instrumentLambdas;
@@ -53,7 +54,7 @@ public class Settings {
             @NotNull Supplier<StorageWriter> storageWriterSupplier,
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
-            @NotNull RecordMethodList recordMethodList,
+            @NotNull StartRecordingMethods startRecordingMethods,
             boolean instrumentConstructors,
             boolean instrumentLambdas,
             CollectionsRecordingMode collectionsRecordingMode,
@@ -65,7 +66,7 @@ public class Settings {
         this.storageWriterSupplier = storageWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
-        this.recordMethodList = recordMethodList;
+        this.startRecordingMethods = startRecordingMethods;
         this.instrumentConstructors = instrumentConstructors;
         this.instrumentLambdas = instrumentLambdas;
         this.collectionsRecordingMode = collectionsRecordingMode;
@@ -88,8 +89,9 @@ public class Settings {
                 .map(ClassMatcher::parse)
                 .collect(Collectors.toList());
 
-        String methodsToRecord = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
-        RecordMethodList recordingStartMethods = RecordMethodList.parse(methodsToRecord);
+        String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
+        String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
+        StartRecordingMethods recordingStartMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
 
         Supplier<StorageWriter> storageWriterSupplier;
         String filePath = System.getProperty(FILE_PATH_PROPERTY);
@@ -184,8 +186,8 @@ public class Settings {
     }
 
     @NotNull
-    public RecordMethodList getRecordMethodList() {
-        return recordMethodList;
+    public StartRecordingMethods getRecordMethodList() {
+        return startRecordingMethods;
     }
 
     public StorageWriter buildStorageWriter() {
@@ -221,7 +223,7 @@ public class Settings {
         return "file: " + storageWriterSupplier +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
-                ",\nstart recording at methods: " + recordMethodList +
+                ",\nstart recording at methods: " + startRecordingMethods +
                 ",\ninstrument constructors: " + instrumentConstructors +
                 ",\ninstrument lambdas: " + instrumentLambdas +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
