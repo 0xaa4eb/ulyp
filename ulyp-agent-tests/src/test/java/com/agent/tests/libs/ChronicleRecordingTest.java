@@ -28,8 +28,6 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
                         .withInstrumentedPackages()
-// TODO fix this
-//                        .withRecordConstructors()
         );
 
         CallRecord root = recordingResult.getSingleRoot();
