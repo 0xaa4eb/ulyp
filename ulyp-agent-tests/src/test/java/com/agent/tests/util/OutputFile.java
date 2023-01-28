@@ -1,6 +1,7 @@
 package com.agent.tests.util;
 
 import com.ulyp.core.util.TempFile;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.impl.AsyncFileStorageReader;
 
@@ -13,7 +14,7 @@ public class OutputFile {
     }
 
     public StorageReader toReader() {
-        return new AsyncFileStorageReader(file.toPath().toFile(), true);
+        return new AsyncFileStorageReader(ReaderSettings.builder().file(file.toPath().toFile()).autoStartReading(true).build());
     }
 
     @Override

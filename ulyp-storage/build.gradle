@@ -40,6 +40,7 @@ dependencies {
 
     compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: javax_annotation_version
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
+    testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version

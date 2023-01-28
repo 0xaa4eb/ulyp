@@ -9,6 +9,7 @@ import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.core.util.Backoff;
 import com.ulyp.core.util.FixedDelayBackoff;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class AsyncFileStorageReader implements StorageReader {
 
     private final File file;
+    private final ReaderSettings readerSettings;
     private final ExecutorService executorService;
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
@@ -40,13 +42,10 @@ public class AsyncFileStorageReader implements StorageReader {
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
-    public AsyncFileStorageReader(File file, boolean autoStart) {
-        this(file, autoStart, new RocksdbIndex());
-    }
-
-    public AsyncFileStorageReader(File file, boolean autoStart, Repository<Long, RecordedCallState> index) {
-        this.file = file;
-        this.index = index;
+    public AsyncFileStorageReader(ReaderSettings readerSettings) {
+        this.file = readerSettings.getFile();
+        this.index = readerSettings.getIndexSupplier().get();
+        this.readerSettings = readerSettings;
         this.executorService = Executors.newFixedThreadPool(
                 1,
                 NamedThreadFactory.builder()
@@ -55,7 +54,7 @@ public class AsyncFileStorageReader implements StorageReader {
                         .build()
         );
 
-        if (autoStart) {
+        if (readerSettings.isAutoStartReading()) {
             start();
         }
     }
@@ -63,7 +62,7 @@ public class AsyncFileStorageReader implements StorageReader {
     public synchronized void start() {
         try {
             readingTask = new StorageReaderTask(file);
-            this.executorService.submit(readingTask);
+            executorService.submit(readingTask);
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
         }

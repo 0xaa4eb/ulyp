@@ -61,9 +61,12 @@ public class RecordingState implements Closeable {
 
                     RecordedCallState lastCallState = memCallStack.peek();
                     if (lastCallState == null || lastCallState.getCallId() != value.getCallId()) {
+/*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
                                 "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
                                 " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.constructors option)");
+*/
+                        return;
                     }
 
                     memCallStack.pop();

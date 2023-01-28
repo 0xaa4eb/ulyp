@@ -2,6 +2,7 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.StorageWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
@@ -25,7 +26,7 @@ public class AsyncStorageWriterTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(AsyncStorageWriterTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(file, false);
+        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
         this.writer = new AsyncFileStorageWriter(new FileStorageWriter(file));
     }
 

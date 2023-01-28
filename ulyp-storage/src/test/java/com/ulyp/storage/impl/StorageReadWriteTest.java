@@ -7,6 +7,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.StorageWriter;
@@ -49,7 +50,7 @@ public class StorageReadWriteTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(file, true);
+        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
         this.writer = new FileStorageWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()

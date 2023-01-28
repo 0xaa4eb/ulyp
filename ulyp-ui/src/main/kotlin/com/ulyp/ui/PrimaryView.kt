@@ -3,6 +3,7 @@ package com.ulyp.ui
 import com.ulyp.core.exception.UlypException
 import com.ulyp.core.repository.InMemoryRepository
 import com.ulyp.core.repository.Repository
+import com.ulyp.storage.ReaderSettings
 import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.storage.impl.RecordedCallState
 import com.ulyp.storage.impl.RocksdbIndex
@@ -104,7 +105,7 @@ class PrimaryView(
             InMemoryRepository()
         }
 
-        val storageReader = AsyncFileStorageReader(file, false, index)
+        val storageReader = AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).indexSupplier { index }.build())
 
         storageReader.processMetadataFuture.thenAccept { processMetadata ->
 

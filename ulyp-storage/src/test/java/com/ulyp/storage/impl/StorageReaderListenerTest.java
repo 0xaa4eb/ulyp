@@ -8,6 +8,7 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageWriter;
 import org.awaitility.Awaitility;
@@ -51,7 +52,7 @@ public class StorageReaderListenerTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReaderListenerTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(file, false);
+        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
         this.writer = new FileStorageWriter(file);
 
         recordingMetadata1 = RecordingMetadata.builder()

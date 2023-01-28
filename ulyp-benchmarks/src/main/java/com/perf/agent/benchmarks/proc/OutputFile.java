@@ -1,6 +1,7 @@
 package com.perf.agent.benchmarks.proc;
 
 import com.ulyp.core.exception.UlypException;
+import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.StorageReader;
 import com.ulyp.storage.impl.AsyncFileStorageReader;
 
@@ -23,7 +24,7 @@ public class OutputFile {
     }
 
     public StorageReader toReader() {
-        StorageReader reader = new AsyncFileStorageReader(file.toFile(), true);
+        StorageReader reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file.toFile()).autoStartReading(true).build());
         try {
             reader.getFinishedReadingFuture().get(180, TimeUnit.SECONDS);
         } catch (Exception e) {
