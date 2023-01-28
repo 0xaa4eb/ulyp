@@ -65,10 +65,6 @@ public class CallRecord {
         return childrenCallIds;
     }
 
-    public long getCallId() {
-        return callId;
-    }
-
     public List<ObjectRecord> getArgs() {
         return args;
     }
