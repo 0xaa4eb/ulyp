@@ -154,8 +154,10 @@ public class ByteBuddyTypeResolver implements TypeResolver {
 
             TypeDescription.Generic arrayComponentType = type.getComponentType();
 
-            if (PRIMITIVE_BYTE.equals(arrayComponentType)) {
-                traits.add(TypeTrait.PRIMITIVE_BYTE_ARRAY);
+            if (arrayComponentType.isPrimitive()) {
+                if (PRIMITIVE_BYTE.equals(arrayComponentType)) {
+                    traits.add(TypeTrait.PRIMITIVE_BYTE_ARRAY);
+                }
             } else {
                 traits.add(TypeTrait.NON_PRIMITIVE_ARRAY);
             }
