@@ -62,10 +62,10 @@ public class ByteBuddyTypeResolverTest {
     public void testTraitsForPrimitiveArray() {
 
 
-        Type byteBuddyType = typeResolver.get(new int[]{45});
+        Type byteBuddyType = typeResolver.get(new byte[]{45});
 
 
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.PRIMITIVE_ARRAY));
+        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.PRIMITIVE_BYTE_ARRAY));
     }
 
     @Test

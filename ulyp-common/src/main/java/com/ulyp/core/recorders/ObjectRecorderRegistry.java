@@ -1,6 +1,7 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
@@ -30,6 +31,7 @@ public enum ObjectRecorderRegistry {
     BOOLEAN_RECORDER(new BooleanRecorder((byte) 100), 1),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
+    BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),
     COLLECTION_RECORDER(new CollectionRecorder((byte) 10), 1),
     MAP_RECORDER(new MapRecorder((byte) 13), 1),
     OPTIONAL_RECORDER(new OptionalRecorder((byte) 25), 90),

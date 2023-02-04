@@ -6,8 +6,8 @@ public class StringObjectRecord extends ObjectRecord {
 
     private final String value;
 
-    public StringObjectRecord(Type classDescription, String value) {
-        super(classDescription);
+    public StringObjectRecord(Type type, String value) {
+        super(type);
         this.value = value;
     }
 

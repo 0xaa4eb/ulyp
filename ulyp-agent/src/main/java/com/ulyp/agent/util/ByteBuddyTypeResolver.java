@@ -24,6 +24,10 @@ public class ByteBuddyTypeResolver implements TypeResolver {
 
     private static final TypeDescription.Generic BYTE_BUDDY_STRING_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(String.class);
 
+    private static final TypeDescription.Generic PRIMITIVE_LONG = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(long.class);
+    private static final TypeDescription.Generic PRIMITIVE_INT = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(int.class);
+    private static final TypeDescription.Generic PRIMITIVE_SHORT = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(short.class);
+    private static final TypeDescription.Generic PRIMITIVE_BYTE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(byte.class);
     private static final Set<TypeDescription.Generic> PRIMITIVE_INTEGRAL_TYPES = new HashSet<>();
     private static final Set<TypeDescription.Generic> BOXED_INTEGRAL_TYPES = new HashSet<>();
     private static final Set<TypeDescription.Generic> PRIMITIVE_DOUBLE_TYPES = new HashSet<>();
@@ -38,10 +42,10 @@ public class ByteBuddyTypeResolver implements TypeResolver {
     private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
 
     static {
-        PRIMITIVE_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(long.class));
-        PRIMITIVE_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(int.class));
-        PRIMITIVE_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(short.class));
-        PRIMITIVE_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(byte.class));
+        PRIMITIVE_INTEGRAL_TYPES.add(PRIMITIVE_LONG);
+        PRIMITIVE_INTEGRAL_TYPES.add(PRIMITIVE_INT);
+        PRIMITIVE_INTEGRAL_TYPES.add(PRIMITIVE_SHORT);
+        PRIMITIVE_INTEGRAL_TYPES.add(PRIMITIVE_BYTE);
 
         PRIMITIVE_DOUBLE_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(double.class));
         PRIMITIVE_DOUBLE_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(float.class));
@@ -147,8 +151,11 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         } else if (type.equals(BYTE_BUDDY_STRING_TYPE)) {
             traits.add(TypeTrait.JAVA_LANG_STRING);
         } else if (type.isArray()) {
-            if (type.getComponentType().isPrimitive()) {
-                traits.add(TypeTrait.PRIMITIVE_ARRAY);
+
+            TypeDescription.Generic arrayComponentType = type.getComponentType();
+
+            if (PRIMITIVE_BYTE.equals(arrayComponentType)) {
+                traits.add(TypeTrait.PRIMITIVE_BYTE_ARRAY);
             } else {
                 traits.add(TypeTrait.NON_PRIMITIVE_ARRAY);
             }

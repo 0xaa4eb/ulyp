@@ -12,7 +12,7 @@ public enum TypeTrait {
     INTEGRAL,
     CHAR,
     FRACTIONAL,
-    PRIMITIVE_ARRAY,
+    PRIMITIVE_BYTE_ARRAY,
     NON_PRIMITIVE_ARRAY,
     ENUM,
     COLLECTION,

@@ -44,7 +44,7 @@ public class CollectionRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS_FLAG) {
@@ -56,12 +56,12 @@ public class CollectionRecorder extends ObjectRecorder {
                 items.add(input.readObject(typeResolver));
             }
             return new CollectionRecord(
-                    classDescription,
+                    type,
                     collectionSize,
                     items
             );
         } else {
-            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
+            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
         }
     }
 

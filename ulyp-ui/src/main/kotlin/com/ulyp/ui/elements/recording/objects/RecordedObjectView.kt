@@ -1,6 +1,7 @@
 package com.ulyp.ui.elements.recording.objects
 
 import com.ulyp.core.recorders.*
+import com.ulyp.core.recorders.arrays.ByteArrayRecord
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
@@ -22,7 +23,8 @@ abstract class RecordedObjectView protected constructor() : TextFlow() {
                 is NotRecordedObjectRecord -> NotRecordedObject(renderSettings)
                 is NumberRecord -> RecordedNumberView(record.numberPrintedText, record.getType(), renderSettings)
                 is FileRecord -> RecordedFileView(record.path, record.getType(), renderSettings)
-                is ObjectArrayRecord -> RecordedObjectArray(record, renderSettings)
+                is ObjectArrayRecord -> RecordedObjectArrayView(record, renderSettings)
+                is ByteArrayRecord -> RecordedByteArrayView(record)
                 is CollectionRecord -> RecordedCollectionView(record, renderSettings)
                 is MapEntryRecord -> RecordedMapEntry(record, renderSettings)
                 is ClassObjectRecord -> RecordedClassObjectView(record, renderSettings)
