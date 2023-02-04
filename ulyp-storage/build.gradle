@@ -40,6 +40,7 @@ dependencies {
 
     compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: javax_annotation_version
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
+    testImplementation group: 'javax.annotation', name: 'javax.annotation-api', version: javax_annotation_version
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
@@ -49,6 +50,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
     compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
+    testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
 
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     testImplementation group: 'org.awaitility', name: 'awaitility', version: awaitility_version

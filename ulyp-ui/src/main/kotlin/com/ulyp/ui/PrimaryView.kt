@@ -105,7 +105,12 @@ class PrimaryView(
             InMemoryRepository()
         }
 
-        val storageReader = AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).indexSupplier { index }.build())
+        val storageReader = AsyncFileStorageReader(ReaderSettings.builder()
+            .file(file)
+            .autoStartReading(false)
+            .indexSupplier { index }
+            .build()
+        )
 
         storageReader.processMetadataFuture.thenAccept { processMetadata ->
 

@@ -31,21 +31,21 @@ import java.util.stream.Collectors;
 public class AsyncFileStorageReader implements StorageReader {
 
     private final File file;
-    private final ReaderSettings readerSettings;
+    private final ReaderSettings settings;
     private final ExecutorService executorService;
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
     private final Repository<Long, RecordedCallState> index;
     private final InMemoryRepository<Long, Type> types = new InMemoryRepository<>();
-    private final InMemoryRepository<Integer, RecordingState> recordingStates = new InMemoryRepository<>();
+    private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
-    public AsyncFileStorageReader(ReaderSettings readerSettings) {
-        this.file = readerSettings.getFile();
-        this.index = readerSettings.getIndexSupplier().get();
-        this.readerSettings = readerSettings;
+    public AsyncFileStorageReader(ReaderSettings settings) {
+        this.file = settings.getFile();
+        this.index = settings.getIndexSupplier().get();
+        this.settings = settings;
         this.executorService = Executors.newFixedThreadPool(
                 1,
                 NamedThreadFactory.builder()
@@ -54,14 +54,14 @@ public class AsyncFileStorageReader implements StorageReader {
                         .build()
         );
 
-        if (readerSettings.isAutoStartReading()) {
+        if (settings.isAutoStartReading()) {
             start();
         }
     }
 
     public synchronized void start() {
         try {
-            readingTask = new StorageReaderTask(file);
+            readingTask = new StorageReaderTask(file, settings);
             executorService.submit(readingTask);
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
@@ -88,8 +88,9 @@ public class AsyncFileStorageReader implements StorageReader {
 
     @Override
     public List<Recording> getRecordings() {
-        return recordingStates.values()
+        return recordings.values()
                 .stream()
+                .filter(RecordingState::isPublished)
                 .map(Recording::new)
                 .collect(Collectors.toList());
     }
@@ -107,7 +108,7 @@ public class AsyncFileStorageReader implements StorageReader {
             readingTaskLocal.close();
         }
 
-        recordingStates.values().forEach(state -> {
+        recordings.values().forEach(state -> {
             try {
                 state.close();
             } catch (IOException e) {
@@ -119,9 +120,11 @@ public class AsyncFileStorageReader implements StorageReader {
     private class StorageReaderTask implements Runnable, Closeable {
 
         private final BinaryListFileReader reader;
+        private final ReaderSettings settings;
 
-        private StorageReaderTask(File file) throws IOException {
+        private StorageReaderTask(File file, ReaderSettings settings) throws IOException {
             this.reader = new BinaryListFileReader(file);
+            this.settings = settings;
         }
 
         @Override
@@ -194,15 +197,14 @@ public class AsyncFileStorageReader implements StorageReader {
             BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
             decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
             RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
-            RecordingState recordingState = recordingStates.computeIfAbsent(
+            RecordingState recordingState = recordings.computeIfAbsent(
                     metadata.getId(),
                     () -> new RecordingState(
                             metadata,
                             index,
                             new DataReader(file),
                             methods,
-                            types,
-                            recordingListener)
+                            types)
             );
             recordingState.update(metadata);
         }
@@ -216,9 +218,16 @@ public class AsyncFileStorageReader implements StorageReader {
             if (recordedMethodCalls.isEmpty()) {
                 return;
             }
-            RecordedMethodCall first = recordedMethodCalls.iterator().next();
-            RecordingState recordingState = recordingStates.get(first.getRecordingId());
+            int recordingId = recordedMethodCalls.iterator().next().getRecordingId();
+            RecordingState recordingState = recordings.get(recordingId);
             recordingState.onNewRecordedCalls(data.getAddress(), recordedMethodCalls);
+            if (recordingState.isPublished()) {
+                recordingListener.onRecordingUpdated(recordingState.toRecording());
+            } else {
+                if (settings.getFilter().shouldPublish(recordingState.toRecording()) && recordingState.publish()) {
+                    recordingListener.onRecordingUpdated(recordingState.toRecording());
+                }
+            }
         }
 
         private void onMethods(BinaryList data) {

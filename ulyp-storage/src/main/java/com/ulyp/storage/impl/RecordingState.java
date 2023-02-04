@@ -22,8 +22,8 @@ public class RecordingState implements Closeable {
     private final MemCallStack memCallStack = new MemCallStack();
     private final ReadableRepository<Long, Method> methodRepository;
     private final ReadableRepository<Long, Type> typeRepository;
-    private final RecordingListener listener;
     private final RecordingMetadata metadata;
+    private volatile boolean published = false;
 
     private long rootCallId = -1;
 
@@ -32,54 +32,60 @@ public class RecordingState implements Closeable {
             Repository<Long, RecordedCallState> index,
             DataReader dataReader,
             ReadableRepository<Long, Method> methodRepository,
-            ReadableRepository<Long, Type> typeRepository,
-            RecordingListener recordingListener) {
+            ReadableRepository<Long, Type> typeRepository) {
         this.index = index;
         this.metadata = metadata;
         this.reader = dataReader;
         this.methodRepository = methodRepository;
         this.typeRepository = typeRepository;
-        this.listener = recordingListener;
     }
 
-    void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
-        synchronized (this) {
-            AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
-            while (iterator.hasNext()) {
-                RecordedMethodCall value = iterator.next();
-                long relativeAddress = iterator.address();
-                if (value instanceof RecordedEnterMethodCall) {
-                    if (rootCallId < 0) {
-                        rootCallId = value.getCallId();
-                    }
-                    RecordedCallState callState = RecordedCallState.builder()
-                            .callId(value.getCallId())
-                            .enterMethodCallAddr(fileAddr + relativeAddress)
-                            .build();
-                    memCallStack.push(callState);
-                } else {
+    synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+        AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
+        while (iterator.hasNext()) {
+            RecordedMethodCall value = iterator.next();
+            long relativeAddress = iterator.address();
+            if (value instanceof RecordedEnterMethodCall) {
+                if (rootCallId < 0) {
+                    rootCallId = value.getCallId();
+                }
+                RecordedCallState callState = RecordedCallState.builder()
+                    .callId(value.getCallId())
+                    .enterMethodCallAddr(fileAddr + relativeAddress)
+                    .build();
+                memCallStack.push(callState);
+            } else {
 
-                    RecordedCallState lastCallState = memCallStack.peek();
-                    if (lastCallState == null || lastCallState.getCallId() != value.getCallId()) {
+                RecordedCallState lastCallState = memCallStack.peek();
+                if (lastCallState == null || lastCallState.getCallId() != value.getCallId()) {
 /*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
                                 "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
                                 " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.constructors option)");
 */
-                        return;
-                    }
-
-                    memCallStack.pop();
-                    lastCallState.setExitMethodCallAddr(fileAddr + relativeAddress);
-                    index.store(lastCallState.getCallId(), lastCallState);
+                    return;
                 }
+
+                memCallStack.pop();
+                lastCallState.setExitMethodCallAddr(fileAddr + relativeAddress);
+                index.store(lastCallState.getCallId(), lastCallState);
             }
         }
-
-        listener.onRecordingUpdated(this.toRecording());
     }
 
-    private synchronized Recording toRecording() {
+    public boolean isPublished() {
+        return published;
+    }
+
+    synchronized boolean publish() {
+        if (!published) {
+            published = true;
+            return true;
+        }
+        return false;
+    }
+
+    synchronized Recording toRecording() {
         return new Recording(this);
     }
 
