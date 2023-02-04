@@ -22,7 +22,7 @@ public class PathRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.getName().equals(PATH_TYPE_NAME);
     }
 

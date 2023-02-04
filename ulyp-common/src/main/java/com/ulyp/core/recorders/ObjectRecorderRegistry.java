@@ -1,6 +1,9 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
+import com.ulyp.core.recorders.collections.CollectionRecorder;
+import com.ulyp.core.recorders.collections.MapRecorder;
 
 /**
  * All object recorer registry. Every recorder is provided with two values: a unique id and an order.
@@ -52,6 +55,7 @@ public enum ObjectRecorderRegistry {
 
     private final ObjectRecorder instance;
     private final int order;
+
     ObjectRecorderRegistry(ObjectRecorder instance, int order) {
         this.instance = instance;
         this.order = order;

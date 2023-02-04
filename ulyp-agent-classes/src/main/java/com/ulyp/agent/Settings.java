@@ -1,6 +1,6 @@
 package com.ulyp.agent;
 
-import com.ulyp.core.recorders.CollectionsRecordingMode;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;

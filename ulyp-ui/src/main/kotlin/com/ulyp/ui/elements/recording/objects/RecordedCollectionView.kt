@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.CollectionRecord
+import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.ObjectRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style

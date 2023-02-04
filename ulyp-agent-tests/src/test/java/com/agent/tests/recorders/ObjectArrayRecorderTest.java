@@ -3,6 +3,7 @@ package com.agent.tests.recorders;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Assert;

@@ -28,7 +28,7 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return classesToPrint.stream().anyMatch(matcher -> matcher.matches(type));
     }
 

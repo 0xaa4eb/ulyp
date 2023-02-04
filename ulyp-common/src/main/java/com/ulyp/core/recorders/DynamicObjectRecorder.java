@@ -15,7 +15,7 @@ public class DynamicObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.isInterface() || type.isExactlyJavaLangObject() || type.isTypeVar();
     }
 

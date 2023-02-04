@@ -14,7 +14,7 @@ public class EnumRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.isEnum();
     }
 

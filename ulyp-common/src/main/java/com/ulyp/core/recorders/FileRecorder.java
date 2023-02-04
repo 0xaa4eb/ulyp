@@ -21,7 +21,7 @@ public class FileRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.getName().equals(FILE_TYPE_NAME);
     }
 

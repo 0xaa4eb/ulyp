@@ -3,6 +3,8 @@ package com.agent.tests.recorders;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.collections.CollectionRecord;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;

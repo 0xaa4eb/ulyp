@@ -1,6 +1,10 @@
 package com.ulyp.ui.elements.recording.objects
 
 import com.ulyp.core.recorders.*
+import com.ulyp.core.recorders.arrays.ObjectArrayRecord
+import com.ulyp.core.recorders.collections.CollectionRecord
+import com.ulyp.core.recorders.collections.MapEntryRecord
+import com.ulyp.core.recorders.collections.MapRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import javafx.scene.Node

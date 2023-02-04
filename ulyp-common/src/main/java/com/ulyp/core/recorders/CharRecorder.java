@@ -15,7 +15,7 @@ public class CharRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.getTraits().contains(TypeTrait.CHAR);
     }
 

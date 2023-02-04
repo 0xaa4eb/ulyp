@@ -18,7 +18,7 @@ public class DateRecorder extends ObjectRecorder {
     }
 
     @Override
-    boolean supports(Type type) {
+    public boolean supports(Type type) {
         return type.getName().equals(JAVA_UTIL_DATE_CLASS_NAME);
     }
 
