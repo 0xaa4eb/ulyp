@@ -3,6 +3,7 @@ package com.ulyp.ui
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.ThemeManager
+import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.util.Settings
 import javafx.stage.FileChooser
 import javafx.stage.Stage
@@ -25,6 +26,7 @@ open class Configuration {
     @Lazy
     open fun primaryView(
             applicationContext: ApplicationContext,
+            filterRegistry: FilterRegistry,
             sourceCodeView: SourceCodeView,
             fileRecordingTabPane: FileRecordingTabPane,
             stage: Stage
@@ -33,6 +35,7 @@ open class Configuration {
 
         return PrimaryView(
                 applicationContext,
+                filterRegistry,
                 sourceCodeView,
                 fileRecordingTabPane
         ) { fileChooser.showOpenDialog(stage) }
@@ -47,6 +50,16 @@ open class Configuration {
             settings: Settings
     ): SettingsView {
         return SettingsView(themeManager, settings)
+    }
+
+    @Bean
+    @Lazy
+    open fun filterView(
+        applicationContext: ApplicationContext,
+        stage: Stage,
+        filterRegistry: FilterRegistry
+    ): FilterView {
+        return FilterView(filterRegistry)
     }
 
     @Bean

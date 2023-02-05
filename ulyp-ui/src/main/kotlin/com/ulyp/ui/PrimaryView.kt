@@ -3,6 +3,7 @@ package com.ulyp.ui
 import com.ulyp.core.exception.UlypException
 import com.ulyp.core.repository.InMemoryRepository
 import com.ulyp.core.repository.Repository
+import com.ulyp.storage.Filter
 import com.ulyp.storage.ReaderSettings
 import com.ulyp.storage.impl.AsyncFileStorageReader
 import com.ulyp.storage.impl.RecordedCallState
@@ -13,6 +14,7 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
+import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -33,10 +35,11 @@ import kotlin.system.exitProcess
 
 
 class PrimaryView(
-        private val applicationContext: ApplicationContext,
-        private val sourceCodeView: SourceCodeView,
-        private val fileRecordingTabPane: FileRecordingTabPane,
-        private val fileChooser: Supplier<File?>
+    private val applicationContext: ApplicationContext,
+    private val filterRegistry: FilterRegistry,
+    private val sourceCodeView: SourceCodeView,
+    private val fileRecordingTabPane: FileRecordingTabPane,
+    private val fileChooser: Supplier<File?>
 ) : Initializable {
 
     @FXML
@@ -71,22 +74,31 @@ class PrimaryView(
         exitProcess(0)
     }
 
+    fun showFilterView() {
+        val loader = FXMLLoader(UIApplication::class.java.classLoader.getResource("FilterView.fxml"))
+        loader.controllerFactory = Callback { cl: Class<*>? -> applicationContext.getBean(cl) }
+        val root = loader.load<Parent>()
+        val scene = applicationContext.getBean(SceneRegistry::class.java).newScene(root)
+        val stage = Stage()
+        stage.scene = scene
+        stage.isMaximized = false
+        stage.title = "Filter recordings"
+        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
+        stage.icons.add(Image(iconStream))
+        stage.show()
+    }
+
     fun showSettings() {
         val loader = FXMLLoader(UIApplication::class.java.classLoader.getResource("SettingsView.fxml"))
         loader.controllerFactory = Callback { cl: Class<*>? -> applicationContext.getBean(cl) }
-
         val root = loader.load<Parent>()
-
         val scene = applicationContext.getBean(SceneRegistry::class.java).newScene(root)
-
         val stage = Stage()
         stage.scene = scene
         stage.isMaximized = false
         stage.title = "Ulyp Settings"
-        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png")
-                ?: throw UlypException("Icon not found")
+        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
-
         stage.show()
     }
 
@@ -105,10 +117,13 @@ class PrimaryView(
             InMemoryRepository()
         }
 
+        val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()
+
         val storageReader = AsyncFileStorageReader(ReaderSettings.builder()
             .file(file)
             .autoStartReading(false)
             .indexSupplier { index }
+            .filter(storageFilter)
             .build()
         )
 
