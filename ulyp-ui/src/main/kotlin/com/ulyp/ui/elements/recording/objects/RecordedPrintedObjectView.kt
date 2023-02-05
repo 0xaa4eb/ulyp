@@ -11,7 +11,7 @@ class RecordedPrintedObjectView(record: PrintedObjectRecord, renderSettings: Ren
 
     init {
         val typeName =
-                if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
+                if (renderSettings.showTypes) record.type.name else toSimpleName(record.type.name)
 
         val nodes: MutableList<Node> = ArrayList()
 

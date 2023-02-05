@@ -7,16 +7,13 @@ import org.springframework.stereotype.Component
 @Component
 class RenderSettings {
 
-    private var showTypes = false
-
-    fun showTypes(): Boolean {
-        Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
-        return showTypes
-    }
-
-    fun setShowTypes(showTypes: Boolean): RenderSettings {
-        Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
-        this.showTypes = showTypes
-        return this
-    }
+    var showTypes = false
+        get() {
+            Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
+            return field
+        }
+        set(value) {
+            Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
+            field = value
+        }
 }

@@ -10,7 +10,7 @@ class RecordedOptionalView(record: OptionalRecord, renderSettings: RenderSetting
 
     init {
         val content: MutableList<Node> = ArrayList()
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             content.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
             content.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }

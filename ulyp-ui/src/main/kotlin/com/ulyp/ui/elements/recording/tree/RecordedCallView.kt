@@ -89,7 +89,7 @@ class RecordedCallView(node: CallRecord, renderSettings: RenderSettings) : TextF
         if (node.method.isStatic || node.method.isConstructor) {
             result.add(
                     text().text(
-                            if (renderSettings.showTypes()) {
+                            if (renderSettings.showTypes) {
                                 node.method.declaringType.name
                             } else {
                                 toSimpleName(node.method.declaringType.name)

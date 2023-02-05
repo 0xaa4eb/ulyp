@@ -18,7 +18,7 @@ class RecordedCollectionView(record: CollectionRecord, renderSettings: RenderSet
 
         val nodes: MutableList<Node> = ArrayList()
 
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             nodes.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
             nodes.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }

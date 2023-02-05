@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText.of
 class RecordedDateView(record: DateRecord, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             children.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
             children.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }

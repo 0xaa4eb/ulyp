@@ -12,7 +12,7 @@ class RecordedExceptionView(record: ThrowableRecord, renderSettings: RenderSetti
 
     init {
         val className =
-                if (renderSettings.showTypes()) record.type.name else toSimpleName(record.type.name)
+                if (renderSettings.showTypes) record.type.name else toSimpleName(record.type.name)
         val childrenToAdd: MutableList<Node> = ArrayList()
         childrenToAdd.add(of(className, Style.CALL_TREE_TYPE_NAME))
         childrenToAdd.add(of("(", Style.CALL_TREE_IDENTITY))

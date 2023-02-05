@@ -16,7 +16,7 @@ class RecordedMapView(record: MapRecord, renderSettings: RenderSettings) : Recor
                 .map { record: MapEntryRecord -> of(record, renderSettings) }
                 .collect(Collectors.toList())
         val texts: MutableList<Node> = ArrayList()
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             texts.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
             texts.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }

@@ -10,7 +10,7 @@ import javafx.scene.text.Text
 class RecordedClassObjectView(record: ClassObjectRecord, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             children.add(of(Class::class.java.name + ": ", Style.CALL_TREE_TYPE_NAME))
         }
         val text: Text = TrimmedTextView(Text("class " + record.carriedType.name))

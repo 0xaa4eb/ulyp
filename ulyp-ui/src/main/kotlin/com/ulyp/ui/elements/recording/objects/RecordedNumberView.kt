@@ -8,7 +8,7 @@ import com.ulyp.ui.util.StyledText
 class RecordedNumberView(numberPrinted: String, type: Type, renderSettings: RenderSettings) : RecordedObjectView() {
 
     init {
-        if (renderSettings.showTypes()) {
+        if (renderSettings.showTypes) {
             children.add(StyledText.of(type.name, Style.CALL_TREE_TYPE_NAME))
             children.add(StyledText.of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }

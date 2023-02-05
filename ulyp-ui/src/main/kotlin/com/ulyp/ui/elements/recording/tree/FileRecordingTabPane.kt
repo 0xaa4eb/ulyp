@@ -55,7 +55,7 @@ class FileRecordingTabPane : TabPane() {
             val selected = selectedTab.selectedTreeTab.getSelected()
             @Suppress("SENSELESS_COMPARISON")
             if (selected != null) {
-                renderSettings.setShowTypes(true)
+                renderSettings.showTypes = true
                 lastSelectedOnShowTypes = selected
                 selected.refresh()
             }
@@ -79,7 +79,7 @@ class FileRecordingTabPane : TabPane() {
 
     fun keyReleased(event: KeyEvent) {
         if (event.code == KeyCode.SHIFT) {
-            renderSettings.setShowTypes(false)
+            renderSettings.showTypes = false
             if (lastSelectedOnShowTypes != null) {
                 lastSelectedOnShowTypes!!.refresh()
             } else {
