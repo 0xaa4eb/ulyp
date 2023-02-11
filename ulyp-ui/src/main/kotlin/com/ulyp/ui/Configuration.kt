@@ -2,7 +2,7 @@ package com.ulyp.ui
 
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
-import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.settings.SettingsStorage
@@ -32,13 +32,13 @@ open class Configuration {
     @Bean
     @Lazy
     open fun primaryView(
-            applicationContext: ApplicationContext,
-            filterRegistry: FilterRegistry,
-            sourceCodeView: SourceCodeView,
-            fileRecordingTabPane: FileRecordingTabPane,
-            settingsStorage: SettingsStorage,
-            fontSizeChanger: FontSizeChanger,
-            stage: Stage
+        applicationContext: ApplicationContext,
+        filterRegistry: FilterRegistry,
+        sourceCodeView: SourceCodeView,
+        fileRecordingTabPane: FileRecordingTabPane,
+        settingsStorage: SettingsStorage,
+        fontSizeUpdater: FontSizeUpdater,
+        stage: Stage
     ): PrimaryView {
         val fileChooser = FileChooser()
 
@@ -48,19 +48,19 @@ open class Configuration {
                 sourceCodeView,
                 fileRecordingTabPane,
                 settingsStorage,
-                fontSizeChanger
+                fontSizeUpdater
         ) { fileChooser.showOpenDialog(stage) }
     }
 
     @Bean
     @Lazy
     open fun settingsView(
-            applicationContext: ApplicationContext,
-            themeManager: ThemeManager,
-            fontSizeChanger: FontSizeChanger,
-            settingStorage: SettingsStorage
+        applicationContext: ApplicationContext,
+        themeManager: ThemeManager,
+        fontSizeUpdater: FontSizeUpdater,
+        settingStorage: SettingsStorage
     ): SettingsView {
-        return SettingsView(themeManager, fontSizeChanger, settingStorage)
+        return SettingsView(themeManager, fontSizeUpdater, settingStorage)
     }
 
     @Bean

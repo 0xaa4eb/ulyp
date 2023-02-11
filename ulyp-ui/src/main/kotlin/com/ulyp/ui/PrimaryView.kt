@@ -14,7 +14,7 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
-import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.settings.SettingsStorage
 import com.ulyp.ui.util.FxThreadExecutor
@@ -42,7 +42,7 @@ class PrimaryView(
     private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settingsStorage: SettingsStorage,
-    private val fontSizeChanger: FontSizeChanger,
+    private val fontSizeUpdater: FontSizeUpdater,
     private val fileChooser: Supplier<File?>
 ) : Initializable {
 
@@ -66,7 +66,7 @@ class PrimaryView(
         AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
 
         Platform.runLater {
-            fontSizeChanger.update(UIApplication.stage.scene, settingsStorage.read().appearanceSettings.fontSettings)
+            fontSizeUpdater.update(UIApplication.stage.scene, settingsStorage.read().appearanceSettings.fontSettings)
         }
     }
 

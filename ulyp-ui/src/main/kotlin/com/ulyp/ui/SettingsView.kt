@@ -1,6 +1,6 @@
 package com.ulyp.ui
 
-import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.settings.SettingsStorage
@@ -15,9 +15,9 @@ import java.util.*
 
 
 class SettingsView(
-        private val themeManager: ThemeManager,
-        private val fontSizeChanger: FontSizeChanger,
-        private val settingStorage: SettingsStorage
+    private val themeManager: ThemeManager,
+    private val fontSizeUpdater: FontSizeUpdater,
+    private val settingStorage: SettingsStorage
 ) : Initializable {
 
     @FXML
@@ -50,7 +50,7 @@ class SettingsView(
             settingStorage.updateSettings { settings ->
                 val selectedFont: String = fontChoiceBox.selectionModel.selectedItem
                 settings.appearanceSettings.fontSettings.recordingTreeFontName = selectedFont
-                fontSizeChanger.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
+                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
             }
         }
 
@@ -60,7 +60,7 @@ class SettingsView(
             settingStorage.updateSettings { settings ->
                 settings.appearanceSettings.fontSettings.systemFontSize = newValue.toDouble()
                 val roundedValue = settings.appearanceSettings.fontSettings.systemFontSize
-                fontSizeChanger.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
+                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 systemFontSizeLabel.text = roundedValue.toString()
             }
         }
@@ -71,7 +71,7 @@ class SettingsView(
             settingStorage.updateSettings { settings ->
                 settings.appearanceSettings.fontSettings.recordingTreeFontSize = newValue.toDouble()
                 val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSize
-                fontSizeChanger.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
+                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 recordingTreeFontSizeLabel.text = roundedValue.toString()
             }
         }

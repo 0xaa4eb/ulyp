@@ -12,7 +12,7 @@ import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
 @Component
-class FontSizeChanger(private val applicationContext: ApplicationContext) {
+class FontSizeUpdater(private val applicationContext: ApplicationContext) {
 
     companion object {
         private const val STYLE_PREFIX = "call-tree-font-style"
@@ -27,6 +27,9 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
                     path,
                     """
                     .root {
+                        -fx-font-size: ${fontSettings.systemFontSize}em;
+                    }
+                    .ulyp-tooltip-text {
                         -fx-font-size: ${fontSettings.systemFontSize}em;
                     }
                     .ulyp-call-tree {

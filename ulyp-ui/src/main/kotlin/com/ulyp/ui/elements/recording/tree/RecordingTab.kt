@@ -9,9 +9,10 @@ import com.ulyp.ui.UIApplication
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
-import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.settings.SettingsStorage
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
+import com.ulyp.ui.util.Style
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
 import javafx.event.Event
@@ -54,7 +55,7 @@ class RecordingTab(
     @Autowired
     private lateinit var settingsStorage: SettingsStorage
     @Autowired
-    private lateinit var fontSizeUpdater: FontSizeChanger
+    private lateinit var fontSizeUpdater: FontSizeUpdater
 
     private var initialized = false
 
@@ -138,7 +139,9 @@ class RecordingTab(
                 builder.append("\t").append(it).append("\n")
             }
 
-            return Tooltip(builder.toString())
+            val tooltip = Tooltip(builder.toString())
+            tooltip.styleClass.addAll(Style.TOOLTIP_TEXT.cssClasses)
+            return tooltip
         }
 
     fun getSelected(): RecordedCallTreeItem {

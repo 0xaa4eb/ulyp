@@ -2,6 +2,7 @@ package com.ulyp.ui.util
 
 enum class Style(vararg classes: String) {
 
+    TOOLTIP_TEXT("ulyp-tooltip-text"),
     ERROR_TEXT("ulyp-error-text"),
     HELP_TEXT("ulyp-help-text"),
     CALL_TREE("ulyp-call-tree"),
