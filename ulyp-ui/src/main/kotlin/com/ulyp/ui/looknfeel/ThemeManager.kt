@@ -12,7 +12,7 @@ class ThemeManager(@Autowired private val sourceCodeTab: SourceCodeTab) {
 
     var currentTheme: Theme = Theme.DARK
 
-    fun applyTheme(theme: Theme) {
+    fun changeTheme(theme: Theme) {
 
         sceneRegistry.scenes().forEach { scene ->
             scene.stylesheets.removeIf {

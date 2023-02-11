@@ -14,7 +14,9 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
+import com.ulyp.ui.looknfeel.FontSizeChanger
 import com.ulyp.ui.reader.FilterRegistry
+import com.ulyp.ui.settings.SettingsStorage
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -39,6 +41,8 @@ class PrimaryView(
     private val filterRegistry: FilterRegistry,
     private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
+    private val settingsStorage: SettingsStorage,
+    private val fontSizeChanger: FontSizeChanger,
     private val fileChooser: Supplier<File?>
 ) : Initializable {
 
@@ -60,6 +64,10 @@ class PrimaryView(
         AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
         AnchorPane.setRightAnchor(sourceCodeView, 0.0)
         AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
+
+        Platform.runLater {
+            fontSizeChanger.update(UIApplication.stage.scene, settingsStorage.read().appearanceSettings.fontSettings)
+        }
     }
 
     fun clearAll() {
@@ -107,7 +115,7 @@ class PrimaryView(
         popup.show()
     }
 
-    fun openRecordedDump() {
+    fun openRecordingFile() {
         val file = fileChooser.get() ?: return
 
         val rocksdbAvailable = RocksdbIndex.checkIfRocksdbAvailable()

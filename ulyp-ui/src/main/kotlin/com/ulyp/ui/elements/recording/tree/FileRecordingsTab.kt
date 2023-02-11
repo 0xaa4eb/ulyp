@@ -2,10 +2,14 @@ package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.Recording
+import com.ulyp.ui.UIApplication
+import com.ulyp.ui.looknfeel.FontSizeChanger
+import com.ulyp.ui.settings.SettingsStorage
 import com.ulyp.ui.util.FxThreadExecutor.execute
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component

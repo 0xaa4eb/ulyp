@@ -2,6 +2,7 @@ package com.ulyp.ui.looknfeel
 
 import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
+import com.ulyp.ui.settings.FontSettings
 import javafx.scene.Scene
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
@@ -17,7 +18,7 @@ class FontSizeChanger(private val applicationContext: ApplicationContext) {
         private const val STYLE_PREFIX = "call-tree-font-style"
     }
 
-    fun refresh(scene: Scene, fontSettings: FontSettings) {
+    fun update(scene: Scene, fontSettings: FontSettings) {
         try {
 
             val path = Files.createTempFile(STYLE_PREFIX, null)
