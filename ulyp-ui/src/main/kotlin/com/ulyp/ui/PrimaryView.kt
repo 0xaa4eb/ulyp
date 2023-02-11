@@ -94,6 +94,8 @@ class PrimaryView(
         val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
         stage.show()
+        val filterView = applicationContext.getBean(FilterView::class.java)
+        filterView.stage = stage
     }
 
     fun showSettings() {

@@ -58,7 +58,6 @@ open class Configuration {
             applicationContext: ApplicationContext,
             themeManager: ThemeManager,
             fontSizeChanger: FontSizeChanger,
-            stage: Stage,
             settingStorage: SettingsStorage
     ): SettingsView {
         return SettingsView(themeManager, fontSizeChanger, settingStorage)
@@ -68,7 +67,6 @@ open class Configuration {
     @Lazy
     open fun filterView(
         applicationContext: ApplicationContext,
-        stage: Stage,
         filterRegistry: FilterRegistry
     ): FilterView {
         return FilterView(filterRegistry)
