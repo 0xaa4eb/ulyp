@@ -133,6 +133,11 @@ class RecordingTab(
                     .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
                     .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
 
+            builder.append("Stack trace: ").append("\n")
+            recordingMetadata!!.stackTraceElements.forEach {
+                builder.append("\t").append(it).append("\n")
+            }
+
             return Tooltip(builder.toString())
         }
 
