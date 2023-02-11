@@ -2,12 +2,16 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
+import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
@@ -41,10 +45,15 @@ public class ConstructorRecordingTest extends AbstractInstrumentationTest {
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
-        CallRecord constructorCallRecord = root.getChildren().get(0);
+        CallRecord record = root.getChildren().get(0);
 
-        assertThat(constructorCallRecord.getMethod().getName(), is("<init>"));
-        assertThat(constructorCallRecord.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
+        assertThat(record.getMethod().getName(), is("<init>"));
+        assertThat(record.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
+
+        ObjectRecord callee = record.getCallee();
+        assertThat(callee, is(instanceOf(IdentityObjectRecord.class)));
+        IdentityObjectRecord identityCallee = (IdentityObjectRecord) callee;
+        assertThat(identityCallee.getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
     }
 
     @Test
@@ -58,12 +67,13 @@ public class ConstructorRecordingTest extends AbstractInstrumentationTest {
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
-        CallRecord constructorCallRecord = root.getChildren().get(0);
+        CallRecord record = root.getChildren().get(0);
 
-        assertThat(constructorCallRecord.getMethod().getName(), is("<init>"));
-        assertThat(constructorCallRecord.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$XThrows"));
-        assertFalse(constructorCallRecord.isFullyRecorded());
-        assertThat(constructorCallRecord.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
+        assertThat(record.getMethod().getName(), is("<init>"));
+        assertThat(record.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$XThrows"));
+        assertFalse(record.isFullyRecorded());
+        assertThat(record.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
+        assertThat(record.getCallee(), is(NotRecordedObjectRecord.getInstance()));
     }
 
     public static class XThrows extends Base {

@@ -10,6 +10,8 @@ import lombok.Builder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 /**
  * Method call record which was deserialized from binary format into POJO. Stands for a particular
  * method call in some recording session.
@@ -38,10 +40,11 @@ public class CallRecord {
     private final long callId;
     private final int subtreeSize;
     private final Method method;
-    private final ObjectRecord callee;
     private final List<ObjectRecord> args;
     private final LongList childrenCallIds;
     private final RecordingState recordingState;
+    @Builder.Default
+    private final ObjectRecord callee = NotRecordedObjectRecord.getInstance();
     @Builder.Default
     private final boolean thrown = false;
     @Builder.Default
@@ -53,8 +56,13 @@ public class CallRecord {
         return subtreeSize;
     }
 
+    @Nonnull
     public ObjectRecord getCallee() {
-        return callee;
+        if (method.isConstructor()) {
+            return returnValue;
+        } else {
+            return callee;
+        }
     }
 
     public long getId() {
@@ -69,6 +77,7 @@ public class CallRecord {
         return args;
     }
 
+    @Nonnull
     public ObjectRecord getReturnValue() {
         return returnValue;
     }

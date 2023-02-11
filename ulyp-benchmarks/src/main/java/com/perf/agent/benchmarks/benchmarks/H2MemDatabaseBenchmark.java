@@ -1,13 +1,18 @@
 package com.perf.agent.benchmarks.benchmarks;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
+
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenario;
 import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
 import com.ulyp.core.util.MethodMatcher;
-
-import java.sql.*;
-import java.util.Arrays;
-import java.util.List;
 
 public class H2MemDatabaseBenchmark implements Benchmark {
 
@@ -29,7 +34,7 @@ public class H2MemDatabaseBenchmark implements Benchmark {
     @Override
     public List<BenchmarkScenario> getProfiles() {
         return Arrays.asList(
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(H2MemDatabaseBenchmark.class, "main"))
                         .build(),
                 new BenchmarkScenarioBuilder()

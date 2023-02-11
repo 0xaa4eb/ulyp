@@ -86,7 +86,7 @@ class RecordedCallView(node: CallRecord, renderSettings: RenderSettings) : TextF
     private fun renderCallee(node: CallRecord, renderSettings: RenderSettings): List<Node> {
         val result: MutableList<Node> = ArrayList()
 
-        if (node.method.isStatic || node.method.isConstructor) {
+        if (node.method.isStatic) {
             result.add(
                     text().text(
                             if (renderSettings.showTypes) {
@@ -108,7 +108,6 @@ class RecordedCallView(node: CallRecord, renderSettings: RenderSettings) : TextF
             )
             result.add(callee)
         }
-
         result.add(
                 text().text(".")
                         .style(Style.CALL_TREE)

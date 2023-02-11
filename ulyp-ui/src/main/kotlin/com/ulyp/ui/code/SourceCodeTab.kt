@@ -22,6 +22,7 @@ class SourceCodeTab(@Autowired private val settingsStorage: SettingsStorage) : T
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
 
     private var stamp: Long = 0
+    // TODO move to Settings
     private var font = 15
 
     init {

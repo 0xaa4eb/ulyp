@@ -2,6 +2,7 @@ package com.perf.agent.benchmarks;
 
 import com.perf.agent.benchmarks.benchmarks.FibonacciNumbersBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
+import com.perf.agent.benchmarks.proc.OutputFile;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageReader;
@@ -9,6 +10,7 @@ import org.HdrHistogram.Histogram;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class BenchmarksForSomeProfileMain {
@@ -40,34 +42,43 @@ public class BenchmarksForSomeProfileMain {
 
         Histogram procTimeHistogram = emptyHistogram();
         Histogram recordingTimeHistogram = emptyHistogram();
-        Histogram callsCountHistogram = emptyHistogram();
+        Histogram recordsCallsCountHistogram = new Histogram(1, 2_000_000_000, 2);
+        Histogram recordingsCountHistogram = new Histogram(1, 10_000_000, 2);
 
         for (int i = 0; i < ITERATIONS_PER_PROFILE; i++) {
-            int callsCount = run(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram);
-            callsCountHistogram.recordValue(callsCount);
+            int callsCount = run(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, recordingsCountHistogram);
+            recordsCallsCountHistogram.recordValue(callsCount);
         }
 
-        runResults.add(new BenchmarkRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, callsCountHistogram));
+        runResults.add(new BenchmarkRunResult(benchmarkClazz, profile, procTimeHistogram, recordingTimeHistogram, recordsCallsCountHistogram, recordingsCountHistogram));
 
         return runResults;
     }
 
-    private static int run(Class<?> benchmarkClazz, BenchmarkScenario profile, Histogram procTimeHistogram, Histogram recordingTimeHistogram) {
+    private static int run(
+        Class<?> benchmarkClazz,
+        BenchmarkScenario profile,
+        Histogram procTimeHistogram,
+        Histogram recordsTimeHistogram,
+        Histogram recordingsCountHistogram) {
 
         try (TimeMeasurer $ = new TimeMeasurer(procTimeHistogram)) {
+
             BenchmarkProcessRunner.runClassInSeparateJavaProcess(benchmarkClazz, profile);
         }
 
-        if (profile.shouldWriteRecording()) {
+        StorageReader reader = Optional.ofNullable(profile.getOutputFile()).map(OutputFile::toReader).orElse(StorageReader.empty());
 
-            StorageReader read = profile.getOutputFile().toReader();
-            Recording recording = read.getRecordings().get(0);
-            recordingTimeHistogram.recordValue(recording.getLifetime().toMillis());
+        List<Recording> recordings = reader.getRecordings();
+        recordingsCountHistogram.recordValue(recordings.size());
 
-            return recording.getRoot().getSubtreeSize();
+        if (!recordings.isEmpty()) {
+            recordings.forEach(recording -> recordsTimeHistogram.recordValue(recording.getLifetime().toMillis()));
+            return recordings.stream().mapToInt(Recording::callCount).sum();
+        } else {
+            recordsTimeHistogram.recordValue(0L);
+            return 0;
         }
-
-        return 0;
     }
 
     private static Histogram emptyHistogram() {

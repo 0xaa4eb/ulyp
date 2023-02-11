@@ -1,23 +1,24 @@
 package com.perf.agent.benchmarks.benchmarks;
 
+import java.lang.management.ManagementFactory;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import org.HdrHistogram.Histogram;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenario;
-import com.perf.agent.benchmarks.BenchmarkProfileBuilder;
+import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
 import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.benchmarks.util.Department;
 import com.perf.agent.benchmarks.benchmarks.util.DepartmentService;
 import com.perf.agent.benchmarks.benchmarks.util.Person;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
-import org.HdrHistogram.Histogram;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.lang.management.ManagementFactory;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class SpringHibernateMediumBenchmark implements Benchmark {
 
@@ -50,7 +51,7 @@ public class SpringHibernateMediumBenchmark implements Benchmark {
                         .withAdditionalArgs("-DpeoplePerDeptCount=20")
                         .withInstrumentedPackages(new PackageList("com", "org"))
                         .build(),
-                new BenchmarkProfileBuilder()
+                new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(DepartmentService.class, "shuffle"))
                         .withWriteDisabled()
                         .withInstrumentedPackages(new PackageList("com", "org"))
