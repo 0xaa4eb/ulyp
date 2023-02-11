@@ -5,7 +5,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A collection of enter and exit recorded method calls for a certain recording session.
@@ -17,7 +20,6 @@ public class CallRecordLog {
 
     private final TypeResolver typeResolver;
     private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
-    private final StackTraceElement[] stackTrace;
     private final long rootCallId;
 
     private final RecordingMetadata recordingMetadata;
@@ -27,27 +29,28 @@ public class CallRecordLog {
     private long nextCallId;
 
     public CallRecordLog(TypeResolver typeResolver, long callIdInitialValue) {
+        List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
+            .skip(4)
+            .map(StackTraceElement::toString)
+            .collect(Collectors.toList());
+
         this.recordingMetadata = RecordingMetadata.builder()
                 .id(idGenerator.incrementAndGet())
                 .recordingStartedEpochMillis(System.currentTimeMillis())
                 .logCreatedEpochMillis(System.currentTimeMillis())
                 .threadId(Thread.currentThread().getId())
                 .threadName(Thread.currentThread().getName())
+                .stackTraceElements(stackTraceElements)
                 .build();
 
         this.typeResolver = typeResolver;
         this.nextCallId = callIdInitialValue;
         this.rootCallId = callIdInitialValue;
-
-        StackTraceElement[] wholeStackTrace = new Exception().getStackTrace();
-        // If code changed, there should be a readjustement
-        this.stackTrace = Arrays.copyOfRange(wholeStackTrace, 4, wholeStackTrace.length);
     }
 
     private CallRecordLog(
             int id,
             TypeResolver typeResolver,
-            StackTraceElement[] stackTrace,
             boolean inProcessOfRecording,
             long nextCallId,
             long rootCallId) {
@@ -59,14 +62,13 @@ public class CallRecordLog {
                 .build();
 
         this.typeResolver = typeResolver;
-        this.stackTrace = stackTrace;
         this.inProcessOfRecording = inProcessOfRecording;
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
     }
 
     public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.recordingMetadata.getId(), this.typeResolver, this.stackTrace, this.inProcessOfRecording, this.nextCallId, rootCallId);
+        return new CallRecordLog(this.recordingMetadata.getId(), this.typeResolver, this.inProcessOfRecording, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
