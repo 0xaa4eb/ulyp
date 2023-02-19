@@ -37,15 +37,15 @@ dependencies {
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-json', version: '1.4.1'
 
-    implementation group: 'org.springframework', name: 'spring-beans', version: spring_version
-    implementation group: 'org.springframework', name: 'spring-context', version: spring_version
-    implementation group: 'org.springframework', name: 'spring-core', version: spring_version
+    implementation group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
-    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: rocksdb_version
+    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
@@ -55,9 +55,9 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.13.1'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
-    testImplementation group: 'junit', name: 'junit', version: junit_version
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: bytebuddy_version
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: hamcrest_version
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.20'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
 
 mainClassName = 'com.ulyp.ui.UIStarter'
