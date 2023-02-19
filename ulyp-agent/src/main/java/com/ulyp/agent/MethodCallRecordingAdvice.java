@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
+import com.ulyp.core.CallRecordLog;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
@@ -57,17 +58,14 @@ public class MethodCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
-
         if (callId >= 0) {
-            if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                Recorder.getInstance().onMethodExit(
-                        ByteBuddyTypeResolver.getInstance(),
-                        MethodRepository.getInstance().get(methodId),
-                        returnValue,
-                        throwable,
-                        callId
-                );
-            }
+            Recorder.getInstance().onMethodExit(
+                ByteBuddyTypeResolver.getInstance(),
+                MethodRepository.getInstance().get(methodId),
+                returnValue,
+                throwable,
+                callId
+            );
         }
     }
 }

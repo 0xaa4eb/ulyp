@@ -10,10 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * A collection of enter and exit recorded method calls for a certain recording session.
  */
 @NotThreadSafe
+@Slf4j
 public class CallRecordLog {
 
     public static final AtomicInteger idGenerator = new AtomicInteger(-1);
@@ -92,6 +95,10 @@ public class CallRecordLog {
                     args
             );
             return callId;
+        } catch (Throwable err) {
+            // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted
+            log.error("Error while recording", err);
+            return -1;
         } finally {
             inProcessOfRecording = true;
         }

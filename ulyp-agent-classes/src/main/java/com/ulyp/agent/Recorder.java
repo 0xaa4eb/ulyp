@@ -9,6 +9,7 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,6 +49,10 @@ public class Recorder {
         return threadLocalRecordsLog.get() != null;
     }
 
+    public CallRecordLog getCurrentCallRecordLog() {
+        return threadLocalRecordsLog.get();
+    }
+
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             CallRecordLog callRecordLog = threadLocalRecordsLog.computeIfAbsent(() -> {
@@ -80,7 +85,6 @@ public class Recorder {
         } else {
             return -1;
         }
-
     }
 
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
