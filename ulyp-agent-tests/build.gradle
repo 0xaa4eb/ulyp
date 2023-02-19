@@ -39,7 +39,7 @@ dependencies {
     testImplementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: test_hibernate_em_version
     testImplementation group: 'net.openhft', name: 'chronicle', version: test_chronicle_version
     testImplementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
-    testImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+    testImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.2'
 }
 
 repositories {
