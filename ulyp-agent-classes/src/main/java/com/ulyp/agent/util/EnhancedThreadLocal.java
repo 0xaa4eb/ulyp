@@ -18,10 +18,14 @@ public class EnhancedThreadLocal<T> {
         tl.set(v);
     }
 
-    public void computeIfAbsent(Supplier<T> newValueSupplier) {
+    public T computeIfAbsent(Supplier<T> newValueSupplier) {
         T value = tl.get();
-        if (value == null) {
-            tl.set(newValueSupplier.get());
+        if (value != null) {
+            return value;
+        } else {
+            value = newValueSupplier.get();
+            tl.set(value);
+            return value;
         }
     }
 
