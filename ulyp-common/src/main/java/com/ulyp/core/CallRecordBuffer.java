@@ -4,7 +4,7 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @NotThreadSafe
 @Slf4j
-public class CallRecordLog {
+public class CallRecordBuffer {
 
     public static final AtomicInteger idGenerator = new AtomicInteger(-1);
 
@@ -31,7 +31,7 @@ public class CallRecordLog {
     private long lastExitCallId = -1;
     private long nextCallId;
 
-    public CallRecordLog(TypeResolver typeResolver, long callIdInitialValue) {
+    public CallRecordBuffer(TypeResolver typeResolver, long callIdInitialValue) {
         List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
             .skip(4)
             .map(StackTraceElement::toString)
@@ -51,7 +51,7 @@ public class CallRecordLog {
         this.rootCallId = callIdInitialValue;
     }
 
-    private CallRecordLog(
+    private CallRecordBuffer(
             int id,
             TypeResolver typeResolver,
             boolean inProcessOfRecording,
@@ -70,8 +70,8 @@ public class CallRecordLog {
         this.rootCallId = rootCallId;
     }
 
-    public CallRecordLog cloneWithoutData() {
-        return new CallRecordLog(this.recordingMetadata.getId(), this.typeResolver, this.inProcessOfRecording, this.nextCallId, rootCallId);
+    public CallRecordBuffer cloneWithoutData() {
+        return new CallRecordBuffer(this.recordingMetadata.getId(), this.typeResolver, this.inProcessOfRecording, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {

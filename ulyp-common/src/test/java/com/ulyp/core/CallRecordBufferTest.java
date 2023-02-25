@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
-public class CallRecordLogTest {
+public class CallRecordBufferTest {
 
     public static class T {
         public String foo(String in) {
@@ -33,7 +33,7 @@ public class CallRecordLogTest {
 
     @Test
     public void testTotalCallRecordedEnterCalls() {
-        CallRecordLog log = new CallRecordLog(typeResolver, 0L);
+        CallRecordBuffer log = new CallRecordBuffer(typeResolver, 0L);
 
         Assert.assertEquals(0, log.getTotalRecordedEnterCalls());
         Assert.assertEquals(0, log.getRecordedCallsSize());
@@ -43,7 +43,7 @@ public class CallRecordLogTest {
         Assert.assertEquals(1, log.getTotalRecordedEnterCalls());
         Assert.assertEquals(1, log.getRecordedCallsSize());
 
-        CallRecordLog newLog = log.cloneWithoutData();
+        CallRecordBuffer newLog = log.cloneWithoutData();
 
         Assert.assertEquals(1, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(0, newLog.getRecordedCallsSize());

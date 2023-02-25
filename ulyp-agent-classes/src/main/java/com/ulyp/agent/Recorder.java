@@ -29,7 +29,7 @@ public class Recorder {
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
     private static final Recorder instance = new Recorder(AgentContext.getInstance());
 
-    private final EnhancedThreadLocal<CallRecordLog> threadLocalRecordsLog = new EnhancedThreadLocal<>();
+    private final EnhancedThreadLocal<CallRecordBuffer> threadLocalRecordsLog = new EnhancedThreadLocal<>();
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final AgentContext context;
@@ -48,22 +48,22 @@ public class Recorder {
         return threadLocalRecordsLog.get() != null;
     }
 
-    public CallRecordLog getCurrentCallRecordLog() {
+    public CallRecordBuffer getCurrentCallRecordLog() {
         return threadLocalRecordsLog.get();
     }
 
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            CallRecordLog callRecordLog = threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog newCallRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
+            CallRecordBuffer callRecordBuffer = threadLocalRecordsLog.computeIfAbsent(() -> {
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", newCallRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                    log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return newCallRecordLog;
+                return newCallRecordBuffer;
             });
 
-            return onMethodEnter(callRecordLog, method, callee, args);
+            return onMethodEnter(callRecordBuffer, method, callee, args);
         } else {
             return -1;
         }
@@ -71,16 +71,16 @@ public class Recorder {
 
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            CallRecordLog callRecordLog = threadLocalRecordsLog.computeIfAbsent(() -> {
-                CallRecordLog newCallRecordLog = new CallRecordLog(typeResolver, initialCallIdGenerator.getNextStartValue());
+            CallRecordBuffer callRecordBuffer = threadLocalRecordsLog.computeIfAbsent(() -> {
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", newCallRecordLog.getRecordingMetadata().getId(), method.toShortString());
+                    log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return newCallRecordLog;
+                return newCallRecordBuffer;
             });
 
-            return onConstructorEnter(callRecordLog, method, args);
+            return onConstructorEnter(callRecordBuffer, method, args);
         } else {
             return -1;
         }
@@ -90,7 +90,7 @@ public class Recorder {
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
-    private void write(TypeResolver typeResolver, CallRecordLog recordLog) {
+    private void write(TypeResolver typeResolver, CallRecordBuffer recordLog) {
 
         MethodList methodsList = new MethodList();
 
@@ -176,20 +176,20 @@ public class Recorder {
         return onMethodEnter(threadLocalRecordsLog.get(), method, null, args);
     }
 
-    public long onConstructorEnter(CallRecordLog callRecordLog, Method method, Object[] args) {
-        return onMethodEnter(callRecordLog, method, null, args);
+    public long onConstructorEnter(CallRecordBuffer callRecordBuffer, Method method, Object[] args) {
+        return onMethodEnter(callRecordBuffer, method, null, args);
     }
 
     public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
         return onMethodEnter(threadLocalRecordsLog.get(), method, callee, args);
     }
 
-    public long onMethodEnter(CallRecordLog callRecordLog, Method method, @Nullable Object callee, Object[] args) {
+    public long onMethodEnter(CallRecordBuffer callRecordBuffer, Method method, @Nullable Object callee, Object[] args) {
         try {
-            if (callRecordLog == null) {
+            if (callRecordBuffer == null) {
                 return -1;
             }
-            return callRecordLog.onMethodEnter(method, callee, args);
+            return callRecordBuffer.onMethodEnter(method, callee, args);
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
             return -1;
@@ -202,7 +202,7 @@ public class Recorder {
 
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
         try {
-            CallRecordLog currentRecordLog = threadLocalRecordsLog.get();
+            CallRecordBuffer currentRecordLog = threadLocalRecordsLog.get();
             if (currentRecordLog == null) return;
             currentRecordLog.onMethodExit(method, result, thrown, callId);
 
@@ -213,7 +213,7 @@ public class Recorder {
                                     &&
                                     currentRecordLog.getRecordedCallsSize() > 0
                     )) {
-                CallRecordLog newRecordLog = currentRecordLog.cloneWithoutData();
+                CallRecordBuffer newRecordLog = currentRecordLog.cloneWithoutData();
 
                 if (!currentRecordLog.isComplete()) {
                     threadLocalRecordsLog.set(newRecordLog);

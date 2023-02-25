@@ -1,8 +1,6 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyTypeResolver;
-import com.ulyp.core.CallRecordLog;
-import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
