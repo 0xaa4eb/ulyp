@@ -47,7 +47,6 @@ dependencies {
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
     compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
@@ -56,6 +55,7 @@ dependencies {
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
     testImplementation group: 'junit', name: 'junit', version: '4.11'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 }
 
 compileJava {

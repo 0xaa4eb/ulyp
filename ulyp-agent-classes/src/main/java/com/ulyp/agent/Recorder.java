@@ -9,7 +9,6 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;

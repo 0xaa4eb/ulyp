@@ -16,7 +16,6 @@ dependencies {
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.20'
 
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
-    compileOnly group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
     compileOnly group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
