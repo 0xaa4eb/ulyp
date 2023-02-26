@@ -153,30 +153,30 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
                 callRecords.onMethodExit(method, result, thrown, callId);
-            } finally {
-                recordingState.setEnabled(true);
-            }
 
-            if (callRecords.isComplete() ||
+                if (callRecords.isComplete() ||
                     callRecords.estimateBytesSize() > 32 * 1024 * 1024 ||
                     (
-                            (System.currentTimeMillis() - callRecords.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
-                                    &&
-                                    callRecords.getRecordedCallsSize() > 0
+                        (System.currentTimeMillis() - callRecords.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
+                            &&
+                            callRecords.getRecordedCallsSize() > 0
                     )) {
-                CallRecordBuffer newBuffer = callRecords.cloneWithoutData();
+                    CallRecordBuffer newBuffer = callRecords.cloneWithoutData();
 
-                if (!callRecords.isComplete()) {
-                    recordingState.setCallRecordBuffer(newBuffer);
-                } else {
-                    threadLocalRecordingState.clear();
-                    currentRecordingSessionCount.decrementAndGet();
-                    if (LoggingSettings.INFO_ENABLED) {
-                        log.info("Finished recording {} at method {}, recorded {} calls", callRecords.getRecordingMetadata().getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
+                    if (!callRecords.isComplete()) {
+                        recordingState.setCallRecordBuffer(newBuffer);
+                    } else {
+                        threadLocalRecordingState.clear();
+                        currentRecordingSessionCount.decrementAndGet();
+                        if (LoggingSettings.INFO_ENABLED) {
+                            log.info("Finished recording {} at method {}, recorded {} calls", callRecords.getRecordingMetadata().getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
+                        }
                     }
-                }
 
-                recordDataWriter.write(typeResolver, callRecords);
+                    recordDataWriter.write(typeResolver, callRecords);
+                }
+            } finally {
+                recordingState.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
