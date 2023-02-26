@@ -8,6 +8,7 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.SystemProp;
 import com.ulyp.storage.CallRecord;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -39,9 +40,15 @@ public class AggressiveRecordingTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("main")
         );
 
-        assertThat(root.getChildren(), Matchers.hasSize(3));
-        assertThat(root.getChildren().get(0).getMethod().getName(), is("<init>"));
+        assertThat(root.getChildren(), Matchers.hasSize(5));
+
+        assertThat(root.getChildren().get(0).getMethod().getName(), is("<clinit>"));
+        assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is("com.agent.tests.general.AggressiveRecordingTest$X"));
+        assertThat(root.getChildren().get(1).getMethod().getDeclaringType().getName(), is("com.agent.tests.general.AggressiveRecordingTest$X"));
         assertThat(root.getChildren().get(1).getMethod().getName(), is("<init>"));
-        assertThat(root.getChildren().get(2).getMethod().getName(), is("run"));
+        assertThat(root.getChildren().get(2).getMethod().getName(), is("<clinit>"));
+        assertThat(root.getChildren().get(2).getMethod().getDeclaringType().getName(), containsString("com.agent.tests.general.AggressiveRecordingTest$TestCase$$Lambda$ByteBuddy"));
+        assertThat(root.getChildren().get(3).getMethod().getName(), is("<init>"));
+        assertThat(root.getChildren().get(4).getMethod().getName(), is("run"));
     }
 }
