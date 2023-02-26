@@ -26,12 +26,14 @@ public class StatsRecordingStorageWriter implements StorageWriter {
     private final PerTypeStats typeStats = new PerTypeStats("Type");
     private final PerTypeStats methodStats = new PerTypeStats("Method");
     private final PerTypeStats callStats = new PerTypeStats("Recorded call");
+    private final PerTypeStats callBufferStats = new PerTypeStats("Recorded call buffers");
 
     @Override
     public void reset(ResetMetadata resetMetadata) throws StorageException {
         typeStats.reset();
         methodStats.reset();
         callStats.reset();
+        callBufferStats.reset();
         delegate.reset(resetMetadata);
     }
 
@@ -58,6 +60,7 @@ public class StatsRecordingStorageWriter implements StorageWriter {
         // Every call is recorded twice: as enter method call and exit method calls, therefore the value needs to be adjusted
         callStats.addToCount(callRecords.size() / 2);
         callStats.addBytes(callRecords.byteLength());
+        callBufferStats.addToCount(1);
     }
 
     @Override
@@ -76,6 +79,7 @@ public class StatsRecordingStorageWriter implements StorageWriter {
         log.info("File stats: {}", typeStats);
         log.info("File stats: {}", methodStats);
         log.info("File stats: {}", callStats);
+        log.info("File stats: {}", callBufferStats);
         delegate.close();
     }
 }
