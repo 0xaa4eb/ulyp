@@ -32,11 +32,8 @@ import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
- * ulyp.org.slf4j package, thus the binders should be in this package
- */
-
-/**
- * 
+ * ulyp.org.slf4j package, thus the binders will also be relocated there at jar build time.
+ *
  * The binding of {@link MarkerFactory} class with an actual instance of 
  * {@link IMarkerFactory} is performed using information returned by this class. 
  * 

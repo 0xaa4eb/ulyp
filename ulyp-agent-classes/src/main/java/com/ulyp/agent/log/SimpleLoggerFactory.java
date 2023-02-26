@@ -27,6 +27,7 @@ package com.ulyp.agent.log;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jetbrains.annotations.TestOnly;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
@@ -38,7 +39,7 @@ import org.slf4j.Logger;
  */
 public class SimpleLoggerFactory implements ILoggerFactory {
 
-    ConcurrentMap<String, Logger> loggerMap;
+    ConcurrentMap<String, SimpleLogger> loggerMap;
 
     public SimpleLoggerFactory() {
         loggerMap = new ConcurrentHashMap<>();
@@ -53,22 +54,14 @@ public class SimpleLoggerFactory implements ILoggerFactory {
         if (simpleLogger != null) {
             return simpleLogger;
         } else {
-            Logger newInstance = new SimpleLogger(name);
+            SimpleLogger newInstance = new SimpleLogger(name);
             Logger oldInstance = loggerMap.putIfAbsent(name, newInstance);
             return oldInstance == null ? newInstance : oldInstance;
         }
     }
 
-    /**
-     * Clear the internal logger cache.
-     *
-     * This method is intended to be called by classes (in the same package) for
-     * testing purposes. This method is internal. It can be modified, renamed or
-     * removed at any time without notice.
-     *
-     * You are strongly discouraged from calling this method in production code.
-     */
-    void reset() {
-        loggerMap.clear();
+    @TestOnly
+    public void setCurrentLogLevel(int level) {
+        loggerMap.values().forEach(logger -> logger.setCurrentLogLeve(level));
     }
 }

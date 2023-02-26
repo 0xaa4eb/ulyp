@@ -14,8 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 @Slf4j
 @RequiredArgsConstructor
+@NotThreadSafe
 public class StatsRecordingStorageWriter implements StorageWriter {
 
     private final StorageWriter delegate;
@@ -62,6 +65,10 @@ public class StatsRecordingStorageWriter implements StorageWriter {
         delegate.write(methods);
         methodStats.addToCount(methods.size());
         methodStats.addBytes(methods.byteLength());
+    }
+
+    public PerTypeStats getCallStats() {
+        return callStats;
     }
 
     @Override

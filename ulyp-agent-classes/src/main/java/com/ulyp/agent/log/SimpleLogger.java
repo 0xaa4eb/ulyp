@@ -612,4 +612,7 @@ public class SimpleLogger extends MarkerIgnoringBase {
         log(levelInt, tp.getMessage(), event.getThrowable());
     }
 
+    public void setCurrentLogLeve(int level) {
+        this.currentLogLevel = level;
+    }
 }
