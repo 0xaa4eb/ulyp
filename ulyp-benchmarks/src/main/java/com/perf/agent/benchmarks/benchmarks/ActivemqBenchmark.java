@@ -26,8 +26,8 @@ public class ActivemqBenchmark implements Benchmark {
             benchmark.tearDown();
 
             System.out.println("Took: " + (System.currentTimeMillis() - start));
-        } finally {
-            System.exit(0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

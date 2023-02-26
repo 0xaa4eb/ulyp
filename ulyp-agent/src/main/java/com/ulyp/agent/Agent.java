@@ -18,6 +18,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 
 import java.lang.instrument.Instrumentation;
+import java.util.Optional;
 
 /**
  * The agent entry point which is invoked by JVM itself
@@ -25,12 +26,12 @@ import java.lang.instrument.Instrumentation;
 public class Agent {
 
     private static final String ULYP_LOGO =
-            "   __  __    __ __  __    ____ \n" +
-                    "  / / / /   / / \\ \\/ /   / __ \\\n" +
-                    " / / / /   / /   \\  /   / /_/ /\n" +
-                    "/ /_/ /   / /___ / /   / ____/ \n" +
-                    "\\____/   /_____//_/   /_/      \n" +
-                    "                               ";
+        "   __  __    __ __  __    ____ \n" +
+            "  / / / /   / / \\ \\/ /   / __ \\\n" +
+            " / / / /   / /   \\  /   / /_/ /\n" +
+            "/ /_/ /   / /___ / /   / ____/ \n" +
+            "\\____/   /_____//_/   /_/      \n" +
+            "                               ";
 
     public static void start(String args, Instrumentation instrumentation) {
 
@@ -51,13 +52,11 @@ public class Agent {
             return;
         }
 
-        PackageList instrumentedPackages = settings.getInstrumentatedPackages();
-        PackageList excludedPackages = settings.getExcludedFromInstrumentationPackages();
         StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
 
         if (startRecordingMethods.isEmpty()) {
             startRecordingMethods = StartRecordingMethods.of(
-                    new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
+                new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
             );
         }
 
@@ -73,64 +72,31 @@ public class Agent {
         ToStringPrintingRecorder toStringRecorder = (ToStringPrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getClassesToPrint());
 
-        ElementMatcher.Junction<TypeDescription> instrumentationMatcher = null;
-
-        for (String packageToInstrument : instrumentedPackages) {
-            if (instrumentationMatcher == null) {
-                instrumentationMatcher = ElementMatchers.nameStartsWith(packageToInstrument);
-            } else {
-                instrumentationMatcher = instrumentationMatcher.or(ElementMatchers.nameStartsWith(packageToInstrument));
-            }
-        }
-
-        excludedPackages.add("java");
-        excludedPackages.add("javax");
-        excludedPackages.add("jdk");
-        excludedPackages.add("sun");
-
-        for (String excludedPackage : excludedPackages) {
-            if (instrumentationMatcher == null) {
-                instrumentationMatcher = ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage));
-            } else {
-                instrumentationMatcher = instrumentationMatcher.and(ElementMatchers.not(ElementMatchers.nameStartsWith(excludedPackage)));
-            }
-        }
-
-        for (ClassMatcher excludeClassMatcher : settings.getExcludeFromInstrumentationClasses()) {
-            instrumentationMatcher = instrumentationMatcher.and(
-                    target -> !excludeClassMatcher.matches(ByteBuddyTypeResolver.getInstance().resolve(target.asGenericType()))
-            );
-        }
-
-        ElementMatcher.Junction<TypeDescription> finalMatcher = ElementMatchers
-                .not(ElementMatchers.nameStartsWith("com.ulyp"))
-                .and(ElementMatchers.not(ElementMatchers.nameStartsWith("shadowed")));
-
-        if (instrumentationMatcher != null) {
-            finalMatcher = finalMatcher.and(instrumentationMatcher);
-        }
+        ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
+        ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);
 
         MethodIdFactory methodIdFactory = new MethodIdFactory(startRecordingMethods);
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
-                .type(finalMatcher)
-                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
-                        Advice.withCustomMapping()
-                                .bind(methodIdFactory)
-                                .to(MethodCallRecordingAdvice.class)
-                                .on(ElementMatchers
-                                        .isMethod()
-                                        .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                                        .and(ElementMatchers.not(ElementMatchers.isConstructor()))
-                                )
-                ));
+            .ignore(ignoreMatcher)
+            .type(instrumentationMatcher)
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
+                Advice.withCustomMapping()
+                    .bind(methodIdFactory)
+                    .to(MethodCallRecordingAdvice.class)
+                    .on(ElementMatchers
+                        .isMethod()
+                        .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                        .and(ElementMatchers.not(ElementMatchers.isConstructor()))
+                    )
+            ));
 
         if (settings.instrumentConstructors()) {
             agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
-                    Advice.withCustomMapping()
-                            .bind(methodIdFactory)
-                            .to(ConstructorCallRecordingAdvice.class)
-                            .on(ElementMatchers.isConstructor())
+                Advice.withCustomMapping()
+                    .bind(methodIdFactory)
+                    .to(ConstructorCallRecordingAdvice.class)
+                    .on(ElementMatchers.isConstructor())
             ));
         }
 
@@ -146,5 +112,44 @@ public class Agent {
         }
 
         agent.installOn(instrumentation);
+    }
+
+    private static ElementMatcher.Junction<TypeDescription> buildInstrumentationMatcher(Settings settings) {
+        PackageList instrumentatedPackages = settings.getInstrumentatedPackages();
+        ElementMatcher.Junction<TypeDescription> instrumentationMatcher = null;
+
+        for (String packageToInstrument : instrumentatedPackages) {
+            if (instrumentationMatcher == null) {
+                instrumentationMatcher = ElementMatchers.nameStartsWith(packageToInstrument);
+            } else {
+                instrumentationMatcher = instrumentationMatcher.or(ElementMatchers.nameStartsWith(packageToInstrument));
+            }
+        }
+
+        return Optional.ofNullable(instrumentationMatcher).orElse(ElementMatchers.any());
+    }
+
+    private static ElementMatcher.Junction<TypeDescription> buildIgnoreMatcher(Settings settings) {
+        PackageList excludedPackages = settings.getExcludedFromInstrumentationPackages();
+
+        ElementMatcher.Junction<TypeDescription> ignoreMatcher = ElementMatchers.nameStartsWith("java.")
+            .or(ElementMatchers.nameStartsWith("javax."))
+            .or(ElementMatchers.nameStartsWith("jdk."))
+            .or(ElementMatchers.nameStartsWith("sun"))
+            .or(ElementMatchers.nameStartsWith("shadowed"))
+            .or(ElementMatchers.nameStartsWith("com.sun"))
+            .or(ElementMatchers.nameStartsWith("com.ulyp"));
+
+        for (String excludedPackage : excludedPackages) {
+            ignoreMatcher = ignoreMatcher.or(ElementMatchers.nameStartsWith(excludedPackage));
+        }
+
+        for (ClassMatcher excludeClassMatcher : settings.getExcludeFromInstrumentationClasses()) {
+            ignoreMatcher = ignoreMatcher.or(
+                target -> excludeClassMatcher.matches(ByteBuddyTypeResolver.getInstance().resolve(target.asGenericType()))
+            );
+        }
+
+        return ignoreMatcher;
     }
 }
