@@ -22,13 +22,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package ulyp.org.slf4j.impl;
+package org.slf4j.impl;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-import org.slf4j.spi.LoggerFactoryBinder;
-
-import com.ulyp.agent.log.SimpleLoggerFactory;
+import org.slf4j.helpers.NOPMDCAdapter;
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
@@ -36,53 +33,39 @@ import com.ulyp.agent.log.SimpleLoggerFactory;
  */
 
 /**
- * The binding of {@link LoggerFactory} class with an actual instance of
- * {@link ILoggerFactory} is performed using information returned by this class.
- * 
- * 
+ * This implementation is bound to {@link NOPMDCAdapter}.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public class StaticMDCBinder {
 
     /**
      * The unique instance of this class.
-     * 
      */
-    private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
+
+    private StaticMDCBinder() {
+    }
 
     /**
      * Return the singleton of this class.
      * 
-     * @return the StaticLoggerBinder singleton
+     * @return the StaticMDCBinder singleton
+     * @since 1.7.14
      */
-    public static final StaticLoggerBinder getSingleton() {
+    public static final StaticMDCBinder getSingleton() {
         return SINGLETON;
     }
 
     /**
-     * Declare the version of the SLF4J API this implementation is compiled against. 
-     * The value of this field is modified with each major release. 
+     * Currently this method always returns an instance of 
+     * {@link StaticMDCBinder}.
      */
-    // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.6.99"; // !final
-
-    private static final String loggerFactoryClassStr = SimpleLoggerFactory.class.getName();
-
-    /**
-     * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
-     * method should always be the same object
-     */
-    private final ILoggerFactory loggerFactory;
-
-    private StaticLoggerBinder() {
-        loggerFactory = new SimpleLoggerFactory();
+    public MDCAdapter getMDCA() {
+        return new NOPMDCAdapter();
     }
 
-    public ILoggerFactory getLoggerFactory() {
-        return loggerFactory;
-    }
-
-    public String getLoggerFactoryClassStr() {
-        return loggerFactoryClassStr;
+    public String getMDCAdapterClassStr() {
+        return NOPMDCAdapter.class.getName();
     }
 }

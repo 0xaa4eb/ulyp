@@ -3,15 +3,16 @@ package com.ulyp.agent;
 import com.ulyp.agent.util.EnhancedThreadLocal;
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.storage.StorageWriter;
+
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.jetbrains.annotations.TestOnly;
 
 @SuppressWarnings("unused")
 @Slf4j
@@ -27,43 +28,62 @@ public class Recorder {
      */
 
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
-    private static final Recorder instance = new Recorder(AgentContext.getInstance());
 
-    private final EnhancedThreadLocal<CallRecordBuffer> threadLocalRecordsLog = new EnhancedThreadLocal<>();
+    private final EnhancedThreadLocal<RecordingState> threadLocalRecordingState = new EnhancedThreadLocal<>();
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
-    private final AgentContext context;
+    private final RecordDataWriter recordDataWriter;
 
-    public Recorder(AgentContext context) {
-        this.context = context;
-        this.startRecordingPolicy = context.getStartRecordingPolicy();
-        this.initialCallIdGenerator = context.getCallIdGenerator();
-    }
-
-    public static Recorder getInstance() {
-        return instance;
+    public Recorder(CallIdGenerator callIdGenerator, StartRecordingPolicy startRecordingPolicy, StorageWriter storageWriter) {
+        this.recordDataWriter = new RecordDataWriter(storageWriter);
+        this.startRecordingPolicy = startRecordingPolicy;
+        this.initialCallIdGenerator = callIdGenerator;
     }
 
     public boolean recordingIsActiveInCurrentThread() {
-        return threadLocalRecordsLog.get() != null;
+        RecordingState recordingState = threadLocalRecordingState.get();
+        return recordingState != null && recordingState.isEnabled();
     }
 
-    public CallRecordBuffer getCurrentCallRecordLog() {
-        return threadLocalRecordsLog.get();
+    /**
+     * Allows disabling recording temporary so that no recording is done. Currently, is only used in logging
+     * facilities in order to avoid unneeded recording calls while logging.
+     * Works along with {@link StartRecordingPolicy} but those functionalities are used for different purposes
+     */
+    public void disableRecording() {
+        RecordingState recordingState = threadLocalRecordingState.get();
+        if (recordingState != null) {
+            recordingState.setEnabled(false);
+        } else {
+            recordingState = new RecordingState();
+            recordingState.setEnabled(false);
+            threadLocalRecordingState.set(recordingState);
+        }
+    }
+
+    public void enableRecording() {
+        RecordingState recordingState = threadLocalRecordingState.get();
+        if (recordingState != null) {
+            if (recordingState.getCallRecordBuffer() != null) {
+                recordingState.setEnabled(true);
+            } else {
+                threadLocalRecordingState.clear();
+            }
+        }
     }
 
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            CallRecordBuffer callRecordBuffer = threadLocalRecordsLog.computeIfAbsent(() -> {
+            RecordingState recordingState = threadLocalRecordingState.computeIfAbsent(() -> {
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return newCallRecordBuffer;
+                return new RecordingState(newCallRecordBuffer);
             });
 
-            return onMethodEnter(callRecordBuffer, method, callee, args);
+            return onMethodEnter(recordingState, method, callee, args);
         } else {
             return -1;
         }
@@ -71,125 +91,49 @@ public class Recorder {
 
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            CallRecordBuffer callRecordBuffer = threadLocalRecordsLog.computeIfAbsent(() -> {
+            RecordingState recordingState = threadLocalRecordingState.computeIfAbsent(() -> {
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return newCallRecordBuffer;
+                return new RecordingState(newCallRecordBuffer);
             });
 
-            return onConstructorEnter(callRecordBuffer, method, args);
+            return onConstructorEnter(recordingState, method, args);
         } else {
             return -1;
         }
     }
 
-    private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
-
-    private void write(TypeResolver typeResolver, CallRecordBuffer recordLog) {
-
-        MethodList methodsList = new MethodList();
-
-        ConcurrentArrayList<Method> methods = MethodRepository.getInstance().getMethods();
-        int upToExcluding = methods.size() - 1;
-        int startFrom = lastIndexOfMethodWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            context.getStorageWriter().write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
-        methodsList = new MethodList();
-        methods = MethodRepository.getInstance().getRecordingStartMethods();
-        upToExcluding = methods.size() - 1;
-        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            context.getStorageWriter().write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodToRecordWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
-        TypeList typesList = new TypeList();
-        ConcurrentArrayList<Type> types = typeResolver.getAllResolvedAsConcurrentList();
-        upToExcluding = types.size() - 1;
-        startFrom = lastIndexOfTypeWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Type type = types.get(i);
-            log.debug("Will write {} to storage", type);
-            typesList.add(type);
-        }
-        if (typesList.size() > 0) {
-            context.getStorageWriter().write(typesList);
-            for (;;) {
-                int currentIndex = lastIndexOfTypeWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfTypeWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
-        context.getStorageWriter().write(recordLog.getRecordingMetadata());
-        context.getStorageWriter().write(recordLog.getRecordedCalls());
-    }
-
     public long onConstructorEnter(Method method, Object[] args) {
-        return onMethodEnter(threadLocalRecordsLog.get(), method, null, args);
+        return onMethodEnter(threadLocalRecordingState.get(), method, null, args);
     }
 
-    public long onConstructorEnter(CallRecordBuffer callRecordBuffer, Method method, Object[] args) {
-        return onMethodEnter(callRecordBuffer, method, null, args);
+    public long onConstructorEnter(RecordingState recordingState, Method method, Object[] args) {
+        return onMethodEnter(recordingState, method, null, args);
     }
 
     public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
-        return onMethodEnter(threadLocalRecordsLog.get(), method, callee, args);
+        return onMethodEnter(threadLocalRecordingState.get(), method, callee, args);
     }
 
-    public long onMethodEnter(CallRecordBuffer callRecordBuffer, Method method, @Nullable Object callee, Object[] args) {
+    public long onMethodEnter(RecordingState recordingState, Method method, @Nullable Object callee, Object[] args) {
         try {
+            if (recordingState == null || !recordingState.isEnabled()) {
+                return -1;
+            }
+            CallRecordBuffer callRecordBuffer = recordingState.getCallRecordBuffer();
             if (callRecordBuffer == null) {
                 return -1;
             }
-            return callRecordBuffer.onMethodEnter(method, callee, args);
+
+            try {
+                recordingState.setEnabled(false);
+                return callRecordBuffer.onMethodEnter(method, callee, args);
+            } finally {
+                recordingState.setEnabled(true);
+            }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
             return -1;
@@ -202,33 +146,46 @@ public class Recorder {
 
     public void onMethodExit(TypeResolver typeResolver, Method method, Object result, Throwable thrown, long callId) {
         try {
-            CallRecordBuffer currentRecordLog = threadLocalRecordsLog.get();
-            if (currentRecordLog == null) return;
-            currentRecordLog.onMethodExit(method, result, thrown, callId);
+            RecordingState recordingState = threadLocalRecordingState.get();
+            if (recordingState == null || !recordingState.isEnabled()) return;
+            CallRecordBuffer callRecords = recordingState.getCallRecordBuffer();
+            if (callRecords == null) return;
 
-            if (currentRecordLog.isComplete() ||
-                    currentRecordLog.estimateBytesSize() > 32 * 1024 * 1024 ||
+            try {
+                recordingState.setEnabled(false);
+                callRecords.onMethodExit(method, result, thrown, callId);
+            } finally {
+                recordingState.setEnabled(true);
+            }
+
+            if (callRecords.isComplete() ||
+                    callRecords.estimateBytesSize() > 32 * 1024 * 1024 ||
                     (
-                            (System.currentTimeMillis() - currentRecordLog.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
+                            (System.currentTimeMillis() - callRecords.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
                                     &&
-                                    currentRecordLog.getRecordedCallsSize() > 0
+                                    callRecords.getRecordedCallsSize() > 0
                     )) {
-                CallRecordBuffer newRecordLog = currentRecordLog.cloneWithoutData();
+                CallRecordBuffer newBuffer = callRecords.cloneWithoutData();
 
-                if (!currentRecordLog.isComplete()) {
-                    threadLocalRecordsLog.set(newRecordLog);
+                if (!callRecords.isComplete()) {
+                    recordingState.setCallRecordBuffer(newBuffer);
                 } else {
-                    threadLocalRecordsLog.clear();
+                    threadLocalRecordingState.clear();
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.INFO_ENABLED) {
-                        log.info("Finished recording {} at method {}, recorded {} calls", currentRecordLog.getRecordingMetadata().getId(), method.toShortString(), currentRecordLog.getTotalRecordedEnterCalls());
+                        log.info("Finished recording {} at method {}, recorded {} calls", callRecords.getRecordingMetadata().getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
                     }
                 }
 
-                write(typeResolver, currentRecordLog);
+                recordDataWriter.write(typeResolver, callRecords);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
         }
+    }
+
+    @TestOnly
+    RecordingState getRecordingState() {
+        return threadLocalRecordingState.get();
     }
 }

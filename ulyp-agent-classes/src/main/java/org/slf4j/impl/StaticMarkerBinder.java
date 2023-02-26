@@ -22,10 +22,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-package ulyp.org.slf4j.impl;
 
-import org.slf4j.helpers.NOPMDCAdapter;
-import org.slf4j.spi.MDCAdapter;
+package org.slf4j.impl;
+
+import org.slf4j.IMarkerFactory;
+import org.slf4j.MarkerFactory;
+import org.slf4j.helpers.BasicMarkerFactory;
+import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
@@ -33,39 +36,48 @@ import org.slf4j.spi.MDCAdapter;
  */
 
 /**
- * This implementation is bound to {@link NOPMDCAdapter}.
- *
+ * 
+ * The binding of {@link MarkerFactory} class with an actual instance of 
+ * {@link IMarkerFactory} is performed using information returned by this class. 
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class StaticMDCBinder {
+public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     /**
      * The unique instance of this class.
      */
-    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
+    public static final StaticMarkerBinder SINGLETON = new StaticMarkerBinder();
 
-    private StaticMDCBinder() {
+    final IMarkerFactory markerFactory = new BasicMarkerFactory();
+
+    private StaticMarkerBinder() {
     }
 
     /**
      * Return the singleton of this class.
      * 
-     * @return the StaticMDCBinder singleton
+     * @return the StaticMarkerBinder singleton
      * @since 1.7.14
      */
-    public static final StaticMDCBinder getSingleton() {
+    public static StaticMarkerBinder getSingleton() {
         return SINGLETON;
     }
 
     /**
      * Currently this method always returns an instance of 
-     * {@link StaticMDCBinder}.
+     * {@link BasicMarkerFactory}.
      */
-    public MDCAdapter getMDCA() {
-        return new NOPMDCAdapter();
+    public IMarkerFactory getMarkerFactory() {
+        return markerFactory;
     }
 
-    public String getMDCAdapterClassStr() {
-        return NOPMDCAdapter.class.getName();
+    /**
+     * Currently, this method returns the class name of
+     * {@link BasicMarkerFactory}.
+     */
+    public String getMarkerFactoryClassStr() {
+        return BasicMarkerFactory.class.getName();
     }
+
 }

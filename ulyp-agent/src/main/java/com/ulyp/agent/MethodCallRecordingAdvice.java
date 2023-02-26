@@ -26,7 +26,7 @@ public class MethodCallRecordingAdvice {
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
 
             // noinspection UnusedAssignment local variable callId is used by exit() method
-            callId = Recorder.getInstance().startOrContinueRecordingOnMethodEnter(
+            callId = RecorderInstance.instance.startOrContinueRecordingOnMethodEnter(
                     ByteBuddyTypeResolver.getInstance(),
                     MethodRepository.getInstance().get(methodId),
                     callee,
@@ -34,9 +34,9 @@ public class MethodCallRecordingAdvice {
             );
         } else {
 
-            if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
+            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
                 //noinspection UnusedAssignment
-                callId = Recorder.getInstance().onMethodEnter(
+                callId = RecorderInstance.instance.onMethodEnter(
                         MethodRepository.getInstance().get(methodId),
                         callee,
                         arguments
@@ -57,7 +57,7 @@ public class MethodCallRecordingAdvice {
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
         if (callId >= 0) {
-            Recorder.getInstance().onMethodExit(
+            RecorderInstance.instance.onMethodExit(
                 ByteBuddyTypeResolver.getInstance(),
                 MethodRepository.getInstance().get(methodId),
                 returnValue,

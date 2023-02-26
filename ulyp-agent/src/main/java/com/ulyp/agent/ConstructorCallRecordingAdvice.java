@@ -23,14 +23,14 @@ public class ConstructorCallRecordingAdvice {
 
         // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
-            callId = Recorder.getInstance().startOrContinueRecordingOnConstructorEnter(
+            callId = RecorderInstance.instance.startOrContinueRecordingOnConstructorEnter(
                     ByteBuddyTypeResolver.getInstance(),
                     MethodRepository.getInstance().get(methodId),
                     arguments
             );
         } else {
-            if (Recorder.currentRecordingSessionCount.get() > 0 && Recorder.getInstance().recordingIsActiveInCurrentThread()) {
-                callId = Recorder.getInstance().onConstructorEnter(MethodRepository.getInstance().get(methodId), arguments);
+            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
+                callId = RecorderInstance.instance.onConstructorEnter(MethodRepository.getInstance().get(methodId), arguments);
             }
         }
     }
@@ -47,7 +47,7 @@ public class ConstructorCallRecordingAdvice {
             @Advice.This Object returnValue) {
 
         if (callId >= 0) {
-            Recorder.getInstance().onConstructorExit(
+            RecorderInstance.instance.onConstructorExit(
                 ByteBuddyTypeResolver.getInstance(),
                 MethodRepository.getInstance().get(methodId),
                 returnValue,

@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+/**
+ * Is used at runtime to resolve object's type in order to determine what recorder should be used.
+ */
 public interface TypeResolver {
 
     @NotNull

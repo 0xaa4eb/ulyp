@@ -26,8 +26,6 @@ public class CallRecordBuffer {
     private final long rootCallId;
 
     private final RecordingMetadata recordingMetadata;
-    private boolean inProcessOfRecording = true;
-
     private long lastExitCallId = -1;
     private long nextCallId;
 
@@ -54,7 +52,6 @@ public class CallRecordBuffer {
     private CallRecordBuffer(
             int id,
             TypeResolver typeResolver,
-            boolean inProcessOfRecording,
             long nextCallId,
             long rootCallId) {
         this.recordingMetadata = RecordingMetadata.builder()
@@ -65,13 +62,12 @@ public class CallRecordBuffer {
                 .build();
 
         this.typeResolver = typeResolver;
-        this.inProcessOfRecording = inProcessOfRecording;
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.recordingMetadata.getId(), this.typeResolver, this.inProcessOfRecording, this.nextCallId, rootCallId);
+        return new CallRecordBuffer(this.recordingMetadata.getId(), this.typeResolver, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
@@ -79,10 +75,6 @@ public class CallRecordBuffer {
     }
 
     public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
-        if (!inProcessOfRecording) {
-            return -1;
-        }
-        inProcessOfRecording = false;
         try {
 
             long callId = nextCallId++;
@@ -99,45 +91,34 @@ public class CallRecordBuffer {
             // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted
             log.error("Error while recording", err);
             return -1;
-        } finally {
-            inProcessOfRecording = true;
         }
     }
 
     public void onMethodExit(Method method, Object returnValue, Throwable thrown, long callId) {
-        if (!inProcessOfRecording) {
-            return;
-        }
-
-        inProcessOfRecording = false;
-        try {
-            if (callId >= 0) {
-                if (thrown == null) {
-                    recordedCalls.addExitMethodCall(
-                            recordingMetadata.getId(),
-                            callId,
-                            method,
-                            typeResolver,
-                            false,
-                            returnValue
-                    );
-                } else {
-                    recordedCalls.addExitMethodCall(
-                            recordingMetadata.getId(),
-                            callId,
-                            method,
-                            typeResolver,
-                            true,
-                            thrown
-                    );
-                }
-                lastExitCallId = callId;
-                if (isComplete()) {
-                    this.recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
-                }
+        if (callId >= 0) {
+            if (thrown == null) {
+                recordedCalls.addExitMethodCall(
+                    recordingMetadata.getId(),
+                    callId,
+                    method,
+                    typeResolver,
+                    false,
+                    returnValue
+                );
+            } else {
+                recordedCalls.addExitMethodCall(
+                    recordingMetadata.getId(),
+                    callId,
+                    method,
+                    typeResolver,
+                    true,
+                    thrown
+                );
             }
-        } finally {
-            inProcessOfRecording = true;
+            lastExitCallId = callId;
+            if (isComplete()) {
+                this.recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
+            }
         }
     }
 
@@ -163,6 +144,6 @@ public class CallRecordBuffer {
 
     @Override
     public String toString() {
-        return "CallRecordLog{id=" + recordingMetadata + '}';
+        return "CallRecordBuffer{id=" + recordingMetadata + '}';
     }
 }
