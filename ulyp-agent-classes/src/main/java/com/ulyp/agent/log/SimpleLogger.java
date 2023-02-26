@@ -34,6 +34,9 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
 
+import com.ulyp.agent.AgentContext;
+import com.ulyp.agent.RecorderInstance;
+
 /**
  * <p>
  * Simple implementation of {@link Logger} that sends all enabled log messages,
@@ -248,51 +251,60 @@ public class SimpleLogger extends MarkerIgnoringBase {
         if (!isLevelEnabled(level)) {
             return;
         }
+        if (AgentContext.isLoaded()) {
+            // only for agent runtime
+            RecorderInstance.instance.disableRecording();
+        }
+        try {
+            StringBuilder buf = new StringBuilder(32);
 
-        StringBuilder buf = new StringBuilder(32);
+            // Append date-time if so configured
+            if (CONFIG_PARAMS.showDateTime) {
+                if (CONFIG_PARAMS.dateFormatter != null) {
+                    buf.append(getFormattedDate());
+                    buf.append(' ');
+                } else {
+                    buf.append(System.currentTimeMillis() - START_TIME);
+                    buf.append(' ');
+                }
+            }
 
-        // Append date-time if so configured
-        if (CONFIG_PARAMS.showDateTime) {
-            if (CONFIG_PARAMS.dateFormatter != null) {
-                buf.append(getFormattedDate());
-                buf.append(' ');
-            } else {
-                buf.append(System.currentTimeMillis() - START_TIME);
-                buf.append(' ');
+            // Append current thread name if so configured
+            if (CONFIG_PARAMS.showThreadName) {
+                buf.append('[');
+                buf.append(Thread.currentThread().getName());
+                buf.append("] ");
+            }
+
+            if (CONFIG_PARAMS.levelInBrackets)
+                buf.append('[');
+
+            // Append a readable representation of the log level
+            String levelStr = renderLevel(level);
+            buf.append(levelStr);
+            if (CONFIG_PARAMS.levelInBrackets)
+                buf.append(']');
+            buf.append(' ');
+
+            // Append the name of the log instance if so configured
+            if (CONFIG_PARAMS.showShortLogName) {
+                if (shortLogName == null)
+                    shortLogName = computeShortName();
+                buf.append(String.valueOf(shortLogName)).append(" - ");
+            } else if (CONFIG_PARAMS.showLogName) {
+                buf.append(String.valueOf(name)).append(" - ");
+            }
+
+            // Append the message
+            buf.append(message);
+
+            write(buf, t);
+        } finally {
+            if (AgentContext.isLoaded()) {
+                // only for agent runtime
+                RecorderInstance.instance.enableRecording();
             }
         }
-
-        // Append current thread name if so configured
-        if (CONFIG_PARAMS.showThreadName) {
-            buf.append('[');
-            buf.append(Thread.currentThread().getName());
-            buf.append("] ");
-        }
-
-        if (CONFIG_PARAMS.levelInBrackets)
-            buf.append('[');
-
-        // Append a readable representation of the log level
-        String levelStr = renderLevel(level);
-        buf.append(levelStr);
-        if (CONFIG_PARAMS.levelInBrackets)
-            buf.append(']');
-        buf.append(' ');
-
-        // Append the name of the log instance if so configured
-        if (CONFIG_PARAMS.showShortLogName) {
-            if (shortLogName == null)
-                shortLogName = computeShortName();
-            buf.append(String.valueOf(shortLogName)).append(" - ");
-        } else if (CONFIG_PARAMS.showLogName) {
-            buf.append(String.valueOf(name)).append(" - ");
-        }
-
-        // Append the message
-        buf.append(message);
-
-        write(buf, t);
-
     }
 
     protected String renderLevel(int level) {

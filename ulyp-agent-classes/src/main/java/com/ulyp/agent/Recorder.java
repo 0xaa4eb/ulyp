@@ -1,6 +1,5 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.EnhancedThreadLocal;
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
@@ -28,7 +27,7 @@ public class Recorder {
     */
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
 
-    private final EnhancedThreadLocal<RecordingState> threadLocalRecordingState = new EnhancedThreadLocal<>();
+    private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
     private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final RecordDataWriter recordDataWriter;
@@ -66,21 +65,23 @@ public class Recorder {
             if (recordingState.getCallRecordBuffer() != null) {
                 recordingState.setEnabled(true);
             } else {
-                threadLocalRecordingState.clear();
+                threadLocalRecordingState.set(null);
             }
         }
     }
 
     public long startOrContinueRecordingOnMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = threadLocalRecordingState.computeIfAbsent(() -> {
+            RecordingState recordingState = threadLocalRecordingState.get();
+            if (recordingState == null) {
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
+                recordingState = new RecordingState(newCallRecordBuffer);
+                threadLocalRecordingState.set(recordingState);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return new RecordingState(newCallRecordBuffer);
-            });
+            }
 
             return onMethodEnter(recordingState, method, callee, args);
         } else {
@@ -90,14 +91,16 @@ public class Recorder {
 
     public long startOrContinueRecordingOnConstructorEnter(TypeResolver typeResolver, Method method, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = threadLocalRecordingState.computeIfAbsent(() -> {
+            RecordingState recordingState = threadLocalRecordingState.get();
+            if (recordingState == null) {
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
+                recordingState = new RecordingState(newCallRecordBuffer);
+                threadLocalRecordingState.set(recordingState);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), method.toShortString());
                 }
-                return new RecordingState(newCallRecordBuffer);
-            });
+            }
 
             return onConstructorEnter(recordingState, method, args);
         } else {
@@ -166,7 +169,7 @@ public class Recorder {
                     if (!callRecords.isComplete()) {
                         recordingState.setCallRecordBuffer(newBuffer);
                     } else {
-                        threadLocalRecordingState.clear();
+                        threadLocalRecordingState.set(null);
                         currentRecordingSessionCount.decrementAndGet();
                         if (LoggingSettings.INFO_ENABLED) {
                             log.info("Finished recording {} at method {}, recorded {} calls", callRecords.getRecordingMetadata().getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
