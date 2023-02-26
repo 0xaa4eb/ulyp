@@ -24,6 +24,7 @@ public class ForkProcessBuilder {
     private Boolean agentDisabled = null;
     private Boolean recordConstructors = null;
     private Boolean instrumentLambdas = null;
+    private Boolean instrumentTypeInitializers = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -81,6 +82,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withInstrumentLambdas(Boolean instrumentLambdas) {
         this.instrumentLambdas = instrumentLambdas;
+        return this;
+    }
+
+    public ForkProcessBuilder withInstrumentTypeInitializers(Boolean instrumentTypeInitializers) {
+        this.instrumentTypeInitializers = instrumentTypeInitializers;
         return this;
     }
 
@@ -146,6 +152,9 @@ public class ForkProcessBuilder {
         }
         if (excludeRecordingMethods != null) {
             params.add("-D" + Settings.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
+        }
+        if (instrumentTypeInitializers != null) {
+            params.add("-D" + Settings.INSTRUMENT_TYPE_INITIALIZERS);
         }
 
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());

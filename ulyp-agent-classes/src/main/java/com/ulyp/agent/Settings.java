@@ -31,6 +31,7 @@ public class Settings {
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
+    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
@@ -44,6 +45,7 @@ public class Settings {
     private final List<ClassMatcher> excludeFromInstrumentationClasses;
     private final boolean instrumentConstructors;
     private final boolean instrumentLambdas;
+    private final boolean instrumentTypeInitializers;
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<ClassMatcher> classesToPrint;
@@ -57,6 +59,7 @@ public class Settings {
             @NotNull StartRecordingMethods startRecordingMethods,
             boolean instrumentConstructors,
             boolean instrumentLambdas,
+            boolean instrumentTypeInitializers,
             CollectionsRecordingMode collectionsRecordingMode,
             Set<ClassMatcher> classesToPrint,
             String startRecordingPolicyPropertyValue,
@@ -69,6 +72,7 @@ public class Settings {
         this.startRecordingMethods = startRecordingMethods;
         this.instrumentConstructors = instrumentConstructors;
         this.instrumentLambdas = instrumentLambdas;
+        this.instrumentTypeInitializers = instrumentTypeInitializers;
         this.collectionsRecordingMode = collectionsRecordingMode;
         this.classesToPrint = classesToPrint;
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
@@ -132,6 +136,7 @@ public class Settings {
         boolean aggressive = System.getProperty(AGGRESSIVE_PROPERTY) != null;
         boolean recordConstructors = aggressive || System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
         boolean instrumentLambdas = aggressive || System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
+        boolean instrumentTypeInitializers = aggressive || System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
 
         String recordCollectionsProp;
         if (aggressive) {
@@ -159,6 +164,7 @@ public class Settings {
                 recordingStartMethods,
                 recordConstructors,
                 instrumentLambdas,
+                instrumentTypeInitializers,
                 collectionsRecordingMode,
                 classesToPrint,
                 startRecordingPolicy,
@@ -196,6 +202,10 @@ public class Settings {
 
     public boolean instrumentConstructors() {
         return instrumentConstructors;
+    }
+
+    public boolean instrumentTypeInitializers() {
+        return instrumentTypeInitializers;
     }
 
     public CollectionsRecordingMode getCollectionsRecordingMode() {

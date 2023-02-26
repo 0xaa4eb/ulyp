@@ -36,9 +36,19 @@ public class ByteBuddyMethodResolver {
                 ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance() :
                 RecorderChooser.getInstance().chooseForType(returnType);
 
+        String actualName = description.getActualName();
+        String name;
+        if (description.isConstructor()) {
+            name = "<init>";
+        } else if (actualName.isEmpty() && description.isStatic()) {
+            name = "<clinit>";
+        } else {
+            name = description.getActualName();
+        }
+
         Method resolved = Method.builder()
                 .id(idGenerator.incrementAndGet())
-                .name(description.isConstructor() ? "<init>" : description.getActualName())
+                .name(name)
                 .isConstructor(description.isConstructor())
                 .isStatic(description.isStatic())
                 .returnsSomething(returns)

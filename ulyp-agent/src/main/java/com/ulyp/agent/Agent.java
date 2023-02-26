@@ -13,6 +13,7 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -84,11 +85,7 @@ public class Agent {
                 Advice.withCustomMapping()
                     .bind(methodIdFactory)
                     .to(MethodCallRecordingAdvice.class)
-                    .on(ElementMatchers
-                        .isMethod()
-                        .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                        .and(ElementMatchers.not(ElementMatchers.isConstructor()))
-                    )
+                    .on(buildMethodsMatcher(settings))
             ));
 
         if (settings.instrumentConstructors()) {
@@ -112,6 +109,18 @@ public class Agent {
         }
 
         agent.installOn(instrumentation);
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> buildMethodsMatcher(Settings settings) {
+        ElementMatcher.Junction<MethodDescription> methodMatcher = ElementMatchers.isMethod()
+            .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+            .and(ElementMatchers.not(ElementMatchers.isConstructor()));
+
+        if (settings.instrumentTypeInitializers()) {
+            return methodMatcher.or(ElementMatchers.isTypeInitializer());
+        } else {
+            return methodMatcher;
+        }
     }
 
     private static ElementMatcher.Junction<TypeDescription> buildInstrumentationMatcher(Settings settings) {
