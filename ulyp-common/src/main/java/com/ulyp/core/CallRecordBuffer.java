@@ -31,7 +31,7 @@ public class CallRecordBuffer {
 
     public CallRecordBuffer(TypeResolver typeResolver, long callIdInitialValue) {
         List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
-            .skip(4)
+            .skip(2)
             .map(StackTraceElement::toString)
             .collect(Collectors.toList());
 
