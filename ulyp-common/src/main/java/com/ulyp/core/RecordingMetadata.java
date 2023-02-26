@@ -1,6 +1,7 @@
 package com.ulyp.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
@@ -27,7 +28,8 @@ public class RecordingMetadata {
     private long recordingCompletedEpochMillis;
     private String threadName;
     private long threadId;
-    private List<String> stackTraceElements;
+    @Builder.Default
+    private List<String> stackTraceElements = Collections.emptyList();
 
     public static RecordingMetadata deserialize(BinaryRecordingMetadataDecoder decoder) {
         List<String> stackTraceElements = new ArrayList<>();

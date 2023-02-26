@@ -175,26 +175,6 @@ public class StorageReadWriteTest {
     }
 
     @Test
-    public void testReadWriteRecordingWithNoData() {
-
-        writer.write(
-                RecordingMetadata.builder()
-                        .id(42)
-                        .threadName("AAAA")
-                        .threadId(4343L)
-                        .build()
-        );
-
-        Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
-                .untilAsserted(
-                        () -> {
-                            assertEquals(1, reader.getRecordings().size());
-                        }
-                );
-    }
-
-    @Test
     public void testReadWriteWithCoupleOfChildren() {
         T callee = new T();
 

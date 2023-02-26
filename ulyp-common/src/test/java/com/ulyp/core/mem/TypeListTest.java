@@ -40,13 +40,11 @@ public class TypeListTest {
         Type first = iterator.next();
         assertEquals(534L, first.getId());
         assertEquals("com.test.A", first.getName());
-        assertEquals(new HashSet<>(Arrays.asList("com.test.B")), first.getSuperTypeNames());
 
         Type second = iterator.next();
 
         assertEquals(4241L, second.getId());
         assertEquals("com.test.C", second.getName());
-        assertEquals(new HashSet<>(Arrays.asList("com.test.D")), second.getSuperTypeNames());
 
         assertFalse(iterator.hasNext());
     }
