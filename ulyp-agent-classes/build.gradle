@@ -22,7 +22,7 @@ dependencies {
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
     implementation group: 'io.vavr', name: 'vavr', version: vavr_version
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
