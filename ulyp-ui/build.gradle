@@ -52,7 +52,7 @@ dependencies {
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version
     implementation group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
 
-    implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.13.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.20.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.11'
