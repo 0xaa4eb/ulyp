@@ -149,6 +149,11 @@ public class Agent {
             .or(ElementMatchers.nameStartsWith("com.sun"))
             .or(ElementMatchers.nameStartsWith("com.ulyp"));
 
+        ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);
+        if (instrumentationMatcher != ElementMatchers.<TypeDescription>any()) {
+            ignoreMatcher = ElementMatchers.not(instrumentationMatcher).and(ignoreMatcher);
+        }
+
         for (String excludedPackage : excludedPackages) {
             ignoreMatcher = ignoreMatcher.or(ElementMatchers.nameStartsWith(excludedPackage));
         }
