@@ -55,8 +55,5 @@ public class MethodTest {
 
         Assert.assertEquals(method.getDeclaringType().getName(), deserialized.getDeclaringType().getName());
         Assert.assertEquals(method.getDeclaringType().getId(), deserialized.getDeclaringType().getId());
-
-        Assert.assertEquals(method.getImplementingType().getName(), deserialized.getImplementingType().getName());
-        Assert.assertEquals(method.getImplementingType().getId(), deserialized.getImplementingType().getId());
     }
 }

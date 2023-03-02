@@ -193,8 +193,4 @@ public class ByteBuddyTypeConverter {
         }
         return genericName;
     }
-
-    private static class InstanceHolder {
-        private static final ByteBuddyTypeConverter context = new ByteBuddyTypeConverter();
-    }
 }

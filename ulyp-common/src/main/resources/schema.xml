@@ -43,7 +43,6 @@
         <field name="staticFlag" id="20" type="BooleanType"/>
         <data name="name" id="50" type="varStringEncoding"/>
         <data name="declaringTypeValue" id="40" type="varStringEncoding"/>
-        <data name="implementingTypeValue" id="41" type="varStringEncoding"/>
     </sbe:message>
 
     <sbe:message name="BinaryRecordedEnterMethodCall" id="50">

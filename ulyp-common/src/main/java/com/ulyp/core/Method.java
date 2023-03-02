@@ -44,10 +44,6 @@ public class Method {
         UnsafeBuffer buffer = new UnsafeBuffer();
         BinaryTypeDecoder typeDecoder = new BinaryTypeDecoder();
 
-        decoder.wrapImplementingTypeValue(buffer);
-        typeDecoder.wrap(buffer, 0, BinaryTypeEncoder.BLOCK_LENGTH, 0);
-        Type implementingType = Type.deserialize(typeDecoder);
-
         decoder.wrapDeclaringTypeValue(buffer);
         typeDecoder.wrap(buffer, 0, BinaryTypeEncoder.BLOCK_LENGTH, 0);
         Type declaringType = Type.deserialize(typeDecoder);
@@ -55,7 +51,6 @@ public class Method {
         return Method.builder()
                 .id(decoder.id())
                 .name(name)
-                .implementingType(implementingType)
                 .declaringType(declaringType)
                 .isStatic(decoder.staticFlag() == BooleanType.T)
                 .isConstructor(decoder.constructor() == BooleanType.T)
@@ -107,10 +102,6 @@ public class Method {
         return declaringType;
     }
 
-    public Type getImplementingType() {
-        return implementingType;
-    }
-
     public String getName() {
         return name;
     }
@@ -130,7 +121,6 @@ public class Method {
         encoder.constructor(this.isConstructor ? BooleanType.T : BooleanType.F);
 
         encoder.name(this.name);
-        writeType(encoder, implementingType);
         writeType(encoder, declaringType);
     }
 }
