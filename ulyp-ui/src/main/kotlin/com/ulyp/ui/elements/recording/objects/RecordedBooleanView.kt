@@ -12,6 +12,6 @@ class RecordedBooleanView(record: BooleanRecord, renderSettings: RenderSettings)
             children.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
             children.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
         }
-        children.add(of(record.value().toString(), Style.CALL_TREE_NUMBER))
+        children.add(of(record.getValue().toString(), Style.CALL_TREE_NUMBER))
     }
 }

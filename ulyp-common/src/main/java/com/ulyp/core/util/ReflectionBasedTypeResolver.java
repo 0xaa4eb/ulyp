@@ -1,45 +1,42 @@
 package com.ulyp.core.util;
 
-import com.ulyp.core.ByIdTypeResolver;
-import com.ulyp.core.Type;
-import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.TestOnly;
-
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
+
+import com.ulyp.core.Type;
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @TestOnly
-public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolver {
+public class ReflectionBasedTypeResolver implements TypeResolver {
+
+    private static final ReflectionBasedTypeResolver INSTANCE = new ReflectionBasedTypeResolver();
+
+    public static ReflectionBasedTypeResolver getInstance() {
+        return INSTANCE;
+    }
 
     private final ConcurrentMap<Class<?>, Type> map = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Long, Type> byIdIndex = new ConcurrentHashMap<>();
     private final AtomicLong idGen = new AtomicLong();
+    private final ConcurrentArrayList<Type> typesList = new ConcurrentArrayList<>();
 
     private Type build(Class<?> clazz) {
         Type.TypeBuilder type = Type.builder();
         type.name(clazz.getName());
         type.id(idGen.incrementAndGet());
         type.typeTraits(deriveTraits(clazz));
-
-        Set<String> superTypes = getSuperTypes(clazz);
-        type.superTypeNames(superTypes);
-        type.superTypeSimpleNames(superTypes.stream().map(ClassUtils::getSimpleNameFromName).collect(Collectors.toSet()));
-
         return type.build();
     }
 
@@ -73,6 +70,8 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
                 traits.add(TypeTrait.INTEGRAL);
             } else if (clazz == float.class || clazz == double.class) {
                 traits.add(TypeTrait.FRACTIONAL);
+            } else if (clazz == boolean.class) {
+                traits.add(TypeTrait.BOOLEAN);
             }
 
         } else if (Throwable.class.isAssignableFrom(clazz)) {
@@ -99,53 +98,6 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
         return traits;
     }
 
-    private Set<String> getSuperTypes(Class<?> type) {
-        Set<String> superTypes = new HashSet<>();
-        try {
-
-            Class<?> superTypeToCheck = type;
-
-            while (superTypeToCheck != null && superTypeToCheck != Object.class) {
-
-                // do not add type name to super types
-                if (type != superTypeToCheck) {
-
-                    String actualName = superTypeToCheck.getName();
-                    if (actualName.contains("$")) {
-                        actualName = actualName.replace('$', '.');
-                    }
-
-                    superTypes.add(actualName);
-                }
-
-                for (Class<?> interfface : superTypeToCheck.getInterfaces()) {
-                    addInterfaceAndAllParentInterfaces(superTypes, interfface);
-                }
-
-                superTypeToCheck = superTypeToCheck.getSuperclass();
-            }
-        } catch (Exception e) {
-            log.debug("Error while resolving super types for type {}", type, e);
-        }
-        return superTypes;
-    }
-
-    private void addInterfaceAndAllParentInterfaces(Set<String> superTypes, Class<?> interfface) {
-        superTypes.add(prepareTypeName(interfface.getName()));
-
-        for (Class<?> parentInterface : interfface.getInterfaces()) {
-            addInterfaceAndAllParentInterfaces(superTypes, parentInterface);
-        }
-    }
-
-    private String prepareTypeName(String genericName) {
-        if (genericName.contains("$")) {
-            genericName = genericName.replace('$', '.');
-        }
-        return genericName;
-    }
-
-
     @Override
     public @NotNull Type get(Object o) {
         if (o != null) {
@@ -160,8 +112,8 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
         return map.computeIfAbsent(
                 clazz,
                 klass -> {
-                    Type type = Type.builder().name(klass.getName()).id(idGen.incrementAndGet()).build();
-                    byIdIndex.put(type.getId(), type);
+                    Type type = build(clazz);
+                    typesList.add(type);
                     return type;
                 }
         );
@@ -169,15 +121,14 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
 
     @Override
     public @NotNull Collection<Type> getAllResolved() {
-        return Collections.emptyList();
+        return map.values();
     }
 
     @Override
     public @NotNull ConcurrentArrayList<Type> getAllResolvedAsConcurrentList() {
-        return new ConcurrentArrayList<>();
+        return typesList;
     }
-
-    @Override
+/*    @Override
     public @NotNull Type getType(long id) {
         Type type = byIdIndex.get(id);
         if (type != null) {
@@ -185,5 +136,5 @@ public class ReflectionBasedTypeResolver implements TypeResolver, ByIdTypeResolv
         } else {
             return Type.unknown();
         }
-    }
+    }*/
 }

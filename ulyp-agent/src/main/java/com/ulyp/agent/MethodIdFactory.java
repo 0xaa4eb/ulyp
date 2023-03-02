@@ -18,12 +18,10 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
  */
 public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
-    static final MethodRepository methodRepository = MethodRepository.getInstance();
-
     private final ForMethodIdOffsetMapping instance;
 
-    public MethodIdFactory(StartRecordingMethods startRecordingMethods) {
-        this.instance = new ForMethodIdOffsetMapping(startRecordingMethods);
+    public MethodIdFactory(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
+        this.instance = new ForMethodIdOffsetMapping(methodRepository, startRecordingMethods);
     }
 
     @Override
@@ -49,11 +47,13 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
     static class ForMethodIdOffsetMapping implements Advice.OffsetMapping {
 
+        private final MethodRepository methodRepository;
         private final ThreadLocal<IdMapping> lastMethod = new ThreadLocal<>();
         private final ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver();
         private final StartRecordingMethods startRecordingMethods;
 
-        ForMethodIdOffsetMapping(StartRecordingMethods startRecordingMethods) {
+        ForMethodIdOffsetMapping(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
+            this.methodRepository = methodRepository;
             this.startRecordingMethods = startRecordingMethods;
         }
 

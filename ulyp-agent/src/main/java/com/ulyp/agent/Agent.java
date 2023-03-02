@@ -1,25 +1,26 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.ByteBuddyTypeResolver;
+import java.lang.instrument.Instrumentation;
+import java.util.Optional;
+
+import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.recorders.collections.CollectionRecorder;
-import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.ToStringPrintingRecorder;
+import com.ulyp.core.recorders.collections.CollectionRecorder;
+import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.ClassMatcher;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
+
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
-
-import java.lang.instrument.Instrumentation;
-import java.util.Optional;
 
 /**
  * The agent entry point which is invoked by JVM itself
@@ -42,10 +43,10 @@ public class Agent {
         if (AgentContext.isLoaded()) {
             return;
         } else {
-            AgentContext.init(ByteBuddyTypeResolver.getInstance());
+            AgentContext.init();
         }
 
-        AgentContext instance = AgentContext.getInstance();
+        AgentContext context = AgentContext.getInstance();
 
         Settings settings = Settings.fromSystemProperties();
         if (settings.isAgentDisabled()) {
@@ -76,7 +77,7 @@ public class Agent {
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);
 
-        MethodIdFactory methodIdFactory = new MethodIdFactory(startRecordingMethods);
+        MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository(), startRecordingMethods);
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
             .ignore(ignoreMatcher)
@@ -160,7 +161,7 @@ public class Agent {
 
         for (ClassMatcher excludeClassMatcher : settings.getExcludeFromInstrumentationClasses()) {
             ignoreMatcher = ignoreMatcher.or(
-                target -> excludeClassMatcher.matches(ByteBuddyTypeResolver.getInstance().resolve(target.asGenericType()))
+                target -> excludeClassMatcher.matches(ByteBuddyTypeConverter.INSTANCE.convert(target.asGenericType()))
             );
         }
 

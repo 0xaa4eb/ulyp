@@ -11,7 +11,7 @@ public class BooleanRecord extends ObjectRecord {
         this.value = value;
     }
 
-    public boolean value() {
+    public boolean getValue() {
         return value;
     }
 

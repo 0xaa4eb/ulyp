@@ -19,6 +19,7 @@ import org.slf4j.spi.LocationAwareLogger;
 import com.ulyp.agent.log.SimpleLoggerFactory;
 import com.ulyp.agent.policy.EnabledByDefaultRecordingPolicy;
 import com.ulyp.core.Method;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
@@ -36,16 +37,19 @@ public class RecorderCurrentSessionCountTest {
         }
     }
 
-    private final StatsRecordingStorageWriter storageWriter = new StatsRecordingStorageWriter(new DevNullStorageWriter());
-    private final Recorder recorder = new Recorder(new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storageWriter);
+    private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
+    private final StatsRecordingStorageWriter storageWriter = new StatsRecordingStorageWriter(new DevNullStorageWriter());
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storageWriter);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
+    private int methodIdx;
     private ExecutorService executor;
 
     @Before
     public void setUp() throws NoSuchMethodException {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
+        methodIdx = methodRepository.putAndGetId(method);
         executor = Executors.newFixedThreadPool(THREADS);
     }
 
@@ -70,13 +74,13 @@ public class RecorderCurrentSessionCountTest {
             X callee = new X();
 
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
-                long callId = recorder.startOrContinueRecordingOnMethodEnter(typeResolver, method, callee, new Object[5]);
+                long callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
                 Assert.assertTrue("Since at least one recording session is active, " +
                     "Recorder.currentRecordingSessionCount must be positive",
                     Recorder.currentRecordingSessionCount.get() > 0);
 
-                recorder.onMethodExit(typeResolver, method, "ABC", null, callId);
+                recorder.onMethodExit(methodIdx, "ABC", null, callId);
             }
         }
     }

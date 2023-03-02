@@ -22,7 +22,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         BooleanRecord repr = (BooleanRecord) root.getArgs().get(0);
 
-        Assert.assertTrue(repr.value());
+        Assert.assertTrue(repr.getValue());
     }
 
     @Test

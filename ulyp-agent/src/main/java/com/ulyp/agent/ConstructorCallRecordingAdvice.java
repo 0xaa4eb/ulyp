@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
-import com.ulyp.agent.util.ByteBuddyTypeResolver;
 import com.ulyp.core.MethodRepository;
+
 import net.bytebuddy.asm.Advice;
 
 /**
@@ -24,13 +24,12 @@ public class ConstructorCallRecordingAdvice {
         // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
             callId = RecorderInstance.instance.startOrContinueRecordingOnConstructorEnter(
-                    ByteBuddyTypeResolver.getInstance(),
-                    MethodRepository.getInstance().get(methodId),
-                    arguments
+                methodId,
+                arguments
             );
         } else {
             if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                callId = RecorderInstance.instance.onConstructorEnter(MethodRepository.getInstance().get(methodId), arguments);
+                callId = RecorderInstance.instance.onConstructorEnter(methodId, arguments);
             }
         }
     }
@@ -45,14 +44,8 @@ public class ConstructorCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @MethodId int methodId,
             @Advice.This Object returnValue) {
-
         if (callId >= 0) {
-            RecorderInstance.instance.onConstructorExit(
-                ByteBuddyTypeResolver.getInstance(),
-                MethodRepository.getInstance().get(methodId),
-                returnValue,
-                callId
-            );
+            RecorderInstance.instance.onConstructorExit(methodId, returnValue, callId);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.ulyp.agent;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -10,13 +9,15 @@ import org.junit.Test;
 
 import com.ulyp.agent.policy.EnabledByDefaultRecordingPolicy;
 import com.ulyp.core.Method;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.util.HeapStorageWrtiter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class RecorderTest {
 
@@ -26,22 +27,25 @@ public class RecorderTest {
         }
     }
 
+    private final MethodRepository methodRepository = new MethodRepository();
     private final HeapStorageWrtiter storage = new HeapStorageWrtiter();
-    private final Recorder recorder = new Recorder(new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storage);
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storage);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
+    private int methodIdx;
 
     @Before
     public void setUp() throws NoSuchMethodException {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
+        methodIdx = methodRepository.putAndGetId(method);
     }
 
     @Test
     public void shouldRecordDataWhenRecordingIsFinished() {
         X recorded = new X();
-        long callId = recorder.startOrContinueRecordingOnMethodEnter(typeResolver, method, recorded, new Object[5]);
-        recorder.onMethodExit(typeResolver, method, "ABC", null, callId);
+        long callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
+        recorder.onMethodExit(methodIdx, "ABC", null, callId);
 
         assertNull(recorder.getRecordingState());
         assertEquals(2, storage.getCallRecords().size());
@@ -51,16 +55,16 @@ public class RecorderTest {
     public void testTemporaryRecordingDisableWithOngoingRecording() {
 
         X recorded = new X();
-        long callId1 = recorder.startOrContinueRecordingOnMethodEnter(typeResolver, method, recorded, new Object[5]);
+        long callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
 
         recorder.disableRecording();
 
-        long callId2 = recorder.onMethodEnter(method, recorded, new Object[]{10});
-        recorder.onMethodExit(typeResolver, method, "CDE", null, callId2);
+        long callId2 = recorder.onMethodEnter(methodIdx, recorded, new Object[]{10});
+        recorder.onMethodExit(methodIdx, "CDE", null, callId2);
 
         recorder.enableRecording();
 
-        recorder.onMethodExit(typeResolver, method, "ABC", null, callId1);
+        recorder.onMethodExit(methodIdx, "ABC", null, callId1);
 
         assertEquals(2, storage.getCallRecords().size());
 

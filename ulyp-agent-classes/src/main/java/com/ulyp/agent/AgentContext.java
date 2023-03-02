@@ -3,9 +3,11 @@ package com.ulyp.agent;
 import com.ulyp.agent.policy.*;
 import com.ulyp.agent.remote.AgentApiImpl;
 import com.ulyp.agent.remote.AgentApiGrpcServer;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.Classpath;
+import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.StorageWriter;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,20 +26,22 @@ public class AgentContext {
     private final StorageWriter storageWriter;
     private final ProcessMetadata processMetadata;
     private final TypeResolver typeResolver;
+    private final MethodRepository methodRepository;
     @Nullable
     private final AgentApiGrpcServer apiServer;
 
-    private AgentContext(TypeResolver typeResolver) {
+    private AgentContext() {
         this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
         this.startRecordingPolicy = initializePolicy(settings.getStartRecordingPolicyPropertyValue());
         this.storageWriter = settings.buildStorageWriter();
+        this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
                 .classPathFiles(new Classpath().toList())
                 .mainClassName(ProcessMetadata.getMainClassNameFromProp())
                 .pid(System.currentTimeMillis())
                 .build();
-        this.typeResolver = typeResolver;
+        this.typeResolver = ReflectionBasedTypeResolver.getInstance();
 
         if (!settings.isAgentDisabled()) {
             this.storageWriter.write(processMetadata);
@@ -69,9 +73,13 @@ public class AgentContext {
         throw new IllegalArgumentException("Unsupported recording policy: " + value);
     }
 
-    public static void init(TypeResolver typeResolver) {
-        instance = new AgentContext(typeResolver);
+    public static void init() {
+        instance = new AgentContext();
         agentLoaded = true;
+    }
+
+    public MethodRepository getMethodRepository() {
+        return methodRepository;
     }
 
     public ProcessMetadata getProcessMetadata() {

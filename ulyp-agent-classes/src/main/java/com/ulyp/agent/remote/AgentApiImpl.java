@@ -41,7 +41,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
         try {
 
             MethodList methods = new MethodList();
-            for (Method method : MethodRepository.getInstance().values()) {
+            for (Method method : agentContext.getMethodRepository().values()) {
                 methods.add(method);
                 method.markWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {

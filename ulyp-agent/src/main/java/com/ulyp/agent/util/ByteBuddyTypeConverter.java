@@ -1,26 +1,26 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.core.Type;
-import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
-import com.ulyp.core.util.ClassUtils;
-import com.ulyp.core.util.ConcurrentArrayList;
-import com.ulyp.core.util.LoggingSettings;
-import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.description.type.TypeDefinition;
-import net.bytebuddy.description.type.TypeDescription;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-/**
- * Converts byte buddy type description to internal domain class {@link Type}
- */
+import com.ulyp.core.Type;
+import com.ulyp.core.TypeTrait;
+import com.ulyp.core.util.ClassUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.description.type.TypeDefinition;
+import net.bytebuddy.description.type.TypeDescription;
+
+
 @Slf4j
-public class ByteBuddyTypeResolver implements TypeResolver {
+public class ByteBuddyTypeConverter {
+
+    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter();
 
     private static final TypeDescription.Generic BYTE_BUDDY_STRING_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(String.class);
 
@@ -56,68 +56,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         BOXED_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Byte.class));
     }
 
-    private final Map<Class<?>, Type> types = new ConcurrentHashMap<>();
-    private final ConcurrentArrayList<Type> typesList = new ConcurrentArrayList<>();
-
-    public static ByteBuddyTypeResolver getInstance() {
-        return InstanceHolder.context;
-    }
-
-    @NotNull
-    @Override
-    public Type get(Object object) {
-        Type resolvedType;
-
-        if (object != null) {
-            resolvedType = types.computeIfAbsent(
-                    object.getClass(),
-                    klazz -> {
-                        Type newResolvedType = this.resolve(klazz);
-                        typesList.add(newResolvedType);
-                        return newResolvedType;
-                    }
-            );
-        } else {
-            resolvedType = Type.unknown();
-        }
-
-        if (LoggingSettings.TRACE_ENABLED) {
-            log.trace("Resolved object of java class {} to type {}", (object != null ? object.getClass() : null), resolvedType);
-        }
-
-        return resolvedType;
-    }
-
-    @NotNull
-    @Override
-    public Type get(Class<?> clazz) {
-        Type resolvedType;
-
-        if (clazz != null) {
-            resolvedType = types.computeIfAbsent(
-                    clazz,
-                    klazz -> {
-                        Type newResolvedType = this.resolve(klazz);
-                        typesList.add(newResolvedType);
-                        return newResolvedType;
-                    }
-            );
-        } else {
-            resolvedType = Type.unknown();
-        }
-
-        if (LoggingSettings.TRACE_ENABLED) {
-            log.trace("Resolved object of java class {} to type {}", clazz, resolvedType);
-        }
-
-        return resolvedType;
-    }
-
-    private Type resolve(Class<?> clazz) {
-        return resolve(TypeDescription.ForLoadedType.of(clazz).asGenericType());
-    }
-
-    public Type resolve(TypeDescription.Generic type) {
+    public Type convert(TypeDescription.Generic type) {
         try {
             Set<String> superTypes = getSuperTypes(type);
             Set<TypeTrait> typeTraits = deriveTraits(type, superTypes);
@@ -258,19 +197,7 @@ public class ByteBuddyTypeResolver implements TypeResolver {
         return genericName;
     }
 
-    @NotNull
-    @Override
-    public Collection<Type> getAllResolved() {
-        return types.values();
-    }
-
-    @Override
-    public @NotNull ConcurrentArrayList<Type> getAllResolvedAsConcurrentList() {
-        return typesList;
-    }
-
-
     private static class InstanceHolder {
-        private static final ByteBuddyTypeResolver context = new ByteBuddyTypeResolver();
+        private static final ByteBuddyTypeConverter context = new ByteBuddyTypeConverter();
     }
 }

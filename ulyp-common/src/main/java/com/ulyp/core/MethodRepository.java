@@ -1,26 +1,17 @@
 package com.ulyp.core;
 
-import com.ulyp.core.util.ConcurrentArrayList;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.ulyp.core.util.ConcurrentArrayList;
 
 
 public class MethodRepository {
 
     public static final int RECORD_METHODS_MIN_ID = 1_000_000_000;
 
-    private static final MethodRepository INSTANCE = new MethodRepository();
-
     private final ConcurrentArrayList<Method> methods = new ConcurrentArrayList<>(64_000);
     private final ConcurrentArrayList<Method> recordingStartMethods = new ConcurrentArrayList<>(64_000);
-
-    private MethodRepository() {
-    }
-
-    public static MethodRepository getInstance() {
-        return INSTANCE;
-    }
 
     public Method get(int id) {
         if (id < RECORD_METHODS_MIN_ID) {

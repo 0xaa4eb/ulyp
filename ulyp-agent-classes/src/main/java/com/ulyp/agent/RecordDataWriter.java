@@ -23,19 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 public class RecordDataWriter {
 
     private final StorageWriter storageWriter;
+    private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
-    public RecordDataWriter(StorageWriter storageWriter) {
+    public RecordDataWriter(StorageWriter storageWriter, MethodRepository methodRepository) {
         this.storageWriter = storageWriter;
+        this.methodRepository = methodRepository;
     }
 
     public void write(TypeResolver typeResolver, CallRecordBuffer callRecordBuffer) {
 
         MethodList methodsList = new MethodList();
 
-        ConcurrentArrayList<Method> methods = MethodRepository.getInstance().getMethods();
+        ConcurrentArrayList<Method> methods = methodRepository.getMethods();
         int upToExcluding = methods.size() - 1;
         int startFrom = lastIndexOfMethodWritten.get() + 1;
 
@@ -60,7 +62,7 @@ public class RecordDataWriter {
         }
 
         methodsList = new MethodList();
-        methods = MethodRepository.getInstance().getRecordingStartMethods();
+        methods = methodRepository.getRecordingStartMethods();
         upToExcluding = methods.size() - 1;
         startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
 

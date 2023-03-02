@@ -1,4 +1,4 @@
-package com.agent.tests.general;
+package com.agent.tests.recording;
 
 import java.util.List;
 
