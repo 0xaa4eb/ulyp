@@ -20,6 +20,8 @@ public class MethodMatcherTest {
                 .name("run")
                 .build();
 
+        assertTrue(MethodMatcher.parse(">SomeClass.run").matches(method));
+
         assertTrue(MethodMatcher.parse("com.pckg.SomeClass.run").matches(method));
 
         assertTrue(MethodMatcher.parse("com.pckg.SomeClass.*").matches(method));
@@ -31,5 +33,26 @@ public class MethodMatcherTest {
         assertTrue(MethodMatcher.parse("**.*").matches(method));
 
         assertTrue(MethodMatcher.parse("**.SomeClass.run").matches(method));
+    }
+
+    @Test
+    public void testMatchingWithNestedClass() {
+
+        Type type = Type.builder()
+            .name("com.pckg.SomeClass$Nested")
+            .build();
+
+        Method method = Method.builder()
+            .declaringType(type)
+            .name("run")
+            .build();
+
+        assertTrue(MethodMatcher.parse(">Nested.run").matches(method));
+
+        assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.run").matches(method));
+
+        assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.*").matches(method));
+
+        assertTrue(MethodMatcher.parse("**.SomeClass$Nested.run").matches(method));
     }
 }

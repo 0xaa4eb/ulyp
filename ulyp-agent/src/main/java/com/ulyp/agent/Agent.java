@@ -10,7 +10,7 @@ import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.ToStringPrintingRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
-import com.ulyp.core.util.ClassMatcher;
+import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
@@ -58,7 +58,7 @@ public class Agent {
 
         if (startRecordingMethods.isEmpty()) {
             startRecordingMethods = StartRecordingMethods.of(
-                new MethodMatcher(ClassMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
+                new MethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
             );
         }
 
@@ -159,9 +159,9 @@ public class Agent {
             ignoreMatcher = ignoreMatcher.or(ElementMatchers.nameStartsWith(excludedPackage));
         }
 
-        for (ClassMatcher excludeClassMatcher : settings.getExcludeFromInstrumentationClasses()) {
+        for (TypeMatcher excludeTypeMatcher : settings.getExcludeFromInstrumentationClasses()) {
             ignoreMatcher = ignoreMatcher.or(
-                target -> excludeClassMatcher.matches(ByteBuddyTypeConverter.INSTANCE.convert(target.asGenericType()))
+                target -> excludeTypeMatcher.matches(ByteBuddyTypeConverter.INSTANCE.convert(target.asGenericType()))
             );
         }
 

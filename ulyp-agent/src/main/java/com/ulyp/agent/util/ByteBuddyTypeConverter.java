@@ -6,11 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeTrait;
-import com.ulyp.core.util.ClassUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.type.TypeDefinition;
@@ -33,10 +31,11 @@ public class ByteBuddyTypeConverter {
     private static final Set<TypeDescription.Generic> PRIMITIVE_DOUBLE_TYPES = new HashSet<>();
     private static final TypeDescription.Generic PRIMITIVE_CHAR_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(char.class);
     private static final TypeDescription.Generic BOXED_CHAR_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Character.class);
-    private static final TypeDescription CLASS_OBJECT_ERASED = TypeDescription.Generic.CLASS.asErasure();
+    private static final TypeDescription CLASS_OBJECT_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Class.class).asErasure();
     private static final TypeDescription COLLECTION_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Collection.class).asErasure();
     private static final TypeDescription MAP_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Map.class).asErasure();
     private static final TypeDescription THROWABLE_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Throwable.class).asErasure();
+    private static final TypeDescription NUMBER_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Number.class).asErasure();
     private static final TypeDescription.Generic PRIMITIVE_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(boolean.class);
     private static final TypeDescription.Generic BOXED_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Boolean.class);
     private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
@@ -58,24 +57,22 @@ public class ByteBuddyTypeConverter {
 
     public Type convert(TypeDescription.Generic type) {
         try {
-            Set<String> superTypes = getSuperTypes(type);
-            Set<TypeTrait> typeTraits = deriveTraits(type, superTypes);
+            Set<TypeTrait> typeTraits = deriveTraits(type);
 
             return Type.builder()
-                    .id(typeIdGenerator.incrementAndGet())
-                    .name(trimGenerics(type.getActualName()))
-                    .superTypeNames(superTypes)
-                    .superTypeSimpleNames(superTypes.stream().map(ClassUtils::getSimpleNameFromName).collect(Collectors.toSet()))
-                    .typeTraits(typeTraits)
-                    .build();
+                .id(typeIdGenerator.incrementAndGet())
+                .name(trimGenerics(type.getActualName()))
+                .typeTraits(typeTraits)
+                .build();
         } catch (Throwable ex) {
             return Type.unknown();
         }
     }
 
-    private Set<TypeTrait> deriveTraits(TypeDescription.Generic type, Set<String> superTypes) {
+    private Set<TypeTrait> deriveTraits(TypeDescription.Generic type) {
         Set<TypeTrait> traits = EnumSet.noneOf(TypeTrait.class);
         TypeDefinition.Sort sort = type.getSort();
+        TypeDescription typeErasure = type.asErasure();
 
         if (sort == TypeDefinition.Sort.VARIABLE || sort == TypeDefinition.Sort.VARIABLE_SYMBOLIC || sort == TypeDefinition.Sort.WILDCARD) {
             traits.add(TypeTrait.TYPE_VAR);
@@ -114,9 +111,9 @@ public class ByteBuddyTypeConverter {
             if (PRIMITIVE_BOOLEAN.equals(type)) {
                 traits.add(TypeTrait.BOOLEAN);
             }
-        } else if (superTypes.contains("java.lang.Throwable") || type.asErasure().equals(THROWABLE_TYPE)) {
+        } else if (THROWABLE_TYPE.isAssignableFrom(typeErasure)) {
             traits.add(TypeTrait.THROWABLE);
-        } else if (superTypes.contains("java.lang.Number")) {
+        } else if (NUMBER_TYPE.isAssignableFrom(typeErasure)) {
             traits.add(TypeTrait.NUMBER);
             if (BOXED_INTEGRAL_TYPES.contains(type)) {
                 traits.add(TypeTrait.INTEGRAL);
@@ -127,11 +124,11 @@ public class ByteBuddyTypeConverter {
             traits.add(TypeTrait.BOOLEAN);
         } else if (type.isEnum()) {
             traits.add(TypeTrait.ENUM);
-        } else if (superTypes.contains("java.util.Collection") || type.asErasure().equals(COLLECTION_TYPE)) {
+        } else if (COLLECTION_TYPE.isAssignableFrom(typeErasure)) {
             traits.add(TypeTrait.COLLECTION);
-        } else if (superTypes.contains("java.util.Map") || type.asErasure().equals(MAP_TYPE)) {
+        } else if (MAP_TYPE.isAssignableFrom(typeErasure)) {
             traits.add(TypeTrait.MAP);
-        } else if (type.asErasure().equals(CLASS_OBJECT_ERASED)) {
+        } else if (CLASS_OBJECT_TYPE.isAssignableFrom(typeErasure)) {
             traits.add(TypeTrait.CLASS_OBJECT);
         }
 

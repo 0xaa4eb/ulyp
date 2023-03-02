@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
-import com.ulyp.core.util.ClassMatcher;
+import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.storage.StorageWriter;
@@ -42,13 +42,13 @@ public class Settings {
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull
     private final StartRecordingMethods startRecordingMethods;
-    private final List<ClassMatcher> excludeFromInstrumentationClasses;
+    private final List<TypeMatcher> excludeFromInstrumentationClasses;
     private final boolean instrumentConstructors;
     private final boolean instrumentLambdas;
     private final boolean instrumentTypeInitializers;
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
-    private final Set<ClassMatcher> classesToPrint;
+    private final Set<TypeMatcher> classesToPrint;
     private final String bindNetworkAddress;
     private final boolean agentDisabled;
 
@@ -61,9 +61,9 @@ public class Settings {
             boolean instrumentLambdas,
             boolean instrumentTypeInitializers,
             CollectionsRecordingMode collectionsRecordingMode,
-            Set<ClassMatcher> classesToPrint,
+            Set<TypeMatcher> classesToPrint,
             String startRecordingPolicyPropertyValue,
-            List<ClassMatcher> excludeFromInstrumentationClasses,
+            List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
             boolean agentDisabled) {
         this.storageWriterSupplier = storageWriterSupplier;
@@ -88,9 +88,9 @@ public class Settings {
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
-        List<ClassMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
+        List<TypeMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
                 .stream()
-                .map(ClassMatcher::parse)
+                .map(TypeMatcher::parse)
                 .collect(Collectors.toList());
 
         String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
@@ -151,10 +151,10 @@ public class Settings {
 
         boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
 
-        Set<ClassMatcher> classesToPrint =
+        Set<TypeMatcher> classesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_CLASSES_PROPERTY, ""))
                         .stream()
-                        .map(ClassMatcher::parse)
+                        .map(TypeMatcher::parse)
                         .collect(Collectors.toSet());
 
         return new Settings(
@@ -212,7 +212,7 @@ public class Settings {
         return collectionsRecordingMode;
     }
 
-    public Set<ClassMatcher> getClassesToPrint() {
+    public Set<TypeMatcher> getClassesToPrint() {
         return classesToPrint;
     }
 
@@ -220,7 +220,7 @@ public class Settings {
         return startRecordingPolicyPropertyValue;
     }
 
-    public List<ClassMatcher> getExcludeFromInstrumentationClasses() {
+    public List<TypeMatcher> getExcludeFromInstrumentationClasses() {
         return excludeFromInstrumentationClasses;
     }
 

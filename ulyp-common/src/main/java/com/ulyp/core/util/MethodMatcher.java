@@ -18,16 +18,16 @@ public class MethodMatcher {
     private static final char SEPARATOR = '.';
     private static final String WILDCARD = "*";
 
-    private final ClassMatcher classMatcher;
+    private final TypeMatcher typeMatcher;
     private final String methodName;
     private final boolean isMethodWildcard;
 
     public MethodMatcher(Class<?> clazz, String methodName) {
-        this(ClassMatcher.parse(clazz.getName()), methodName);
+        this(TypeMatcher.parse(clazz.getName()), methodName);
     }
 
-    public MethodMatcher(ClassMatcher classMatcher, String methodName) {
-        this.classMatcher = classMatcher;
+    public MethodMatcher(TypeMatcher typeMatcher, String methodName) {
+        this.typeMatcher = typeMatcher;
         this.methodName = methodName;
         this.isMethodWildcard = methodName.equals(WILDCARD);
     }
@@ -39,15 +39,15 @@ public class MethodMatcher {
                     ". It should look something like this: **.Runnable.run");
         }
 
-        return new MethodMatcher(ClassMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));
+        return new MethodMatcher(TypeMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));
     }
 
     public boolean matches(Method method) {
-        return (isMethodWildcard || method.getName().equals(methodName)) && classMatcher.matches(method.getDeclaringType());
+        return (isMethodWildcard || method.getName().equals(methodName)) && typeMatcher.matches(method.getDeclaringType());
     }
 
     @Override
     public String toString() {
-        return classMatcher + "." + methodName;
+        return typeMatcher + "." + methodName;
     }
 }

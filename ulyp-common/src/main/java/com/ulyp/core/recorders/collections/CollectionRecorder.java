@@ -3,6 +3,7 @@ package com.ulyp.core.recorders.collections;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
@@ -35,7 +36,7 @@ public class CollectionRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Type type) {
-        return mode.supports(type) && type.isCollection();
+        return mode.supports(type) && type.getTraits().contains(TypeTrait.COLLECTION);
     }
 
     public void setMode(CollectionsRecordingMode mode) {

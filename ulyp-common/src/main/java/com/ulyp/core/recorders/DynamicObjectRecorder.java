@@ -3,6 +3,7 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
@@ -16,7 +17,7 @@ public class DynamicObjectRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Type type) {
-        return type.isInterface() || type.isExactlyJavaLangObject() || type.isTypeVar();
+        return type.getTraits().contains(TypeTrait.INTERFACE) || type.isExactlyJavaLangObject() || type.getTraits().contains(TypeTrait.TYPE_VAR);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.ulyp.core;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.function.Supplier;
+
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
-
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Domain class for all java types. All type-related logic uses this class. It is also
@@ -28,9 +30,9 @@ public class Type {
     @Builder.Default
     private final Set<TypeTrait> typeTraits = EnumSet.noneOf(TypeTrait.class);
     @Builder.Default
-    private final Set<String> superTypeNames = new HashSet<>();
+    private final Supplier<Set<String>> superTypeNames = Collections::emptySet;
     @Builder.Default
-    private final Set<String> superTypeSimpleNames = new HashSet<>();
+    private final Supplier<Set<String>> superTypeSimpleNames = Collections::emptySet;
 
     private volatile ObjectRecorder suggestedRecorder;
     // If was dumped to the output file
@@ -93,30 +95,10 @@ public class Type {
     }
 
     public Set<String> getSuperTypeNames() {
-        return superTypeNames;
+        return superTypeNames.get();
     }
 
     public Set<String> getSuperTypeSimpleNames() {
-        return superTypeSimpleNames;
-    }
-
-    public boolean isEnum() {
-        return typeTraits.contains(TypeTrait.ENUM);
-    }
-
-    public boolean isInterface() {
-        return typeTraits.contains(TypeTrait.INTERFACE);
-    }
-
-    public boolean isTypeVar() {
-        return typeTraits.contains(TypeTrait.TYPE_VAR);
-    }
-
-    public boolean isCollection() {
-        return typeTraits.contains(TypeTrait.COLLECTION);
-    }
-
-    public boolean isClassObject() {
-        return typeTraits.contains(TypeTrait.CLASS_OBJECT);
+        return superTypeSimpleNames.get();
     }
 }

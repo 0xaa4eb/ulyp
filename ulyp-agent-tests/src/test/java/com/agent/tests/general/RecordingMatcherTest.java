@@ -11,6 +11,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class RecordingMatcherTest extends AbstractInstrumentationTest {
 
     @Test

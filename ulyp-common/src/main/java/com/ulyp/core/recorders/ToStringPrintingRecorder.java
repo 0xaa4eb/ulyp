@@ -6,7 +6,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
-import com.ulyp.core.util.ClassMatcher;
+import com.ulyp.core.util.TypeMatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -17,13 +17,13 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
-    private final Set<ClassMatcher> classesToPrint = new CopyOnWriteArraySet<>();
+    private final Set<TypeMatcher> classesToPrint = new CopyOnWriteArraySet<>();
 
     protected ToStringPrintingRecorder(byte id) {
         super(id);
     }
 
-    public void addClassesToPrint(Set<ClassMatcher> classNames) {
+    public void addClassesToPrint(Set<TypeMatcher> classNames) {
         this.classesToPrint.addAll(classNames);
     }
 

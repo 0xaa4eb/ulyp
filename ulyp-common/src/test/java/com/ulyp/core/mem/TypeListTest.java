@@ -4,9 +4,6 @@ import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.Type;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -20,8 +17,6 @@ public class TypeListTest {
                 Type.builder()
                         .id(534L)
                         .name("com.test.A")
-                        .superTypeNames(new HashSet<>(Arrays.asList("com.test.B")))
-                        .superTypeSimpleNames(new HashSet<>(Arrays.asList("B")))
                         .build()
         );
 
@@ -29,8 +24,6 @@ public class TypeListTest {
                 Type.builder()
                         .id(4241L)
                         .name("com.test.C")
-                        .superTypeNames(new HashSet<>(Arrays.asList("com.test.D")))
-                        .superTypeSimpleNames(new HashSet<>(Arrays.asList("D")))
                         .build()
         );
 
