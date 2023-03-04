@@ -27,7 +27,8 @@ public class DynamicObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, @NotNull Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+        Type objectType = typeResolver.get(object);
         ObjectRecorder recorder = objectType.getSuggestedRecorder();
         if (recorder.getId() == getId()) {
             recorder = ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();

@@ -52,8 +52,6 @@ public class AsyncStorageWriterTest {
                         Type.builder()
                                 .id(id++)
                                 .name("a.b.C")
-                                .superTypeNames(Collections.emptySet())
-                                .superTypeSimpleNames(Collections.emptySet())
                                 .typeTraits(Collections.emptySet())
                                 .build()
                 );

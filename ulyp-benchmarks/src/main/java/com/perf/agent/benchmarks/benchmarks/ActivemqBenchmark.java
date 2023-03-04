@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ActivemqBenchmark implements Benchmark {
 
-    private static final int MESSAGE_COUNT = 500;
+    private static final int MESSAGE_COUNT = 50000;
 
     public static void main(String[] args) throws Exception {
         try {

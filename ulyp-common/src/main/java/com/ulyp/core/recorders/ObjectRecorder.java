@@ -33,11 +33,7 @@ public abstract class ObjectRecorder {
 
     public abstract ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
 
-    public abstract void write(Object object, @NotNull Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception;
-
-    public void write(Object obj, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        write(obj, typeResolver.get(obj), out, typeResolver);
-    }
+    public abstract void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception;
 
     @Override
     public String toString() {

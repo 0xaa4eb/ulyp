@@ -47,7 +47,7 @@ public class MethodCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
-        if (callId >= 0) {
+        if (callId > 0) {
             RecorderInstance.instance.onMethodExit(methodId, returnValue, throwable, callId);
         }
     }

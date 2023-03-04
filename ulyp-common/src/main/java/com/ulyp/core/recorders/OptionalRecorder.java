@@ -37,7 +37,7 @@ public class OptionalRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, @NotNull Type objectType, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             Optional<?> optional = (Optional<?>) object;
             boolean hasSomething = optional.isPresent();

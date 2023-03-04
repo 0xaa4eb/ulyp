@@ -26,7 +26,7 @@ public class ThrowableRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, @NotNull Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
             Throwable t = (Throwable) object;
             appender.append(t.getMessage(), typeResolver);

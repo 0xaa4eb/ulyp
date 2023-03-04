@@ -44,7 +44,7 @@ public class ConstructorCallRecordingAdvice {
             @Advice.Local("callId") long callId,
             @MethodId int methodId,
             @Advice.This Object returnValue) {
-        if (callId >= 0) {
+        if (callId > 0) {
             RecorderInstance.instance.onConstructorExit(methodId, returnValue, callId);
         }
     }

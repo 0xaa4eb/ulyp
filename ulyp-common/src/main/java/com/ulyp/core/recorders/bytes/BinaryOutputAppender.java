@@ -83,7 +83,7 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
             recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
         }
         append(recorder.getId());
-        recorder.write(object, itemType, this, typeResolver);
+        recorder.write(object, this, typeResolver);
     }
 
     @Override

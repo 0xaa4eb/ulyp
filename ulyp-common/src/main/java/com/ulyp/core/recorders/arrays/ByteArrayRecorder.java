@@ -30,9 +30,9 @@ public class ByteArrayRecorder extends IdentityRecorder {
     }
 
     @Override
-    public void write(Object object, @NotNull Type type, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         try (BinaryOutputAppender appender = out.appender()) {
-            super.write(object, type, appender, typeResolver);
+            super.write(object, appender, typeResolver);
             byte[] array = (byte[]) object;
             appender.append(array.length);
         }

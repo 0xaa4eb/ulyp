@@ -12,7 +12,7 @@ public class CallIdGenerator {
 
     public static final long MAX_CALLS_PER_RECORD_LOG = 100_000_000;
 
-    private final AtomicLong current = new AtomicLong(-MAX_CALLS_PER_RECORD_LOG);
+    private final AtomicLong current = new AtomicLong(-MAX_CALLS_PER_RECORD_LOG + 1);
 
     public long getNextStartValue() {
         return current.addAndGet(MAX_CALLS_PER_RECORD_LOG);
