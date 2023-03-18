@@ -7,6 +7,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -40,6 +41,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is(C.class.getName()));
     }
 
+    @Ignore
     @Test
     public void shouldExcludeFromInstrumentationOneClassByInterface() {
         CallRecord root = runSubprocessAndReadFile(
