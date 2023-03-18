@@ -12,10 +12,10 @@ public class CallIdGeneratorTest {
     @Test
     public void testNextValue() {
 
-        assertEquals(0L, generator.getNextStartValue());
+        assertEquals(1L, generator.getNextStartValue());
 
-        assertEquals(MAX_CALLS_PER_RECORD_LOG, generator.getNextStartValue());
+        assertEquals(MAX_CALLS_PER_RECORD_LOG + 1L, generator.getNextStartValue());
 
-        assertEquals(2 * MAX_CALLS_PER_RECORD_LOG, generator.getNextStartValue());
+        assertEquals(2 * MAX_CALLS_PER_RECORD_LOG + 1L, generator.getNextStartValue());
     }
 }
