@@ -1,7 +1,6 @@
 package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.core.ProcessMetadata
-import com.ulyp.core.RecordingMetadata
 import com.ulyp.storage.CallRecord
 import com.ulyp.storage.Recording
 import com.ulyp.ui.RenderSettings
@@ -11,24 +10,18 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
 import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.settings.SettingsStorage
-import com.ulyp.ui.util.ClassNameUtils.toSimpleName
-import com.ulyp.ui.util.Style
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
-import javafx.event.Event
 import javafx.event.EventHandler
-import javafx.scene.control.Tab
-import javafx.scene.control.Tooltip
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Region
+import javafx.scene.layout.VBox
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import java.sql.Timestamp
-import java.time.format.DateTimeFormatter
 
 /**
  * A tab which contains a particular recording (i.e. particular recorded method call including
@@ -40,12 +33,10 @@ class RecordingTab(
         private val parent: Region,
         private val processMetadata: ProcessMetadata,
         private val recording: Recording
-) : Tab() {
+) : VBox() {
 
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss.SSS")
-
+    val recordingId = recording.id
     private var root: CallRecord? = null
-    private var recordingMetadata: RecordingMetadata? = null
     private var treeView: TreeView<RecordedCallNodeContent>? = null
 
     @Autowired
@@ -104,45 +95,11 @@ class RecordingTab(
                 }
             }
         }
-        text = tabName
-        content = treeView
-        onClosed = EventHandler { ev: Event? -> dispose() }
-        tooltip = tooltipText
+
+        children.add(treeView)
+        // TODO tooltip = tooltipText
         initialized = true
     }
-
-    @get:Synchronized
-    val tabName: String
-        get() = if (root == null || recordingMetadata == null) {
-            "?"
-        } else Timestamp(recordingMetadata!!.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter) + " " +
-                recordingMetadata!!.threadName + " " +
-                toSimpleName(root!!.method.declaringType.name) +
-                "." + root!!.method.name +
-                "(" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")"
-
-    @get:Synchronized
-    private val tooltipText: Tooltip
-        private get() {
-            if (root == null || recordingMetadata == null) {
-                return Tooltip("")
-            }
-            val builder = StringBuilder()
-                    .append("Thread: ").append(recordingMetadata!!.threadName).append("\n")
-                    .append("Created at: ").append(Timestamp(recordingMetadata!!.recordingStartedEpochMillis)).append("\n")
-                    .append("Finished at: ")
-                    .append(Timestamp(recordingMetadata!!.recordingCompletedEpochMillis)).append("\n")
-                    .append("Lifetime: ").append(recording.lifetime.toMillis()).append(" millis").append("\n")
-
-            builder.append("Stack trace: ").append("\n")
-            recordingMetadata!!.stackTraceElements.forEach {
-                builder.append("\t").append(it).append("\n")
-            }
-
-            val tooltip = Tooltip(builder.toString())
-            tooltip.styleClass.addAll(Style.TOOLTIP_TEXT.cssClasses)
-            return tooltip
-        }
 
     fun getSelected(): RecordedCallTreeItem {
         return treeView!!.selectionModel.selectedItem as RecordedCallTreeItem
@@ -155,16 +112,11 @@ class RecordingTab(
     fun refreshTreeView() {
         init()
         val root = treeView!!.root as RecordedCallTreeItem
-        text = tabName
-        tooltip = tooltipText
         root.refresh()
     }
 
     @Synchronized
     fun update(recording: Recording) {
-        if (recordingMetadata == null) {
-            recordingMetadata = recording.metadata
-        }
         if (root == null) {
             root = recording.root
         }

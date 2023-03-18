@@ -224,8 +224,9 @@ public class AsyncFileStorageReader implements StorageReader {
             if (recordingState.isPublished()) {
                 recordingListener.onRecordingUpdated(recordingState.toRecording());
             } else {
-                if (settings.getFilter().shouldPublish(recordingState.toRecording()) && recordingState.publish()) {
-                    recordingListener.onRecordingUpdated(recordingState.toRecording());
+                Recording converted = recording.toRecording();
+                if (recording.getRoot() != null && settings.getFilter().shouldPublish(converted) && recording.publish()) {
+                    recordingListener.onRecordingUpdated(converted);
                 }
             }
         }

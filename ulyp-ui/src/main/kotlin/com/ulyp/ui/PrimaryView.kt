@@ -50,8 +50,8 @@ class PrimaryView(
     lateinit var primaryPane: VBox
     @FXML
     lateinit var fileTabPaneAnchorPane: AnchorPane
-    @FXML
-    lateinit var sourceCodeViewAnchorPane: AnchorPane
+//    @FXML
+//    lateinit var sourceCodeViewAnchorPane: AnchorPane
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         fileTabPaneAnchorPane.children.add(fileRecordingTabPane)
@@ -59,11 +59,11 @@ class PrimaryView(
         AnchorPane.setBottomAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setRightAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setLeftAnchor(fileRecordingTabPane, 0.0)
-        sourceCodeViewAnchorPane.children.add(sourceCodeView)
-        AnchorPane.setTopAnchor(sourceCodeView, 0.0)
-        AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
-        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
-        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
+//        sourceCodeViewAnchorPane.children.add(sourceCodeView)
+//        AnchorPane.setTopAnchor(sourceCodeView, 0.0)
+//        AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
+//        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
+//        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
 
         Platform.runLater {
             fontSizeUpdater.update(UIApplication.stage.scene, settingsStorage.read().appearanceSettings.fontSettings)
@@ -143,11 +143,8 @@ class PrimaryView(
             fileRecordingsTab.setOnClosed {
                 storageReader.close()
             }
-
             storageReader.subscribe { recording ->
-                val recordingTab = fileRecordingsTab.getOrCreateRecordingTab(processMetadata, recording)
-                recordingTab.update(recording)
-                Platform.runLater { recordingTab.refreshTreeView() }
+                fileRecordingsTab.updateOrCreateRecordingTab(processMetadata, recording)
             }
         }
 

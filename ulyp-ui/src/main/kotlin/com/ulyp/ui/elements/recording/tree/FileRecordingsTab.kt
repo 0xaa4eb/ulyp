@@ -2,14 +2,14 @@ package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.Recording
-import com.ulyp.ui.util.FxThreadExecutor.execute
-import javafx.event.EventHandler
+import com.ulyp.ui.elements.recording.list.RecordingsListView
+import javafx.application.Platform
+import javafx.collections.ListChangeListener
+import javafx.scene.control.SplitPane
 import javafx.scene.control.Tab
-import javafx.scene.control.TabPane
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.PostConstruct
 
 /**
@@ -23,41 +23,41 @@ class FileRecordingsTab internal constructor(
         private val applicationContext: ApplicationContext
 ) : Tab(name.toString()) {
 
-    private lateinit var recordingTabs: TabPane
-
-    private val tabsByRecordingId: MutableMap<Int, RecordingTab> = ConcurrentHashMap()
+    private val recordingList = RecordingsListView()
+    private lateinit var recordingTabView: RecordingTabView
 
     @PostConstruct
     fun init() {
-        val tabPane = TabPane()
-        recordingTabs = tabPane
-        content = tabPane
-    }
+        recordingTabView = RecordingTabView(applicationContext)
+        val pane = SplitPane()
+        pane.setDividerPosition(0, 0.2)
+        pane.items.add(recordingList)
+        pane.items.add(recordingTabView)
+        content = pane
 
-    fun getOrCreateRecordingTab(processMetadata: ProcessMetadata, recording: Recording): RecordingTab {
-        val id = recording.id
-        return execute {
-            tabsByRecordingId.computeIfAbsent(id) { recordingId: Int ->
-                val tab = applicationContext.getBean(
-                        RecordingTab::class.java,
-                        recordingTabs,
-                        processMetadata,
-                        recording
-                )
-                recordingTabs.tabs.add(tab)
-                tab.onClosed = EventHandler { tabsByRecordingId.remove(recordingId) }
-                tab
+        recordingList.selectionModel.selectedItems.addListener(
+            ListChangeListener {
+                if (it.next()) {
+                    val recordingListItem = it.addedSubList[0];
+                    recordingListItem?.let {
+                        recordingTabView.selectTab(it.recordingId)
+                    }
+                }
             }
-        }
+        )
     }
 
-    val selectedTreeTab: RecordingTab
-        get() = recordingTabs.selectionModel.selectedItem as RecordingTab
+    val selectedTreeTab: RecordingTab?
+        get() = recordingTabView.currentTab
 
     fun dispose() {
-        for (tab in recordingTabs.tabs) {
-            val fxRecordingTab = tab as RecordingTab
-            fxRecordingTab.dispose()
+        recordingTabView.dispose()
+    }
+
+    fun updateOrCreateRecordingTab(processMetadata: ProcessMetadata, recording: Recording) {
+        recordingTabView.updateOrCreateRecordingTab(processMetadata, recording)
+        Platform.runLater {
+            recordingList.createOrUpdate(recording)
         }
     }
 }

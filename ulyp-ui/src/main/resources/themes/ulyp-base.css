@@ -18,6 +18,10 @@
     -fx-font-size: 1.0em;
 }
 
-.ulyp-call-tree-identity-hash-code {
-    -fx-font-size: 0.8em;
+.ulyp-smaller-text {
+    -fx-font-size: 0.6em;
+}
+
+.ulyp-bold-text {
+    -fx-font-weight: bold;
 }

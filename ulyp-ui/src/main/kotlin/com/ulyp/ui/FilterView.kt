@@ -16,6 +16,8 @@ class FilterView(private val filterRegistry: FilterRegistry) : Initializable {
     @FXML
     lateinit var minimumCallCount: TextField
     @FXML
+    lateinit var excludeClassesTextField: TextField
+    @FXML
     lateinit var applyButton: Button
 
     var stage: Stage? = null
@@ -25,7 +27,7 @@ class FilterView(private val filterRegistry: FilterRegistry) : Initializable {
     }
 
     fun apply() {
-        filterRegistry.filter = Filter(minimumCallCount.text.toInt())
+        filterRegistry.filter = Filter(minimumCallCount.text.ifEmpty { "0" }.toInt(), excludeClassesTextField.text)
         stage?.close()
     }
 }

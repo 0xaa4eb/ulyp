@@ -57,6 +57,10 @@
 
 /* ULYP part */
 
+.ulyp-recording-list-item {
+    -fx-fill: rgb(169, 183, 198);
+}
+
 .ulyp-error-text {
     -fx-fill: rgb(255, 30, 30);
 }

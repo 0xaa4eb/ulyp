@@ -1,9 +1,12 @@
 package com.ulyp.storage;
 
 import com.ulyp.core.RecordingMetadata;
+import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.storage.impl.RecordingState;
 
 import java.time.Duration;
+
+import javax.annotation.Nonnull;
 
 public class Recording {
 
@@ -17,14 +20,20 @@ public class Recording {
         return recordingState.getId();
     }
 
+    @Nonnull
     public CallRecord getRoot() {
         return recordingState.getRoot();
+    }
+
+    public boolean isComplete() {
+        return !(getRoot().getReturnValue() instanceof NotRecordedObjectRecord);
     }
 
     public int callCount() {
         return recordingState.callCount();
     }
 
+    @Nonnull
     public RecordingMetadata getMetadata() {
         return recordingState.getMetadata();
     }

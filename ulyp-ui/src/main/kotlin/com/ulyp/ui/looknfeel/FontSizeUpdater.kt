@@ -43,7 +43,7 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                     .ulyp-tree-view {
                         -fx-fixed-cell-size: ${fontSettings.recordingTreeFontSize * 1.7}em;
                     }
-                    .ulyp-call-tree-identity-hash-code {
+                    .ulyp-smaller-text {
                         -fx-font-size: ${fontSettings.recordingTreeFontSize * 0.8}em;
                     }
                     """.toByteArray(StandardCharsets.UTF_8),

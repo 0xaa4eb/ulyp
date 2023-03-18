@@ -52,26 +52,22 @@ class FileRecordingTabPane : TabPane() {
 
     fun keyPressed(event: KeyEvent) {
         if (event.code == KeyCode.SHIFT) {
-            val selected = selectedTab.selectedTreeTab.getSelected()
-            @Suppress("SENSELESS_COMPARISON")
-            if (selected != null) {
+
+
+            selectedTab.selectedTreeTab?.getSelected()?.let {
                 renderSettings.showTypes = true
-                lastSelectedOnShowTypes = selected
-                selected.refresh()
+                lastSelectedOnShowTypes = it
+                it.refresh()
             }
         } else {
             if (event.isControlDown && event.code == KeyCode.C) {
                 // COPY currently selected
-                val selectedTab: FileRecordingsTab? = selectedTab
-                if (selectedTab != null) {
-                    val selectedCallRecord: RecordedCallTreeItem = selectedTab.selectedTreeTab.getSelected()
-                    @Suppress("SENSELESS_COMPARISON")
-                    if (selectedCallRecord != null) {
-                        val clipboard = Clipboard.getSystemClipboard()
-                        val content = ClipboardContent()
-                        content.putString(selectedCallRecord.toClipboardText())
-                        clipboard.setContent(content)
-                    }
+
+                selectedTab.selectedTreeTab?.getSelected()?.let {
+                    val clipboard = Clipboard.getSystemClipboard()
+                    val content = ClipboardContent()
+                    content.putString(it.toClipboardText())
+                    clipboard.setContent(content)
                 }
             }
         }
@@ -83,10 +79,7 @@ class FileRecordingTabPane : TabPane() {
             if (lastSelectedOnShowTypes != null) {
                 lastSelectedOnShowTypes!!.refresh()
             } else {
-                val selected = selectedTab.selectedTreeTab.getSelected()
-                if (selected != null) {
-                    selected.refresh()
-                }
+                selectedTab.selectedTreeTab?.getSelected()?.refresh()
             }
         }
     }

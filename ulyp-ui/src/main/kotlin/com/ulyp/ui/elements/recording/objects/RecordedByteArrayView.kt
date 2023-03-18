@@ -13,8 +13,8 @@ class RecordedByteArrayView(record: ByteArrayRecord) : RecordedObjectView() {
                         of("[", Style.CALL_TREE_COLLECTION_BRACKET),
                         of(record.length.toString(), Style.CALL_TREE_TYPE_NAME),
                         of("]", Style.CALL_TREE_COLLECTION_BRACKET),
-                        of("@", Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE),
-                        of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.CALL_TREE_IDENTITY_HASH_CODE)
+                        of("@", Style.CALL_TREE_IDENTITY, Style.SMALLER_TEXT),
+                        of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.SMALLER_TEXT)
                 )
         )
     }
