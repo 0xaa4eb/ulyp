@@ -219,10 +219,13 @@ public class AsyncFileStorageReader implements StorageReader {
                 return;
             }
             int recordingId = recordedMethodCalls.iterator().next().getRecordingId();
-            RecordingState recordingState = recordings.get(recordingId);
-            recordingState.onNewRecordedCalls(data.getAddress(), recordedMethodCalls);
-            if (recordingState.isPublished()) {
-                recordingListener.onRecordingUpdated(recordingState.toRecording());
+            RecordingState recording = recordings.get(recordingId);
+            if (recording == null) {
+                return;
+            }
+            recording.onNewRecordedCalls(data.getAddress(), recordedMethodCalls);
+            if (recording.isPublished()) {
+                recordingListener.onRecordingUpdated(recording.toRecording());
             } else {
                 Recording converted = recording.toRecording();
                 if (recording.getRoot() != null && settings.getFilter().shouldPublish(converted) && recording.publish()) {
