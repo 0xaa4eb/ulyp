@@ -47,7 +47,7 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
-    implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.1.1'
+    implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.3'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
     implementation group: 'org.agrona', name: 'agrona', version: agrona_version
     implementation group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
