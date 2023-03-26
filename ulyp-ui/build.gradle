@@ -33,8 +33,8 @@ dependencies {
     implementation files('libs/fernflower.jar')
 
     implementation "javax.annotation:javax.annotation-api:1.3.2"
-    implementation group: 'com.google.guava', name: 'guava', version: guava_version
-    implementation group: 'io.vavr', name: 'vavr', version: vavr_version
+    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
+    implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-json', version: '1.4.1'
 
     implementation group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
@@ -42,14 +42,14 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.3'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
-    implementation group: 'org.agrona', name: 'agrona', version: agrona_version
+    implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
     implementation group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
 
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.20.0'

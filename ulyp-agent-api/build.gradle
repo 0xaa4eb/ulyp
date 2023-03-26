@@ -9,24 +9,24 @@ repositories {
     mavenCentral()
 }
 
-def protocVersion = protobuf_version
+def protocVersion = '3.11.0'
 
 dependencies {
     compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
-    compileOnly group: 'io.grpc', name: 'grpc-netty', version: grpc_version
+    compileOnly group: 'io.grpc', name: 'grpc-netty', version: '1.27.0'
 
-    implementation group: 'io.grpc', name: 'grpc-protobuf', version: grpc_version
-    implementation group: 'io.grpc', name: 'grpc-stub', version: grpc_version
-    implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobuf_version
-    implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
+    implementation group: 'io.grpc', name: 'grpc-protobuf', version: '1.27.0'
+    implementation group: 'io.grpc', name: 'grpc-stub', version: '1.27.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
-    testImplementation "io.grpc:grpc-testing:${grpc_version}"
+    testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.27.0'
 }
 
 protobuf {
     protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpc_version}" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.27.0" }
     }
     generateProtoTasks {
         all()*.plugins { grpc {} }

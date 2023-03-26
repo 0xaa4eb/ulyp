@@ -13,17 +13,17 @@ dependencies {
     implementation project(':ulyp-agent-api')
     implementation project(':ulyp-storage')
 
-    implementation group: 'io.grpc', name: 'grpc-protobuf', version: grpc_version
-    implementation group: 'io.grpc', name: 'grpc-stub', version: grpc_version
-    implementation group: 'io.grpc', name: 'grpc-netty', version: grpc_version
-    implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobuf_version
+    implementation group: 'io.grpc', name: 'grpc-protobuf', version: '1.27.0'
+    implementation group: 'io.grpc', name: 'grpc-stub', version: '1.27.0'
+    implementation group: 'io.grpc', name: 'grpc-netty', version: '1.27.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
 
-    implementation group: 'com.google.guava', name: 'guava', version: guava_version
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: fastutil_version
-    implementation group: 'org.agrona', name: 'agrona', version: agrona_version
-    implementation group: 'org.jetbrains', name: 'annotations', version: jetbrains_annotations_version
+    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
+    implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
-    implementation group: 'io.vavr', name: 'vavr', version: vavr_version
+    implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
