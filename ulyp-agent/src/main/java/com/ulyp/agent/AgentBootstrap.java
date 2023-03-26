@@ -6,7 +6,6 @@ import com.ulyp.agent.util.Version;
 import java.io.*;
 import java.lang.instrument.Instrumentation;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.jar.JarFile;
 

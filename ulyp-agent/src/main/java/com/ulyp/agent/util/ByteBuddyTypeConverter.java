@@ -18,7 +18,8 @@ import net.bytebuddy.description.type.TypeDescription;
 @Slf4j
 public class ByteBuddyTypeConverter {
 
-    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter();
+    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter(false);
+    public static final ByteBuddyTypeConverter SUPER_TYPE_DERIVING_INSTANCE = new ByteBuddyTypeConverter(true);
 
     private static final TypeDescription.Generic BYTE_BUDDY_STRING_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(String.class);
 
@@ -55,15 +56,25 @@ public class ByteBuddyTypeConverter {
         BOXED_INTEGRAL_TYPES.add(TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Byte.class));
     }
 
+    private final boolean deriveSuperTypes;
+
+    public ByteBuddyTypeConverter(boolean deriveSuperTypes) {
+        this.deriveSuperTypes = deriveSuperTypes;
+    }
+
     public Type convert(TypeDescription.Generic type) {
         try {
-            Set<TypeTrait> typeTraits = deriveTraits(type);
 
-            return Type.builder()
+            Type.TypeBuilder typeBuilder = Type.builder()
                 .id(typeIdGenerator.incrementAndGet())
                 .name(trimGenerics(type.getActualName()))
-                .typeTraits(typeTraits)
-                .build();
+                .typeTraits(deriveTraits(type));
+
+            if (deriveSuperTypes) {
+                typeBuilder.superTypeNames(deriveSuperTypes(type));
+            }
+
+            return typeBuilder.build();
         } catch (Throwable ex) {
             return Type.unknown();
         }
@@ -135,7 +146,7 @@ public class ByteBuddyTypeConverter {
         return traits;
     }
 
-    private Set<String> getSuperTypes(TypeDescription.Generic type) {
+    private Set<String> deriveSuperTypes(TypeDescription.Generic type) {
         Set<String> superTypes = new HashSet<>();
         try {
 

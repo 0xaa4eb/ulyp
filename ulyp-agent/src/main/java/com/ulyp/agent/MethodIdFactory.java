@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
+import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
@@ -21,7 +22,11 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
     private final ForMethodIdOffsetMapping instance;
 
     public MethodIdFactory(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
-        this.instance = new ForMethodIdOffsetMapping(methodRepository, startRecordingMethods);
+        ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver(
+            ByteBuddyTypeConverter.INSTANCE,
+            startRecordingMethods.useSuperTypes() ? ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE : ByteBuddyTypeConverter.INSTANCE
+        );
+        this.instance = new ForMethodIdOffsetMapping(byteBuddyMethodResolver, methodRepository, startRecordingMethods);
     }
 
     @Override
@@ -49,10 +54,11 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
         private final MethodRepository methodRepository;
         private final ThreadLocal<IdMapping> lastMethod = new ThreadLocal<>();
-        private final ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver();
+        private final ByteBuddyMethodResolver byteBuddyMethodResolver;
         private final StartRecordingMethods startRecordingMethods;
 
-        ForMethodIdOffsetMapping(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
+        ForMethodIdOffsetMapping(ByteBuddyMethodResolver byteBuddyMethodResolver, MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
+            this.byteBuddyMethodResolver = byteBuddyMethodResolver;
             this.methodRepository = methodRepository;
             this.startRecordingMethods = startRecordingMethods;
         }

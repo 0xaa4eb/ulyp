@@ -46,6 +46,10 @@ public class MethodMatcher {
         return (isMethodWildcard || method.getName().equals(methodName)) && typeMatcher.matches(method.getDeclaringType());
     }
 
+    public boolean matchesSuperTypes() {
+        return typeMatcher.matchesSuperTypes();
+    }
+
     @Override
     public String toString() {
         return typeMatcher + "." + methodName;

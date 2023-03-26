@@ -37,6 +37,12 @@ public class Agent {
 
     public static void start(String args, Instrumentation instrumentation) {
 
+        Settings settings = Settings.fromSystemProperties();
+        if (settings.isAgentDisabled()) {
+            System.out.println("ULYP agent disabled, no code will be instrumented");
+            return;
+        }
+
         // Touch first and initialize shadowed slf4j
         String logLevel = LoggingSettings.getLoggingLevel();
 
@@ -45,14 +51,7 @@ public class Agent {
         } else {
             AgentContext.init();
         }
-
         AgentContext context = AgentContext.getInstance();
-
-        Settings settings = Settings.fromSystemProperties();
-        if (settings.isAgentDisabled()) {
-            System.out.println("ULYP agent disabled, no code will be instrumented");
-            return;
-        }
 
         StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
 
@@ -160,8 +159,11 @@ public class Agent {
         }
 
         for (TypeMatcher excludeTypeMatcher : settings.getExcludeFromInstrumentationClasses()) {
+            ByteBuddyTypeConverter typeConverter = excludeTypeMatcher.matchesSuperTypes() ?
+                ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE :
+                ByteBuddyTypeConverter.INSTANCE;
             ignoreMatcher = ignoreMatcher.or(
-                target -> excludeTypeMatcher.matches(ByteBuddyTypeConverter.INSTANCE.convert(target.asGenericType()))
+                target -> excludeTypeMatcher.matches(typeConverter.convert(target.asGenericType()))
             );
         }
 

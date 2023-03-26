@@ -19,7 +19,6 @@ public class CallRecordBufferTest {
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
         .declaringType(type)
-        .implementingType(type)
         .name("run")
         .id(1000L)
         .isConstructor(false)

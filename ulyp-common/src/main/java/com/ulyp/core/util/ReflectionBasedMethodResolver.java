@@ -29,7 +29,6 @@ public class ReflectionBasedMethodResolver {
             .map(a -> typeResolver.get(a.getType()))
             .collect(Collectors.toList());
         Type returnType = typeResolver.get(method.getReturnType());
-        Type implementingType = typeResolver.get(method.getDeclaringClass());
         Type declaringType = typeResolver.get(method.getDeclaringClass());
 
         ObjectRecorder[] paramRecorders = RecorderChooser.getInstance().chooseForTypes(parameters);
@@ -43,7 +42,6 @@ public class ReflectionBasedMethodResolver {
             .returnsSomething(returns)
             .parameterRecorders(paramRecorders)
             .returnValueRecorder(returnValueRecorder)
-            .implementingType(implementingType)
             .declaringType(declaringType)
             .build();
     }

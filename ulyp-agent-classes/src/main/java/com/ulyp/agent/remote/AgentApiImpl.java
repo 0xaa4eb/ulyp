@@ -1,18 +1,20 @@
 package com.ulyp.agent.remote;
 
 import com.ulyp.agent.AgentContext;
-import com.ulyp.agent.api.*;
+import com.ulyp.agent.api.AgentApiGrpc;
+import com.ulyp.agent.api.RecordingEnabled;
+import com.ulyp.agent.api.RecordingEnabledResponse;
+import com.ulyp.agent.api.ResetRecordingFileRequest;
+import com.ulyp.agent.api.ResetRecordingFileResponse;
 import com.ulyp.core.Method;
-import com.ulyp.core.MethodRepository;
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.ResetMetadata;
+
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Collection;
 
 @Slf4j
 public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
@@ -39,11 +41,9 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
     @Override
     public void resetRecordingFile(ResetRecordingFileRequest request, StreamObserver<ResetRecordingFileResponse> responseObserver) {
         try {
-
             MethodList methods = new MethodList();
             for (Method method : agentContext.getMethodRepository().values()) {
                 methods.add(method);
-                method.markWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Will write {} to storage", method);
                 }
@@ -52,7 +52,6 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
             TypeList types = new TypeList();
             for (Type type : agentContext.getTypeResolver().getAllResolved()) {
                 types.add(type);
-                type.setWrittenToFile();
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Will write {} to storage", type);
                 }

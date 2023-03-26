@@ -212,36 +212,6 @@ public class ReflectionBasedTypeResolverTest {
         assertThat(typeResolver.get(LinkedHashMap.class).getTraits(), hasItem(TypeTrait.MAP));
     }
 
-    @Test
-    @Ignore
-    public void testBaseClassNamesResolve() {
-        Type type = typeResolver.get(TestClass.class);
-
-        Assert.assertEquals(
-            new HashSet<String>() {{
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.BaseClass");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I1");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I2");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I3");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I4");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I5");
-            }},
-            type.getSuperTypeNames()
-        );
-
-        Assert.assertEquals(
-            new HashSet<String>() {{
-                add("BaseClass");
-                add("I1");
-                add("I2");
-                add("I3");
-                add("I4");
-                add("I5");
-            }},
-            type.getSuperTypeSimpleNames()
-        );
-    }
-
     public enum TestEnum {
         A,
         B,

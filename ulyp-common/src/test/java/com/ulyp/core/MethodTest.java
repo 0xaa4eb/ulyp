@@ -20,12 +20,6 @@ public class MethodTest {
                                         .name("java.lang.RuntimeException")
                                         .build()
                         )
-                        .implementingType(
-                                Type.builder()
-                                        .id(1024)
-                                        .name("a.b.C")
-                                        .build()
-                        )
                         .name("run")
                         .id(5552312L)
                         .isConstructor(false)

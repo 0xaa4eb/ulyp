@@ -22,13 +22,19 @@ public class ByteBuddyMethodResolver {
 
     private static final AtomicLong idGenerator = new AtomicLong();
 
-    private final ByteBuddyTypeConverter typeResolver = new ByteBuddyTypeConverter();
+    private final ByteBuddyTypeConverter typeConverter;
+    private final ByteBuddyTypeConverter declaringTypeConverter;
+
+    public ByteBuddyMethodResolver(ByteBuddyTypeConverter typeConverter, ByteBuddyTypeConverter declaringTypeConverter) {
+        this.typeConverter = typeConverter;
+        this.declaringTypeConverter = declaringTypeConverter;
+    }
 
     public Method resolve(MethodDescription description) {
         boolean returns = !description.getReturnType().asGenericType().equals(TypeDescription.Generic.VOID);
-        List<Type> parameters = description.getParameters().asTypeList().stream().map(typeResolver::convert).collect(Collectors.toList());
-        Type returnType = typeResolver.convert(description.getReturnType());
-        Type declaringType = typeResolver.convert(description.getDeclaringType().asGenericType());
+        List<Type> parameters = description.getParameters().asTypeList().stream().map(ByteBuddyTypeConverter.INSTANCE::convert).collect(Collectors.toList());
+        Type returnType = ByteBuddyTypeConverter.INSTANCE.convert(description.getReturnType());
+        Type declaringType = ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE.convert(description.getDeclaringType().asGenericType());
 
         ObjectRecorder[] paramRecorders = RecorderChooser.getInstance().chooseForTypes(parameters);
         ObjectRecorder returnValueRecorder = description.isConstructor() ?

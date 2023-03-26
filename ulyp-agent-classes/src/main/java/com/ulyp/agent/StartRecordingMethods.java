@@ -46,6 +46,11 @@ public final class StartRecordingMethods {
         return false;
     }
 
+    public boolean useSuperTypes() {
+        return methods.stream().anyMatch(MethodMatcher::matchesSuperTypes)
+            || excludeMethods.stream().anyMatch(MethodMatcher::matchesSuperTypes);
+    }
+
     @Override
     public String toString() {
         return methods.toString();

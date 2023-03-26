@@ -3,7 +3,6 @@ package com.ulyp.core;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderChooser;
@@ -20,7 +19,7 @@ import lombok.ToString;
  */
 @Builder
 @AllArgsConstructor
-@ToString(exclude = {"suggestedRecorder", "writtenToFile"})
+@ToString(exclude = {"suggestedRecorder"})
 public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();
@@ -30,14 +29,9 @@ public class Type {
     @Builder.Default
     private final Set<TypeTrait> typeTraits = EnumSet.noneOf(TypeTrait.class);
     @Builder.Default
-    private final Supplier<Set<String>> superTypeNames = Collections::emptySet;
-    @Builder.Default
-    private final Supplier<Set<String>> superTypeSimpleNames = Collections::emptySet;
+    private final Set<String> superTypeNames = Collections.emptySet();
 
     private volatile ObjectRecorder suggestedRecorder;
-    // If was dumped to the output file
-    @Builder.Default
-    private volatile boolean writtenToFile = false;
 
     public static Type unknown() {
         return UNKNOWN;
@@ -78,14 +72,6 @@ public class Type {
         return typeTraits.contains(TypeTrait.JAVA_LANG_STRING);
     }
 
-    public boolean wasWrittenToFile() {
-        return writtenToFile;
-    }
-
-    public void setWrittenToFile() {
-        writtenToFile = true;
-    }
-
     public long getId() {
         return id;
     }
@@ -95,10 +81,6 @@ public class Type {
     }
 
     public Set<String> getSuperTypeNames() {
-        return superTypeNames.get();
-    }
-
-    public Set<String> getSuperTypeSimpleNames() {
-        return superTypeSimpleNames.get();
+        return superTypeNames;
     }
 }

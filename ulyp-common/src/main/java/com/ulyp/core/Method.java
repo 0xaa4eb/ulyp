@@ -13,7 +13,6 @@ public class Method {
 
     private final long id;
     private final String name;
-    private final Type implementingType;
     private final Type declaringType;
     private final boolean isStatic;
     private final boolean isConstructor;
@@ -21,9 +20,6 @@ public class Method {
     private final ObjectRecorder[] parameterRecorders;
     private final ObjectRecorder returnValueRecorder;
     private volatile boolean shouldStartRecording;
-    // If was dumped to the output file
-    @Builder.Default
-    private volatile boolean writtenToFile = false;
 
     private static void writeType(BinaryMethodEncoder targetEncoder, Type type) {
         BinaryTypeEncoder binaryTypeEncoder = new BinaryTypeEncoder();
@@ -64,18 +60,6 @@ public class Method {
 
     public void setShouldStartRecording(boolean shouldStartRecording) {
         this.shouldStartRecording = shouldStartRecording;
-    }
-
-    public boolean wasWrittenToFile() {
-        return writtenToFile;
-    }
-
-    public void markWrittenToFile() {
-        writtenToFile = true;
-    }
-
-    public void setWrittenToFile(boolean writtenToFile) {
-        this.writtenToFile = writtenToFile;
     }
 
     public long getId() {
