@@ -20,7 +20,7 @@ dependencies {
     implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
-    testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.27.0'
+    testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.54.0'
 }
 
 protobuf {
