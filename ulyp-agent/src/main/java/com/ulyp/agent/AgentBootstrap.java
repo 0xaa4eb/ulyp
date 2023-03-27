@@ -24,12 +24,11 @@ public class AgentBootstrap {
 
     public static void premain(String args, Instrumentation instrumentation) {
         try {
-
             instrumentation.appendToBootstrapClassLoaderSearch(
                     new JarFile(copyJarToTmp())
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AgentInitializationException(e);
         }
 
         Agent.start(args, instrumentation);
@@ -57,10 +56,20 @@ public class AgentBootstrap {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error ocurred while bootstrapping agent", e);
+            throw new AgentInitializationException("Error ocurred while bootstrapping agent", e);
         }
 
-        if (tmpJarFile.exists() && tmpJarFile.length() > 0) {
+        int internalJarSize;
+        try (InputStream inputStream = thisClass.getClassLoader().getResourceAsStream(AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME)) {
+            if (inputStream == null) {
+                throw new AgentInitializationException("Could not find " + AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME + " in ulyp jar");
+            }
+            internalJarSize = new StreamDrainer().getAvailableBytesCount(inputStream);
+        } catch (IOException e) {
+            throw new AgentInitializationException("Error while checking size of internal jar file", e);
+        }
+
+        if (tmpJarFile.exists() && tmpJarFile.length() == internalJarSize) {
             return tmpJarFile;
         }
 
@@ -74,7 +83,7 @@ public class AgentBootstrap {
             classesJar.deleteOnExit();
             return classesJar;
         } catch (IOException e) {
-            throw new RuntimeException("Could not copy classpath resource " + AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME, e);
+            throw new AgentInitializationException("Could not copy classpath resource " + AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME, e);
         }
     }
 }
