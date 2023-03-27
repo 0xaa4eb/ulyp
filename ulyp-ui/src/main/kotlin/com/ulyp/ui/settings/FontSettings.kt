@@ -13,15 +13,9 @@ class FontSettings {
         }
     }
 
-    var systemFontSize: Double = 1.0
-        set(value) {
-            val valueRounded = (value * 50.0).roundToInt() * 1.0 / 50.0
-            field = valueRounded
-        }
-    var recordingTreeFontSize: Double = 1.0
-        set(value) {
-            val valueRounded = (value * 50.0).roundToInt() * 1.0 / 50.0
-            field = valueRounded
-        }
+    var systemFontSize: Int = 15
+
+    var recordingTreeFontSize: Int = 15
+
     var recordingTreeFontName: String? = Font.getDefault().name
 }

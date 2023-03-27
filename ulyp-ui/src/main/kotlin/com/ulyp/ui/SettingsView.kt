@@ -44,7 +44,7 @@ class SettingsView(
             themeManager.changeTheme(Theme.valueOf(selectedTheme))
         }
 
-        fontChoiceBox.items.addAll(Font.getFontNames())
+        fontChoiceBox.items.addAll(Font.getFamilies())
         fontChoiceBox.selectionModel.select(currentFontSettings.recordingTreeFontName)
         fontChoiceBox.setOnAction {
             settingStorage.updateSettings { settings ->
@@ -55,10 +55,10 @@ class SettingsView(
         }
 
         systemFontSizeLabel.text = currentFontSettings.systemFontSize.toString()
-        systemFontSizeSlider.value = currentFontSettings.systemFontSize
+        systemFontSizeSlider.value = currentFontSettings.systemFontSize.toDouble()
         systemFontSizeSlider.valueProperty().addListener {_, _, newValue ->
             settingStorage.updateSettings { settings ->
-                settings.appearanceSettings.fontSettings.systemFontSize = newValue.toDouble()
+                settings.appearanceSettings.fontSettings.systemFontSize = newValue.toInt()
                 val roundedValue = settings.appearanceSettings.fontSettings.systemFontSize
                 fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 systemFontSizeLabel.text = roundedValue.toString()
@@ -66,10 +66,10 @@ class SettingsView(
         }
 
         recordingTreeFontSizeLabel.text = currentFontSettings.recordingTreeFontSize.toString()
-        recordingTreeFontSizeSlider.value = currentFontSettings.recordingTreeFontSize
+        recordingTreeFontSizeSlider.value = currentFontSettings.recordingTreeFontSize.toDouble()
         recordingTreeFontSizeSlider.valueProperty().addListener {_, _, newValue ->
             settingStorage.updateSettings { settings ->
-                settings.appearanceSettings.fontSettings.recordingTreeFontSize = newValue.toDouble()
+                settings.appearanceSettings.fontSettings.recordingTreeFontSize = newValue.toInt()
                 val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSize
                 fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 recordingTreeFontSizeLabel.text = roundedValue.toString()

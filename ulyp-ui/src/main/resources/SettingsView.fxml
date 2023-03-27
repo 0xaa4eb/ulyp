@@ -43,7 +43,7 @@
         <HBox prefWidth="200.0">
             <children>
                 <Label prefWidth="200.0" text="Font size (em)"/>
-                <Slider fx:id="systemFontSizeSlider" blockIncrement="0.02" max="5.0" min="0.05" value="1.0"/>
+                <Slider fx:id="systemFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0"/>
                 <Label fx:id="systemFontSizeLabel" text="Label">
                     <HBox.margin>
                         <Insets left="20.0"/>
@@ -76,7 +76,7 @@
         <HBox prefWidth="200.0">
             <children>
                 <Label prefWidth="200.0" text="Font size (em)"/>
-                <Slider fx:id="recordingTreeFontSizeSlider" blockIncrement="0.02" max="5.0" min="0.05" value="1.0"/>
+                <Slider fx:id="recordingTreeFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0"/>
                 <Label fx:id="recordingTreeFontSizeLabel" text="Label">
                     <HBox.margin>
                         <Insets left="20.0"/>

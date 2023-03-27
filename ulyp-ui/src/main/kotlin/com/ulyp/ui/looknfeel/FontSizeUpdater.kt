@@ -27,24 +27,24 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                     path,
                     """
                     .root {
-                        -fx-font-size: ${fontSettings.systemFontSize}em;
+                        -fx-font-size: ${fontSettings.systemFontSize}px;
                     }
                     .ulyp-tooltip-text {
-                        -fx-font-size: ${fontSettings.systemFontSize}em;
+                        -fx-font-size: ${fontSettings.systemFontSize}px;
                     }
                     .ulyp-call-tree {
                         -fx-font-family: ${fontSettings.recordingTreeFontName};
-                        -fx-font-size: ${fontSettings.recordingTreeFontSize}em;
+                        -fx-font-size: ${fontSettings.recordingTreeFontSize}px;
                     }
                     .ulyp-call-tree-call-node {
                         -fx-min-height: -1;
                         -fx-max-height: -1;
                     }
-                    .ulyp-tree-view {
-                        -fx-fixed-cell-size: ${fontSettings.recordingTreeFontSize * 1.7}em;
+                    .ulyp-call-tree-view {
+                        -fx-fixed-cell-size: ${(fontSettings.recordingTreeFontSize * 1.4).toInt()}px;
                     }
                     .ulyp-smaller-text {
-                        -fx-font-size: ${fontSettings.recordingTreeFontSize * 0.8}em;
+                        -fx-font-size: ${(fontSettings.recordingTreeFontSize * 0.8).toInt()}px;
                     }
                     """.toByteArray(StandardCharsets.UTF_8),
                     StandardOpenOption.WRITE

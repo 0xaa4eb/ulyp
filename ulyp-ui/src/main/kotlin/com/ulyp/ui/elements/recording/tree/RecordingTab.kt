@@ -57,7 +57,7 @@ class RecordingTab(
         }
 
         treeView = TreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings))
-        treeView!!.styleClass += "ulyp-tree-view"
+        treeView!!.styleClass += "ulyp-call-tree-view"
 
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
@@ -84,13 +84,13 @@ class RecordingTab(
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
                 settingsStorage.updateSettings { settings ->
-                    settings.appearanceSettings.fontSettings.recordingTreeFontSize += 0.05
+                    settings.appearanceSettings.fontSettings.recordingTreeFontSize += 1
                     fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 }
             }
             if (key.code == KeyCode.MINUS) {
                 settingsStorage.updateSettings { settings ->
-                    settings.appearanceSettings.fontSettings.recordingTreeFontSize -= 0.05
+                    settings.appearanceSettings.fontSettings.recordingTreeFontSize -= 1
                     fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 }
             }

@@ -1,27 +1,3 @@
-.root {
-    -fx-font-size: 1.0em;
-}
-
-.ulyp-tooltip-text {
-    -fx-font-size: 1.0em;
-}
-
-.ulyp-help-text {
-    -fx-font-size: 1.2em;
-}
-
-.ulyp-error-text {
-    -fx-font-size: 1.2em;
-}
-
-.ulyp-call-tree {
-    -fx-font-size: 1.0em;
-}
-
-.ulyp-smaller-text {
-    -fx-font-size: 0.6em;
-}
-
 .ulyp-bold-text {
     -fx-font-weight: bold;
 }

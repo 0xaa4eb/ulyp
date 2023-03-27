@@ -77,4 +77,14 @@ public class StreamDrainer {
         System.arraycopy(currentArray, FROM_BEGINNING, result, arrayIndex * bufferSize, currentIndex);
         return result;
     }
+
+    public int getAvailableBytesCount(InputStream inputStream) throws IOException {
+        int totalBytes = 0;
+        byte[] buf = new byte[bufferSize];
+        int read;
+        while ((read = inputStream.read(buf)) >= 0) {
+            totalBytes += read;
+        }
+        return totalBytes;
+    }
 }
