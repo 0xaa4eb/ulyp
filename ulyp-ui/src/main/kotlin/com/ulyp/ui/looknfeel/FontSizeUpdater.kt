@@ -41,7 +41,7 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                         -fx-max-height: -1;
                     }
                     .ulyp-call-tree-view {
-                        -fx-fixed-cell-size: ${(fontSettings.recordingTreeFontSize * 1.4).toInt()}px;
+                        -fx-fixed-cell-size: ${fontSettings.recordingTreeFontSize + fontSettings.recordingTreeFontSpacing}px;
                     }
                     .ulyp-smaller-text {
                         -fx-font-size: ${(fontSettings.recordingTreeFontSize * 0.8).toInt()}px;

@@ -32,6 +32,10 @@ class SettingsView(
     lateinit var recordingTreeFontSizeSlider: Slider
     @FXML
     lateinit var recordingTreeFontSizeLabel: Label
+    @FXML
+    lateinit var recordingTreeFontSpacingSlider: Slider
+    @FXML
+    lateinit var recordingTreeFontSpacingLabel: Label
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         val currentSettings = settingStorage.read()
@@ -44,6 +48,7 @@ class SettingsView(
             themeManager.changeTheme(Theme.valueOf(selectedTheme))
         }
 
+        // TODO remove duplication
         fontChoiceBox.items.addAll(Font.getFamilies())
         fontChoiceBox.selectionModel.select(currentFontSettings.recordingTreeFontName)
         fontChoiceBox.setOnAction {
@@ -73,6 +78,17 @@ class SettingsView(
                 val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSize
                 fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
                 recordingTreeFontSizeLabel.text = roundedValue.toString()
+            }
+        }
+
+        recordingTreeFontSpacingLabel.text = currentFontSettings.recordingTreeFontSpacing.toString()
+        recordingTreeFontSpacingSlider.value = currentFontSettings.recordingTreeFontSpacing.toDouble()
+        recordingTreeFontSpacingSlider.valueProperty().addListener {_, _, newValue ->
+            settingStorage.updateSettings { settings ->
+                settings.appearanceSettings.fontSettings.recordingTreeFontSpacing = newValue.toInt()
+                val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSpacing
+                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
+                recordingTreeFontSpacingLabel.text = roundedValue.toString()
             }
         }
     }

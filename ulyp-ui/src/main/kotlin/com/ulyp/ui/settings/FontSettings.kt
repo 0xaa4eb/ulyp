@@ -14,8 +14,7 @@ class FontSettings {
     }
 
     var systemFontSize: Int = 15
-
     var recordingTreeFontSize: Int = 15
-
+    var recordingTreeFontSpacing: Int = 8
     var recordingTreeFontName: String? = Font.getDefault().name
 }
