@@ -43,8 +43,6 @@ class RecordingsListView internal constructor() : ListView<RecordingListItem>() 
             items.add(item)
             item
         }
-        if (recording.isComplete) {
-            fromStateItem.updateLifetime(recording)
-        }
+        fromStateItem.update(recording)
     }
 }

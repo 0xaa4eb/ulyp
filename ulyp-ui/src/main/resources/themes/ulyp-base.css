@@ -1,3 +1,6 @@
 .ulyp-bold-text {
     -fx-font-weight: bold;
 }
+
+.ulyp-recording-list-item.system-font-text {
+}

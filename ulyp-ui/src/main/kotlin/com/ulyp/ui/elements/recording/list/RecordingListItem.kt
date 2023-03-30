@@ -21,13 +21,14 @@ class RecordingListItem(recording: Recording): TextFlow() {
         val recordingMetadata = recording.metadata
         val rootCallRecord = recording.root
         val timestampText = Text(Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter))
-        children.add(StyledText.of(timestampText, Style.RECORDING_LIST_ITEM, Style.SMALLER_TEXT))
+        children.add(StyledText.of(timestampText, Style.RECORDING_LIST_ITEM))
         children.add(Text(" "))
-        children.add(StyledText.of(recordingMetadata.threadName, Style.RECORDING_LIST_ITEM, Style.SMALLER_TEXT))
+        children.add(StyledText.of(recordingMetadata.threadName, Style.RECORDING_LIST_ITEM))
         children.add(Text(" "))
         children.add(StyledText.of(
             "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
-            Style.RECORDING_LIST_ITEM
+            Style.RECORDING_LIST_ITEM,
+            Style.BOLD_TEXT
         ))
         children.add(
             StyledText.of(
@@ -75,7 +76,7 @@ class RecordingListItem(recording: Recording): TextFlow() {
         this.children.removeIf { it is SelectionMark }
     }
 
-    fun updateLifetime(recording: Recording) {
+    fun update(recording: Recording) {
         children[5] = StyledText.of(
             " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
             Style.RECORDING_LIST_ITEM

@@ -29,6 +29,9 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                     .root {
                         -fx-font-size: ${fontSettings.systemFontSize}px;
                     }
+                    .system-font-text {
+                        -fx-font-size: ${fontSettings.systemFontSize}px;
+                    }
                     .ulyp-tooltip-text {
                         -fx-font-size: ${fontSettings.systemFontSize}px;
                     }
