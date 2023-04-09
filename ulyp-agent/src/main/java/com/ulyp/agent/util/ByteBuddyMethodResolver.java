@@ -33,8 +33,8 @@ public class ByteBuddyMethodResolver {
     public Method resolve(MethodDescription description) {
         boolean returns = !description.getReturnType().asGenericType().equals(TypeDescription.Generic.VOID);
         List<Type> parameters = description.getParameters().asTypeList().stream().map(ByteBuddyTypeConverter.INSTANCE::convert).collect(Collectors.toList());
-        Type returnType = ByteBuddyTypeConverter.INSTANCE.convert(description.getReturnType());
-        Type declaringType = ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE.convert(description.getDeclaringType().asGenericType());
+        Type returnType = typeConverter.convert(description.getReturnType());
+        Type declaringType = declaringTypeConverter.convert(description.getDeclaringType().asGenericType());
 
         ObjectRecorder[] paramRecorders = RecorderChooser.getInstance().chooseForTypes(parameters);
         ObjectRecorder returnValueRecorder = description.isConstructor() ?
