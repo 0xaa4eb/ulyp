@@ -13,7 +13,7 @@ dependencies {
     compileOnly project(':ulyp-agent-classes')
     runtimeOnly files('../ulyp-agent-classes/build/libs/ulyp-agent-classes.jarr')
 
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.20'
+    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
 
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
