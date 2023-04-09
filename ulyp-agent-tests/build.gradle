@@ -33,7 +33,7 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 
     testImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
-    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+    testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
     testImplementation group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'
     testImplementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.1.RELEASE'
     testImplementation group: 'javax.transaction', name: 'jta', version: '1.1'
