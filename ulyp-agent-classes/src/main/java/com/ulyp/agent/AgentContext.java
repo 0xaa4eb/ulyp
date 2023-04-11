@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.regex.Pattern;
 
 public class AgentContext {
 
@@ -33,7 +34,7 @@ public class AgentContext {
     private AgentContext() {
         this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
-        this.startRecordingPolicy = initializePolicy(settings.getStartRecordingPolicyPropertyValue());
+        this.startRecordingPolicy = initializePolicy(settings);
         this.storageWriter = settings.buildStorageWriter();
         this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
@@ -56,21 +57,29 @@ public class AgentContext {
         }
     }
 
-    private static StartRecordingPolicy initializePolicy(String value) {
+    private static StartRecordingPolicy initializePolicy(Settings settings) {
+        String value = settings.getStartRecordingPolicyPropertyValue();
+
+        StartRecordingPolicy policy;
         if (value == null || value.isEmpty()) {
-            return new EnabledByDefaultRecordingPolicy();
+            policy = new EnabledByDefaultRecordingPolicy();
+        } else if (value.startsWith("delay:")) {
+            // TODO move string checks to policy implementations
+            policy = new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
+        } else if (value.equals("api")) {
+            policy = new DisabledByDefaultRecordingPolicy();
+        } else if (value.startsWith("file:")) {
+            policy = new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));
+        } else {
+            throw new IllegalArgumentException("Unsupported recording policy: " + value);
         }
-        // TODO move string checks to policy implementations
-        if (value.startsWith("delay:")) {
-            return new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
+
+        Pattern startRecordingThreads = settings.getStartRecordingThreads();
+        if (startRecordingThreads != null) {
+            return new ThreadNameRecordingPolicy(policy, startRecordingThreads);
+        } else {
+            return policy;
         }
-        if (value.equals("api")) {
-            return new DisabledByDefaultRecordingPolicy();
-        }
-        if (value.startsWith("file:")) {
-            return new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));
-        }
-        throw new IllegalArgumentException("Unsupported recording policy: " + value);
     }
 
     public static void init() {

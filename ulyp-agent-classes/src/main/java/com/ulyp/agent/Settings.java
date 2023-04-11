@@ -10,8 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +29,7 @@ public class Settings {
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
+    public static final String START_RECORDING_THREADS_PROPERTY = "ulyp.threads";
     public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
@@ -42,6 +45,7 @@ public class Settings {
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull
     private final StartRecordingMethods startRecordingMethods;
+    private final Pattern startRecordingThreads;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
     private final boolean instrumentConstructors;
     private final boolean instrumentLambdas;
@@ -57,6 +61,7 @@ public class Settings {
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
             @NotNull StartRecordingMethods startRecordingMethods,
+            Pattern startRecordingThreads,
             boolean instrumentConstructors,
             boolean instrumentLambdas,
             boolean instrumentTypeInitializers,
@@ -70,6 +75,7 @@ public class Settings {
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.startRecordingMethods = startRecordingMethods;
+        this.startRecordingThreads = startRecordingThreads;
         this.instrumentConstructors = instrumentConstructors;
         this.instrumentLambdas = instrumentLambdas;
         this.instrumentTypeInitializers = instrumentTypeInitializers;
@@ -133,6 +139,10 @@ public class Settings {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
+        Pattern recordThreads = Optional.ofNullable(System.getProperty(START_RECORDING_THREADS_PROPERTY))
+                .map(Pattern::compile)
+                .orElse(null);
+
         boolean aggressive = System.getProperty(AGGRESSIVE_PROPERTY) != null;
         boolean recordConstructors = aggressive || System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
         boolean instrumentLambdas = aggressive || System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
@@ -162,6 +172,7 @@ public class Settings {
                 instrumentationPackages,
                 excludedPackages,
                 recordingStartMethods,
+                recordThreads,
                 recordConstructors,
                 instrumentLambdas,
                 instrumentTypeInitializers,
@@ -194,6 +205,11 @@ public class Settings {
     @NotNull
     public StartRecordingMethods getRecordMethodList() {
         return startRecordingMethods;
+    }
+
+    @Nullable
+    public Pattern getStartRecordingThreads() {
+        return startRecordingThreads;
     }
 
     public StorageWriter buildStorageWriter() {
@@ -234,6 +250,7 @@ public class Settings {
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + startRecordingMethods +
+                (startRecordingThreads != null ? (",\nstart recording at threads: " + startRecordingThreads) : "") +
                 ",\ninstrument constructors: " + instrumentConstructors +
                 ",\ninstrument lambdas: " + instrumentLambdas +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +

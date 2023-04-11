@@ -21,6 +21,7 @@ public class ForkProcessBuilder {
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
     private String printClasses = null;
     private String logLevel = "INFO";
+    private String recordThreads;
     private Boolean agentDisabled = null;
     private Boolean recordConstructors = null;
     private Boolean instrumentLambdas = null;
@@ -123,6 +124,11 @@ public class ForkProcessBuilder {
         return this;
     }
 
+    public ForkProcessBuilder withRecordThreads(String recordThreads) {
+        this.recordThreads = recordThreads;
+        return this;
+    }
+
     public ForkProcessBuilder withSystemProp(SystemProp systemProp) {
         this.systemProps.add(systemProp);
         return this;
@@ -152,6 +158,9 @@ public class ForkProcessBuilder {
         }
         if (excludeRecordingMethods != null) {
             params.add("-D" + Settings.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
+        }
+        if (recordThreads != null) {
+            params.add("-D" + Settings.START_RECORDING_THREADS_PROPERTY + "=" + recordThreads);
         }
         if (instrumentTypeInitializers != null) {
             params.add("-D" + Settings.INSTRUMENT_TYPE_INITIALIZERS);
