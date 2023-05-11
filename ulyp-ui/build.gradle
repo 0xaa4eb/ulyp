@@ -39,7 +39,7 @@ dependencies {
 
     implementation group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-core', version: '6.0.9'
 
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
