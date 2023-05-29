@@ -60,20 +60,14 @@ class RecordingListItem(recording: Recording): TextFlow() {
         }*/
     }
 
-    class SelectionMark(): Text("✔ ") {
-        init {
-
-        }
-    }
-
     fun markSelected() {
-        if (children.none { it is SelectionMark }) {
-            this.children.add(0, SelectionMark())
+        if (children.none { it is RecordingListItemSelectionMark }) {
+            this.children.add(0, RecordingListItemSelectionMark())
         }
     }
 
     fun clearSelection() {
-        this.children.removeIf { it is SelectionMark }
+        this.children.removeIf { it is RecordingListItemSelectionMark }
     }
 
     fun update(recording: Recording) {

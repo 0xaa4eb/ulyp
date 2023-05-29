@@ -1,6 +1,9 @@
-
 .ulyp-error-text {
     -fx-fill: rgb(255, 30, 30);
+}
+
+.ulyp-bright-text {
+    -fx-fill: rgb(255, 191, 30);
 }
 
 .ulyp-call-tree-string {
