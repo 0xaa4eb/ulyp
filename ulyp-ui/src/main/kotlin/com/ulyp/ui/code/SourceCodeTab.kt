@@ -1,7 +1,7 @@
 package com.ulyp.ui.code
 
 import com.ulyp.ui.code.util.MethodLineNumberFinder
-import com.ulyp.ui.settings.SettingsStorage
+import com.ulyp.ui.settings.Settings
 import javafx.embed.swing.SwingNode
 import javafx.scene.control.Tab
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities
 import kotlin.math.max
 
 @Component
-class SourceCodeTab(@Autowired private val settingsStorage: SettingsStorage) : Tab() {
+class SourceCodeTab(@Autowired private val settings: Settings) : Tab() {
     private val textScrollPane: RTextScrollPane
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
 
@@ -44,7 +44,7 @@ class SourceCodeTab(@Autowired private val settingsStorage: SettingsStorage) : T
                                 synchronized(this) {
                                     // TODO move to Settings
                                     font++
-                                    textArea.font = Font(settingsStorage.read().appearanceSettings.fontSettings.recordingTreeFontName, Font.PLAIN, font)
+                                    textArea.font = Font(settings.recordingTreeFontName.value, Font.PLAIN, font)
                                 }
                             }
                         }
@@ -52,7 +52,7 @@ class SourceCodeTab(@Autowired private val settingsStorage: SettingsStorage) : T
                             SwingUtilities.invokeLater {
                                 synchronized(this) {
                                     font--
-                                    textArea.font = Font(settingsStorage.read().appearanceSettings.fontSettings.recordingTreeFontName, Font.PLAIN, font)
+                                    textArea.font = Font(settings.recordingTreeFontName.value, Font.PLAIN, font)
                                 }
                             }
                         }

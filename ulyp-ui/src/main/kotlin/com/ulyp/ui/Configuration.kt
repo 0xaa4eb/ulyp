@@ -5,7 +5,8 @@ import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.reader.FilterRegistry
-import com.ulyp.ui.settings.SettingsStorage
+import com.ulyp.ui.settings.Settings
+import com.ulyp.ui.settings.SettingsFileStorage
 import com.ulyp.ui.settings.defaults.SettingsFileProvider
 import javafx.stage.FileChooser
 import javafx.stage.Stage
@@ -25,8 +26,13 @@ open class Configuration {
     }
 
     @Bean
-    open fun settingsStorage(settingsFileProvider: SettingsFileProvider): SettingsStorage {
-        return SettingsStorage(settingsFileProvider.getSettingsFile())
+    open fun settingsStorage(settingsFileProvider: SettingsFileProvider): SettingsFileStorage {
+        return SettingsFileStorage(settingsFileProvider.getSettingsFile())
+    }
+
+    @Bean
+    open fun settings(settingsStorage: SettingsFileStorage): Settings {
+        return settingsStorage.read()
     }
 
     @Bean
@@ -36,7 +42,7 @@ open class Configuration {
         filterRegistry: FilterRegistry,
         sourceCodeView: SourceCodeView,
         fileRecordingTabPane: FileRecordingTabPane,
-        settingsStorage: SettingsStorage,
+        settings: Settings,
         fontSizeUpdater: FontSizeUpdater,
         stage: Stage
     ): PrimaryView {
@@ -47,7 +53,7 @@ open class Configuration {
                 filterRegistry,
                 sourceCodeView,
                 fileRecordingTabPane,
-                settingsStorage,
+                settings,
                 fontSizeUpdater
         ) { fileChooser.showOpenDialog(stage) }
     }
@@ -56,11 +62,10 @@ open class Configuration {
     @Lazy
     open fun settingsView(
         applicationContext: ApplicationContext,
-        themeManager: ThemeManager,
-        fontSizeUpdater: FontSizeUpdater,
-        settingStorage: SettingsStorage
+        settings: Settings,
+        themeManager: ThemeManager
     ): SettingsView {
-        return SettingsView(themeManager, fontSizeUpdater, settingStorage)
+        return SettingsView(settings, themeManager)
     }
 
     @Bean

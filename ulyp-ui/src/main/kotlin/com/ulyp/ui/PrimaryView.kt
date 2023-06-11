@@ -16,7 +16,7 @@ import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
 import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.reader.FilterRegistry
-import com.ulyp.ui.settings.SettingsStorage
+import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -41,7 +41,7 @@ class PrimaryView(
     private val filterRegistry: FilterRegistry,
     private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
-    private val settingsStorage: SettingsStorage,
+    private val settings: Settings,
     private val fontSizeUpdater: FontSizeUpdater,
     private val fileChooser: Supplier<File?>
 ) : Initializable {
@@ -65,8 +65,21 @@ class PrimaryView(
 //        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
 //        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
 
+        settings.systemFontSize.addListener { _, _, _ ->
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
+        }
+        settings.recordingTreeFontSpacing.addListener { _, _, _ ->
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
+        }
+        settings.recordingTreeFontName.addListener { _, _, _ ->
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
+        }
+        settings.recordingTreeFontSize.addListener { _, _, _ ->
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
+        }
+
         Platform.runLater {
-            fontSizeUpdater.update(UIApplication.stage.scene, settingsStorage.read().appearanceSettings.fontSettings)
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
         }
     }
 

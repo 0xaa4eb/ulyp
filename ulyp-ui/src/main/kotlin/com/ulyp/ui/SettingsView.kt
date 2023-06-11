@@ -3,9 +3,11 @@ package com.ulyp.ui
 import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
-import com.ulyp.ui.settings.SettingsStorage
+import com.ulyp.ui.settings.Settings
+import com.ulyp.ui.settings.SettingsFileStorage
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.CheckBox
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
@@ -15,15 +17,12 @@ import java.util.*
 
 
 class SettingsView(
-    private val themeManager: ThemeManager,
-    private val fontSizeUpdater: FontSizeUpdater,
-    private val settingStorage: SettingsStorage
+    private val settings: Settings,
+    private val themeManager: ThemeManager
 ) : Initializable {
 
     @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>
-    @FXML
-    lateinit var fontChoiceBox: ChoiceBox<String>
     @FXML
     lateinit var systemFontSizeSlider: Slider
     @FXML
@@ -33,13 +32,15 @@ class SettingsView(
     @FXML
     lateinit var recordingTreeFontSizeLabel: Label
     @FXML
+    lateinit var recordingTreeFontChoiceBox: ChoiceBox<String>
+    @FXML
     lateinit var recordingTreeFontSpacingSlider: Slider
     @FXML
     lateinit var recordingTreeFontSpacingLabel: Label
+    @FXML
+    lateinit var recordingListShowThreads: CheckBox
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
-        val currentSettings = settingStorage.read()
-        val currentFontSettings = currentSettings.appearanceSettings.fontSettings
 
         themeChoiceBox.items.addAll(Theme.values().map { it.name }.toList())
         themeChoiceBox.selectionModel.select(themeManager.currentTheme.name)
@@ -48,48 +49,34 @@ class SettingsView(
             themeManager.changeTheme(Theme.valueOf(selectedTheme))
         }
 
-        // TODO remove duplication
-        fontChoiceBox.items.addAll(Font.getFamilies())
-        fontChoiceBox.selectionModel.select(currentFontSettings.recordingTreeFontName)
-        fontChoiceBox.setOnAction {
-            settingStorage.updateSettings { settings ->
-                val selectedFont: String = fontChoiceBox.selectionModel.selectedItem
-                settings.appearanceSettings.fontSettings.recordingTreeFontName = selectedFont
-                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-            }
+        recordingTreeFontChoiceBox.items.addAll(Font.getFamilies())
+        recordingTreeFontChoiceBox.selectionModel.select(settings.recordingTreeFontName.value)
+        recordingTreeFontChoiceBox.setOnAction {
+            settings.recordingTreeFontName.value = recordingTreeFontChoiceBox.selectionModel.selectedItem
         }
 
-        systemFontSizeLabel.text = currentFontSettings.systemFontSize.toString()
-        systemFontSizeSlider.value = currentFontSettings.systemFontSize.toDouble()
-        systemFontSizeSlider.valueProperty().addListener {_, _, newValue ->
-            settingStorage.updateSettings { settings ->
-                settings.appearanceSettings.fontSettings.systemFontSize = newValue.toInt()
-                val roundedValue = settings.appearanceSettings.fontSettings.systemFontSize
-                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-                systemFontSizeLabel.text = roundedValue.toString()
-            }
+        systemFontSizeLabel.text = settings.systemFontSize.value.toString()
+        systemFontSizeSlider.value = settings.systemFontSize.value.toDouble()
+        systemFontSizeSlider.valueProperty().addListener { _, _, newValue ->
+            systemFontSizeLabel.text = newValue.toString()
+            systemFontSizeSlider.value = newValue.toInt().toDouble()
+            settings.systemFontSize.value = newValue.toInt()
         }
 
-        recordingTreeFontSizeLabel.text = currentFontSettings.recordingTreeFontSize.toString()
-        recordingTreeFontSizeSlider.value = currentFontSettings.recordingTreeFontSize.toDouble()
-        recordingTreeFontSizeSlider.valueProperty().addListener {_, _, newValue ->
-            settingStorage.updateSettings { settings ->
-                settings.appearanceSettings.fontSettings.recordingTreeFontSize = newValue.toInt()
-                val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSize
-                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-                recordingTreeFontSizeLabel.text = roundedValue.toString()
-            }
+        recordingTreeFontSizeLabel.text = settings.recordingTreeFontSize.value.toString()
+        recordingTreeFontSizeSlider.value = settings.recordingTreeFontSize.value.toDouble()
+        recordingTreeFontSizeSlider.valueProperty().addListener { _, _, newValue ->
+            recordingTreeFontSizeLabel.text = newValue.toString()
+            recordingTreeFontSizeSlider.value = newValue.toInt().toDouble()
+            settings.recordingTreeFontSize.value = newValue.toInt()
         }
 
-        recordingTreeFontSpacingLabel.text = currentFontSettings.recordingTreeFontSpacing.toString()
-        recordingTreeFontSpacingSlider.value = currentFontSettings.recordingTreeFontSpacing.toDouble()
-        recordingTreeFontSpacingSlider.valueProperty().addListener {_, _, newValue ->
-            settingStorage.updateSettings { settings ->
-                settings.appearanceSettings.fontSettings.recordingTreeFontSpacing = newValue.toInt()
-                val roundedValue = settings.appearanceSettings.fontSettings.recordingTreeFontSpacing
-                fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-                recordingTreeFontSpacingLabel.text = roundedValue.toString()
-            }
+        recordingTreeFontSpacingLabel.text = settings.recordingTreeFontSpacing.value.toString()
+        recordingTreeFontSpacingSlider.value = settings.recordingTreeFontSpacing.doubleValue()
+        recordingTreeFontSpacingSlider.valueProperty().addListener { _, _, newValue ->
+            recordingTreeFontSpacingLabel.text = newValue.toString()
+            recordingTreeFontSpacingSlider.value = newValue.toInt().toDouble()
+            settings.recordingTreeFontSpacing.value = newValue.toInt()
         }
     }
 }

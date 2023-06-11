@@ -4,29 +4,28 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.util.function.Consumer
 
-class SettingsStorage(private val settingsFile: File) {
-
-    fun updateSettings(updater: Consumer<Settings>) {
-        val settings = this.read()
-        updater.accept(settings)
-        this.write(settings)
-    }
+class SettingsFileStorage(private val settingsFile: File) {
 
     fun read(): Settings {
-        return if (settingsFile.exists()) {
+        val settings= if (settingsFile.exists()) {
             val settingsJson = settingsFile.readText(Charsets.UTF_8)
-            Json.decodeFromString(settingsJson)
+            val json = Json { ignoreUnknownKeys = true }
+            json.decodeFromString(settingsJson)
         } else {
             val settings = Settings()
             this.write(settings)
             settings
         }
+        settings.addListener {
+                _, _, _ -> write(settings)
+        }
+        return settings
     }
 
-    fun write(settings: Settings) {
+    private fun write(settings: Settings) {
         val encodeToString = Json.encodeToString(settings)
         settingsFile.writeText(encodeToString, Charsets.UTF_8)
+
     }
 }

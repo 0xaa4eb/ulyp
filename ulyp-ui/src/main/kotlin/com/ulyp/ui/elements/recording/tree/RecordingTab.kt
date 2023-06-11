@@ -4,12 +4,11 @@ import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.CallRecord
 import com.ulyp.storage.Recording
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.UIApplication
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
 import com.ulyp.ui.looknfeel.FontSizeUpdater
-import com.ulyp.ui.settings.SettingsStorage
+import com.ulyp.ui.settings.Settings
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
 import javafx.event.EventHandler
@@ -44,7 +43,7 @@ class RecordingTab(
     @Autowired
     private lateinit var renderSettings: RenderSettings
     @Autowired
-    private lateinit var settingsStorage: SettingsStorage
+    private lateinit var settings: Settings
     @Autowired
     private lateinit var fontSizeUpdater: FontSizeUpdater
 
@@ -83,16 +82,10 @@ class RecordingTab(
                 }
         treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
             if (key.code == KeyCode.EQUALS) {
-                settingsStorage.updateSettings { settings ->
-                    settings.appearanceSettings.fontSettings.recordingTreeFontSize += 1
-                    fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-                }
+                settings.recordingTreeFontSize.value += 1
             }
             if (key.code == KeyCode.MINUS) {
-                settingsStorage.updateSettings { settings ->
-                    settings.appearanceSettings.fontSettings.recordingTreeFontSize -= 1
-                    fontSizeUpdater.update(UIApplication.stage.scene, settings.appearanceSettings.fontSettings)
-                }
+                settings.recordingTreeFontSize.value -= 1
             }
         }
 

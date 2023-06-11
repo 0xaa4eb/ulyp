@@ -2,7 +2,7 @@ package com.ulyp.ui.looknfeel
 
 import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
-import com.ulyp.ui.settings.FontSettings
+import com.ulyp.ui.settings.Settings
 import javafx.scene.Scene
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
@@ -18,7 +18,7 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
         private const val STYLE_PREFIX = "call-tree-font-style"
     }
 
-    fun update(scene: Scene, fontSettings: FontSettings) {
+    fun update(scene: Scene, settings: Settings) {
         try {
 
             val path = Files.createTempFile(STYLE_PREFIX, null)
@@ -27,27 +27,27 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                     path,
                     """
                     .root {
-                        -fx-font-size: ${fontSettings.systemFontSize}px;
+                        -fx-font-size: ${settings.systemFontSize.get()}px;
                     }
                     .system-font-text {
-                        -fx-font-size: ${fontSettings.systemFontSize}px;
+                        -fx-font-size: ${settings.systemFontSize.get()}px;
                     }
                     .ulyp-tooltip-text {
-                        -fx-font-size: ${fontSettings.systemFontSize}px;
+                        -fx-font-size: ${settings.systemFontSize.get()}px;
                     }
                     .ulyp-call-tree {
-                        -fx-font-family: ${fontSettings.recordingTreeFontName};
-                        -fx-font-size: ${fontSettings.recordingTreeFontSize}px;
+                        -fx-font-family: ${settings.recordingTreeFontName.get()};
+                        -fx-font-size: ${settings.recordingTreeFontSize.get()}px;
                     }
                     .ulyp-call-tree-call-node {
                         -fx-min-height: -1;
                         -fx-max-height: -1;
                     }
                     .ulyp-call-tree-view {
-                        -fx-fixed-cell-size: ${fontSettings.recordingTreeFontSize + fontSettings.recordingTreeFontSpacing}px;
+                        -fx-fixed-cell-size: ${settings.recordingTreeFontSize.get() + settings.recordingTreeFontSpacing.get()}px;
                     }
                     .ulyp-smaller-text {
-                        -fx-font-size: ${(fontSettings.recordingTreeFontSize * 0.8).toInt()}px;
+                        -fx-font-size: ${(settings.recordingTreeFontSize.get() * 0.8).toInt()}px;
                     }
                     """.toByteArray(StandardCharsets.UTF_8),
                     StandardOpenOption.WRITE
