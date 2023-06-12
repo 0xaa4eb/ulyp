@@ -6,135 +6,166 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ulyp.ui.SettingsView">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ulyp.ui.SettingsView">
     <children>
-        <HBox prefHeight="20.0" prefWidth="200.0">
-            <children>
-                <Label text="Appearance" underline="true">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                    <font>
-                        <Font size="15.0" />
-                    </font>
-                </Label>
-            </children>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-            <VBox.margin>
-                <Insets top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Theme" />
-                <ChoiceBox fx:id="themeChoiceBox" prefWidth="150.0" />
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Font size (px)" />
-                <Slider fx:id="systemFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
-                <Label fx:id="systemFontSizeLabel" text="Label">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                </Label>
-
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefHeight="20.0" prefWidth="200.0">
-            <children>
-                <Label text="Recording tree appearance" underline="true">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                    <font>
-                        <Font size="15.0" />
-                    </font>
-                </Label>
-            </children>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-            <VBox.margin>
-                <Insets top="40.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Font size (px)" />
-                <Slider fx:id="recordingTreeFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
-                <Label fx:id="recordingTreeFontSizeLabel" text="Label">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                </Label>
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Font spacing (px)" />
-                <Slider fx:id="recordingTreeFontSpacingSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
-                <Label fx:id="recordingTreeFontSpacingLabel" text="Label">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                </Label>
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Font" />
-                <ChoiceBox fx:id="recordingTreeFontChoiceBox" prefWidth="150.0" />
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefHeight="20.0" prefWidth="200.0">
-            <children>
-                <Label text="Recording list" underline="true">
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                    <font>
-                        <Font size="15.0" />
-                    </font>
-                </Label>
-            </children>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-            <VBox.margin>
-                <Insets top="40.0" />
-            </VBox.margin>
-        </HBox>
-        <HBox prefWidth="200.0">
-            <children>
-                <Label prefWidth="200.0" text="Show thread name" />
-                <CheckBox fx:id="recordingListShowThreads" mnemonicParsing="false"/>
-            </children>
-            <VBox.margin>
-                <Insets left="20.0" top="20.0" />
-            </VBox.margin>
-        </HBox>
+      <TabPane prefHeight="729.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Main" />
+          <Tab text="Appereance">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="791.0">
+                     <children>
+                        <VBox prefHeight="692.0" prefWidth="1024.0">
+                           <children>
+                                <HBox prefHeight="20.0" prefWidth="200.0">
+                                    <children>
+                                        <Label text="Appearance" underline="true">
+                                            <HBox.margin>
+                                                <Insets left="20.0" />
+                                            </HBox.margin>
+                                            <font>
+                                                <Font size="15.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <opaqueInsets>
+                                        <Insets />
+                                    </opaqueInsets>
+                                    <VBox.margin>
+                                        <Insets top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefWidth="200.0">
+                                    <children>
+                                        <Label prefWidth="200.0" text="Theme" />
+                                        <ChoiceBox fx:id="themeChoiceBox" prefWidth="150.0" />
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefWidth="200.0">
+                                    <children>
+                                        <Label prefWidth="200.0" text="Font size (px)" />
+                                        <Slider fx:id="systemFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
+                                        <Label fx:id="systemFontSizeLabel" text="Label">
+                                            <HBox.margin>
+                                                <Insets left="20.0" />
+                                            </HBox.margin>
+                                        </Label>
+                        
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefHeight="20.0" prefWidth="200.0">
+                                    <children>
+                                        <Label text="Recording tree appearance" underline="true">
+                                            <HBox.margin>
+                                                <Insets left="20.0" />
+                                            </HBox.margin>
+                                            <font>
+                                                <Font size="15.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                    <opaqueInsets>
+                                        <Insets />
+                                    </opaqueInsets>
+                                    <VBox.margin>
+                                        <Insets top="40.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefWidth="200.0">
+                                    <children>
+                                        <Label prefWidth="200.0" text="Font size (px)" />
+                                        <Slider fx:id="recordingTreeFontSizeSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
+                                        <Label fx:id="recordingTreeFontSizeLabel" text="Label">
+                                            <HBox.margin>
+                                                <Insets left="20.0" />
+                                            </HBox.margin>
+                                        </Label>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefWidth="200.0">
+                                    <children>
+                                        <Label prefWidth="200.0" text="Font spacing (px)" />
+                                        <Slider fx:id="recordingTreeFontSpacingSlider" blockIncrement="1.0" max="50.0" min="5.0" value="15.0" />
+                                        <Label fx:id="recordingTreeFontSpacingLabel" text="Label">
+                                            <HBox.margin>
+                                                <Insets left="20.0" />
+                                            </HBox.margin>
+                                        </Label>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                                <HBox prefWidth="200.0">
+                                    <children>
+                                        <Label prefWidth="200.0" text="Font" />
+                                        <ChoiceBox fx:id="recordingTreeFontChoiceBox" prefWidth="150.0" />
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets left="20.0" top="20.0" />
+                                    </VBox.margin>
+                                </HBox>
+                           </children>
+                        </VBox>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Recording view">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="791.0">
+                     <children>
+                        <VBox prefHeight="692.0" prefWidth="1024.0">
+                           <children>
+                              <HBox prefHeight="20.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Recording list" underline="true">
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <VBox.margin>
+                                    <Insets top="40.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox prefWidth="200.0">
+                                 <children>
+                                    <Label prefWidth="200.0" text="Show thread name" />
+                                    <CheckBox fx:id="recordingListShowThreads" mnemonicParsing="false" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
     </children>
 </VBox>
