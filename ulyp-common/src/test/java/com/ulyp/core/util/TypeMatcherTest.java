@@ -22,6 +22,19 @@ public class TypeMatcherTest {
     }
 
     @Test
+    public void testMatchingByPackage() {
+        Type type = Type.builder().name("com.org.pckg.SomeType").build();
+
+        assertTrue(TypeMatcher.parse("**.com.**").matches(type));
+
+        assertTrue(TypeMatcher.parse("**.com.org.**").matches(type));
+
+        assertTrue(TypeMatcher.parse("**.com.org.pckg.**").matches(type));
+
+        assertTrue(TypeMatcher.parse("**.com.org.pckg.*").matches(type));
+    }
+
+    @Test
     public void testMatchingForNestedClassForConvertedName() {
         Type type = Type.builder().name("com.pckg.SomeClass.X").build();
 
