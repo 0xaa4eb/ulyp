@@ -9,6 +9,8 @@ enum class Style(vararg classes: String) {
     ERROR_TEXT("ulyp-error-text"),
     HELP_TEXT("ulyp-help-text"),
     RECORDING_LIST_ITEM("ulyp-recording-list-item"),
+    RECORDING_LIST_ITEM_THREAD("ulyp-recording-list-item-thread"),
+    HIDDEN("hidden"),
     CALL_TREE("ulyp-call-tree"),
     CALL_TREE_TYPE_NAME("ulyp-call-tree-typename"),
     CALL_TREE_STRING("ulyp-call-tree-string"),

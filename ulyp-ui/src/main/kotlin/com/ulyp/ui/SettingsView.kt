@@ -1,10 +1,8 @@
 package com.ulyp.ui
 
-import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.settings.Settings
-import com.ulyp.ui.settings.SettingsFileStorage
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
@@ -78,5 +76,7 @@ class SettingsView(
             recordingTreeFontSpacingSlider.value = newValue.toInt().toDouble()
             settings.recordingTreeFontSpacing.value = newValue.toInt()
         }
+
+        recordingListShowThreads.selectedProperty().bindBidirectional(settings.recordingListShowThreads)
     }
 }

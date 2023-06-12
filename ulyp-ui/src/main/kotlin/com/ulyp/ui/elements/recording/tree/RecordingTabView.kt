@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox
 import org.springframework.context.ApplicationContext
 import java.util.concurrent.ConcurrentHashMap
 
-class RecordingTabView(val applicationContext: ApplicationContext) : VBox() {
+class RecordingTabView(private val applicationContext: ApplicationContext) : VBox() {
 
     private val tabsByRecordingId: MutableMap<Int, RecordingTab> = ConcurrentHashMap()
     var currentTab: RecordingTab? = null

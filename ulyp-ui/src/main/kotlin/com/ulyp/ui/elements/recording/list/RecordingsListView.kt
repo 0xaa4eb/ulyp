@@ -1,18 +1,15 @@
 package com.ulyp.ui.elements.recording.list
 
 import com.ulyp.storage.Recording
+import com.ulyp.ui.settings.Settings
 import javafx.collections.ListChangeListener
 import javafx.scene.control.ListView
-import org.springframework.context.annotation.Scope
-import org.springframework.stereotype.Component
 
 /**
  * A tab which contains all recordings for a particular recording file. It itself contains
  * a set of tabs of type {@link RecordingTab} in it (one such tab per every recording)
  */
-@Component
-@Scope(scopeName = "prototype")
-class RecordingsListView internal constructor() : ListView<RecordingListItem>() {
+class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>() {
 
     private val recordingIds = mutableMapOf<Int, RecordingListItem>()
 
@@ -35,10 +32,15 @@ class RecordingsListView internal constructor() : ListView<RecordingListItem>() 
             }
         )
 
+        settings.recordingListShowThreads.addListener { _, _, newVal ->
+            recordingIds.values.forEach {
+                it.updateShowThreadName(newVal)
+            }
+        }
     }
 
     fun createOrUpdate(recording: Recording) {
-        val item = RecordingListItem(recording)
+        val item = RecordingListItem(recording, settings)
         val fromStateItem = recordingIds.computeIfAbsent(item.recordingId) {
             items.add(item)
             item

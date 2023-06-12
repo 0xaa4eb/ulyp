@@ -1,7 +1,9 @@
 package com.ulyp.ui.elements.recording.list
 
 import com.ulyp.storage.Recording
+import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.ClassNameUtils
+import com.ulyp.ui.util.EnhancedText
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import javafx.scene.text.Text
@@ -9,33 +11,20 @@ import javafx.scene.text.TextFlow
 import java.sql.Timestamp
 import java.time.format.DateTimeFormatter
 
-class RecordingListItem(recording: Recording): TextFlow() {
+class RecordingListItem(private val recording: Recording, settings: Settings): TextFlow() {
 
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss.SSS")
     }
 
+    private var showThreadName: Boolean = false
     val recordingId = recording.id
 
     init {
-        val recordingMetadata = recording.metadata
-        val rootCallRecord = recording.root
-        val timestampText = Text(Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter))
-        children.add(StyledText.of(timestampText, Style.RECORDING_LIST_ITEM))
-        children.add(Text(" "))
-        children.add(StyledText.of(recordingMetadata.threadName, Style.RECORDING_LIST_ITEM))
-        children.add(Text(" "))
-        children.add(StyledText.of(
-            "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
-            Style.RECORDING_LIST_ITEM,
-            Style.BOLD_TEXT
-        ))
-        children.add(
-            StyledText.of(
-                " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
-                Style.RECORDING_LIST_ITEM
-            )
-        )
+        this.showThreadName = settings.recordingListShowThreads.get()
+        refreshName()
+    }
+
 /*        @get:Synchronized
         private val tooltipText: Tooltip
         private get() {
@@ -58,6 +47,38 @@ class RecordingListItem(recording: Recording): TextFlow() {
             tooltip.styleClass.addAll(Style.TOOLTIP_TEXT.cssClasses)
             return tooltip
         }*/
+
+    private fun refreshName() {
+        children.clear()
+
+        val recordingMetadata = recording.metadata
+        val rootCallRecord = recording.root
+        children.add(EnhancedText(
+            Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter),
+            Style.RECORDING_LIST_ITEM)
+        )
+        children.add(Text(" "))
+        if (showThreadName) {
+            children.add(EnhancedText(recordingMetadata.threadName,
+                Style.RECORDING_LIST_ITEM,
+                Style.RECORDING_LIST_ITEM_THREAD,
+                Style.HIDDEN))
+        }
+        children.add(Text(" "))
+        children.add(EnhancedText(
+            "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
+            Style.RECORDING_LIST_ITEM,
+            Style.BOLD_TEXT
+        ))
+        children.add(EnhancedText(
+            " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
+            Style.RECORDING_LIST_ITEM)
+        )
+    }
+
+    fun updateShowThreadName(showThreadName: Boolean) {
+        this.showThreadName = showThreadName
+        refreshName()
     }
 
     fun markSelected() {
@@ -71,7 +92,7 @@ class RecordingListItem(recording: Recording): TextFlow() {
     }
 
     fun update(recording: Recording) {
-        children[5] = StyledText.of(
+        children[children.size - 1] = StyledText.of(
             " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
             Style.RECORDING_LIST_ITEM
         )

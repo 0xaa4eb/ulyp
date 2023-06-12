@@ -1,6 +1,7 @@
 package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.ui.RenderSettings
+import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor.execute
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
@@ -16,9 +17,10 @@ class FileRecordingTabPane : TabPane() {
 
     @Autowired
     private lateinit var context: ApplicationContext
-
     @Autowired
     private lateinit var renderSettings: RenderSettings
+    @Autowired
+    private lateinit var settings: Settings
 
     private var lastSelectedOnShowTypes: RecordedCallTreeItem? = null
 
@@ -43,7 +45,7 @@ class FileRecordingTabPane : TabPane() {
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab
             } else {
-                val tab = context.getBean(FileRecordingsTab::class.java, name, context)
+                val tab = context.getBean(FileRecordingsTab::class.java, name, context, settings)
                 tabs.add(tab)
                 return@execute tab
             }

@@ -3,6 +3,7 @@ package com.ulyp.ui.elements.recording.tree
 import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.Recording
 import com.ulyp.ui.elements.recording.list.RecordingsListView
+import com.ulyp.ui.settings.Settings
 import javafx.application.Platform
 import javafx.collections.ListChangeListener
 import javafx.scene.control.SplitPane
@@ -20,10 +21,11 @@ import javax.annotation.PostConstruct
 @Scope(scopeName = "prototype")
 class FileRecordingsTab internal constructor(
         val name: FileRecordingsTabName,
-        private val applicationContext: ApplicationContext
+        private val applicationContext: ApplicationContext,
+        settings: Settings
 ) : Tab(name.toString()) {
 
-    private val recordingList = RecordingsListView()
+    private val recordingList = RecordingsListView(settings)
     private lateinit var recordingTabView: RecordingTabView
 
     @PostConstruct
