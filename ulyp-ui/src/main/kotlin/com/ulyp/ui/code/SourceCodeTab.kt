@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities
 import kotlin.math.max
 
 @Component
-class SourceCodeTab(@Autowired private val settings: Settings) : Tab() {
+open class SourceCodeTab(@Autowired private val settings: Settings) : Tab() {
     private val textScrollPane: RTextScrollPane
     private val textArea: RSyntaxTextArea = RSyntaxTextArea()
 

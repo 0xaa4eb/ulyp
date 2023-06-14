@@ -35,14 +35,13 @@ import java.util.*
 import java.util.function.Supplier
 import kotlin.system.exitProcess
 
-
 class PrimaryView(
     private val applicationContext: ApplicationContext,
+    private val viewInitializer: ViewInitializer,
     private val filterRegistry: FilterRegistry,
     private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settings: Settings,
-    private val fontSizeUpdater: FontSizeUpdater,
     private val fileChooser: Supplier<File?>
 ) : Initializable {
 
@@ -65,22 +64,7 @@ class PrimaryView(
 //        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
 //        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
 
-        settings.systemFontSize.addListener { _, _, _ ->
-            fontSizeUpdater.update(UIApplication.stage.scene, settings)
-        }
-        settings.recordingTreeFontSpacing.addListener { _, _, _ ->
-            fontSizeUpdater.update(UIApplication.stage.scene, settings)
-        }
-        settings.recordingTreeFontName.addListener { _, _, _ ->
-            fontSizeUpdater.update(UIApplication.stage.scene, settings)
-        }
-        settings.recordingTreeFontSize.addListener { _, _, _ ->
-            fontSizeUpdater.update(UIApplication.stage.scene, settings)
-        }
-
-        Platform.runLater {
-            fontSizeUpdater.update(UIApplication.stage.scene, settings)
-        }
+        viewInitializer.init()
     }
 
     fun clearAll() {

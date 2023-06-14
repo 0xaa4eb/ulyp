@@ -27,6 +27,7 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
                     path,
                     """
                     .root {
+                    -fx-font-family: ${settings.systemFontName.get()};
                         -fx-font-size: ${settings.systemFontSize.get()}px;
                     }
                     .system-font-text {

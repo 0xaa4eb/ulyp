@@ -44,17 +44,18 @@ open class Configuration {
         fileRecordingTabPane: FileRecordingTabPane,
         settings: Settings,
         fontSizeUpdater: FontSizeUpdater,
-        stage: Stage
+        stage: Stage,
+        viewInitializer: ViewInitializer
     ): PrimaryView {
         val fileChooser = FileChooser()
 
         return PrimaryView(
-                applicationContext,
-                filterRegistry,
-                sourceCodeView,
-                fileRecordingTabPane,
-                settings,
-                fontSizeUpdater
+            applicationContext,
+            viewInitializer,
+            filterRegistry,
+            sourceCodeView,
+            fileRecordingTabPane,
+            settings
         ) { fileChooser.showOpenDialog(stage) }
     }
 

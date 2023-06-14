@@ -22,6 +22,8 @@ class SettingsView(
     @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>
     @FXML
+    lateinit var systemFontChoiceBox: ChoiceBox<String>
+    @FXML
     lateinit var systemFontSizeSlider: Slider
     @FXML
     lateinit var systemFontSizeLabel: Label
@@ -41,10 +43,15 @@ class SettingsView(
     override fun initialize(url: URL, rb: ResourceBundle?) {
 
         themeChoiceBox.items.addAll(Theme.values().map { it.name }.toList())
-        themeChoiceBox.selectionModel.select(themeManager.currentTheme.name)
+        themeChoiceBox.selectionModel.select(settings.theme.get())
         themeChoiceBox.setOnAction {
-            val selectedTheme: String = themeChoiceBox.selectionModel.selectedItem
-            themeManager.changeTheme(Theme.valueOf(selectedTheme))
+            settings.theme.value = themeChoiceBox.selectionModel.selectedItem
+        }
+
+        systemFontChoiceBox.items.addAll(Font.getFamilies())
+        systemFontChoiceBox.selectionModel.select(settings.systemFontName.value)
+        systemFontChoiceBox.setOnAction {
+            settings.systemFontName.value = systemFontChoiceBox.selectionModel.selectedItem
         }
 
         recordingTreeFontChoiceBox.items.addAll(Font.getFamilies())

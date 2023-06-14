@@ -1,5 +1,6 @@
 package com.ulyp.ui.settings
 
+import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.settings.serializer.BooleanPropertySerializer
 import com.ulyp.ui.settings.serializer.IntegerPropertySerializer
 import com.ulyp.ui.settings.serializer.StringPropertySerializer
@@ -14,8 +15,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Settings {
 
+    @Serializable(with = StringPropertySerializer::class)
+    val theme: StringProperty = SimpleStringProperty(Theme.DARK.name)
     @Serializable(with = IntegerPropertySerializer::class)
     val systemFontSize = SimpleIntegerProperty(13)
+    @Serializable(with = StringPropertySerializer::class)
+    val systemFontName: StringProperty = SimpleStringProperty(Font.getDefault().name)
     @Serializable(with = IntegerPropertySerializer::class)
     val recordingTreeFontSize = SimpleIntegerProperty(15)
     @Serializable(with = IntegerPropertySerializer::class)
@@ -26,7 +31,9 @@ class Settings {
     val recordingListShowThreads: BooleanProperty = SimpleBooleanProperty(true)
 
     fun addListener(listener: ChangeListener<Any>) {
+        theme.addListener(listener)
         systemFontSize.addListener(listener)
+        systemFontName.addListener(listener)
         recordingTreeFontSize.addListener(listener)
         recordingTreeFontSpacing.addListener(listener)
         recordingTreeFontName.addListener(listener)
