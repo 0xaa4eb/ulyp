@@ -14,34 +14,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CallRecordBuffer {
 
-    private final TypeResolver typeResolver;
     private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
     private final long rootCallId;
 
     private long lastExitCallId = -1;
     private long nextCallId;
 
-    public CallRecordBuffer(TypeResolver typeResolver, long callIdInitialValue) {
-        this.typeResolver = typeResolver;
+    public CallRecordBuffer(long callIdInitialValue) {
         this.nextCallId = callIdInitialValue;
         this.rootCallId = callIdInitialValue;
     }
 
-    private CallRecordBuffer(TypeResolver typeResolver, long nextCallId, long rootCallId) {
-        this.typeResolver = typeResolver;
+    private CallRecordBuffer(long nextCallId, long rootCallId) {
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.typeResolver, this.nextCallId, rootCallId);
+        return new CallRecordBuffer(this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
         return recordedCalls.getRawBytes().byteLength();
     }
 
-    public long recordMethodEnter(int recordingId, Method method, @Nullable Object callee, Object[] args) {
+    public long recordMethodEnter(TypeResolver typeResolver, int recordingId, Method method, @Nullable Object callee, Object[] args) {
         try {
 
             long callId = nextCallId++;
@@ -61,7 +58,7 @@ public class CallRecordBuffer {
         }
     }
 
-    public void recordMethodExit(int recordingId, Method method, Object returnValue, Throwable thrown, long callId) {
+    public void recordMethodExit(TypeResolver typeResolver, int recordingId, Method method, Object returnValue, Throwable thrown, long callId) {
         if (callId >= 0) {
             if (thrown == null) {
                 recordedCalls.addExitMethodCall(
