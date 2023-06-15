@@ -37,7 +37,7 @@ dependencies {
     implementation group: 'io.vavr', name: 'vavr', version: '0.10.4'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-serialization-json', version: '1.4.1'
 
-    implementation group: 'org.springframework', name: 'spring-beans', version: '5.2.8.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-beans', version: '6.0.10'
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
     implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
