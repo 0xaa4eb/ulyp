@@ -158,7 +158,7 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                return callRecordBuffer.onMethodEnter(recordingState.getRecordingId(), methodRepository.get(methodId), callee, args);
+                return callRecordBuffer.recordMethodEnter(recordingState.getRecordingId(), methodRepository.get(methodId), callee, args);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -182,7 +182,7 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
                 Method method = methodRepository.get(methodId);
-                callRecords.onMethodExit(recordingState.getRecordingId(), method, result, thrown, callId);
+                callRecords.recordMethodExit(recordingState.getRecordingId(), method, result, thrown, callId);
 
                 RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
                 Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");

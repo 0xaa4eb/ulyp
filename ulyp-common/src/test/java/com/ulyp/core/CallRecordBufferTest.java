@@ -37,7 +37,7 @@ public class CallRecordBufferTest {
         Assert.assertEquals(0, log.getTotalRecordedEnterCalls());
         Assert.assertEquals(0, log.getRecordedCallsSize());
 
-        long callId = log.onMethodEnter(1, method, new T(), new Object[]{"ABC"});
+        long callId = log.recordMethodEnter(1, method, new T(), new Object[]{"ABC"});
 
         Assert.assertEquals(1, log.getTotalRecordedEnterCalls());
         Assert.assertEquals(1, log.getRecordedCallsSize());
@@ -47,12 +47,12 @@ public class CallRecordBufferTest {
         Assert.assertEquals(1, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(0, newLog.getRecordedCallsSize());
 
-        newLog.onMethodExit(1, method, "ABC", null, callId);
+        newLog.recordMethodExit(1, method, "ABC", null, callId);
 
         Assert.assertEquals(1, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(1, newLog.getRecordedCallsSize());
 
-        newLog.onMethodEnter(1, method, new T(), new Object[]{"ABC"});
+        newLog.recordMethodEnter(1, method, new T(), new Object[]{"ABC"});
 
         Assert.assertEquals(2, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(2, newLog.getRecordedCallsSize());

@@ -41,7 +41,7 @@ public class CallRecordBuffer {
         return recordedCalls.getRawBytes().byteLength();
     }
 
-    public long onMethodEnter(int recordingId, Method method, @Nullable Object callee, Object[] args) {
+    public long recordMethodEnter(int recordingId, Method method, @Nullable Object callee, Object[] args) {
         try {
 
             long callId = nextCallId++;
@@ -61,7 +61,7 @@ public class CallRecordBuffer {
         }
     }
 
-    public void onMethodExit(int recordingId, Method method, Object returnValue, Throwable thrown, long callId) {
+    public void recordMethodExit(int recordingId, Method method, Object returnValue, Throwable thrown, long callId) {
         if (callId >= 0) {
             if (thrown == null) {
                 recordedCalls.addExitMethodCall(
