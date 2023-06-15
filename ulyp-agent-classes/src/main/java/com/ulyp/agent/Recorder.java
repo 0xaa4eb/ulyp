@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import com.google.common.base.Preconditions;
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
@@ -9,7 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.TestOnly;
 
@@ -17,6 +22,8 @@ import org.jetbrains.annotations.TestOnly;
 @Slf4j
 @ThreadSafe
 public class Recorder {
+
+    public static final AtomicInteger idGenerator = new AtomicInteger(-1);
 
     /**
     * Keeps current active recording session count. Based on the fact that most of the time there is no
@@ -79,7 +86,11 @@ public class Recorder {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null) {
                 recordingState = new RecordingState();
+                RecordingMetadata recordingMetadata = generateRecordingMetadata();
+                recordingState.setRecordingId(recordingMetadata.getId());
+                recordingState.setRecordingMetadata(recordingMetadata);
                 recordingState.setEnabled(false);
+
                 threadLocalRecordingState.set(recordingState);
 
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
@@ -87,7 +98,7 @@ public class Recorder {
 
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), methodRepository.get(methodId).toShortString());
+                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId).toShortString());
                 }
                 recordingState.setEnabled(true);
             }
@@ -104,13 +115,15 @@ public class Recorder {
             if (recordingState == null) {
                 recordingState = new RecordingState();
                 recordingState.setEnabled(false);
+                RecordingMetadata recordingMetadata = generateRecordingMetadata();
+                recordingState.setRecordingMetadata(recordingMetadata);
                 threadLocalRecordingState.set(recordingState);
 
                 CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(typeResolver, initialCallIdGenerator.getNextStartValue());
                 recordingState.setCallRecordBuffer(newCallRecordBuffer);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", newCallRecordBuffer.getRecordingMetadata().getId(), methodRepository.get(methodId).toShortString());
+                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId).toShortString());
                 }
                 recordingState.setEnabled(true);
             }
@@ -145,7 +158,7 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                return callRecordBuffer.onMethodEnter(methodRepository.get(methodId), callee, args);
+                return callRecordBuffer.onMethodEnter(recordingState.getRecordingId(), methodRepository.get(methodId), callee, args);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -169,28 +182,36 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
                 Method method = methodRepository.get(methodId);
-                callRecords.onMethodExit(method, result, thrown, callId);
+                callRecords.onMethodExit(recordingState.getRecordingId(), method, result, thrown, callId);
+
+                RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
+                Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");
+                if (callRecords.isComplete()) {
+                    recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
+                }
 
                 if (callRecords.isComplete() ||
-                    callRecords.estimateBytesSize() > 32 * 1024 * 1024 ||
+                    callRecords.estimateBytesSize() > 32 * 1024 * 1024 || // TODO move to props
                     (
-                        (System.currentTimeMillis() - callRecords.getRecordingMetadata().getLogCreatedEpochMillis()) > 100
+                        (System.currentTimeMillis() - recordingState.getRecordingMetadata().getLogCreatedEpochMillis()) > 100 // TODO move to props
                             &&
                             callRecords.getRecordedCallsSize() > 0
                     )) {
+
                     CallRecordBuffer newBuffer = callRecords.cloneWithoutData();
 
                     if (!callRecords.isComplete()) {
                         recordingState.setCallRecordBuffer(newBuffer);
+                        recordingState.setRecordingMetadata(recordingMetadata.withNewCreationTimestamp());
                     } else {
                         threadLocalRecordingState.set(null);
                         currentRecordingSessionCount.decrementAndGet();
                         if (LoggingSettings.INFO_ENABLED) {
-                            log.info("Finished recording {} at method {}, recorded {} calls", callRecords.getRecordingMetadata().getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
+                            log.info("Finished recording {} at method {}, recorded {} calls", recordingMetadata.getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
                         }
                     }
 
-                    recordDataWriter.write(typeResolver, callRecords);
+                    recordDataWriter.write(typeResolver, recordingMetadata, callRecords);
                 }
             } finally {
                 recordingState.setEnabled(true);
@@ -198,6 +219,22 @@ public class Recorder {
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
         }
+    }
+
+    private RecordingMetadata generateRecordingMetadata() {
+        List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
+            .skip(2)
+            .map(StackTraceElement::toString)
+            .collect(Collectors.toList());
+
+        return RecordingMetadata.builder()
+            .id(idGenerator.incrementAndGet())
+            .recordingStartedEpochMillis(System.currentTimeMillis())
+            .logCreatedEpochMillis(System.currentTimeMillis())
+            .threadId(Thread.currentThread().getId())
+            .threadName(Thread.currentThread().getName())
+            .stackTraceElements(stackTraceElements)
+            .build();
     }
 
     @TestOnly

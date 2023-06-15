@@ -5,11 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,67 +14,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CallRecordBuffer {
 
-    public static final AtomicInteger idGenerator = new AtomicInteger(-1);
-
     private final TypeResolver typeResolver;
     private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
     private final long rootCallId;
 
-    private final RecordingMetadata recordingMetadata;
     private long lastExitCallId = -1;
     private long nextCallId;
 
     public CallRecordBuffer(TypeResolver typeResolver, long callIdInitialValue) {
-        List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
-            .skip(2)
-            .map(StackTraceElement::toString)
-            .collect(Collectors.toList());
-
-        this.recordingMetadata = RecordingMetadata.builder()
-                .id(idGenerator.incrementAndGet())
-                .recordingStartedEpochMillis(System.currentTimeMillis())
-                .logCreatedEpochMillis(System.currentTimeMillis())
-                .threadId(Thread.currentThread().getId())
-                .threadName(Thread.currentThread().getName())
-                .stackTraceElements(stackTraceElements)
-                .build();
-
         this.typeResolver = typeResolver;
         this.nextCallId = callIdInitialValue;
         this.rootCallId = callIdInitialValue;
     }
 
-    private CallRecordBuffer(
-            int id,
-            TypeResolver typeResolver,
-            long nextCallId,
-            long rootCallId) {
-        this.recordingMetadata = RecordingMetadata.builder()
-                .id(id)
-                .logCreatedEpochMillis(System.currentTimeMillis())
-                .threadId(Thread.currentThread().getId())
-                .threadName(Thread.currentThread().getName())
-                .build();
-
+    private CallRecordBuffer(TypeResolver typeResolver, long nextCallId, long rootCallId) {
         this.typeResolver = typeResolver;
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.recordingMetadata.getId(), this.typeResolver, this.nextCallId, rootCallId);
+        return new CallRecordBuffer(this.typeResolver, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
         return recordedCalls.getRawBytes().byteLength();
     }
 
-    public long onMethodEnter(Method method, @Nullable Object callee, Object[] args) {
+    public long onMethodEnter(int recordingId, Method method, @Nullable Object callee, Object[] args) {
         try {
 
             long callId = nextCallId++;
             recordedCalls.addEnterMethodCall(
-                    recordingMetadata.getId(),
+                    recordingId,
                     callId,
                     method,
                     typeResolver,
@@ -94,11 +61,11 @@ public class CallRecordBuffer {
         }
     }
 
-    public void onMethodExit(Method method, Object returnValue, Throwable thrown, long callId) {
+    public void onMethodExit(int recordingId, Method method, Object returnValue, Throwable thrown, long callId) {
         if (callId >= 0) {
             if (thrown == null) {
                 recordedCalls.addExitMethodCall(
-                    recordingMetadata.getId(),
+                    recordingId,
                     callId,
                     method,
                     typeResolver,
@@ -107,7 +74,7 @@ public class CallRecordBuffer {
                 );
             } else {
                 recordedCalls.addExitMethodCall(
-                    recordingMetadata.getId(),
+                    recordingId,
                     callId,
                     method,
                     typeResolver,
@@ -116,18 +83,11 @@ public class CallRecordBuffer {
                 );
             }
             lastExitCallId = callId;
-            if (isComplete()) {
-                this.recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
-            }
         }
     }
 
     public boolean isComplete() {
         return lastExitCallId == rootCallId;
-    }
-
-    public RecordingMetadata getRecordingMetadata() {
-        return recordingMetadata;
     }
 
     public long getTotalRecordedEnterCalls() {
@@ -144,6 +104,6 @@ public class CallRecordBuffer {
 
     @Override
     public String toString() {
-        return "CallRecordBuffer{id=" + recordingMetadata + '}';
+        return "CallRecordBuffer{}";
     }
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
+import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.MethodList;
@@ -33,7 +34,7 @@ public class RecordDataWriter {
         this.methodRepository = methodRepository;
     }
 
-    public void write(TypeResolver typeResolver, CallRecordBuffer callRecordBuffer) {
+    public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
 
         MethodList methodsList = new MethodList();
 
@@ -111,7 +112,7 @@ public class RecordDataWriter {
             }
         }
 
-        storageWriter.write(callRecordBuffer.getRecordingMetadata());
+        storageWriter.write(recordingMetadata);
         storageWriter.write(callRecordBuffer.getRecordedCalls());
     }
 }

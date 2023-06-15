@@ -31,6 +31,14 @@ public class RecordingMetadata {
     @Builder.Default
     private List<String> stackTraceElements = Collections.emptyList();
 
+    public RecordingMetadata withNewCreationTimestamp() {
+        // other fields are needed for the first chunk only
+        return RecordingMetadata.builder()
+            .id(id)
+            .logCreatedEpochMillis(System.currentTimeMillis())
+            .build();
+    }
+
     public static RecordingMetadata deserialize(BinaryRecordingMetadataDecoder decoder) {
         List<String> stackTraceElements = new ArrayList<>();
         for (StackTraceElementsDecoder stackTraceElement : decoder.stackTraceElements()) {
