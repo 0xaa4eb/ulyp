@@ -54,6 +54,7 @@ public class RecorderTest {
 
     @Test
     public void testTemporaryRecordingDisableWithOngoingRecording() {
+        Recorder.idGenerator.set(0);
 
         X recorded = new X();
         int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
@@ -70,7 +71,7 @@ public class RecorderTest {
         assertEquals(2, storage.getCallRecords().size());
 
         // only the callId1 calls are recorded
-        assertEquals(new HashSet<>(Collections.singletonList(BitUtil.longFromInts(0, callId1))), storage.getCallRecords()
+        assertEquals(new HashSet<>(Collections.singletonList(BitUtil.longFromInts(1, callId1))), storage.getCallRecords()
             .stream()
             .map(RecordedMethodCall::getCallId)
             .collect(Collectors.toSet())
