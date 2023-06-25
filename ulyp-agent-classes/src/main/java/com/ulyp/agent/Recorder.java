@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,16 +37,14 @@ public class Recorder {
     private final MethodRepository methodRepository;
     private final TypeResolver typeResolver;
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
-    private final CallIdGenerator initialCallIdGenerator;
     private final StartRecordingPolicy startRecordingPolicy;
     private final RecordDataWriter recordDataWriter;
 
-    public Recorder(TypeResolver typeResolver, MethodRepository methodRepository, CallIdGenerator callIdGenerator, StartRecordingPolicy startRecordingPolicy, StorageWriter storageWriter) {
+    public Recorder(TypeResolver typeResolver, MethodRepository methodRepository, StartRecordingPolicy startRecordingPolicy, RecordingDataWriter recordingDataWriter) {
         this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
-        this.recordDataWriter = new RecordDataWriter(storageWriter, methodRepository);
+        this.recordDataWriter = new RecordDataWriter(recordingDataWriter, methodRepository);
         this.startRecordingPolicy = startRecordingPolicy;
-        this.initialCallIdGenerator = callIdGenerator;
     }
 
     public boolean recordingIsActiveInCurrentThread() {
@@ -81,7 +79,7 @@ public class Recorder {
         }
     }
 
-    public long startOrContinueRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
+    public int startOrContinueRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null) {
@@ -93,7 +91,7 @@ public class Recorder {
 
                 threadLocalRecordingState.set(recordingState);
 
-                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(initialCallIdGenerator.getNextStartValue());
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer();
                 recordingState.setCallRecordBuffer(newCallRecordBuffer);
 
                 currentRecordingSessionCount.incrementAndGet();
@@ -109,7 +107,7 @@ public class Recorder {
         }
     }
 
-    public long startOrContinueRecordingOnConstructorEnter(int methodId, Object[] args) {
+    public int startOrContinueRecordingOnConstructorEnter(int methodId, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null) {
@@ -119,7 +117,7 @@ public class Recorder {
                 recordingState.setRecordingMetadata(recordingMetadata);
                 threadLocalRecordingState.set(recordingState);
 
-                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(initialCallIdGenerator.getNextStartValue());
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer();
                 recordingState.setCallRecordBuffer(newCallRecordBuffer);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
@@ -134,19 +132,19 @@ public class Recorder {
         }
     }
 
-    public long onConstructorEnter(int methodId, Object[] args) {
+    public int onConstructorEnter(int methodId, Object[] args) {
         return onMethodEnter(threadLocalRecordingState.get(), methodId, null, args);
     }
 
-    public long onConstructorEnter(RecordingState recordingState, int methodId, Object[] args) {
+    public int onConstructorEnter(RecordingState recordingState, int methodId, Object[] args) {
         return onMethodEnter(recordingState, methodId, null, args);
     }
 
-    public long onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
+    public int onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, args);
     }
 
-    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {
+    public int onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {
         try {
             if (recordingState == null || !recordingState.isEnabled()) {
                 return -1;
@@ -168,11 +166,11 @@ public class Recorder {
         }
     }
 
-    public void onConstructorExit(int methodId, Object result, long callId) {
+    public void onConstructorExit(int methodId, Object result, int callId) {
         onMethodExit(methodId, result, null, callId);
     }
 
-    public void onMethodExit(int methodId, Object result, Throwable thrown, long callId) {
+    public void onMethodExit(int methodId, Object result, Throwable thrown, int callId) {
         try {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null || !recordingState.isEnabled()) return;

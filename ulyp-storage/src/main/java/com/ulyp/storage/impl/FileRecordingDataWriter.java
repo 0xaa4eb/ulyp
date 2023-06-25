@@ -10,7 +10,7 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 import com.ulyp.storage.impl.util.BinaryListFileWriter;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
-public class FileStorageWriter implements StorageWriter {
+public class FileRecordingDataWriter implements RecordingDataWriter {
 
     private final BinaryListFileWriter fileWriter;
 
-    public FileStorageWriter(File file) throws StorageException {
+    public FileRecordingDataWriter(File file) throws StorageException {
         try {
             this.fileWriter = new BinaryListFileWriter(file);
         } catch (IOException e) {

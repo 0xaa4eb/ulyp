@@ -72,9 +72,9 @@ public class BenchmarkScenario {
 
     @Override
     public String toString() {
-        return "Agent: " + (agentEnabled ? "Y" : "N") +
-                "/" + (agentEnabled ? (instrumentedPackages.isEmpty() ? "*" : instrumentedPackages) : "-") +
-                "/" + (methodToRecord != null ? methodToRecord : (agentEnabled ? "main method" : "-")) +
-                "/" + additionalProcessArgs;
+        return "Agent: " + (agentEnabled ? "enabled" : "disabled") +
+                "/pkgs=" + (agentEnabled ? (instrumentedPackages.isEmpty() ? "*" : instrumentedPackages) : "-") +
+                "/methods=" + (methodToRecord != null ? methodToRecord : (agentEnabled ? "main method" : "-")) +
+                "/sys props=" + additionalProcessArgs;
     }
 }

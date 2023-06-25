@@ -8,7 +8,6 @@ public class RecorderInstance {
     public static final Recorder instance = new Recorder(
         AgentContext.getInstance().getTypeResolver(),
         AgentContext.getInstance().getMethodRepository(),
-        AgentContext.getInstance().getCallIdGenerator(),
         AgentContext.getInstance().getStartRecordingPolicy(),
         AgentContext.getInstance().getStorageWriter()
     );

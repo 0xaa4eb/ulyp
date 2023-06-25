@@ -10,7 +10,7 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class StorageReaderListenerTest {
+public class RecordingDataReaderListenerTest {
 
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
@@ -43,16 +43,16 @@ public class StorageReaderListenerTest {
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-    private AsyncFileStorageReader reader;
-    private StorageWriter writer;
+    private AsyncFileRecordingDataReader reader;
+    private RecordingDataWriter writer;
     private RecordingMetadata recordingMetadata1;
     private RecordingMetadata recordingMetadata2;
 
     @Before
     public void setUp() throws IOException {
-        File file = Files.createTempFile(StorageReaderListenerTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
-        this.writer = new FileStorageWriter(file);
+        File file = Files.createTempFile(RecordingDataReaderListenerTest.class.getSimpleName(), "a").toFile();
+        this.reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
+        this.writer = new FileRecordingDataWriter(file);
 
         recordingMetadata1 = RecordingMetadata.builder()
                 .id(1)

@@ -8,7 +8,7 @@ import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.Classpath;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
@@ -23,8 +23,7 @@ public class AgentContext {
 
     private final Settings settings;
     private final StartRecordingPolicy startRecordingPolicy;
-    private final CallIdGenerator callIdGenerator;
-    private final StorageWriter storageWriter;
+    private final RecordingDataWriter recordingDataWriter;
     private final ProcessMetadata processMetadata;
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
@@ -32,10 +31,9 @@ public class AgentContext {
     private final AgentApiGrpcServer apiServer;
 
     private AgentContext() {
-        this.callIdGenerator = new CallIdGenerator();
         this.settings = Settings.fromSystemProperties();
         this.startRecordingPolicy = initializePolicy(settings);
-        this.storageWriter = settings.buildStorageWriter();
+        this.recordingDataWriter = settings.buildStorageWriter();
         this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
                 .classPathFiles(new Classpath().toList())
@@ -45,9 +43,9 @@ public class AgentContext {
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
 
         if (!settings.isAgentDisabled()) {
-            this.storageWriter.write(processMetadata);
+            this.recordingDataWriter.write(processMetadata);
 
-            Thread shutdown = new Thread(storageWriter::close);
+            Thread shutdown = new Thread(recordingDataWriter::close);
             Runtime.getRuntime().addShutdownHook(shutdown);
         }
         if (settings.getBindNetworkAddress() != null) {
@@ -111,11 +109,7 @@ public class AgentContext {
         return instance;
     }
 
-    public StorageWriter getStorageWriter() {
-        return storageWriter;
-    }
-
-    public CallIdGenerator getCallIdGenerator() {
-        return callIdGenerator;
+    public RecordingDataWriter getStorageWriter() {
+        return recordingDataWriter;
     }
 }

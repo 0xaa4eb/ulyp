@@ -3,7 +3,7 @@ package com.agent.tests.util;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.StorageReader;
+import com.ulyp.storage.RecordingDataReader;
 import org.junit.Assert;
 
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class RecordingResult {
 
-    private final StorageReader reader;
+    private final RecordingDataReader reader;
 
-    public RecordingResult(StorageReader reader) {
+    public RecordingResult(RecordingDataReader reader) {
         this.reader = reader;
     }
 

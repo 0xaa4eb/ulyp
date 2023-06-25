@@ -1,12 +1,12 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.storage.util.ByteUtils;
+import com.ulyp.core.util.BitUtil;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ByteUtilsTest {
+public class BitUtilTest {
 
     @Test
     public void test() {
@@ -16,9 +16,9 @@ public class ByteUtilsTest {
         r.add(42L);
         r.add(Long.MIN_VALUE);
 
-        byte[] bytes = ByteUtils.longsToBytes(r);
+        byte[] bytes = BitUtil.longsToBytes(r);
 
-        LongList longs = ByteUtils.bytesToLongs(bytes);
+        LongList longs = BitUtil.bytesToLongs(bytes);
 
         Assert.assertEquals(longs, r);
     }

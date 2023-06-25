@@ -23,8 +23,8 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.impl.DevNullStorageWriter;
-import com.ulyp.storage.impl.StatsRecordingStorageWriter;
+import com.ulyp.storage.impl.DevNullRecordingDataWriter;
+import com.ulyp.storage.impl.StatsRecordingDataWriter;
 
 public class RecorderCurrentSessionCountTest {
 
@@ -39,8 +39,8 @@ public class RecorderCurrentSessionCountTest {
 
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final StatsRecordingStorageWriter storageWriter = new StatsRecordingStorageWriter(new DevNullStorageWriter());
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storageWriter);
+    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new DevNullRecordingDataWriter());
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), recordingDataWriter);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -97,7 +97,7 @@ public class RecorderCurrentSessionCountTest {
             fut.get(1, TimeUnit.MINUTES);
         }
 
-        Assert.assertEquals(THREADS * RECORDINGS_PER_THREAD, storageWriter.getCallStats().getTotalCount());
+        Assert.assertEquals(THREADS * RECORDINGS_PER_THREAD, recordingDataWriter.getCallStats().getTotalCount());
         Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }

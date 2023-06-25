@@ -5,5 +5,5 @@ import org.jetbrains.annotations.NotNull;
 public interface ByIdTypeResolver {
 
     @NotNull
-    Type getType(long id);
+    Type getType(int id);
 }

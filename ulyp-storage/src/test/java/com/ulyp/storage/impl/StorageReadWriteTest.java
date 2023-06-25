@@ -9,8 +9,8 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
-import com.ulyp.storage.StorageReader;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.storage.RecordingDataWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
@@ -42,15 +42,15 @@ public class StorageReadWriteTest {
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-    private StorageReader reader;
-    private StorageWriter writer;
+    private RecordingDataReader reader;
+    private RecordingDataWriter writer;
     private RecordingMetadata recordingMetadata;
 
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
-        this.writer = new FileStorageWriter(file);
+        this.reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
+        this.writer = new FileRecordingDataWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
                 .id(recordingId)

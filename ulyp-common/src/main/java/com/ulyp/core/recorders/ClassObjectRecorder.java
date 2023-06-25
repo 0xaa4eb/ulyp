@@ -24,15 +24,15 @@ public class ClassObjectRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
-        return new ClassObjectRecord(objectType, typeResolver.getType(input.readLong()));
+        return new ClassObjectRecord(objectType, typeResolver.getType(input.readInt()));
     }
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Class<?> clazz = (Class<?>) object;
 
-        long typeId = typeResolver.get(clazz).getId();
-        out.writeLong(typeId);
+        int typeId = typeResolver.get(clazz).getId();
+        out.writeInt(typeId);
 
         if (LoggingSettings.TRACE_ENABLED) {
             log.trace("Writing typeId={} for {}", typeId, object);

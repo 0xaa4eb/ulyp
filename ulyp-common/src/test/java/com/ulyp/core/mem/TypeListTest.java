@@ -15,14 +15,14 @@ public class TypeListTest {
     public void testAddAndIterate() {
         types.add(
                 Type.builder()
-                        .id(534L)
+                        .id(534)
                         .name("com.test.A")
                         .build()
         );
 
         types.add(
                 Type.builder()
-                        .id(4241L)
+                        .id(4241)
                         .name("com.test.C")
                         .build()
         );
@@ -31,12 +31,12 @@ public class TypeListTest {
 
         AddressableItemIterator<Type> iterator = types.iterator();
         Type first = iterator.next();
-        assertEquals(534L, first.getId());
+        assertEquals(534, first.getId());
         assertEquals("com.test.A", first.getName());
 
         Type second = iterator.next();
 
-        assertEquals(4241L, second.getId());
+        assertEquals(4241, second.getId());
         assertEquals("com.test.C", second.getName());
 
         assertFalse(iterator.hasNext());

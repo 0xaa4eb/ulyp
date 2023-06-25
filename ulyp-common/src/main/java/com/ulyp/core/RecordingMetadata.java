@@ -60,7 +60,7 @@ public class RecordingMetadata {
         encoder.recordingStartedEpochMillis(recordingStartedEpochMillis);
         encoder.logCreatedEpochMillis(logCreatedEpochMillis);
         encoder.recordingCompletedEpochMillis(recordingCompletedEpochMillis);
-        encoder.recordingId(id);
+        encoder.recordingId((short) id);
         encoder.threadId(threadId);
         StackTraceElementsEncoder stackTraceElementsEncoder = encoder.stackTraceElementsCount(stackTraceElements.size());
         for (String stackTraceElement : stackTraceElements) {

@@ -1,9 +1,9 @@
-package com.ulyp.storage.util;
+package com.ulyp.core.util;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 
-public class ByteUtils {
+public class BitUtil {
 
     public static void longToBytes(long value, byte[] dst, int offset) {
         for (int i = Long.BYTES - 1; i >= 0; i--) {
@@ -33,8 +33,12 @@ public class ByteUtils {
         int size = bytes.length / Long.BYTES;
         LongList result = new LongArrayList(size);
         for (int i = 0; i < size; i++) {
-            result.add(ByteUtils.bytesToLong(bytes, i * Long.BYTES));
+            result.add(BitUtil.bytesToLong(bytes, i * Long.BYTES));
         }
         return result;
+    }
+
+    public static long longFromInts(int x, int y) {
+        return  (((long)x) << 32) | (y & 0xffffffffL);
     }
 }

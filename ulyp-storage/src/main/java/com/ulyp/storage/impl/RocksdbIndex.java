@@ -2,7 +2,7 @@ package com.ulyp.storage.impl;
 
 import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.util.ByteUtils;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.transport.BinaryRecordedCallStateDecoder;
 import com.ulyp.transport.BinaryRecordedCallStateEncoder;
 import io.vavr.Function0;
@@ -52,7 +52,7 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
     @Override
     public RecordedCallState get(Long id) {
         byte[] keyBytes = keyBuffer.get();
-        ByteUtils.longToBytes(id, keyBytes, 0);
+        BitUtil.longToBytes(id, keyBytes, 0);
         byte[] bytes;
         try {
             bytes = db.get(keyBytes);
@@ -74,7 +74,7 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
         encoder.wrap(buffer, 0);
         value.serialize(encoder);
         byte[] keyBytes = keyBuffer.get();
-        ByteUtils.longToBytes(id, keyBytes, 0);
+        BitUtil.longToBytes(id, keyBytes, 0);
         int valueEncoded = encoder.encodedLength();
         byte[] valueBytes = getValueBuffer(valueEncoded);
         buffer.getBytes(0, valueBytes);

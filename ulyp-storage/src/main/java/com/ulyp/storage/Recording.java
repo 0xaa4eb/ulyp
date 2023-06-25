@@ -8,6 +8,9 @@ import java.time.Duration;
 
 import javax.annotation.Nonnull;
 
+/**
+* Recording class represents a single recorded method call along with its child subcalls.
+*/
 public class Recording {
 
     private final RecordingState recordingState;

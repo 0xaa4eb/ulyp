@@ -1,7 +1,7 @@
 package com.ulyp.storage;
 
 import com.ulyp.core.ProcessMetadata;
-import com.ulyp.storage.impl.EmptyStorageReader;
+import com.ulyp.storage.impl.EmptyRecordingDataReader;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -12,10 +12,10 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * All recorded calls are aggregated to {@link Recording} instances.
  */
-public interface StorageReader extends AutoCloseable {
+public interface RecordingDataReader extends AutoCloseable {
 
-    static StorageReader empty() {
-        return new EmptyStorageReader();
+    static RecordingDataReader empty() {
+        return new EmptyRecordingDataReader();
     }
 
     CompletableFuture<ProcessMetadata> getProcessMetadataFuture();

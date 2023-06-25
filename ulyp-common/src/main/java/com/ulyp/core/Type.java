@@ -24,7 +24,7 @@ public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();
 
-    private final long id;
+    private final int id;
     private final String name;
     @Builder.Default
     private final Set<TypeTrait> typeTraits = EnumSet.noneOf(TypeTrait.class);
@@ -72,7 +72,7 @@ public class Type {
         return typeTraits.contains(TypeTrait.JAVA_LANG_STRING);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

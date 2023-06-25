@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ulyp.core.Type;
@@ -39,7 +40,7 @@ public class ByteBuddyTypeConverter {
     private static final TypeDescription NUMBER_TYPE = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Number.class).asErasure();
     private static final TypeDescription.Generic PRIMITIVE_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(boolean.class);
     private static final TypeDescription.Generic BOXED_BOOLEAN = TypeDescription.Generic.OfNonGenericType.ForLoadedType.of(Boolean.class);
-    private static final AtomicLong typeIdGenerator = new AtomicLong(0L);
+    private static final AtomicInteger typeIdGenerator = new AtomicInteger(0);
 
     static {
         PRIMITIVE_INTEGRAL_TYPES.add(PRIMITIVE_LONG);

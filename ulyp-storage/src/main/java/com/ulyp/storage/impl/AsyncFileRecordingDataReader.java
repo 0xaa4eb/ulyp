@@ -13,7 +13,7 @@ import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.StorageReader;
+import com.ulyp.storage.RecordingDataReader;
 import com.ulyp.storage.impl.util.BinaryListFileReader;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class AsyncFileStorageReader implements StorageReader {
+public class AsyncFileRecordingDataReader implements RecordingDataReader {
 
     private final File file;
     private final ReaderSettings settings;
@@ -36,13 +36,13 @@ public class AsyncFileStorageReader implements StorageReader {
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
     private final Repository<Long, RecordedCallState> index;
-    private final InMemoryRepository<Long, Type> types = new InMemoryRepository<>();
+    private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private final Repository<Long, Method> methods = new InMemoryRepository<>();
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
-    public AsyncFileStorageReader(ReaderSettings settings) {
+    public AsyncFileRecordingDataReader(ReaderSettings settings) {
         this.file = settings.getFile();
         this.index = settings.getIndexSupplier().get();
         this.settings = settings;
@@ -68,7 +68,7 @@ public class AsyncFileStorageReader implements StorageReader {
         }
     }
 
-    public InMemoryRepository<Long, Type> getTypes() {
+    public InMemoryRepository<Integer, Type> getTypes() {
         return types;
     }
 

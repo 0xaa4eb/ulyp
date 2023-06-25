@@ -15,10 +15,10 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 
 @TestOnly
-public class HeapStorageWrtiter implements StorageWriter {
+public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     private final List<Type> types = new ArrayList<>();
     private final List<Method> methods = new ArrayList<>();

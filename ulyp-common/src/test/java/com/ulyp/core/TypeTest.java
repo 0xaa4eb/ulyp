@@ -15,14 +15,14 @@ public class TypeTest {
 
         verifySerilization(
                 Type.builder()
-                        .id(34L)
+                        .id(34)
                         .name("java.lang.RuntimeException")
                         .build()
         );
 
         verifySerilization(
                 Type.builder()
-                        .id(534L)
+                        .id(534)
                         .name("java.lang.RuntimeException")
                         .build()
         );

@@ -16,7 +16,7 @@ public class MethodTest {
                 Method.builder()
                         .declaringType(
                                 Type.builder()
-                                        .id(534L)
+                                        .id(534)
                                         .name("java.lang.RuntimeException")
                                         .build()
                         )

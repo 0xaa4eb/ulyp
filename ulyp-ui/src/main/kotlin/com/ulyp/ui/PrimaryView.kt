@@ -5,7 +5,7 @@ import com.ulyp.core.repository.InMemoryRepository
 import com.ulyp.core.repository.Repository
 import com.ulyp.storage.Filter
 import com.ulyp.storage.ReaderSettings
-import com.ulyp.storage.impl.AsyncFileStorageReader
+import com.ulyp.storage.impl.AsyncFileRecordingDataReader
 import com.ulyp.storage.impl.RecordedCallState
 import com.ulyp.storage.impl.RocksdbIndex
 import com.ulyp.ui.code.SourceCodeView
@@ -14,11 +14,9 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
-import com.ulyp.ui.looknfeel.FontSizeUpdater
 import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
@@ -126,28 +124,29 @@ class PrimaryView(
 
         val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()
 
-        val storageReader = AsyncFileStorageReader(ReaderSettings.builder()
-            .file(file)
-            .autoStartReading(false)
-            .indexSupplier { index }
-            .filter(storageFilter)
-            .build()
-        )
+        val recordingDataReader =
+            AsyncFileRecordingDataReader(ReaderSettings.builder()
+                .file(file)
+                .autoStartReading(false)
+                .indexSupplier { index }
+                .filter(storageFilter)
+                .build()
+            )
 
-        storageReader.processMetadataFuture.thenAccept { processMetadata ->
+        recordingDataReader.processMetadataFuture.thenAccept { processMetadata ->
 
             val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
             fileRecordingsTab.setOnClosed {
-                storageReader.close()
+                recordingDataReader.close()
             }
-            storageReader.subscribe { recording ->
+            recordingDataReader.subscribe { recording ->
                 fileRecordingsTab.updateOrCreateRecordingTab(processMetadata, recording)
             }
         }
 
-        storageReader.start()
+        recordingDataReader.start()
 
-        storageReader.finishedReadingFuture.exceptionally {
+        recordingDataReader.finishedReadingFuture.exceptionally {
             FxThreadExecutor.execute {
                 val errorPopup = applicationContext.getBean(
                         ErrorModalView::class.java,

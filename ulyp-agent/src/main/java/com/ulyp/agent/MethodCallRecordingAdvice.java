@@ -18,7 +18,7 @@ public class MethodCallRecordingAdvice {
     @Advice.OnMethodEnter
     static void enter(
             @MethodId int methodId,
-            @Advice.Local("callId") long callId,
+            @Advice.Local("callId") int callId,
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
 
@@ -44,7 +44,7 @@ public class MethodCallRecordingAdvice {
     @Advice.OnMethodExit(onThrowable = Throwable.class)
     static void exit(
             @MethodId int methodId,
-            @Advice.Local("callId") long callId,
+            @Advice.Local("callId") int callId,
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
         if (callId > 0) {

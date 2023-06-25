@@ -1,5 +1,6 @@
 package com.ulyp.core;
 
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.transport.BinaryRecordedEnterMethodCallDecoder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -41,7 +42,7 @@ public class RecordedEnterMethodCall extends RecordedMethodCall {
 
         return RecordedEnterMethodCall.builder()
                 .recordingId(decoder.recordingId())
-                .callId(decoder.callId())
+                .callId(BitUtil.longFromInts(decoder.recordingId(), decoder.callId()))
                 .methodId(decoder.methodId())
                 .callee(callee)
                 .arguments(arguments)

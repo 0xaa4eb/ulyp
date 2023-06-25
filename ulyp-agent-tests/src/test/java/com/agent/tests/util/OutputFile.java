@@ -2,8 +2,8 @@ package com.agent.tests.util;
 
 import com.ulyp.core.util.TempFile;
 import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.StorageReader;
-import com.ulyp.storage.impl.AsyncFileStorageReader;
+import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.storage.impl.AsyncFileRecordingDataReader;
 
 public class OutputFile {
 
@@ -13,8 +13,8 @@ public class OutputFile {
         this.file = new TempFile();
     }
 
-    public StorageReader toReader() {
-        return new AsyncFileStorageReader(ReaderSettings.builder().file(file.toPath().toFile()).autoStartReading(true).build());
+    public RecordingDataReader toReader() {
+        return new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file.toPath().toFile()).autoStartReading(true).build());
     }
 
     @Override

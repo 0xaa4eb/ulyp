@@ -3,6 +3,7 @@ package com.ulyp.core.mem;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class RecordedMethodCallListTest {
 
         list.addEnterMethodCall(
                 5,
-                134L,
+                134,
                 method,
                 typeResolver,
                 new A(),
@@ -39,7 +40,7 @@ public class RecordedMethodCallListTest {
 
         list.addExitMethodCall(
                 5,
-                134L,
+                134,
                 method,
                 typeResolver,
                 false,
@@ -52,12 +53,12 @@ public class RecordedMethodCallListTest {
         RecordedEnterMethodCall recordedEnterMethodCall = (RecordedEnterMethodCall) calls.get(0);
 
         Assert.assertEquals(5, recordedEnterMethodCall.getRecordingId());
-        Assert.assertEquals(134L, recordedEnterMethodCall.getCallId());
+        Assert.assertEquals(BitUtil.longFromInts(5, 134), recordedEnterMethodCall.getCallId());
 
         RecordedExitMethodCall recordedExitMethodCall = (RecordedExitMethodCall) calls.get(1);
 
         Assert.assertEquals(5, recordedExitMethodCall.getRecordingId());
-        Assert.assertEquals(134L, recordedExitMethodCall.getCallId());
+        Assert.assertEquals(BitUtil.longFromInts(5, 134), recordedExitMethodCall.getCallId());
     }
 
     public static class A {

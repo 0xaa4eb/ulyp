@@ -40,7 +40,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     public void addExitMethodCall(
             int recordingId,
-            long callId,
+            int callId,
             Method method,
             TypeResolver typeResolver,
             boolean thrown,
@@ -55,9 +55,9 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     exitMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
-                    exitMethodCallEncoder.recordingId(recordingId);
+                    exitMethodCallEncoder.recordingId((short) recordingId);
                     exitMethodCallEncoder.callId(callId);
-                    exitMethodCallEncoder.methodId(method.getId());
+                    exitMethodCallEncoder.methodId((int) method.getId());
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
                     Type classDescription = typeResolver.get(returnValue);
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
@@ -83,7 +83,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     public void addEnterMethodCall(
             int recordingId,
-            long callId,
+            int callId,
             Method method,
             TypeResolver typeResolver,
             Object callee,
@@ -98,9 +98,9 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
-                    enterMethodCallEncoder.recordingId(recordingId);
+                    enterMethodCallEncoder.recordingId((short) recordingId);
                     enterMethodCallEncoder.callId(callId);
-                    enterMethodCallEncoder.methodId(method.getId());
+                    enterMethodCallEncoder.methodId((int) method.getId());
                     ObjectRecorder[] paramRecorders = method.getParameterRecorders();
 
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);

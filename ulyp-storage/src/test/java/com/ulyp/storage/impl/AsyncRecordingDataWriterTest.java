@@ -3,7 +3,7 @@ package com.ulyp.storage.impl;
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,16 +18,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AsyncStorageWriterTest {
+public class AsyncRecordingDataWriterTest {
 
-    private AsyncFileStorageReader reader;
-    private StorageWriter writer;
+    private AsyncFileRecordingDataReader reader;
+    private RecordingDataWriter writer;
 
     @Before
     public void setUp() throws IOException {
-        File file = Files.createTempFile(AsyncStorageWriterTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileStorageReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
-        this.writer = new AsyncFileStorageWriter(new FileStorageWriter(file));
+        File file = Files.createTempFile(AsyncRecordingDataWriterTest.class.getSimpleName(), "a").toFile();
+        this.reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
+        this.writer = new AsyncFileRecordingDataWriter(new FileRecordingDataWriter(file));
     }
 
     @After

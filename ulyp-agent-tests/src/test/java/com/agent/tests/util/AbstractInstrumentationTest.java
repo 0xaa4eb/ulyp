@@ -1,7 +1,7 @@
 package com.agent.tests.util;
 
 import com.ulyp.storage.CallRecord;
-import com.ulyp.storage.StorageReader;
+import com.ulyp.storage.RecordingDataReader;
 import junit.framework.AssertionFailedError;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +31,12 @@ public class AbstractInstrumentationTest {
         Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).getRecordings(), Matchers.empty());
     }
 
-    protected StorageReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
+    protected RecordingDataReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
         TestUtil.runClassInSeparateJavaProcess(settings);
         if (settings.getOutputFile() == null) {
-            return StorageReader.empty();
+            return RecordingDataReader.empty();
         } else {
-            StorageReader reader = settings.getOutputFile().toReader();
+            RecordingDataReader reader = settings.getOutputFile().toReader();
             try {
                 reader.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
             } catch (InterruptedException e) {

@@ -15,10 +15,10 @@ import java.util.Optional;
 public class RecordedObject {
 
     private final byte recorderId;
-    private final long typeId;
+    private final int typeId;
     private final byte[] value;
 
-    public ObjectRecord toRecord(ReadableRepository<Long, Type> typeResolver) {
+    public ObjectRecord toRecord(ReadableRepository<Integer, Type> typeResolver) {
 
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
         ObjectRecorder objectRecorder = ObjectRecorderRegistry.recorderForId(recorderId);

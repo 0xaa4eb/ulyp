@@ -20,8 +20,8 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.StorageReader;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.storage.RecordingDataWriter;
 
 public class FilterStorageReadWriteTest {
 
@@ -42,15 +42,15 @@ public class FilterStorageReadWriteTest {
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-    private StorageReader reader;
-    private StorageWriter writer;
+    private RecordingDataReader reader;
+    private RecordingDataWriter writer;
     private RecordingMetadata recordingMetadata;
     private File file;
 
     @Before
     public void setUp() throws IOException {
         file = Files.createTempFile(FilterStorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.writer = new FileStorageWriter(file);
+        this.writer = new FileRecordingDataWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
                 .id(recordingId)
@@ -72,7 +72,7 @@ public class FilterStorageReadWriteTest {
 
     @Test
     public void test() {
-        this.reader = new AsyncFileStorageReader(
+        this.reader = new AsyncFileRecordingDataReader(
             ReaderSettings.builder()
                 .file(file)
                 .autoStartReading(true)

@@ -4,7 +4,7 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
-import com.ulyp.storage.StorageWriter;
+import com.ulyp.storage.RecordingDataWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ public class Settings {
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
 
     @NotNull
-    private final Supplier<StorageWriter> storageWriterSupplier;
+    private final Supplier<RecordingDataWriter> recordingDataWriterSupplier;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull
@@ -57,7 +57,7 @@ public class Settings {
     private final boolean agentDisabled;
 
     public Settings(
-            @NotNull Supplier<StorageWriter> storageWriterSupplier,
+            @NotNull Supplier<RecordingDataWriter> recordingDataWriterSupplier,
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
             @NotNull StartRecordingMethods startRecordingMethods,
@@ -71,7 +71,7 @@ public class Settings {
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
             boolean agentDisabled) {
-        this.storageWriterSupplier = storageWriterSupplier;
+        this.recordingDataWriterSupplier = recordingDataWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.startRecordingMethods = startRecordingMethods;
@@ -103,14 +103,14 @@ public class Settings {
         String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
         StartRecordingMethods recordingStartMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
 
-        Supplier<StorageWriter> storageWriterSupplier;
+        Supplier<RecordingDataWriter> recordingDataWriterSupplier;
         String filePath = System.getProperty(FILE_PATH_PROPERTY);
         if (filePath != null) {
             if (filePath.isEmpty()) {
-                storageWriterSupplier = new Supplier<StorageWriter>() {
+                recordingDataWriterSupplier = new Supplier<RecordingDataWriter>() {
                     @Override
-                    public StorageWriter get() {
-                        return StorageWriter.devNull();
+                    public RecordingDataWriter get() {
+                        return RecordingDataWriter.devNull();
                     }
 
                     @Override
@@ -119,12 +119,12 @@ public class Settings {
                     }
                 };
             } else {
-                storageWriterSupplier = new Supplier<StorageWriter>() {
+                recordingDataWriterSupplier = new Supplier<RecordingDataWriter>() {
                     @Override
-                    public StorageWriter get() {
-                        return StorageWriter.async(
-                                StorageWriter.statsRecording(
-                                        StorageWriter.forFile(Paths.get(filePath).toFile())
+                    public RecordingDataWriter get() {
+                        return RecordingDataWriter.async(
+                                RecordingDataWriter.statsRecording(
+                                        RecordingDataWriter.forFile(Paths.get(filePath).toFile())
                                 )
                         );
                     }
@@ -168,7 +168,7 @@ public class Settings {
                         .collect(Collectors.toSet());
 
         return new Settings(
-                storageWriterSupplier,
+                recordingDataWriterSupplier,
                 instrumentationPackages,
                 excludedPackages,
                 recordingStartMethods,
@@ -212,8 +212,8 @@ public class Settings {
         return startRecordingThreads;
     }
 
-    public StorageWriter buildStorageWriter() {
-        return storageWriterSupplier.get();
+    public RecordingDataWriter buildStorageWriter() {
+        return recordingDataWriterSupplier.get();
     }
 
     public boolean instrumentConstructors() {
@@ -246,7 +246,7 @@ public class Settings {
 
     @Override
     public String toString() {
-        return "file: " + storageWriterSupplier +
+        return "file: " + recordingDataWriterSupplier +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + startRecordingMethods +

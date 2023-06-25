@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class ReflectionBasedTypeResolver implements TypeResolver {
     }
 
     private final ConcurrentMap<Class<?>, Type> map = new ConcurrentHashMap<>();
-    private final AtomicLong idGen = new AtomicLong();
+    private final AtomicInteger idGen = new AtomicInteger();
     private final ConcurrentArrayList<Type> typesList = new ConcurrentArrayList<>();
 
     private Type build(Class<?> clazz) {
