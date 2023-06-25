@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
+import com.ulyp.core.util.BitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class RecorderTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final HeapRecordingDataWrtiter storage = new HeapRecordingDataWrtiter();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), storage);
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledByDefaultRecordingPolicy(), storage);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -44,7 +45,7 @@ public class RecorderTest {
     @Test
     public void shouldRecordDataWhenRecordingIsFinished() {
         X recorded = new X();
-        long callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
+        int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
         recorder.onMethodExit(methodIdx, "ABC", null, callId);
 
         assertNull(recorder.getRecordingState());
@@ -55,11 +56,11 @@ public class RecorderTest {
     public void testTemporaryRecordingDisableWithOngoingRecording() {
 
         X recorded = new X();
-        long callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
+        int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
 
         recorder.disableRecording();
 
-        long callId2 = recorder.onMethodEnter(methodIdx, recorded, new Object[]{10});
+        int callId2 = recorder.onMethodEnter(methodIdx, recorded, new Object[]{10});
         recorder.onMethodExit(methodIdx, "CDE", null, callId2);
 
         recorder.enableRecording();
@@ -69,7 +70,7 @@ public class RecorderTest {
         assertEquals(2, storage.getCallRecords().size());
 
         // only the callId1 calls are recorded
-        assertEquals(new HashSet<>(Collections.singletonList(callId1)), storage.getCallRecords()
+        assertEquals(new HashSet<>(Collections.singletonList(BitUtil.longFromInts(0, callId1))), storage.getCallRecords()
             .stream()
             .map(RecordedMethodCall::getCallId)
             .collect(Collectors.toSet())

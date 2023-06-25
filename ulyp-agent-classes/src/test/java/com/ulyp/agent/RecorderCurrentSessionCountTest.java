@@ -40,7 +40,7 @@ public class RecorderCurrentSessionCountTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new DevNullRecordingDataWriter());
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new CallIdGenerator(), new EnabledByDefaultRecordingPolicy(), recordingDataWriter);
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledByDefaultRecordingPolicy(), recordingDataWriter);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -74,7 +74,7 @@ public class RecorderCurrentSessionCountTest {
             X callee = new X();
 
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
-                long callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
+                int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
                 Assert.assertTrue("Since at least one recording session is active, " +
                     "Recorder.currentRecordingSessionCount must be positive",
