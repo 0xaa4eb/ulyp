@@ -22,7 +22,7 @@ public class RecordedMethodCallListTest {
         Type type = typeResolver.get(A.class);
 
         Method method = Method.builder()
-                .id(5L)
+                .id(5)
                 .name("convert")
                 .declaringType(type)
                 .parameterRecorders(new ObjectRecorder[]{ObjectRecorderRegistry.ANY_NUMBER_RECORDER.getInstance()})

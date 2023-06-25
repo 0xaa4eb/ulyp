@@ -21,7 +21,7 @@ public class MethodTest {
                                         .build()
                         )
                         .name("run")
-                        .id(5552312L)
+                        .id(5552312)
                         .isConstructor(false)
                         .isStatic(true)
                         .returnsSomething(true)

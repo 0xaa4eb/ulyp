@@ -31,7 +31,7 @@ public class StorageReadWriteTest {
     private final Method method = Method.builder()
             .declaringType(type)
             .name("run")
-            .id(1000L)
+            .id(1000)
             .isConstructor(false)
             .isStatic(false)
             .returnsSomething(true)
