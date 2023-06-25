@@ -3,6 +3,7 @@ package com.ulyp.storage.impl;
 import com.google.common.base.Preconditions;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
+import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.impl.util.ByAddressFileReader;
 import com.ulyp.transport.*;
@@ -29,7 +30,7 @@ class DataReader implements Closeable {
             decoder.wrap(mem, 0, BinaryDataDecoder.BLOCK_LENGTH, 0);
             UnsafeBuffer buffer = new UnsafeBuffer();
             decoder.wrapValue(buffer);
-            Preconditions.checkState(decoder.id() == BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID, "");
+            Preconditions.checkState(decoder.id() == RecordedMethodCallList.ENTER_METHOD_CALL_ID, "");
             BinaryRecordedEnterMethodCallDecoder enterMethodCallDecoder = new BinaryRecordedEnterMethodCallDecoder();
             enterMethodCallDecoder.wrap(buffer, 0, BinaryRecordedEnterMethodCallEncoder.BLOCK_LENGTH, 0);
             return RecordedEnterMethodCall.deserialize(enterMethodCallDecoder);
@@ -51,7 +52,7 @@ class DataReader implements Closeable {
             decoder.wrap(mem, 0, BinaryDataDecoder.BLOCK_LENGTH, 0);
             UnsafeBuffer buffer = new UnsafeBuffer();
             decoder.wrapValue(buffer);
-            Preconditions.checkState(decoder.id() == BinaryRecordedExitMethodCallEncoder.TEMPLATE_ID, "");
+            Preconditions.checkState(decoder.id() == RecordedMethodCallList.EXIT_METHOD_CALL_ID, "");
             BinaryRecordedExitMethodCallDecoder exitMethodCallDecoder = new BinaryRecordedExitMethodCallDecoder();
             exitMethodCallDecoder.wrap(buffer, 0, BinaryRecordedExitMethodCallDecoder.BLOCK_LENGTH, 0);
             return RecordedExitMethodCall.deserialize(exitMethodCallDecoder);

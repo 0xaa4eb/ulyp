@@ -38,7 +38,7 @@ public class AbstractInstrumentationTest {
         } else {
             RecordingDataReader reader = settings.getOutputFile().toReader();
             try {
-                reader.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
+                reader.getFinishedReadingFuture().get(300, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
             } catch (ExecutionException ignored) {

@@ -21,6 +21,8 @@ import java.util.stream.StreamSupport;
  */
 public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
+    public static final byte ENTER_METHOD_CALL_ID = 1;
+    public static final byte EXIT_METHOD_CALL_ID = 2;
     public static final int WIRE_ID = 2;
 
     private final BinaryOutputForEnterRecordImpl enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl();
@@ -48,7 +50,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                    encoder.id(BinaryRecordedExitMethodCallEncoder.TEMPLATE_ID);
+                    encoder.id(EXIT_METHOD_CALL_ID);
 
                     int headerLength = 4;
                     int limit = encoder.limit();
@@ -90,7 +92,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                    encoder.id(BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID);
+                    encoder.id(ENTER_METHOD_CALL_ID);
 
                     int headerLength = 4;
                     int limit = encoder.limit();
@@ -182,7 +184,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                 BinaryDataDecoder decoder = iterator.next();
                 UnsafeBuffer buffer = new UnsafeBuffer();
                 decoder.wrapValue(buffer);
-                if (decoder.id() == BinaryRecordedEnterMethodCallEncoder.TEMPLATE_ID) {
+                if (decoder.id() == ENTER_METHOD_CALL_ID) {
                     BinaryRecordedEnterMethodCallDecoder enterMethodCallDecoder = new BinaryRecordedEnterMethodCallDecoder();
                     enterMethodCallDecoder.wrap(buffer, 0, BinaryRecordedEnterMethodCallEncoder.BLOCK_LENGTH, 0);
                     return RecordedEnterMethodCall.deserialize(enterMethodCallDecoder);

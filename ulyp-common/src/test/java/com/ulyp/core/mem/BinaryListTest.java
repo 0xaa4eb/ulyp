@@ -24,7 +24,7 @@ public class BinaryListTest {
 
         binaryList.add(
                 encoder -> {
-                    encoder.id(6555L);
+                    encoder.id((byte) 4);
                     encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
@@ -33,7 +33,7 @@ public class BinaryListTest {
 
         binaryList.add(
                 encoder -> {
-                    encoder.id(99441L);
+                    encoder.id((byte) 5);
                     encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
@@ -46,14 +46,14 @@ public class BinaryListTest {
 
         binaryList.add(
                 encoder -> {
-                    encoder.id(6555L);
+                    encoder.id((byte) 1);
                     encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
 
         binaryList.add(
                 encoder -> {
-                    encoder.id(99441L);
+                    encoder.id((byte) 3);
                     encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
@@ -97,14 +97,14 @@ public class BinaryListTest {
     public void testAddressAccess() {
         binaryList.add(
                 encoder -> {
-                    encoder.id(6555L);
+                    encoder.id((byte) 6);
                     encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
 
         binaryList.add(
                 encoder -> {
-                    encoder.id(99441L);
+                    encoder.id((byte) 111);
                     encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
                 }
         );
@@ -116,6 +116,7 @@ public class BinaryListTest {
         BinaryDataDecoder decoder = new BinaryDataDecoder();
         decoder.wrap(underlyingBuffer, (int) iterator.address(), BinaryDataEncoder.BLOCK_LENGTH, 0);
         assertEquals(3, decoder.valueLength());
+        assertEquals((byte) 6, decoder.id());
         int valLength = decoder.getValue(buf, 0, buf.length);
         assertEquals("ABC", new String(buf, 0, valLength, StandardCharsets.UTF_8));
 
@@ -125,6 +126,7 @@ public class BinaryListTest {
         decoder = new BinaryDataDecoder();
         decoder.wrap(underlyingBuffer, (int) iterator.address(), BinaryDataEncoder.BLOCK_LENGTH, 0);
         assertEquals(4, decoder.valueLength());
+        assertEquals((byte) 111, decoder.id());
         valLength = decoder.getValue(buf, 0, buf.length);
         assertEquals("CDEF", new String(buf, 0, valLength, StandardCharsets.UTF_8));
     }
