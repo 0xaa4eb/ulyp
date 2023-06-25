@@ -60,7 +60,6 @@
     </sbe:message>
 
     <sbe:message name="BinaryRecordedExitMethodCall" id="51">
-        <field name="methodId" id="1" type="int32"/>
         <field name="recordingId" id="14" type="int16"/>
         <field name="callId" id="2" type="int32"/>
         <field name="thrown" id="3" type="BooleanType"/>

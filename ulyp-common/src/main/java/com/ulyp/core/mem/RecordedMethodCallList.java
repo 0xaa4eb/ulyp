@@ -57,7 +57,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     exitMethodCallEncoder.recordingId((short) recordingId);
                     exitMethodCallEncoder.callId(callId);
-                    exitMethodCallEncoder.methodId((int) method.getId());
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
                     Type classDescription = typeResolver.get(returnValue);
                     exitMethodCallEncoder.returnValueTypeId(classDescription.getId());

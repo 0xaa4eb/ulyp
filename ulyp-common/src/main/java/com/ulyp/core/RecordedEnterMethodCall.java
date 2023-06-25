@@ -12,6 +12,7 @@ import java.util.List;
 @SuperBuilder
 public class RecordedEnterMethodCall extends RecordedMethodCall {
 
+    private final long methodId;
     private final RecordedObject callee;
     private final List<RecordedObject> arguments;
 
