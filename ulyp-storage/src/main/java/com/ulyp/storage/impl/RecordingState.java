@@ -20,7 +20,7 @@ public class RecordingState implements Closeable {
     private final DataReader reader;
     private final Repository<Long, RecordedCallState> index;
     private final MemCallStack memCallStack = new MemCallStack();
-    private final ReadableRepository<Long, Method> methodRepository;
+    private final ReadableRepository<Integer, Method> methodRepository;
     private final ReadableRepository<Integer, Type> typeRepository;
     private final RecordingMetadata metadata;
     private volatile boolean published = false;
@@ -31,7 +31,7 @@ public class RecordingState implements Closeable {
             RecordingMetadata metadata,
             Repository<Long, RecordedCallState> index,
             DataReader dataReader,
-            ReadableRepository<Long, Method> methodRepository,
+            ReadableRepository<Integer, Method> methodRepository,
             ReadableRepository<Integer, Type> typeRepository) {
         this.index = index;
         this.metadata = metadata;

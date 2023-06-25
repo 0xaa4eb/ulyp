@@ -36,7 +36,7 @@
     </types>
 
     <sbe:message name="BinaryMethod" id="8">
-        <field name="id" id="1" type="int64"/>
+        <field name="id" id="1" type="int32"/>
         <field name="returnsSomething" id="2" type="BooleanType"/>
         <field name="constructor" id="30" type="BooleanType"/>
         <!-- 'staticFlag' becuase 'static' is not a valid field name -->

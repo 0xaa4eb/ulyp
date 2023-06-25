@@ -2,6 +2,7 @@ package com.ulyp.core.util;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @TestOnly
 public class ReflectionBasedMethodResolver {
 
-    private static final AtomicLong idGenerator = new AtomicLong();
+    private static final AtomicInteger idGenerator = new AtomicInteger();
 
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 

@@ -101,7 +101,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.recordingId((short) recordingId);
                     enterMethodCallEncoder.callId(callId);
-                    enterMethodCallEncoder.methodId((int) method.getId());
+                    enterMethodCallEncoder.methodId(method.getId());
                     ObjectRecorder[] paramRecorders = method.getParameterRecorders();
 
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);

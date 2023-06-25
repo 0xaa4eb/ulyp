@@ -11,6 +11,7 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ByteBuddyMethodResolver {
 
-    private static final AtomicLong idGenerator = new AtomicLong();
+    private static final AtomicInteger idGenerator = new AtomicInteger();
 
     private final ByteBuddyTypeConverter typeConverter;
     private final ByteBuddyTypeConverter declaringTypeConverter;

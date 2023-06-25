@@ -38,7 +38,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
     private final Repository<Long, RecordedCallState> index;
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
-    private final Repository<Long, Method> methods = new InMemoryRepository<>();
+    private final Repository<Integer, Method> methods = new InMemoryRepository<>();
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 

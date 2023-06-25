@@ -11,7 +11,7 @@ import org.agrona.concurrent.UnsafeBuffer;
 @ToString
 public class Method {
 
-    private final long id;
+    private final int id;
     private final String name;
     private final Type declaringType;
     private final boolean isStatic;
@@ -62,7 +62,7 @@ public class Method {
         this.shouldStartRecording = shouldStartRecording;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
