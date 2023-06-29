@@ -15,16 +15,9 @@ public interface TypeMatcher {
         }
     }
 
-    boolean matchesSuperTypes();
-
     boolean matches(Type type);
 
     class AcceptAllTypeMatcher implements TypeMatcher {
-
-        @Override
-        public boolean matchesSuperTypes() {
-            return false;
-        }
 
         @Override
         public boolean matches(Type type) {
@@ -40,36 +33,23 @@ public interface TypeMatcher {
 
         private final String patternText;
         private final String rawPatternText;
-        private final boolean matchSuperTypes;
         private final AntPathMatcher antMatcher;
 
-        public AntPatternTypeMatcher(String patternText, boolean matchSuperTypes) {
+        public AntPatternTypeMatcher(String patternText) {
             this.antMatcher = new AntPathMatcher(".");
             this.rawPatternText = patternText;
-            this.matchSuperTypes = matchSuperTypes;
             this.patternText = patternText.replace('$', '.');
         }
 
         static TypeMatcher of(String patternText) {
             patternText = patternText.replace('$', '.');
-            boolean matchSuperTypes = false;
-
-            if (patternText.startsWith("^")) {
-                matchSuperTypes = true;
-                patternText = patternText.substring(1);
-            }
 
             if (patternText.startsWith("**.") && patternText.lastIndexOf('.') == 2) {
                 // formats like **.ABC can be matched by simple class name type matchers
-                return new SimpleNameTypeMatcher(patternText.substring(3), matchSuperTypes);
+                return new SimpleNameTypeMatcher(patternText.substring(3));
             } else {
-                return new AntPatternTypeMatcher(patternText, matchSuperTypes);
+                return new AntPatternTypeMatcher(patternText);
             }
-        }
-
-        @Override
-        public boolean matchesSuperTypes() {
-            return matchSuperTypes;
         }
 
         @Override
@@ -82,11 +62,9 @@ public interface TypeMatcher {
                 return true;
             }
 
-            if (matchSuperTypes) {
-                for (String superType : type.getSuperTypeNames()) {
-                    if (antMatcher.match(patternText, superType)) {
-                        return true;
-                    }
+            for (String superType : type.getSuperTypeNames()) {
+                if (antMatcher.match(patternText, superType)) {
+                    return true;
                 }
             }
 
@@ -102,16 +80,9 @@ public interface TypeMatcher {
     class SimpleNameTypeMatcher implements TypeMatcher {
 
         private final String simpleName;
-        private final boolean matchSuperTypes;
 
-        public SimpleNameTypeMatcher(String simpleName, boolean matchSuperTypes) {
+        public SimpleNameTypeMatcher(String simpleName) {
             this.simpleName = simpleName;
-            this.matchSuperTypes = matchSuperTypes;
-        }
-
-        @Override
-        public boolean matchesSuperTypes() {
-            return matchSuperTypes;
         }
 
         @Override

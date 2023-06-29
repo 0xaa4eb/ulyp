@@ -159,9 +159,7 @@ public class Agent {
         }
 
         for (TypeMatcher excludeTypeMatcher : settings.getExcludeFromInstrumentationClasses()) {
-            ByteBuddyTypeConverter typeConverter = excludeTypeMatcher.matchesSuperTypes() ?
-                ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE :
-                ByteBuddyTypeConverter.INSTANCE;
+            ByteBuddyTypeConverter typeConverter = ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE;
             ignoreMatcher = ignoreMatcher.or(
                 target -> excludeTypeMatcher.matches(typeConverter.convert(target.asGenericType()))
             );

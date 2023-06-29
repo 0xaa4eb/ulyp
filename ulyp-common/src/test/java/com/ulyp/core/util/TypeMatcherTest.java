@@ -82,12 +82,10 @@ public class TypeMatcherTest {
             .superTypeNames(new HashSet<>(Arrays.asList("com.test.SuperType")))
             .build();
 
-        assertTrue(TypeMatcher.parse("^com.test.SuperType").matches(type));
+        assertTrue(TypeMatcher.parse("com.test.SuperType").matches(type));
 
-        assertTrue(TypeMatcher.parse("^**.test.SuperType").matches(type));
+        assertTrue(TypeMatcher.parse("**.test.SuperType").matches(type));
 
-        assertTrue(TypeMatcher.parse("^**.SuperType").matches(type));
-
-        assertFalse(TypeMatcher.parse("com.test.SuperType").matches(type));
+        assertTrue(TypeMatcher.parse("**.SuperType").matches(type));
     }
 }

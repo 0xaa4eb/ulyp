@@ -24,7 +24,7 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
     public MethodIdFactory(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
         ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver(
             ByteBuddyTypeConverter.INSTANCE,
-            startRecordingMethods.useSuperTypes() ? ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE : ByteBuddyTypeConverter.INSTANCE
+            ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE
         );
         this.instance = new ForMethodIdOffsetMapping(byteBuddyMethodResolver, methodRepository, startRecordingMethods);
     }
