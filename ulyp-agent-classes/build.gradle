@@ -19,7 +19,6 @@ dependencies {
     implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
 
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
@@ -55,7 +54,6 @@ jar {
 shadowJar {
     relocate 'org.agrona', 'shadowed.org.agrona'
     relocate 'org.slf4j', 'ulyp.org.slf4j'
-    relocate 'it.unimi', 'shadowed.it.unimi'
     relocate 'io', 'shadowed.io'
     relocate 'com.google', 'shadowed.com.google'
     relocate 'javax.annotation', 'shadowed.javax.annotation'

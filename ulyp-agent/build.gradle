@@ -64,7 +64,6 @@ shadowJar {
 
     relocate 'org.agrona', 'shadowed.org.agrona'
     relocate 'org.slf4j', 'ulyp.org.slf4j'
-    relocate 'it.unimi', 'shadowed.it.unimi'
     relocate 'io', 'shadowed.io'
     relocate 'com.google', 'shadowed.com.google'
     relocate 'javax.annotation', 'shadowed.javax.annotation'
