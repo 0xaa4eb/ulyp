@@ -2,13 +2,10 @@ package com.ulyp.storage.impl;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import com.ulyp.core.util.ByteSize;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@NotThreadSafe
 // intentionally not thread safe, but call count is thread safe for tests only
 public class PerTypeStats {
 

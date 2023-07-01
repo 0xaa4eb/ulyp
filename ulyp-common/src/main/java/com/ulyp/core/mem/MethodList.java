@@ -1,8 +1,8 @@
 package com.ulyp.core.mem;
 
-import com.google.common.base.Preconditions;
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.Method;
+import com.ulyp.core.util.Preconditions;
 import com.ulyp.transport.BinaryDataDecoder;
 import com.ulyp.transport.BinaryMethodDecoder;
 import com.ulyp.transport.BinaryMethodEncoder;

@@ -11,11 +11,8 @@ import com.ulyp.storage.RecordingDataWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 @Slf4j
 @RequiredArgsConstructor
-@NotThreadSafe
 public class StatsRecordingDataWriter implements RecordingDataWriter {
 
     private final RecordingDataWriter delegate;

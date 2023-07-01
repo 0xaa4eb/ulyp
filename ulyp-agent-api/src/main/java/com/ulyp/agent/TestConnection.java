@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.api.AgentApiGrpc;
+import com.ulyp.agent.api.RecordingEnabled;
 import com.ulyp.agent.api.ResetRecordingFileRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -18,8 +19,11 @@ public class TestConnection {
         AgentApiGrpc.AgentApiBlockingStub api = AgentApiGrpc.newBlockingStub(channel);
 
         api.resetRecordingFile(ResetRecordingFileRequest.newBuilder().build());
+        api.setRecording(RecordingEnabled.newBuilder().setValue(true).build());
 
         Thread.sleep(5000L);
+
+        api.setRecording(RecordingEnabled.newBuilder().setValue(false).build());
 
         channel.shutdownNow();
         channel.awaitTermination(1, TimeUnit.MINUTES);

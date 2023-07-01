@@ -3,10 +3,9 @@ package com.ulyp.storage;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.storage.impl.RecordingState;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-
-import javax.annotation.Nonnull;
 
 /**
 * Recording class represents a single recorded method call along with its child subcalls.
@@ -23,7 +22,7 @@ public class Recording {
         return recordingState.getId();
     }
 
-    @Nonnull
+    @NotNull
     public CallRecord getRoot() {
         return recordingState.getRoot();
     }
@@ -36,7 +35,7 @@ public class Recording {
         return recordingState.callCount();
     }
 
-    @Nonnull
+    @NotNull
     public RecordingMetadata getMetadata() {
         return recordingState.getMetadata();
     }

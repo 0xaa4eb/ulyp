@@ -1,7 +1,7 @@
 package com.ulyp.storage.impl.util;
 
-import com.google.common.base.Preconditions;
 import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.impl.BinaryListWithAddress;
 
 import java.io.*;

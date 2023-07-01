@@ -1,35 +1,43 @@
-package com.ulyp.agent.remote;
+package com.ulyp.agent;
 
-import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.api.AgentApiGrpc;
 import com.ulyp.agent.api.RecordingEnabled;
 import com.ulyp.agent.api.RecordingEnabledResponse;
 import com.ulyp.agent.api.ResetRecordingFileRequest;
 import com.ulyp.agent.api.ResetRecordingFileResponse;
-import com.ulyp.core.Method;
-import com.ulyp.core.Type;
+import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.storage.RecordingDataWriter;
 import com.ulyp.storage.ResetMetadata;
 
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.function.Consumer;
+
 @Slf4j
 public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
 
-    private final AgentContext agentContext;
+    private final Consumer<Boolean> startRecordingRunnable;
+    private final MethodRepository methodRepository;
+    private final TypeResolver typeResolver;
+    private final RecordingDataWriter recordingDataWriter;
+    private final ProcessMetadata processMetadata;
 
-    public AgentApiImpl(AgentContext agentContext) {
-        this.agentContext = agentContext;
+    public AgentApiImpl(Consumer<Boolean> startRecordingRunnable, MethodRepository methodRepository, TypeResolver typeResolver, RecordingDataWriter recordingDataWriter, ProcessMetadata processMetadata) {
+        this.startRecordingRunnable = startRecordingRunnable;
+        this.methodRepository = methodRepository;
+        this.typeResolver = typeResolver;
+        this.recordingDataWriter = recordingDataWriter;
+        this.processMetadata = processMetadata;
     }
 
     @Override
     public void setRecording(RecordingEnabled request, StreamObserver<RecordingEnabledResponse> responseObserver) {
         try {
-
-            agentContext.getStartRecordingPolicy().forceEnableRecording(request.getValue());
+            startRecordingRunnable.accept(request.getValue());
 
             responseObserver.onNext(RecordingEnabledResponse.newBuilder().build());
             responseObserver.onCompleted();
@@ -42,7 +50,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
     public void resetRecordingFile(ResetRecordingFileRequest request, StreamObserver<ResetRecordingFileResponse> responseObserver) {
         try {
             MethodList methods = new MethodList();
-            for (Method method : agentContext.getMethodRepository().values()) {
+            for (Method method : methodRepository.values()) {
                 methods.add(method);
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Will write {} to storage", method);
@@ -50,18 +58,17 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
             }
 
             TypeList types = new TypeList();
-            for (Type type : agentContext.getTypeResolver().getAllResolved()) {
+            for (Type type : typeResolver.getAllResolved()) {
                 types.add(type);
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Will write {} to storage", type);
                 }
             }
 
-            agentContext.getStorageWriter().reset(
-                    ResetMetadata.builder()
+            recordingDataWriter.reset(ResetMetadata.builder()
                             .methods(methods)
                             .types(types)
-                            .processMetadata(agentContext.getProcessMetadata())
+                            .processMetadata(processMetadata)
                             .build()
             );
 

@@ -6,11 +6,10 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.impl.RecordingState;
 import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 /**
  * Method call record which was deserialized from binary format into POJO. Stands for a particular
@@ -56,7 +55,7 @@ public class CallRecord {
         return subtreeSize;
     }
 
-    @Nonnull
+    @NotNull
     public ObjectRecord getCallee() {
         if (method.isConstructor()) {
             return returnValue;
@@ -77,7 +76,7 @@ public class CallRecord {
         return args;
     }
 
-    @Nonnull
+    @NotNull
     public ObjectRecord getReturnValue() {
         return returnValue;
     }

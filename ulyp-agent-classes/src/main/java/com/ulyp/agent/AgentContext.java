@@ -1,8 +1,6 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.policy.*;
-import com.ulyp.agent.remote.AgentApiImpl;
-import com.ulyp.agent.remote.AgentApiGrpcServer;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
@@ -28,7 +26,7 @@ public class AgentContext {
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
     @Nullable
-    private final AgentApiGrpcServer apiServer;
+    private final AutoCloseable apiServer;
 
     private AgentContext() {
         this.settings = Settings.fromSystemProperties();
@@ -49,7 +47,14 @@ public class AgentContext {
             Runtime.getRuntime().addShutdownHook(shutdown);
         }
         if (settings.getBindNetworkAddress() != null) {
-            apiServer = new AgentApiGrpcServer(Integer.parseInt(settings.getBindNetworkAddress()), new AgentApiImpl(this));
+            apiServer = AgentApiBootstrap.bootstrap(
+                    startRecordingPolicy::forceEnableRecording,
+                    methodRepository,
+                    typeResolver,
+                    recordingDataWriter,
+                    processMetadata,
+                    Integer.parseInt(settings.getBindNetworkAddress())
+            );
         } else {
             apiServer = null;
         }

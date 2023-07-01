@@ -1,9 +1,9 @@
 package com.ulyp.storage.impl;
 
-import com.google.common.base.Preconditions;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.impl.util.ByAddressFileReader;
 import com.ulyp.transport.*;

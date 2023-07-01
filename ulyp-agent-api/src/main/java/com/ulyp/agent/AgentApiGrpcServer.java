@@ -1,4 +1,4 @@
-package com.ulyp.agent.remote;
+package com.ulyp.agent;
 
 import io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
