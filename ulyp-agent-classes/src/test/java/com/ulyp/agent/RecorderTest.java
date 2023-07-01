@@ -45,7 +45,7 @@ public class RecorderTest {
     @Test
     public void shouldRecordDataWhenRecordingIsFinished() {
         X recorded = new X();
-        int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
+        int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
         recorder.onMethodExit(methodIdx, "ABC", null, callId);
 
         assertNull(recorder.getRecordingState());
@@ -57,7 +57,7 @@ public class RecorderTest {
         Recorder.idGenerator.set(0);
 
         X recorded = new X();
-        int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[5]);
+        int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
 
         recorder.disableRecording();
 
