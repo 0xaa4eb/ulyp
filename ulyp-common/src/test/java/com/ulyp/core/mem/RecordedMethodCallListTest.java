@@ -39,7 +39,6 @@ public class RecordedMethodCallListTest {
         list.addExitMethodCall(
                 5,
                 134,
-                method,
                 typeResolver,
                 false,
                 "ABC"

@@ -57,13 +57,12 @@ public class CallRecordBuffer {
         }
     }
 
-    public void recordMethodExit(TypeResolver typeResolver, int recordingId, Method method, Object returnValue, Throwable thrown, int callId) {
+    public void recordMethodExit(TypeResolver typeResolver, int recordingId, Object returnValue, Throwable thrown, int callId) {
         if (callId >= 0) {
             if (thrown == null) {
                 recordedCalls.addExitMethodCall(
                     recordingId,
                     callId,
-                    method,
                     typeResolver,
                     false,
                     returnValue
@@ -72,7 +71,6 @@ public class CallRecordBuffer {
                 recordedCalls.addExitMethodCall(
                     recordingId,
                     callId,
-                    method,
                     typeResolver,
                     true,
                     thrown

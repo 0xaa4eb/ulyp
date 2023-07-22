@@ -179,8 +179,7 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                Method method = methodRepository.get(methodId);
-                callRecords.recordMethodExit(typeResolver, recordingState.getRecordingId(), method, result, thrown, callId);
+                callRecords.recordMethodExit(typeResolver, recordingState.getRecordingId(), result, thrown, callId);
 
                 RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
                 Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");
@@ -205,6 +204,7 @@ public class Recorder {
                         threadLocalRecordingState.set(null);
                         currentRecordingSessionCount.decrementAndGet();
                         if (LoggingSettings.INFO_ENABLED) {
+                            Method method = methodRepository.get(methodId);
                             log.info("Finished recording {} at method {}, recorded {} calls", recordingMetadata.getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
                         }
                     }

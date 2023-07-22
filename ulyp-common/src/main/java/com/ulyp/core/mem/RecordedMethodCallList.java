@@ -44,7 +44,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     public void addExitMethodCall(
             int recordingId,
             int callId,
-            Method method,
             TypeResolver typeResolver,
             boolean thrown,
             Object returnValue) {

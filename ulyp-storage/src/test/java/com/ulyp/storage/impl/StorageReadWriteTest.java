@@ -131,7 +131,6 @@ public class StorageReadWriteTest {
         methodCalls.addExitMethodCall(
                 recordingId,
                 0,
-                method,
                 typeResolver,
                 false,
                 "DEF"
@@ -196,7 +195,6 @@ public class StorageReadWriteTest {
         methodCalls.addExitMethodCall(
                 recordingId,
                 1,
-                method,
                 typeResolver,
                 false,
                 "GHJ"
@@ -248,7 +246,6 @@ public class StorageReadWriteTest {
         methodCalls.addExitMethodCall(
                 recordingId,
                 2,
-                method,
                 typeResolver,
                 false,
                 "HJK"
@@ -257,7 +254,6 @@ public class StorageReadWriteTest {
         methodCalls.addExitMethodCall(
                 recordingId,
                 0,
-                method,
                 typeResolver,
                 false,
                 "UIO"

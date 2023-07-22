@@ -3,8 +3,6 @@ package com.ulyp.core;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
 public class CallRecordBufferTest {
@@ -43,7 +41,7 @@ public class CallRecordBufferTest {
         Assert.assertEquals(1, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(0, newLog.getRecordedCallsSize());
 
-        newLog.recordMethodExit(typeResolver, 1, method, "ABC", null, callId);
+        newLog.recordMethodExit(typeResolver, 1, "ABC", null, callId);
 
         Assert.assertEquals(1, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(1, newLog.getRecordedCallsSize());
