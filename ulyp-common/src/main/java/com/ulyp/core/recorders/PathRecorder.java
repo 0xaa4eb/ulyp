@@ -15,15 +15,13 @@ import java.nio.file.Path;
  */
 public class PathRecorder extends ObjectRecorder {
 
-    private static final String PATH_TYPE_NAME = java.nio.file.Path.class.getName();
-
     protected PathRecorder(byte id) {
         super(id);
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getName().equals(PATH_TYPE_NAME);
+    public boolean supports(Class<?> type) {
+        return Path.class.isAssignableFrom(type);
     }
 
     @Override

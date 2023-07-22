@@ -14,15 +14,13 @@ import java.util.Optional;
 @Slf4j
 public class OptionalRecorder extends ObjectRecorder {
 
-    private static final String OPTIONAL_NAME = Optional.class.getName();
-
     protected OptionalRecorder(byte id) {
         super(id);
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getName().equals(OPTIONAL_NAME);
+    public boolean supports(Class<?> type) {
+        return type == Optional.class;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.ulyp.core.recorders.collections;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
@@ -31,8 +30,8 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getTraits().contains(TypeTrait.MAP) && mode.supports(type);
+    public boolean supports(Class<?> type) {
+        return Map.class.isAssignableFrom(type) && mode.supports(type);
     }
 
     public void setMode(CollectionsRecordingMode collectionsRecordingMode) {

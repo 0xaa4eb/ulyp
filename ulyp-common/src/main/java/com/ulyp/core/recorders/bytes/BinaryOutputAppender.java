@@ -4,6 +4,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
+import com.ulyp.core.recorders.RecorderChooser;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
@@ -78,7 +79,7 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
         ObjectRecorder recorder;
         if (object != null) {
             // Simply stop recursively write objects if it's too deep
-            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? itemType.getSuggestedRecorder() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? (itemType.getRecorderHint() != null ? itemType.getRecorderHint() : RecorderChooser.getInstance().chooseForType(object.getClass())) : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
         } else {
             recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
         }

@@ -11,15 +11,13 @@ import java.util.Date;
 
 public class DateRecorder extends ObjectRecorder {
 
-    private static final String JAVA_UTIL_DATE_CLASS_NAME = Date.class.getName();
-
     protected DateRecorder(byte id) {
         super(id);
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getName().equals(JAVA_UTIL_DATE_CLASS_NAME);
+    public boolean supports(Class<?> type) {
+        return type == Date.class;
     }
 
     @Override

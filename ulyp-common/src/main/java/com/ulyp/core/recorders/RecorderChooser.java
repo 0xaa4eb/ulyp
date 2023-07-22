@@ -2,10 +2,8 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Finds {@link ObjectRecorder} that best matches for any given {@link Type}
@@ -13,7 +11,6 @@ import java.util.List;
 public class RecorderChooser {
 
     private static final RecorderChooser instance = new RecorderChooser();
-    private static final ObjectRecorder[] empty = new ObjectRecorder[0];
     private static final ObjectRecorder[] allRecorders;
 
     static {
@@ -32,28 +29,14 @@ public class RecorderChooser {
         return instance;
     }
 
-    public ObjectRecorder[] chooseForTypes(List<Type> paramsTypes) {
-        try {
-            if (paramsTypes.isEmpty()) {
-                return empty;
-            }
-            ObjectRecorder[] convs = new ObjectRecorder[paramsTypes.size()];
-            for (int i = 0; i < convs.length; i++) {
-                convs[i] = chooseForType(paramsTypes.get(i));
-            }
-            return convs;
-        } catch (Exception e) {
-            throw new RuntimeException("Could not prepare converters for method params " + paramsTypes, e);
-        }
-    }
+    private final Map<Class<?>, ObjectRecorder> byTypeCache = new ConcurrentHashMap<>();
 
-    public ObjectRecorder chooseForType(Type type) {
+    public ObjectRecorder chooseForType(Class<?> type) {
         for (ObjectRecorder recorder : allRecorders) {
             if (recorder.supports(type)) {
                 return recorder;
             }
         }
-
         // Should never happen
         throw new RuntimeException("Could not find a suitable recorder for type " + type);
     }

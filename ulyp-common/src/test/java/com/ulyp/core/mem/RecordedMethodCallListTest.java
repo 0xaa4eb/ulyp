@@ -25,8 +25,6 @@ public class RecordedMethodCallListTest {
                 .id(5)
                 .name("convert")
                 .declaringType(type)
-                .parameterRecorders(new ObjectRecorder[]{ObjectRecorderRegistry.ANY_NUMBER_RECORDER.getInstance()})
-                .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
                 .build();
 
         list.addEnterMethodCall(

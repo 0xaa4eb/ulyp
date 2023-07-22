@@ -18,7 +18,7 @@ abstract class RecordedObjectView protected constructor() : TextFlow() {
         fun of(record: ObjectRecord, renderSettings: RenderSettings): RecordedObjectView {
             val objectValue = when (record) {
                 is StringObjectRecord -> RecordedStringView(record)
-                is CharObjectRecord -> RecordedCharView(record)
+                is CharRecord -> RecordedCharView(record)
                 is NullObjectRecord -> RecordedNullView()
                 is NotRecordedObjectRecord -> NotRecordedObject(renderSettings)
                 is NumberRecord -> RecordedNumberView(record.numberPrintedText, record.getType(), renderSettings)

@@ -3,7 +3,6 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
@@ -18,8 +17,8 @@ public class ClassObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getTraits().contains(TypeTrait.CLASS_OBJECT);
+    public boolean supports(Class<?> type) {
+        return type == Class.class;
     }
 
     @Override

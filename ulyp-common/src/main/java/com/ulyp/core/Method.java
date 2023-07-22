@@ -1,6 +1,5 @@
 package com.ulyp.core;
 
-import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.transport.*;
 import lombok.Builder;
 import lombok.ToString;
@@ -17,8 +16,6 @@ public class Method {
     private final boolean isStatic;
     private final boolean isConstructor;
     private final boolean returnsSomething;
-    private final ObjectRecorder[] parameterRecorders;
-    private final ObjectRecorder returnValueRecorder;
     private volatile boolean shouldStartRecording;
 
     private static void writeType(BinaryMethodEncoder targetEncoder, Type type) {
@@ -72,14 +69,6 @@ public class Method {
 
     public boolean isConstructor() {
         return isConstructor;
-    }
-
-    public ObjectRecorder[] getParameterRecorders() {
-        return parameterRecorders;
-    }
-
-    public ObjectRecorder getReturnValueRecorder() {
-        return returnValueRecorder;
     }
 
     public Type getDeclaringType() {

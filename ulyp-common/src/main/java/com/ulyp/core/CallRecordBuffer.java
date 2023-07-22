@@ -1,11 +1,10 @@
 package com.ulyp.core;
 
 import com.ulyp.core.mem.RecordedMethodCallList;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * A collection of enter and exit recorded method calls for a certain recording session.

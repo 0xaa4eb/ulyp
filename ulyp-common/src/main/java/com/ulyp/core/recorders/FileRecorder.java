@@ -14,15 +14,13 @@ import java.io.File;
  */
 public class FileRecorder extends ObjectRecorder {
 
-    private static final String FILE_TYPE_NAME = File.class.getName();
-
     protected FileRecorder(byte id) {
         super(id);
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getName().equals(FILE_TYPE_NAME);
+    public boolean supports(Class<?> type) {
+        return type == File.class;
     }
 
     @Override

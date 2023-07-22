@@ -11,12 +11,10 @@ import com.ulyp.core.recorders.collections.MapRecorder;
  * <p>
  * An order is used to sort all recorders. When ulyp wants to find out which recorder should be used
  * for a particular {@link Type} it checks all available recorders sorted with the order
- * using method {@link ObjectRecorder#supports(Type)}.
+ * using method {@link ObjectRecorder#supports(Class)}.
  * Recorders which support certain frequently used types come first, before rare types recorders to optimize
  * check time. The more specific (i.e. narrow) recorder is, the earlier it should be checked for any type.
  * <p>
- * Then {@link DynamicObjectRecorder} comes with order 10000, which can resolve a recorder to use
- * at runtime if, let's say, a method has {@link Object} argument.
  * The last one to come is {@link IdentityRecorder} which can record any type.
  * <p>
  * The resolution of recorders is done only once for each method and cached within {@link com.ulyp.core.Method}
@@ -26,7 +24,6 @@ public enum ObjectRecorderRegistry {
     STRING_RECORDER(new StringRecorder((byte) 2), 0),
     THROWABLE_RECORDER(new ThrowableRecorder((byte) 5), 20),
     ENUM_RECORDER(new EnumRecorder((byte) 6), 5),
-    DYNAMIC_OBJECT_RECORDER(new DynamicObjectRecorder((byte) 7), 10000),
     INTEGRAL_RECORDER(new IntegralRecorder((byte) 12), 0),
     BOOLEAN_RECORDER(new BooleanRecorder((byte) 100), 1),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),

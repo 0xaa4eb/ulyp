@@ -14,7 +14,7 @@ public class IdentityRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
+    public boolean supports(Class<?> type) {
         return true;
     }
 

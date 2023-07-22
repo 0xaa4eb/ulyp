@@ -24,10 +24,6 @@ public class CallRecordBufferTest {
         .isConstructor(false)
         .isStatic(false)
         .returnsSomething(true)
-        .parameterRecorders(
-            new ObjectRecorder[]{ObjectRecorderRegistry.STRING_RECORDER.getInstance()}
-        )
-        .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
         .build();
 
     @Test

@@ -1,12 +1,12 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.CharObjectRecord
+import com.ulyp.core.recorders.CharRecord
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText
 import com.ulyp.ui.util.TrimmedTextView
 import javafx.scene.text.Text
 
-class RecordedCharView internal constructor(value: CharObjectRecord)
+class RecordedCharView internal constructor(value: CharRecord)
     : RecordedObjectView() {
 
     init {

@@ -1,18 +1,17 @@
 package com.ulyp.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder.StackTraceElementsDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder.StackTraceElementsEncoder;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Builder
 @Getter

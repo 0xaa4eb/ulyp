@@ -36,10 +36,6 @@ public class RecordingDataReaderListenerTest {
             .isConstructor(false)
             .isStatic(false)
             .returnsSomething(true)
-            .parameterRecorders(
-                    new ObjectRecorder[]{ObjectRecorderRegistry.STRING_RECORDER.getInstance()}
-            )
-            .returnValueRecorder(ObjectRecorderRegistry.STRING_RECORDER.getInstance())
             .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();

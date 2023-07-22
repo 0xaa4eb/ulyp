@@ -14,7 +14,7 @@ public class NullObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
+    public boolean supports(Class<?> type) {
         return false;
     }
 

@@ -29,7 +29,7 @@ public abstract class ObjectRecorder {
         return id;
     }
 
-    public abstract boolean supports(Type type);
+    public abstract boolean supports(Class<?> type);
 
     public abstract ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
 

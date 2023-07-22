@@ -1,16 +1,14 @@
 package com.ulyp.core.recorders.arrays;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.IdentityRecorder;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
+import org.jetbrains.annotations.NotNull;
 
 public class ByteArrayRecorder extends IdentityRecorder {
 
@@ -19,8 +17,8 @@ public class ByteArrayRecorder extends IdentityRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getTraits().contains(TypeTrait.PRIMITIVE_BYTE_ARRAY);
+    public boolean supports(Class<?> type) {
+        return type == byte[].class;
     }
 
     @Override

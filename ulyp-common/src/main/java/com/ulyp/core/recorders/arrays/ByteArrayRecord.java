@@ -2,7 +2,6 @@ package com.ulyp.core.recorders.arrays;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.IdentityObjectRecord;
-import com.ulyp.core.recorders.ObjectRecord;
 
 public class ByteArrayRecord extends IdentityObjectRecord {
 

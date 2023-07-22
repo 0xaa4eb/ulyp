@@ -1,8 +1,5 @@
 package com.ulyp.core.recorders.collections;
 
-import com.ulyp.core.Type;
-import com.ulyp.core.TypeTrait;
-
 public enum CollectionsRecordingMode {
 
     /**
@@ -12,8 +9,8 @@ public enum CollectionsRecordingMode {
      */
     JAVA {
         @Override
-        public boolean supports(Type type) {
-            return type.getTraits().contains(TypeTrait.CONCRETE_CLASS) && type.getName().startsWith("java");
+        public boolean supports(Class<?> type) {
+            return type.getName().startsWith("java.");
         }
 
         @Override
@@ -26,7 +23,7 @@ public enum CollectionsRecordingMode {
      */
     ALL {
         @Override
-        public boolean supports(Type type) {
+        public boolean supports(Class<?> type) {
             return true;
         }
 
@@ -40,7 +37,7 @@ public enum CollectionsRecordingMode {
      */
     NONE {
         @Override
-        public boolean supports(Type type) {
+        public boolean supports(Class<?> type) {
             return false;
         }
 
@@ -50,5 +47,5 @@ public enum CollectionsRecordingMode {
         }
     };
 
-    public abstract boolean supports(Type type);
+    public abstract boolean supports(Class<?> type);
 }

@@ -52,7 +52,6 @@ public class AsyncRecordingDataWriterTest {
                         Type.builder()
                                 .id(id++)
                                 .name("a.b.C")
-                                .typeTraits(Collections.emptySet())
                                 .build()
                 );
             }

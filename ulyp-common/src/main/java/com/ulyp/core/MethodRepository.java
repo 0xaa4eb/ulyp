@@ -1,9 +1,9 @@
 package com.ulyp.core;
 
+import com.ulyp.core.util.ConcurrentArrayList;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.ulyp.core.util.ConcurrentArrayList;
 
 
 public class MethodRepository {

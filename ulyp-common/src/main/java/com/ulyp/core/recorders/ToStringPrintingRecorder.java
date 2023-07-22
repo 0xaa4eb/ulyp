@@ -28,8 +28,12 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return classesToPrint.stream().anyMatch(matcher -> matcher.matches(type));
+    public boolean supports(Class<?> type) {
+        if (classesToPrint.isEmpty()) {
+            return false;
+        }
+
+        return classesToPrint.stream().anyMatch(matcher -> matcher.matches(Type.builder().name(type.getName()).build()));
     }
 
     @Override

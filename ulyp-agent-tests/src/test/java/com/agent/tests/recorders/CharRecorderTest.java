@@ -2,7 +2,7 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.CharObjectRecord;
+import com.ulyp.core.recorders.CharRecord;
 import com.ulyp.storage.CallRecord;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class CharRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("returnChar")
         );
 
-        CharObjectRecord value = (CharObjectRecord) root.getReturnValue();
+        CharRecord value = (CharRecord) root.getReturnValue();
 
         assertEquals('A', value.getValue());
     }

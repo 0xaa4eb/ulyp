@@ -3,7 +3,6 @@ package com.ulyp.core.recorders.arrays;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.TypeTrait;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.bytes.BinaryInput;
@@ -21,8 +20,8 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.getTraits().contains(TypeTrait.NON_PRIMITIVE_ARRAY);
+    public boolean supports(Class<?> type) {
+        return Object[].class.isAssignableFrom(type);
     }
 
     @Override

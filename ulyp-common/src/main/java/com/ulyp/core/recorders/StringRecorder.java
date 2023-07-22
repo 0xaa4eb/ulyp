@@ -14,8 +14,8 @@ public class StringRecorder extends ObjectRecorder {
     }
 
     @Override
-    public boolean supports(Type type) {
-        return type.isExactlyJavaLangString();
+    public boolean supports(Class<?> type) {
+        return type == String.class;
     }
 
     @Override

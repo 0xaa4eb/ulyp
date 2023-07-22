@@ -3,6 +3,7 @@ package com.ulyp.core.mem;
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
+import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
 import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl;
 import com.ulyp.core.util.Preconditions;
@@ -60,11 +61,17 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     exitMethodCallEncoder.recordingId((short) recordingId);
                     exitMethodCallEncoder.callId(callId);
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
-                    Type classDescription = typeResolver.get(returnValue);
-                    exitMethodCallEncoder.returnValueTypeId(classDescription.getId());
+                    Type type = typeResolver.get(returnValue);
+                    exitMethodCallEncoder.returnValueTypeId(type.getId());
+
+                    ObjectRecorder recorderHint = type.getRecorderHint();
+                    if (returnValue != null && recorderHint == null) {
+                        recorderHint = RecorderChooser.getInstance().chooseForType(returnValue.getClass());
+                        type.setRecorderHint(recorderHint);
+                    }
 
                     ObjectRecorder recorder = returnValue != null ?
-                            (thrown ? ObjectRecorderRegistry.THROWABLE_RECORDER.getInstance() : method.getReturnValueRecorder()) :
+                            (thrown ? ObjectRecorderRegistry.THROWABLE_RECORDER.getInstance() : recorderHint) :
                             ObjectRecorderRegistry.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValueRecorderId(recorder.getId());
@@ -102,21 +109,26 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     enterMethodCallEncoder.recordingId((short) recordingId);
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
-                    ObjectRecorder[] paramRecorders = method.getParameterRecorders();
 
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 
                     for (int i = 0; i < args.length; i++) {
-                        ObjectRecorder recorder = args[i] != null ? paramRecorders[i] : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+                        Object argValue = args[i];
+                        Type argType = typeResolver.get(argValue);
+                        ObjectRecorder recorderHint = argType.getRecorderHint();
+                        if (argValue != null && recorderHint == null) {
+                            recorderHint = RecorderChooser.getInstance().chooseForType(argValue.getClass());
+                            argType.setRecorderHint(recorderHint);
+                        }
 
-                        Type argType = typeResolver.get(args[i]);
+                        ObjectRecorder recorder = argValue != null ? recorderHint : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
 
                         argumentsEncoder = argumentsEncoder.next();
                         argumentsEncoder.typeId(argType.getId());
                         argumentsEncoder.recorderId(recorder.getId());
                         enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
                         try {
-                            recorder.write(args[i], enterRecordBinaryOutput, typeResolver);
+                            recorder.write(argValue, enterRecordBinaryOutput, typeResolver);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
