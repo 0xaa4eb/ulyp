@@ -13,7 +13,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
     id 'io.freefair.lombok' version '5.3.0'
-    id 'org.openjfx.javafxplugin' version '0.0.10' apply(false)
+    id 'org.openjfx.javafxplugin' version '0.0.14' apply(false)
 }
 
 def javaVersion = JavaVersion.current()
