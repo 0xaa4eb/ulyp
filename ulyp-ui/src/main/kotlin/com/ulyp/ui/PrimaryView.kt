@@ -8,6 +8,7 @@ import com.ulyp.storage.ReaderSettings
 import com.ulyp.storage.impl.AsyncFileRecordingDataReader
 import com.ulyp.storage.impl.RecordedCallState
 import com.ulyp.storage.impl.RocksdbIndex
+import com.ulyp.storage.util.RocksdbChecker
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsModalView
 import com.ulyp.ui.elements.controls.ErrorModalView
@@ -115,8 +116,8 @@ class PrimaryView(
     fun openRecordingFile() {
         val file = fileChooser.get() ?: return
 
-        val rocksdbAvailable = RocksdbIndex.checkIfRocksdbAvailable()
-        val index: Repository<Long, RecordedCallState> = if (rocksdbAvailable.isSuccess) {
+        val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
+        val index: Repository<Long, RecordedCallState> = if (rocksdbAvailable.isAvailable) {
             RocksdbIndex()
         } else {
             InMemoryRepository()
@@ -159,12 +160,12 @@ class PrimaryView(
             true
         }
 
-        if (rocksdbAvailable.isFailure) {
+        if (!rocksdbAvailable.isAvailable) {
             val errorPopup = applicationContext.getBean(
                 ErrorModalView::class.java,
                 applicationContext.getBean(SceneRegistry::class.java),
                 "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
-                ExceptionAsTextView(rocksdbAvailable.cause!!)
+                ExceptionAsTextView(rocksdbAvailable.err!!)
             )
             errorPopup.show()
         }
