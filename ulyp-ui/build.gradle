@@ -42,14 +42,13 @@ dependencies {
 
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
+    implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.3'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
-    implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
-    implementation group: 'org.kordamp.bootstrapfx', name: 'bootstrapfx-core', version: '0.2.3'
 
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.20.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
