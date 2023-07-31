@@ -24,7 +24,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'
     implementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.1.RELEASE'
     implementation group: 'javax.transaction', name: 'jta', version: '1.1'
-    implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.0.Final'
+    implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.6.15.Final'
 }
 
 repositories {

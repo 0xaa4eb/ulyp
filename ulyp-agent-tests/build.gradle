@@ -37,7 +37,7 @@ dependencies {
     testImplementation group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'
     testImplementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.1.RELEASE'
     testImplementation group: 'javax.transaction', name: 'jta', version: '1.1'
-    testImplementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.0.Final'
+    testImplementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.6.15.Final'
     testImplementation group: 'net.openhft', name: 'chronicle', version: '3.6.4'
     testImplementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
     testImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
