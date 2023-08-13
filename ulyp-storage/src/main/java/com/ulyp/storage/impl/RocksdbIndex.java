@@ -1,6 +1,6 @@
 package com.ulyp.storage.impl;
 
-import com.ulyp.core.repository.Repository;
+import com.ulyp.storage.Index;
 import com.ulyp.storage.StorageException;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.transport.BinaryRecordedCallStateDecoder;
@@ -13,11 +13,9 @@ import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
 import org.rocksdb.WriteOptions;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class RocksdbIndex implements Repository<Long, RecordedCallState> {
+public class RocksdbIndex implements Index {
 
     private final RocksDB db;
     private final WriteOptions writeOptions;
@@ -27,26 +25,23 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
     private final ThreadLocal<byte[]> keyBuffer = ThreadLocal.withInitial(() -> new byte[Long.BYTES]);
     private final ThreadLocal<byte[]> valueBuffer = ThreadLocal.withInitial(() -> new byte[64 * 1024]);
 
-    public RocksdbIndex() throws StorageException {
+    public RocksdbIndex(Path indexFolder) throws StorageException {
         try {
-            Path ulyp = Files.createTempDirectory("ulyp");
-            ulyp.toFile().deleteOnExit();
-
             Options options = new Options();
             options.setCreateIfMissing(true);
 
-            db = RocksDB.open(options, ulyp.toAbsolutePath().toString());
+            db = RocksDB.open(options, indexFolder.toAbsolutePath().toString());
 
             writeOptions = new WriteOptions();
             writeOptions.setSync(false);
             writeOptions.setDisableWAL(true);
-        } catch (RocksDBException | IOException ioException) {
-            throw new StorageException(ioException);
+        } catch (RocksDBException ioException) {
+            throw new StorageException("Could not create RocksDB index", ioException);
         }
     }
 
     @Override
-    public RecordedCallState get(Long id) {
+    public RecordedCallState get(long id) {
         byte[] keyBytes = keyBuffer.get();
         BitUtil.longToBytes(id, keyBytes, 0);
         byte[] bytes;
@@ -64,7 +59,7 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
     }
 
     @Override
-    public void store(Long id, RecordedCallState value) {
+    public void store(long id, RecordedCallState value) {
         MutableDirectBuffer buffer = tempBuffer.get();
         BinaryRecordedCallStateEncoder encoder = this.encoder.get();
         encoder.wrap(buffer, 0);
@@ -88,5 +83,10 @@ public class RocksdbIndex implements Repository<Long, RecordedCallState> {
             valueBuffer.set(buf);
         }
         return buf;
+    }
+
+    @Override
+    public void close() throws Exception {
+        db.close();
     }
 }

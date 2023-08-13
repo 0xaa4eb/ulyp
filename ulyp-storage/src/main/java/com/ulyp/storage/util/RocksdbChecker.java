@@ -1,5 +1,6 @@
 package com.ulyp.storage.util;
 
+import com.ulyp.core.util.TempDirectory;
 import com.ulyp.storage.impl.RecordedCallState;
 import com.ulyp.storage.impl.RocksdbIndex;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -8,8 +9,10 @@ import it.unimi.dsi.fastutil.longs.LongList;
 public class RocksdbChecker {
 
     public static RocksdbAvailableResult checkRocksdbAvailable() {
+        RocksdbIndex index = null;
         try {
-            RocksdbIndex index = new RocksdbIndex();
+            TempDirectory tempDirectory = new TempDirectory("ulyp.RocksdbChecker.checkRocksdbAvailable");
+            index = new RocksdbIndex(tempDirectory.toPath());
 
             LongList childrenCallIds = new LongArrayList();
             childrenCallIds.add(32L);

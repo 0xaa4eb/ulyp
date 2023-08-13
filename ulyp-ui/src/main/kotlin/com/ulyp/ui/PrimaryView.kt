@@ -1,12 +1,12 @@
 package com.ulyp.ui
 
 import com.ulyp.core.exception.UlypException
-import com.ulyp.core.repository.InMemoryRepository
-import com.ulyp.core.repository.Repository
+import com.ulyp.core.util.TempDirectory
 import com.ulyp.storage.Filter
+import com.ulyp.storage.Index
 import com.ulyp.storage.ReaderSettings
 import com.ulyp.storage.impl.AsyncFileRecordingDataReader
-import com.ulyp.storage.impl.RecordedCallState
+import com.ulyp.storage.impl.InMemoryIndex
 import com.ulyp.storage.impl.RocksdbIndex
 import com.ulyp.storage.util.RocksdbChecker
 import com.ulyp.ui.code.SourceCodeView
@@ -117,10 +117,10 @@ class PrimaryView(
         val file = fileChooser.get() ?: return
 
         val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
-        val index: Repository<Long, RecordedCallState> = if (rocksdbAvailable.isAvailable) {
-            RocksdbIndex()
+        val index: Index = if (rocksdbAvailable.isAvailable) {
+            RocksdbIndex(TempDirectory().toPath())
         } else {
-            InMemoryRepository()
+            InMemoryIndex()
         }
 
         val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()

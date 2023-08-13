@@ -1,6 +1,7 @@
 package com.ulyp.storage;
 
 import java.io.File;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.ulyp.core.repository.Repository;
@@ -20,5 +21,5 @@ public class ReaderSettings {
     @Builder.Default
     private final Filter filter = recording -> true;
     @Builder.Default
-    private final Supplier<Repository<Long, RecordedCallState>> indexSupplier = RocksdbIndex::new;
+    private final Supplier<Index> indexSupplier;
 }
