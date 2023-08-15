@@ -1,13 +1,7 @@
 package com.ulyp.ui
 
 import com.ulyp.core.exception.UlypException
-import com.ulyp.core.util.TempDirectory
-import com.ulyp.storage.Filter
-import com.ulyp.storage.Index
-import com.ulyp.storage.ReaderSettings
-import com.ulyp.storage.impl.AsyncFileRecordingDataReader
-import com.ulyp.storage.impl.InMemoryIndex
-import com.ulyp.storage.impl.RocksdbIndex
+import com.ulyp.storage.RecordingDataReader
 import com.ulyp.storage.util.RocksdbChecker
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsModalView
@@ -15,7 +9,7 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
-import com.ulyp.ui.reader.FilterRegistry
+import com.ulyp.ui.reader.RecordingReaderRegistry
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.fxml.FXML
@@ -37,7 +31,7 @@ import kotlin.system.exitProcess
 class PrimaryView(
     private val applicationContext: ApplicationContext,
     private val viewInitializer: ViewInitializer,
-    private val filterRegistry: FilterRegistry,
+    private val recordingReaderRegistry: RecordingReaderRegistry,
     private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settings: Settings,
@@ -114,25 +108,8 @@ class PrimaryView(
     }
 
     fun openRecordingFile() {
-        val file = fileChooser.get() ?: return
-
-        val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
-        val index: Index = if (rocksdbAvailable.isAvailable) {
-            RocksdbIndex(TempDirectory().toPath())
-        } else {
-            InMemoryIndex()
-        }
-
-        val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()
-
-        val recordingDataReader =
-            AsyncFileRecordingDataReader(ReaderSettings.builder()
-                .file(file)
-                .autoStartReading(false)
-                .indexSupplier { index }
-                .filter(storageFilter)
-                .build()
-            )
+        val file: File = fileChooser.get() ?: return
+        val recordingDataReader: RecordingDataReader = recordingReaderRegistry.newReader(file)
 
         recordingDataReader.processMetadataFuture.thenAccept { processMetadata ->
 
@@ -160,6 +137,7 @@ class PrimaryView(
             true
         }
 
+        val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
         if (!rocksdbAvailable.isAvailable) {
             val errorPopup = applicationContext.getBean(
                 ErrorModalView::class.java,

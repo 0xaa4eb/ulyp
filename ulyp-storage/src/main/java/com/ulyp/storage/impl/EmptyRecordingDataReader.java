@@ -12,6 +12,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class EmptyRecordingDataReader implements RecordingDataReader {
 
+    @Override
+    public void start() {
+
+    }
+
     public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
         return new CompletableFuture<>();
     }

@@ -18,6 +18,8 @@ public interface RecordingDataReader extends AutoCloseable {
         return new EmptyRecordingDataReader();
     }
 
+    void start();
+
     CompletableFuture<ProcessMetadata> getProcessMetadataFuture();
 
     /**

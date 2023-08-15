@@ -1,18 +1,26 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.util.TempDirectory;
+import com.ulyp.core.util.FileUtil;
+import com.ulyp.storage.Index;
 import com.ulyp.storage.impl.RecordedCallState;
 import com.ulyp.storage.impl.RocksdbIndex;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class RocksdbChecker {
 
     public static RocksdbAvailableResult checkRocksdbAvailable() {
-        RocksdbIndex index = null;
+        Path tempDirectory;
         try {
-            TempDirectory tempDirectory = new TempDirectory("ulyp.RocksdbChecker.checkRocksdbAvailable");
-            index = new RocksdbIndex(tempDirectory.toPath());
+            tempDirectory = Files.createTempDirectory("ulyp.RocksdbChecker.checkRocksdbAvailable");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (Index index = new RocksdbIndex(tempDirectory)) {
 
             LongList childrenCallIds = new LongArrayList();
             childrenCallIds.add(32L);
@@ -35,6 +43,12 @@ public class RocksdbChecker {
             return new RocksdbAvailableResult(true);
         } catch (Throwable err) {
             return new RocksdbAvailableResult(false, err);
+        } finally {
+            try {
+                FileUtil.deleteDirectory(tempDirectory);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
