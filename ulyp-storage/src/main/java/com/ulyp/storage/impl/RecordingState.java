@@ -3,16 +3,13 @@ package com.ulyp.storage.impl;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.ReadableRepository;
-import com.ulyp.core.repository.Repository;
 import com.ulyp.storage.*;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class RecordingState implements Closeable {
+public class RecordingState {
 
     private final DataReader reader;
     private final Index index;
@@ -152,10 +149,5 @@ public class RecordingState implements Closeable {
 
     public synchronized int callCount() {
         return rootCallId >= 0 ? getRoot().getSubtreeSize() : 0;
-    }
-
-    @Override
-    public synchronized void close() throws IOException {
-        reader.close();
     }
 }

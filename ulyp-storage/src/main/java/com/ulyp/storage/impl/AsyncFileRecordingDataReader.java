@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 public class AsyncFileRecordingDataReader implements RecordingDataReader {
 
     private final File file;
+    private final DataReader dataReader;
     private final ReaderSettings settings;
     private final ExecutorService executorService;
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
@@ -42,6 +43,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         this.file = settings.getFile();
         this.index = settings.getIndexSupplier().get();
         this.settings = settings;
+        this.dataReader = new DataReader(file);
         this.executorService = Executors.newFixedThreadPool(
                 1,
                 NamedThreadFactory.builder()
@@ -103,14 +105,6 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         if (readingTaskLocal != null) {
             readingTaskLocal.close();
         }
-
-        recordings.values().forEach(state -> {
-            try {
-                state.close();
-            } catch (IOException e) {
-                // TODO log only
-            }
-        });
     }
 
     private class StorageReaderTask implements Runnable, Closeable {
@@ -198,7 +192,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
                     () -> new RecordingState(
                             metadata,
                             index,
-                            new DataReader(file),
+                            dataReader,
                             methods,
                             types)
             );

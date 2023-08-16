@@ -18,18 +18,14 @@ public class ByAddressFileReader implements Closeable {
         }
     }
 
-    public long getLength() throws IOException {
-        return randomAccessFile.length();
-    }
-
-    public byte[] readBytes(long address, int bytesCount) throws IOException {
+    public synchronized byte[] readBytes(long address, int bytesCount) throws IOException {
         randomAccessFile.seek(address);
         byte[] buf = new byte[bytesCount];
         randomAccessFile.read(buf);
         return buf;
     }
 
-    public byte readByte(long address) throws IOException {
+    public synchronized byte readByte(long address) throws IOException {
         randomAccessFile.seek(address);
         return randomAccessFile.readByte();
     }
@@ -40,7 +36,7 @@ public class ByAddressFileReader implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
         randomAccessFile.close();
     }
 }
