@@ -1,12 +1,9 @@
 package com.ulyp.storage;
 
 import java.io.File;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.ulyp.core.repository.Repository;
-import com.ulyp.storage.impl.RecordedCallState;
-import com.ulyp.storage.impl.RocksdbIndex;
+import com.ulyp.storage.impl.InMemoryIndex;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -21,5 +18,5 @@ public class ReaderSettings {
     @Builder.Default
     private final Filter filter = recording -> true;
     @Builder.Default
-    private final Supplier<Index> indexSupplier;
+    private final Supplier<Index> indexSupplier = InMemoryIndex::new;
 }
