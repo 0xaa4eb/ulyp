@@ -19,11 +19,6 @@ public class ThreadNameRecordingPolicy implements StartRecordingPolicy {
     }
 
     @Override
-    public void forceEnableRecording(boolean recordingEnabled) {
-        delegate.forceEnableRecording(recordingEnabled);
-    }
-
-    @Override
     public String toString() {
         return "Start recording at threads '" + threadNamePattern + "' && " + delegate;
     }

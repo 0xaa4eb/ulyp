@@ -8,7 +8,7 @@ import com.ulyp.core.util.BitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ulyp.agent.policy.EnabledByDefaultRecordingPolicy;
+import com.ulyp.agent.policy.EnabledRecordingPolicy;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordedMethodCall;
@@ -31,7 +31,7 @@ public class RecorderTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final HeapRecordingDataWrtiter storage = new HeapRecordingDataWrtiter();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledByDefaultRecordingPolicy(), storage);
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), storage);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;

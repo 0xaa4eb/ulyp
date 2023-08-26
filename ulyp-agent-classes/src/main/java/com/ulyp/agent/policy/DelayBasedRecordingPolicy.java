@@ -39,11 +39,6 @@ public class DelayBasedRecordingPolicy implements StartRecordingPolicy {
     }
 
     @Override
-    public void forceEnableRecording(boolean recordingEnabled) {
-        this.canStartRecording = recordingEnabled;
-    }
-
-    @Override
     public String toString() {
         return "Start recording at " + startRecordingTimestamp;
     }

@@ -20,7 +20,7 @@ public class AgentContext {
     private static volatile boolean agentLoaded = false;
 
     private final Settings settings;
-    private final StartRecordingPolicy startRecordingPolicy;
+    private final OverridableRecordingPolicy startRecordingPolicy;
     private final RecordingDataWriter recordingDataWriter;
     private final ProcessMetadata processMetadata;
     private final TypeResolver typeResolver;
@@ -48,7 +48,7 @@ public class AgentContext {
         }
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
-                    startRecordingPolicy::forceEnableRecording,
+                    startRecordingPolicy::setRecordingCanStart,
                     methodRepository,
                     typeResolver,
                     recordingDataWriter,
@@ -60,17 +60,17 @@ public class AgentContext {
         }
     }
 
-    private static StartRecordingPolicy initializePolicy(Settings settings) {
+    private static OverridableRecordingPolicy initializePolicy(Settings settings) {
         String value = settings.getStartRecordingPolicyPropertyValue();
 
+        // TODO move string checks to policy implementations
         StartRecordingPolicy policy;
         if (value == null || value.isEmpty()) {
-            policy = new EnabledByDefaultRecordingPolicy();
+            policy = new EnabledRecordingPolicy();
         } else if (value.startsWith("delay:")) {
-            // TODO move string checks to policy implementations
             policy = new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
         } else if (value.equals("api")) {
-            policy = new DisabledByDefaultRecordingPolicy();
+            policy = new DisabledRecordingPolicy();
         } else if (value.startsWith("file:")) {
             policy = new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));
         } else {
@@ -79,10 +79,9 @@ public class AgentContext {
 
         Pattern startRecordingThreads = settings.getStartRecordingThreads();
         if (startRecordingThreads != null) {
-            return new ThreadNameRecordingPolicy(policy, startRecordingThreads);
-        } else {
-            return policy;
+            policy = new ThreadNameRecordingPolicy(policy, startRecordingThreads);
         }
+        return new OverridableRecordingPolicy(policy);
     }
 
     public static void init() {

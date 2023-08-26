@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class AgentApiBootstrap {
 
     public static AutoCloseable bootstrap(
-            Consumer<Boolean> startRecordingRunnable,
+            Consumer<Boolean> setRecordingEnabled,
             MethodRepository methodRepository,
             TypeResolver typeResolver,
             RecordingDataWriter recordingDataWriter,
@@ -28,7 +28,7 @@ public class AgentApiBootstrap {
             Class<?> apiImplClass = Class.forName("com.ulyp.agent.AgentApiImpl");
             Constructor<?> apiImplConstructor = apiImplClass.getDeclaredConstructors()[0];
             Object apiImpl = apiImplConstructor.newInstance(
-                    startRecordingRunnable,
+                    setRecordingEnabled,
                     methodRepository,
                     typeResolver,
                     recordingDataWriter,

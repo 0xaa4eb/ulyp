@@ -114,11 +114,6 @@ public class FileBasedStartRecordingPolicy implements StartRecordingPolicy {
     }
 
     @Override
-    public void forceEnableRecording(boolean recordingEnabled) {
-        writeToFile(recordingEnabled ? RECORDING_ENABLED_VALUE : RECORDING_DISABLED_VALUE);
-    }
-
-    @Override
     public String toString() {
         return "Can start recording any time";
     }
