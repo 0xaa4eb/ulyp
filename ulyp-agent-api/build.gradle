@@ -20,7 +20,7 @@ dependencies {
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
 
     implementation group: 'io.grpc', name: 'grpc-protobuf', version: '1.27.0'
-    implementation group: 'io.grpc', name: 'grpc-stub', version: '1.27.0'
+    implementation group: 'io.grpc', name: 'grpc-stub', version: '1.58.0'
     implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
 
     testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.55.1'
