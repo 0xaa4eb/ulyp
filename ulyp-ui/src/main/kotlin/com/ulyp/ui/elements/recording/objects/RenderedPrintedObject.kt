@@ -17,7 +17,7 @@ class RenderedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderS
             nodes.add(of(Integer.toHexString(record.identityHashCode), Style.CALL_TREE_IDENTITY))
             nodes.add(of(": ", Style.CALL_TREE_IDENTITY))
         }
-        nodes.add(of(record.printedObject, Style.CALL_TREE_PRINTED))
+        nodes.add(of(record.printedObject, Style.CALL_TREE_PRINTED, Style.CALL_TREE_BOLD))
 
         children.addAll(nodes)
     }

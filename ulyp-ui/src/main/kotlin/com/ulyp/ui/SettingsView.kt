@@ -42,6 +42,8 @@ class SettingsView(
     lateinit var recordingTreeFontSpacingLabel: Label
     @FXML
     lateinit var recordingListShowThreads: CheckBox
+    @FXML
+    lateinit var recordingTreeBoldElements: CheckBox
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
 
@@ -59,5 +61,6 @@ class SettingsView(
         recordingTreeFontSpacingSlider.connect(recordingTreeFontSpacingLabel, settings.recordingTreeFontSpacing)
 
         recordingListShowThreads.selectedProperty().bindBidirectional(settings.recordingListShowThreads)
+        recordingTreeBoldElements.selectedProperty().bindBidirectional(settings.recordingTreeBoldElements)
     }
 }

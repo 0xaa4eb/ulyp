@@ -20,6 +20,7 @@ enum class Style(vararg classes: String) {
     CALL_TREE_COLLECTION_BRACKET("ulyp-call-tree-bracket"),
     CALL_TREE_IDENTITY("ulyp-call-tree-identity"),
     CALL_TREE_PRINTED("ulyp-call-tree-printed"),
+    CALL_TREE_BOLD("ulyp-call-tree-bold"),
     CALL_TREE_METHOD_NAME("ulyp-call-tree-method-name"),
     CALL_TREE_RETURN_VALUE("ulyp-call-tree-return-value"),
     CALL_TREE_THROWN("ulyp-call-tree-thrown"),

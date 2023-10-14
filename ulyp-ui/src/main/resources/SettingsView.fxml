@@ -130,6 +130,15 @@
                                         <Insets left="20.0" top="20.0" />
                                     </VBox.margin>
                                 </HBox>
+                               <HBox prefWidth="200.0">
+                                   <children>
+                                       <Label prefWidth="200.0" text="Bold elements" />
+                                       <CheckBox fx:id="recordingTreeBoldElements" mnemonicParsing="false" />
+                                   </children>
+                                   <VBox.margin>
+                                       <Insets left="20.0" top="20.0" />
+                                   </VBox.margin>
+                               </HBox>
                            </children>
                         </VBox>
                      </children></AnchorPane>

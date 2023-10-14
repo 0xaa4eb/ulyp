@@ -14,16 +14,16 @@ class SettingsFileStorage(private val settingsFile: File) {
             json.decodeFromString(settingsJson)
         } else {
             val settings = Settings()
-            this.write(settings)
+            this.writeToFile(settings)
             settings
         }
         settings.addListener {
-                _, _, _ -> write(settings)
+                _, _, _ -> writeToFile(settings)
         }
         return settings
     }
 
-    private fun write(settings: Settings) {
+    private fun writeToFile(settings: Settings) {
         val encodeToString = Json.encodeToString(settings)
         settingsFile.writeText(encodeToString, Charsets.UTF_8)
 

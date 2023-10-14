@@ -114,7 +114,7 @@
     -fx-fill: rgb(169, 183, 198);
 }
 
-.ulyp-call-tree-printed {
+.ulyp-call-tree-printed.ulyp-call-tree-bold {
     -fx-fill: rgb(102, 0, 204);
 }
 

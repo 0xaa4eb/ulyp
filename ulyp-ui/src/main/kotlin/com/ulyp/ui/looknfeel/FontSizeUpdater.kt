@@ -18,41 +18,47 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
         private const val STYLE_PREFIX = "call-tree-font-style"
     }
 
+    private fun buildStyleSheet(settings: Settings): String {
+        var baseStyleSheet =
+            """
+            .root {
+            -fx-font-family: ${settings.systemFontName.get()};
+                -fx-font-size: ${settings.systemFontSize.get()}px;
+            }
+            .system-font-text {
+                -fx-font-size: ${settings.systemFontSize.get()}px;
+            }
+            .ulyp-tooltip-text {
+                -fx-font-size: ${settings.systemFontSize.get()}px;
+            }
+            .ulyp-call-tree {
+                -fx-font-family: ${settings.recordingTreeFontName.get()};
+                -fx-font-size: ${settings.recordingTreeFontSize.get()}px;
+            }
+            .ulyp-call-tree-call-node {
+                -fx-min-height: -1;
+                -fx-max-height: -1;
+            }
+            .ulyp-call-tree-view {
+                -fx-fixed-cell-size: ${settings.recordingTreeFontSize.get() + settings.recordingTreeFontSpacing.get()}px;
+            }
+            .ulyp-smaller-text {
+                -fx-font-size: ${(settings.recordingTreeFontSize.get() * 0.8).toInt()}px;
+            }
+            .ulyp-call-tree-bold {
+                -fx-font-weight: ${(if (settings.recordingTreeBoldElements.get()) "bold" else "normal")};
+            }
+            """
+        println(baseStyleSheet)
+        return baseStyleSheet
+    }
+
     fun update(scene: Scene, settings: Settings) {
         try {
 
             val path = Files.createTempFile(STYLE_PREFIX, null)
             path.toFile().deleteOnExit()
-            Files.write(
-                    path,
-                    """
-                    .root {
-                    -fx-font-family: ${settings.systemFontName.get()};
-                        -fx-font-size: ${settings.systemFontSize.get()}px;
-                    }
-                    .system-font-text {
-                        -fx-font-size: ${settings.systemFontSize.get()}px;
-                    }
-                    .ulyp-tooltip-text {
-                        -fx-font-size: ${settings.systemFontSize.get()}px;
-                    }
-                    .ulyp-call-tree {
-                        -fx-font-family: ${settings.recordingTreeFontName.get()};
-                        -fx-font-size: ${settings.recordingTreeFontSize.get()}px;
-                    }
-                    .ulyp-call-tree-call-node {
-                        -fx-min-height: -1;
-                        -fx-max-height: -1;
-                    }
-                    .ulyp-call-tree-view {
-                        -fx-fixed-cell-size: ${settings.recordingTreeFontSize.get() + settings.recordingTreeFontSpacing.get()}px;
-                    }
-                    .ulyp-smaller-text {
-                        -fx-font-size: ${(settings.recordingTreeFontSize.get() * 0.8).toInt()}px;
-                    }
-                    """.toByteArray(StandardCharsets.UTF_8),
-                    StandardOpenOption.WRITE
-            )
+            Files.write(path, buildStyleSheet(settings).toByteArray(StandardCharsets.UTF_8), StandardOpenOption.WRITE)
             var index: Int? = null
             for (i in scene.stylesheets.indices) {
                 if (scene.stylesheets[i].contains(STYLE_PREFIX)) {

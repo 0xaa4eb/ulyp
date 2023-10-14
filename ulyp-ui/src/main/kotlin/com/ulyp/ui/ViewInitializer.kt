@@ -34,6 +34,9 @@ class ViewInitializer {
         settings.recordingTreeFontSize.addListener { _, _, _ ->
             fontSizeUpdater.update(UIApplication.stage.scene, settings)
         }
+        settings.recordingTreeBoldElements.addListener { _, _, _ ->
+            fontSizeUpdater.update(UIApplication.stage.scene, settings)
+        }
 
         Platform.runLater {
             fontSizeUpdater.update(UIApplication.stage.scene, settings)

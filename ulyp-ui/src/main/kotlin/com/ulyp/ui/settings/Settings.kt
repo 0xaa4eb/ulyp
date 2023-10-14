@@ -29,6 +29,8 @@ class Settings {
     val recordingTreeFontName: StringProperty = SimpleStringProperty(Font.getDefault().name)
     @Serializable(with = BooleanPropertySerializer::class)
     val recordingListShowThreads: BooleanProperty = SimpleBooleanProperty(true)
+    @Serializable(with = BooleanPropertySerializer::class)
+    val recordingTreeBoldElements: BooleanProperty = SimpleBooleanProperty(true)
 
     fun addListener(listener: ChangeListener<Any>) {
         theme.addListener(listener)
@@ -38,5 +40,6 @@ class Settings {
         recordingTreeFontSpacing.addListener(listener)
         recordingTreeFontName.addListener(listener)
         recordingListShowThreads.addListener(listener)
+        recordingTreeBoldElements.addListener(listener)
     }
 }
