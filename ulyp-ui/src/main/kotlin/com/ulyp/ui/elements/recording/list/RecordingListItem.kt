@@ -87,6 +87,15 @@ class RecordingListItem(private val recording: Recording, settings: Settings): T
         }
     }
 
+    fun markHighlighted() {
+        this.children.add(RecordingListItemSelectionMark())
+    }
+
+    fun clearHighlight() {
+        // TODO
+        this.children.removeIf { it is RecordingListItemSelectionMark }
+    }
+
     fun clearSelection() {
         this.children.removeIf { it is RecordingListItemSelectionMark }
     }

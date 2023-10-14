@@ -1,10 +1,7 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.core.ProcessMetadata;
-import com.ulyp.storage.Recording;
-import com.ulyp.storage.RecordingListener;
-import com.ulyp.storage.StorageException;
-import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.storage.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,5 +36,10 @@ public class EmptyRecordingDataReader implements RecordingDataReader {
     @Override
     public void close() throws StorageException {
 
+    }
+
+    @Override
+    public CompletableFuture<Void> initiateSearch(SearchQuery query, SearchResultListener listener) {
+        return CompletableFuture.completedFuture(null);
     }
 }

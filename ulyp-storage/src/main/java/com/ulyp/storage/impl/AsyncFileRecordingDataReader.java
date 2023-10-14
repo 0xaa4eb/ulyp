@@ -14,6 +14,7 @@ import com.ulyp.storage.impl.util.BinaryListFileReader;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
+import lombok.Getter;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.Closeable;
@@ -30,12 +31,14 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
     private final DataReader dataReader;
     private final ReaderSettings settings;
     private final ExecutorService executorService;
+    @Getter
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
     private final Index index;
+    @Getter
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
-    private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private final Repository<Integer, Method> methods = new InMemoryRepository<>();
+    private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
@@ -45,7 +48,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         this.settings = settings;
         this.dataReader = new DataReader(file);
         this.executorService = Executors.newFixedThreadPool(
-                1,
+                5,
                 NamedThreadFactory.builder()
                         .name("Reader-" + file.toString())
                         .daemon(true)
@@ -64,14 +67,6 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
         }
-    }
-
-    public InMemoryRepository<Integer, Type> getTypes() {
-        return types;
-    }
-
-    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
-        return processMetadataFuture;
     }
 
     @Override
@@ -107,28 +102,37 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         }
     }
 
-    private class StorageReaderTask implements Runnable, Closeable {
+    @Override
+    public CompletableFuture<Void> initiateSearch(SearchQuery query, SearchResultListener listener) {
+        try {
+            return CompletableFuture.runAsync(new SearchTask(file, query, listener), executorService);
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    private abstract class StorageIteratingTask implements Runnable, Closeable {
 
         private final BinaryListFileReader reader;
-        private final ReaderSettings settings;
 
-        private StorageReaderTask(File file, ReaderSettings settings) throws IOException {
+        private StorageIteratingTask(File file) throws IOException {
             this.reader = new BinaryListFileReader(file);
-            this.settings = settings;
         }
 
         @Override
         public void run() {
-            Backoff backoff = new FixedDelayBackoff(Duration.ofMillis(100));
-
             while (!Thread.currentThread().isInterrupted()) {
 
                 try {
                     BinaryListWithAddress data = this.reader.readWithAddress();
 
                     if (data == null) {
-                        backoff.await();
-                        continue;
+                        if (continueOnNoData()) {
+                            continue;
+                        } else {
+                            onComplete();
+                            return;
+                        }
                     }
 
                     switch (data.getBytes().id()) {
@@ -148,20 +152,23 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
                             onRecordedCalls(data);
                             break;
                         case RecordingCompleteMark.WIRE_ID:
-                            ForkJoinPool.commonPool().execute(executorService::shutdownNow);
-                            finishedReadingFuture.complete(true);
+                            onComplete();
                             return;
                         default:
                             throw new StorageException("Unknown binary data id " + data.getBytes().id());
                     }
-                } catch (InterruptedException ie) {
-                    return;
                 } catch (Exception err) {
-                    finishedReadingFuture.completeExceptionally(err);
+                    onError(err);
                     return;
                 }
             }
         }
+
+        protected abstract boolean continueOnNoData();
+
+        protected abstract void onComplete();
+
+        protected abstract void onError(Exception error);
 
         @Override
         public void close() {
@@ -173,7 +180,110 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(BinaryList data) {
+        protected abstract void onProcessMetadata(BinaryList data);
+
+        protected abstract void onRecordingMetadata(BinaryList data);
+
+        private void onTypes(BinaryList data) {
+            new TypeList(data).forEach(type -> types.store(type.getId(), type));
+        }
+
+        private void onMethods(BinaryList data) {
+            new MethodList(data).forEach(type -> methods.store(type.getId(), type));
+        }
+
+        protected abstract void onRecordedCalls(BinaryListWithAddress data);
+    }
+
+    private class SearchTask extends StorageIteratingTask {
+
+        private final SearchQuery query;
+        private final SearchResultListener searchResultListener;
+
+        private SearchTask(File file, SearchQuery query, SearchResultListener resultListener) throws IOException {
+            super(file);
+            this.query = query;
+            this.searchResultListener = resultListener;
+            resultListener.onStart();
+        }
+
+        @Override
+        protected boolean continueOnNoData() {
+            return false;
+        }
+
+        @Override
+        protected void onComplete() {
+            searchResultListener.onEnd();
+        }
+
+        @Override
+        protected void onError(Exception error) {
+
+        }
+
+        @Override
+        protected void onProcessMetadata(BinaryList data) {
+
+        }
+
+        @Override
+        protected void onRecordingMetadata(BinaryList data) {
+
+        }
+
+        @Override
+        protected void onRecordedCalls(BinaryListWithAddress data) {
+            RecordedMethodCallList calls = new RecordedMethodCallList(data.getBytes());
+
+            for (RecordedMethodCall recordedCall : calls) {
+                if (recordedCall instanceof RecordedEnterMethodCall) {
+                    RecordedEnterMethodCall enterMethodCall = (RecordedEnterMethodCall) recordedCall;
+                    if (query.matches(enterMethodCall, types, methods)) {
+                        searchResultListener.onMatch(enterMethodCall);
+                    }
+                } else {
+                    RecordedExitMethodCall exitMethodCall = (RecordedExitMethodCall) recordedCall;
+                    if (query.matches(exitMethodCall, types, methods)) {
+                        searchResultListener.onMatch(exitMethodCall);
+                    }
+                }
+            }
+        }
+    }
+
+    private class StorageReaderTask extends StorageIteratingTask {
+
+        private final Backoff backoff = new FixedDelayBackoff(Duration.ofMillis(100));
+        private final ReaderSettings settings;
+
+        private StorageReaderTask(File file, ReaderSettings settings) throws IOException {
+            super(file);
+            this.settings = settings;
+        }
+
+        @Override
+        protected boolean continueOnNoData() {
+            try {
+                backoff.await();
+            } catch (InterruptedException e) {
+                throw new StorageException("Interrupted", e);
+            }
+            return true;
+        }
+
+        @Override
+        protected void onComplete() {
+            finishedReadingFuture.complete(true);
+        }
+
+        @Override
+        protected void onError(Exception error) {
+            finishedReadingFuture.completeExceptionally(error);
+        }
+
+        @Override
+        protected void onProcessMetadata(BinaryList data) {
             UnsafeBuffer buffer = new UnsafeBuffer();
             data.iterator().next().wrapValue(buffer);
             BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
@@ -181,7 +291,8 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             processMetadataFuture.complete(ProcessMetadata.deserialize(decoder));
         }
 
-        private void onRecordingMetadata(BinaryList data) {
+        @Override
+        protected void onRecordingMetadata(BinaryList data) {
             UnsafeBuffer buffer = new UnsafeBuffer();
             data.iterator().next().wrapValue(buffer);
             BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
@@ -199,11 +310,8 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             recordingState.update(metadata);
         }
 
-        private void onTypes(BinaryList data) {
-            new TypeList(data).forEach(type -> types.store(type.getId(), type));
-        }
-
-        private void onRecordedCalls(BinaryListWithAddress data) {
+        @Override
+        protected void onRecordedCalls(BinaryListWithAddress data) {
             RecordedMethodCallList recordedMethodCalls = new RecordedMethodCallList(data.getBytes());
             if (recordedMethodCalls.isEmpty()) {
                 return;
@@ -222,10 +330,6 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
                     recordingListener.onRecordingUpdated(converted);
                 }
             }
-        }
-
-        private void onMethods(BinaryList data) {
-            new MethodList(data).forEach(type -> methods.store(type.getId(), type));
         }
     }
 }

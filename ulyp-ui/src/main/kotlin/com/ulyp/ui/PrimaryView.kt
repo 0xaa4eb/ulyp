@@ -84,8 +84,24 @@ class PrimaryView(
         val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
         stage.show()
-        val filterView = applicationContext.getBean(FilterView::class.java)
-        filterView.stage = stage
+        val view = applicationContext.getBean(FilterView::class.java)
+        view.stage = stage
+    }
+
+    fun showSearchView() {
+        val loader = FXMLLoader(UIApplication::class.java.classLoader.getResource("SearchView.fxml"))
+        loader.controllerFactory = Callback { cl: Class<*>? -> applicationContext.getBean(cl) }
+        val root = loader.load<Parent>()
+        val scene = applicationContext.getBean(SceneRegistry::class.java).newScene(root)
+        val stage = Stage()
+        stage.scene = scene
+        stage.isMaximized = false
+        stage.title = "Search"
+        val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
+        stage.icons.add(Image(iconStream))
+        stage.show()
+        val view = applicationContext.getBean(SearchView::class.java)
+        view.stage = stage
     }
 
     fun showSettings() {
@@ -113,7 +129,7 @@ class PrimaryView(
 
         recordingDataReader.processMetadataFuture.thenAccept { processMetadata ->
 
-            val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata))
+            val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata), recordingDataReader)
             fileRecordingsTab.setOnClosed {
                 recordingDataReader.close()
             }

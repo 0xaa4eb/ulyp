@@ -33,4 +33,6 @@ public interface RecordingDataReader extends AutoCloseable {
     List<Recording> getRecordings();
 
     void close() throws StorageException;
+
+    CompletableFuture<Void> initiateSearch(SearchQuery query, SearchResultListener listener);
 }
