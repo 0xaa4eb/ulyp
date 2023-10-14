@@ -4,7 +4,6 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.PrintedObjectRecord;
-import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -42,9 +41,9 @@ public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
         assertThat(root.getReturnValue(), instanceOf(PrintedObjectRecord.class));
 
         PrintedObjectRecord printed = (PrintedObjectRecord) root.getReturnValue();
-        StringObjectRecord value = printed.getPrinted();
+        String value = printed.getPrintedObject();
 
-        assertThat(value.value(), is("X{val=5}"));
+        assertThat(value, is("X{val=5}"));
     }
 
     @Test

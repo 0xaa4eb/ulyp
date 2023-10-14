@@ -71,7 +71,7 @@ public class Agent {
         mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
         ToStringPrintingRecorder toStringRecorder = (ToStringPrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
-        toStringRecorder.addClassesToPrint(settings.getClassesToPrint());
+        toStringRecorder.addClassesToPrint(settings.getTypesToPrint());
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);

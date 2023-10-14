@@ -1,29 +1,23 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import lombok.Getter;
 
+@Getter
 public class PrintedObjectRecord extends ObjectRecord {
 
-    private final StringObjectRecord printed;
+    private final String printedObject;
     private final int identityHashCode;
 
-    protected PrintedObjectRecord(StringObjectRecord printed, Type type, int identityHashCode) {
+    protected PrintedObjectRecord(String printedObject, Type type, int identityHashCode) {
         super(type);
 
-        this.printed = printed;
+        this.printedObject = printedObject;
         this.identityHashCode = identityHashCode;
-    }
-
-    public StringObjectRecord getPrinted() {
-        return printed;
-    }
-
-    public int getIdentityHashCode() {
-        return identityHashCode;
     }
 
     @Override
     public String toString() {
-        return printed.toString();
+        return printedObject;
     }
 }

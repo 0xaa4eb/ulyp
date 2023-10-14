@@ -8,7 +8,7 @@ import com.ulyp.ui.util.TrimmedTextView
 import javafx.event.EventHandler
 import javafx.scene.text.Text
 
-class RecordedStringView internal constructor(record: StringObjectRecord) : RecordedObjectView() {
+class RenderedString internal constructor(record: StringObjectRecord) : RenderedObject() {
 
     init {
         val fullText: Text = StyledText.of(

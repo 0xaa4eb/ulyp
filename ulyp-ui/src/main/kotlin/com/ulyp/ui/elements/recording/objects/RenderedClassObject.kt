@@ -7,7 +7,7 @@ import com.ulyp.ui.util.StyledText.of
 import com.ulyp.ui.util.TrimmedTextView
 import javafx.scene.text.Text
 
-class RecordedClassObjectView(record: ClassObjectRecord, renderSettings: RenderSettings) : RecordedObjectView() {
+class RenderedClassObject(record: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject() {
 
     init {
         if (renderSettings.showTypes) {

@@ -2,7 +2,7 @@ package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.storage.CallRecord
 import com.ulyp.ui.RenderSettings
-import com.ulyp.ui.elements.recording.objects.RecordedObjectView.Companion.of
+import com.ulyp.ui.elements.recording.objects.RenderedObject.Companion.of
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.TextBuilder

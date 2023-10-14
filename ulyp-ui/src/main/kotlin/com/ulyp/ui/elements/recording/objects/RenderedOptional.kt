@@ -6,7 +6,7 @@ import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 import javafx.scene.Node
 
-class RecordedOptionalView(record: OptionalRecord, renderSettings: RenderSettings) : RecordedObjectView() {
+class RenderedOptional(record: OptionalRecord, renderSettings: RenderSettings) : RenderedObject() {
 
     init {
         val content: MutableList<Node> = ArrayList()

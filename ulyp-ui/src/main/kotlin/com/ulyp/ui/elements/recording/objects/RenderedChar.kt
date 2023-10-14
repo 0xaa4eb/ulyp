@@ -6,8 +6,8 @@ import com.ulyp.ui.util.StyledText
 import com.ulyp.ui.util.TrimmedTextView
 import javafx.scene.text.Text
 
-class RecordedCharView internal constructor(value: CharRecord)
-    : RecordedObjectView() {
+class RenderedChar internal constructor(value: CharRecord)
+    : RenderedObject() {
 
     init {
         val text: Text = TrimmedTextView(Text("'" + value.value + "'"))

@@ -3,6 +3,9 @@ package com.ulyp.ui
 import com.ulyp.ui.looknfeel.Theme
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.settings.Settings
+import com.ulyp.ui.settings.SimpleIntegerProperty
+import com.ulyp.ui.util.connect
+import javafx.beans.property.StringProperty
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
@@ -43,46 +46,17 @@ class SettingsView(
     override fun initialize(url: URL, rb: ResourceBundle?) {
 
         themeChoiceBox.items.addAll(Theme.values().map { it.name }.toList())
-        themeChoiceBox.selectionModel.select(settings.theme.get())
-        themeChoiceBox.setOnAction {
-            settings.theme.value = themeChoiceBox.selectionModel.selectedItem
-        }
+        themeChoiceBox.connect(settings.theme)
 
         systemFontChoiceBox.items.addAll(Font.getFamilies())
-        systemFontChoiceBox.selectionModel.select(settings.systemFontName.value)
-        systemFontChoiceBox.setOnAction {
-            settings.systemFontName.value = systemFontChoiceBox.selectionModel.selectedItem
-        }
+        systemFontChoiceBox.connect(settings.systemFontName)
 
         recordingTreeFontChoiceBox.items.addAll(Font.getFamilies())
-        recordingTreeFontChoiceBox.selectionModel.select(settings.recordingTreeFontName.value)
-        recordingTreeFontChoiceBox.setOnAction {
-            settings.recordingTreeFontName.value = recordingTreeFontChoiceBox.selectionModel.selectedItem
-        }
+        recordingTreeFontChoiceBox.connect(settings.recordingTreeFontName)
 
-        systemFontSizeLabel.text = settings.systemFontSize.value.toString()
-        systemFontSizeSlider.value = settings.systemFontSize.value.toDouble()
-        systemFontSizeSlider.valueProperty().addListener { _, _, newValue ->
-            systemFontSizeLabel.text = newValue.toString()
-            systemFontSizeSlider.value = newValue.toInt().toDouble()
-            settings.systemFontSize.value = newValue.toInt()
-        }
-
-        recordingTreeFontSizeLabel.text = settings.recordingTreeFontSize.value.toString()
-        recordingTreeFontSizeSlider.value = settings.recordingTreeFontSize.value.toDouble()
-        recordingTreeFontSizeSlider.valueProperty().addListener { _, _, newValue ->
-            recordingTreeFontSizeLabel.text = newValue.toString()
-            recordingTreeFontSizeSlider.value = newValue.toInt().toDouble()
-            settings.recordingTreeFontSize.value = newValue.toInt()
-        }
-
-        recordingTreeFontSpacingLabel.text = settings.recordingTreeFontSpacing.value.toString()
-        recordingTreeFontSpacingSlider.value = settings.recordingTreeFontSpacing.doubleValue()
-        recordingTreeFontSpacingSlider.valueProperty().addListener { _, _, newValue ->
-            recordingTreeFontSpacingLabel.text = newValue.toString()
-            recordingTreeFontSpacingSlider.value = newValue.toInt().toDouble()
-            settings.recordingTreeFontSpacing.value = newValue.toInt()
-        }
+        systemFontSizeSlider.connect(systemFontSizeLabel, settings.systemFontSize)
+        recordingTreeFontSizeSlider.connect(recordingTreeFontSizeLabel, settings.recordingTreeFontSize)
+        recordingTreeFontSpacingSlider.connect(recordingTreeFontSpacingLabel, settings.recordingTreeFontSpacing)
 
         recordingListShowThreads.selectedProperty().bindBidirectional(settings.recordingListShowThreads)
     }

@@ -30,7 +30,7 @@ public class Settings {
     public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String START_RECORDING_THREADS_PROPERTY = "ulyp.threads";
-    public static final String PRINT_CLASSES_PROPERTY = "ulyp.print-classes";
+    public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
@@ -52,7 +52,7 @@ public class Settings {
     private final boolean instrumentTypeInitializers;
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
-    private final Set<TypeMatcher> classesToPrint;
+    private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
     private final boolean agentDisabled;
 
@@ -66,7 +66,7 @@ public class Settings {
             boolean instrumentLambdas,
             boolean instrumentTypeInitializers,
             CollectionsRecordingMode collectionsRecordingMode,
-            Set<TypeMatcher> classesToPrint,
+            Set<TypeMatcher> typesToPrint,
             String startRecordingPolicyPropertyValue,
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
@@ -80,7 +80,7 @@ public class Settings {
         this.instrumentLambdas = instrumentLambdas;
         this.instrumentTypeInitializers = instrumentTypeInitializers;
         this.collectionsRecordingMode = collectionsRecordingMode;
-        this.classesToPrint = classesToPrint;
+        this.typesToPrint = typesToPrint;
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
         this.bindNetworkAddress = bindNetworkAddress;
@@ -161,8 +161,8 @@ public class Settings {
 
         boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
 
-        Set<TypeMatcher> classesToPrint =
-                CommaSeparatedList.parse(System.getProperty(PRINT_CLASSES_PROPERTY, ""))
+        Set<TypeMatcher> typesToPrint =
+                CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
                         .stream()
                         .map(TypeMatcher::parse)
                         .collect(Collectors.toSet());
@@ -177,7 +177,7 @@ public class Settings {
                 instrumentLambdas,
                 instrumentTypeInitializers,
                 collectionsRecordingMode,
-                classesToPrint,
+                typesToPrint,
                 startRecordingPolicy,
                 excludeClassesFromInstrumentation,
                 bindNetworkAddress,
@@ -228,8 +228,8 @@ public class Settings {
         return collectionsRecordingMode;
     }
 
-    public Set<TypeMatcher> getClassesToPrint() {
-        return classesToPrint;
+    public Set<TypeMatcher> getTypesToPrint() {
+        return typesToPrint;
     }
 
     public String getStartRecordingPolicyPropertyValue() {
@@ -255,6 +255,6 @@ public class Settings {
                 ",\ninstrument lambdas: " + instrumentLambdas +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
-                ",\nclassesToPrintWithToString(TBD)=" + classesToPrint;
+                ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 }

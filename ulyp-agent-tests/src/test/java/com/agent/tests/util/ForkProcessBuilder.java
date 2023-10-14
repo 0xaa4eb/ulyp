@@ -145,7 +145,7 @@ public class ForkProcessBuilder {
             params.add("-D" + Settings.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
         }
         if (printClasses != null) {
-            params.add("-D" + Settings.PRINT_CLASSES_PROPERTY + "=" + printClasses);
+            params.add("-D" + Settings.PRINT_TYPES_PROPERTY + "=" + printClasses);
         }
         if (agentDisabled != null && agentDisabled) {
             params.add("-D" + Settings.AGENT_DISABLED_PROPERTY);

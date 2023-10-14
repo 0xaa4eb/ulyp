@@ -114,10 +114,13 @@
     -fx-fill: rgb(169, 183, 198);
 }
 
+.ulyp-call-tree-printed {
+    -fx-fill: rgb(102, 0, 204);
+}
+
 .ulyp-call-tree-object-value {
     -fx-fill: rgb(169, 183, 198);
 }
-
 
 .ulyp-call-tree-thrown {
     -fx-fill: rgb(255, 84, 80);
