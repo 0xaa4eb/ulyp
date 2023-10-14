@@ -19,38 +19,35 @@ class FontSizeUpdater(private val applicationContext: ApplicationContext) {
     }
 
     private fun buildStyleSheet(settings: Settings): String {
-        var baseStyleSheet =
-            """
-            .root {
-            -fx-font-family: ${settings.systemFontName.get()};
-                -fx-font-size: ${settings.systemFontSize.get()}px;
-            }
-            .system-font-text {
-                -fx-font-size: ${settings.systemFontSize.get()}px;
-            }
-            .ulyp-tooltip-text {
-                -fx-font-size: ${settings.systemFontSize.get()}px;
-            }
-            .ulyp-call-tree {
-                -fx-font-family: ${settings.recordingTreeFontName.get()};
-                -fx-font-size: ${settings.recordingTreeFontSize.get()}px;
-            }
-            .ulyp-call-tree-call-node {
-                -fx-min-height: -1;
-                -fx-max-height: -1;
-            }
-            .ulyp-call-tree-view {
-                -fx-fixed-cell-size: ${settings.recordingTreeFontSize.get() + settings.recordingTreeFontSpacing.get()}px;
-            }
-            .ulyp-smaller-text {
-                -fx-font-size: ${(settings.recordingTreeFontSize.get() * 0.8).toInt()}px;
-            }
-            .ulyp-call-tree-bold {
-                -fx-font-weight: ${(if (settings.recordingTreeBoldElements.get()) "bold" else "normal")};
-            }
-            """
-        println(baseStyleSheet)
-        return baseStyleSheet
+        return """
+        .root {
+        -fx-font-family: ${settings.systemFontName.get()};
+            -fx-font-size: ${settings.systemFontSize.get()}px;
+        }
+        .system-font-text {
+            -fx-font-size: ${settings.systemFontSize.get()}px;
+        }
+        .ulyp-tooltip-text {
+            -fx-font-size: ${settings.systemFontSize.get()}px;
+        }
+        .ulyp-call-tree {
+            -fx-font-family: ${settings.recordingTreeFontName.get()};
+            -fx-font-size: ${settings.recordingTreeFontSize.get()}px;
+        }
+        .ulyp-call-tree-call-node {
+            -fx-min-height: -1;
+            -fx-max-height: -1;
+        }
+        .ulyp-call-tree-view {
+            -fx-fixed-cell-size: ${settings.recordingTreeFontSize.get() + settings.recordingTreeFontSpacing.get()}px;
+        }
+        .ulyp-smaller-text {
+            -fx-font-size: ${(settings.recordingTreeFontSize.get() * 0.8).toInt()}px;
+        }
+        .ulyp-call-tree-bold {
+            -fx-font-weight: ${(if (settings.recordingTreeBoldElements.get()) "bold" else "normal")};
+        }
+        """
     }
 
     fun update(scene: Scene, settings: Settings) {
