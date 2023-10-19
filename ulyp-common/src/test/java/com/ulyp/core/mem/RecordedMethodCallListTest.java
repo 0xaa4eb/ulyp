@@ -45,11 +45,11 @@ public class RecordedMethodCallListTest {
 
         RecordedEnterMethodCall recordedEnterMethodCall = (RecordedEnterMethodCall) calls.get(0);
 
-        Assert.assertEquals(BitUtil.longFromInts(5, 134), recordedEnterMethodCall.getCallId());
+        Assert.assertEquals(134, recordedEnterMethodCall.getCallId());
 
         RecordedExitMethodCall recordedExitMethodCall = (RecordedExitMethodCall) calls.get(1);
 
-        Assert.assertEquals(BitUtil.longFromInts(5, 134), recordedExitMethodCall.getCallId());
+        Assert.assertEquals(134, recordedExitMethodCall.getCallId());
     }
 
     @Test

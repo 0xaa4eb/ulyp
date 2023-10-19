@@ -159,7 +159,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     }
 
     public int size() {
-        return bytes.size();
+        // one entry is always present for recordingId stored
+        return bytes.size() - 1;
     }
 
     public int byteLength() {
