@@ -22,16 +22,16 @@ public class MemCallStack {
         }
 
         if (!deque.isEmpty()) {
-            deque.getLast().addChildrenCallId(value.getCallId());
+            deque.getLast().addChildrenCallId(value.getId());
         }
 
         deque.add(value);
-        lookupIndex.put(value.getCallId(), value);
+        lookupIndex.put(value.getId(), value);
     }
 
     public void pop() {
         RecordedCallState top = deque.removeLast();
-        lookupIndex.remove(top.getCallId());
+        lookupIndex.remove(top.getId());
     }
 
     @Nullable

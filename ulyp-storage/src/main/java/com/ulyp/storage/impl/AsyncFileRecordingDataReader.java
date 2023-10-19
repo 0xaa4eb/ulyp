@@ -14,6 +14,7 @@ import com.ulyp.storage.impl.util.BinaryListFileReader;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
+import lombok.Getter;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.Closeable;
@@ -30,9 +31,11 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
     private final DataReader dataReader;
     private final ReaderSettings settings;
     private final ExecutorService executorService;
+    @Getter
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
     private final Index index;
+    @Getter
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private final Repository<Integer, Method> methods = new InMemoryRepository<>();
@@ -64,14 +67,6 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
         } catch (IOException e) {
             throw new StorageException("Could not start reader task for file " + file, e);
         }
-    }
-
-    public InMemoryRepository<Integer, Type> getTypes() {
-        return types;
-    }
-
-    public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {
-        return processMetadataFuture;
     }
 
     @Override
@@ -208,7 +203,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             if (recordedMethodCalls.isEmpty()) {
                 return;
             }
-            int recordingId = recordedMethodCalls.iterator().next().getRecordingId();
+            int recordingId = recordedMethodCalls.getRecordingId();
             RecordingState recording = recordings.get(recordingId);
             if (recording == null) {
                 return;

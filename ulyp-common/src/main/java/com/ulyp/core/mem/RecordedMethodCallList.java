@@ -6,8 +6,10 @@ import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
 import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.Preconditions;
 import com.ulyp.transport.*;
+import lombok.Getter;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.NotNull;
@@ -26,27 +28,36 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     public static final byte EXIT_METHOD_CALL_ID = 2;
     public static final int WIRE_ID = 2;
 
+    @Getter
+    private final int recordingId;
     private final BinaryOutputForEnterRecordImpl enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl();
     private final BinaryOutputForExitRecordImpl exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl();
     private final BinaryRecordedEnterMethodCallEncoder enterMethodCallEncoder = new BinaryRecordedEnterMethodCallEncoder();
     private final BinaryRecordedExitMethodCallEncoder exitMethodCallEncoder = new BinaryRecordedExitMethodCallEncoder();
     private final BinaryList bytes;
 
-    public RecordedMethodCallList() {
-        bytes = new BinaryList(WIRE_ID);
+    public RecordedMethodCallList(int recordingId) {
+        this.bytes = new BinaryList(WIRE_ID);
+
+        // store recordingId in the first entry
+        byte[] buf = new byte[Long.BYTES];
+        BitUtil.longToBytes(recordingId, buf, 0);
+        this.bytes.add(buf);
+
+        this.recordingId = recordingId;
     }
 
     public RecordedMethodCallList(BinaryList bytes) {
         Preconditions.checkArgument(bytes.id() == WIRE_ID, "Invalid binary list passed");
         this.bytes = bytes;
+
+        BinaryDataDecoder firstEntry = bytes.iterator().next();
+        byte[] buf = new byte[Long.BYTES];
+        firstEntry.getValue(buf, 0, Long.BYTES);
+        this.recordingId = (int) BitUtil.bytesToLong(buf, 0);
     }
 
-    public void addExitMethodCall(
-            int recordingId,
-            int callId,
-            TypeResolver typeResolver,
-            boolean thrown,
-            Object returnValue) {
+    public void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -57,7 +68,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     exitMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
-                    exitMethodCallEncoder.recordingId((short) recordingId);
                     exitMethodCallEncoder.callId(callId);
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
                     Type type = typeResolver.get(returnValue);
@@ -88,13 +98,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         );
     }
 
-    public void addEnterMethodCall(
-            int recordingId,
-            int callId,
-            Method method,
-            TypeResolver typeResolver,
-            Object callee,
-            Object[] args) {
+    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -105,7 +109,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
-                    enterMethodCallEncoder.recordingId((short) recordingId);
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
 
@@ -167,10 +170,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         return bytes;
     }
 
-    public AddressableItemIterator<BinaryDataDecoder> binaryIterator() {
-        return bytes.iterator();
-    }
-
     public Stream<RecordedMethodCall> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED), false);
     }
@@ -179,6 +178,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     @Override
     public AddressableItemIterator<RecordedMethodCall> iterator() {
         AddressableItemIterator<BinaryDataDecoder> iterator = bytes.iterator();
+        iterator.next();
+
         return new AddressableItemIterator<RecordedMethodCall>() {
             @Override
             public long address() {

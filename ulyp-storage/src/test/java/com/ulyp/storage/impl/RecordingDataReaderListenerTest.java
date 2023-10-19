@@ -4,8 +4,6 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.CallRecord;
 import com.ulyp.storage.ReaderSettings;
@@ -107,10 +105,9 @@ public class RecordingDataReaderListenerTest {
 
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(1);
 
         methodCalls.addEnterMethodCall(
-                1,
                 0,
                 method,
                 typeResolver,
@@ -134,10 +131,9 @@ public class RecordingDataReaderListenerTest {
                         }
                 );
 
-        methodCalls = new RecordedMethodCallList();
+        methodCalls = new RecordedMethodCallList(2);
 
         methodCalls.addEnterMethodCall(
-                2,
                 10,
                 method,
                 typeResolver,

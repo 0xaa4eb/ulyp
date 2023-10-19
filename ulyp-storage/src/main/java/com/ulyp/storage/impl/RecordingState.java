@@ -3,7 +3,9 @@ package com.ulyp.storage.impl;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.storage.*;
+import lombok.Getter;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -17,9 +19,10 @@ public class RecordingState {
     private final ReadableRepository<Integer, Method> methodRepository;
     private final ReadableRepository<Integer, Type> typeRepository;
     private final RecordingMetadata metadata;
+    @Getter
     private volatile boolean published = false;
 
-    private long rootCallId = -1;
+    private long rootUniqueId = -1;
 
     public RecordingState(
             RecordingMetadata metadata,
@@ -39,19 +42,20 @@ public class RecordingState {
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
+            long uniqueId = BitUtil.longFromInts(metadata.getId(), (int) value.getCallId());
             if (value instanceof RecordedEnterMethodCall) {
-                if (rootCallId < 0) {
-                    rootCallId = value.getCallId();
+                if (rootUniqueId < 0) {
+                    rootUniqueId = uniqueId;
                 }
                 RecordedCallState callState = RecordedCallState.builder()
-                    .callId(value.getCallId())
+                    .id(uniqueId)
                     .enterMethodCallAddr(fileAddr + relativeAddress)
                     .build();
                 memCallStack.push(callState);
             } else {
 
                 RecordedCallState lastCallState = memCallStack.peek();
-                if (lastCallState == null || lastCallState.getCallId() != value.getCallId()) {
+                if (lastCallState == null || lastCallState.getId() != uniqueId) {
 /*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
                                 "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
@@ -62,13 +66,9 @@ public class RecordingState {
 
                 memCallStack.pop();
                 lastCallState.setExitMethodCallAddr(fileAddr + relativeAddress);
-                index.store(lastCallState.getCallId(), lastCallState);
+                index.store(lastCallState.getId(), lastCallState);
             }
         }
-    }
-
-    public boolean isPublished() {
-        return published;
     }
 
     synchronized boolean publish() {
@@ -102,7 +102,7 @@ public class RecordingState {
     }
 
     public synchronized CallRecord getRoot() {
-        return getCallRecord(rootCallId);
+        return getCallRecord(rootUniqueId);
     }
 
     public synchronized CallRecord getCallRecord(long callId) {
@@ -114,7 +114,7 @@ public class RecordingState {
         RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()
-                .callId(callState.getCallId())
+                .callId(callState.getId())
                 .subtreeSize(callState.getSubtreeSize())
                 .childrenCallIds(callState.getChildrenCallIds())
                 .method(methodRepository.get(enterMethodCall.getMethodId()))
@@ -148,6 +148,6 @@ public class RecordingState {
     }
 
     public synchronized int callCount() {
-        return rootCallId >= 0 ? getRoot().getSubtreeSize() : 0;
+        return rootUniqueId >= 0 ? getRoot().getSubtreeSize() : 0;
     }
 }
