@@ -17,14 +17,14 @@ public class Api {
 
     public static void startRecording() {
         ApiHolder.instance.setRecording(
-                RecordingEnabled.newBuilder().setValue(true).getDefaultInstanceForType(),
+                RecordingEnabled.newBuilder().setValue(true).build(),
                 new NoopStreamObserver<>()
         );
     }
 
     public static void endRecording() {
         ApiHolder.instance.setRecording(
-                RecordingEnabled.newBuilder().setValue(false).getDefaultInstanceForType(),
+                RecordingEnabled.newBuilder().setValue(false).build(),
                 new NoopStreamObserver<>()
         );
     }
