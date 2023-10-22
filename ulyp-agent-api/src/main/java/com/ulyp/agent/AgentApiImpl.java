@@ -32,6 +32,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
         this.typeResolver = typeResolver;
         this.recordingDataWriter = recordingDataWriter;
         this.processMetadata = processMetadata;
+        ApiHolder.instance = this;
     }
 
     @Override
