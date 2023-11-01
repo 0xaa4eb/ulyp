@@ -4,10 +4,8 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingDataWriter;
@@ -25,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class RecordingDataReaderListenerTest {
+public class RecordingRecordedMethodCallDataReaderListenerTest {
 
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
@@ -46,7 +44,7 @@ public class RecordingDataReaderListenerTest {
 
     @Before
     public void setUp() throws IOException {
-        File file = Files.createTempFile(RecordingDataReaderListenerTest.class.getSimpleName(), "a").toFile();
+        File file = Files.createTempFile(RecordingRecordedMethodCallDataReaderListenerTest.class.getSimpleName(), "a").toFile();
         this.reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
         this.writer = new FileRecordingDataWriter(file);
 

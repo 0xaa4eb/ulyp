@@ -1,9 +1,10 @@
-package com.ulyp.storage;
+package com.ulyp.storage.tree;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.storage.impl.RecordingState;
+import com.ulyp.storage.StorageException;
+
 import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Builder;
 import org.jetbrains.annotations.NotNull;

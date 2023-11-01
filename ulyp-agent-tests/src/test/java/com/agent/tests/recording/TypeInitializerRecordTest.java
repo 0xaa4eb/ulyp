@@ -11,7 +11,7 @@ import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ThrowableRecord;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.Recording;
 
 import static org.hamcrest.Matchers.is;

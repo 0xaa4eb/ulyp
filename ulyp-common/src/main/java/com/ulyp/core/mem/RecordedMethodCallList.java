@@ -167,10 +167,6 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         return bytes;
     }
 
-    public AddressableItemIterator<BinaryDataDecoder> binaryIterator() {
-        return bytes.iterator();
-    }
-
     public Stream<RecordedMethodCall> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED), false);
     }

@@ -6,7 +6,7 @@ import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.NullObjectRecord;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.hasSize;

@@ -1,9 +1,11 @@
-package com.ulyp.storage.impl;
+package com.ulyp.storage.tree;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.storage.*;
+import com.ulyp.storage.impl.MemCallStack;
+import com.ulyp.storage.impl.RecordedCallState;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class RecordingState {
 
-    private final DataReader reader;
+    private final R recordingDataReader;
     private final Index index;
     private final MemCallStack memCallStack = new MemCallStack();
     private final ReadableRepository<Integer, Method> methodRepository;
@@ -24,17 +26,17 @@ public class RecordingState {
     public RecordingState(
             RecordingMetadata metadata,
             Index index,
-            DataReader dataReader,
+            R recordingDataReader,
             ReadableRepository<Integer, Method> methodRepository,
             ReadableRepository<Integer, Type> typeRepository) {
         this.index = index;
         this.metadata = metadata;
-        this.reader = dataReader;
+        this.recordingDataReader = recordingDataReader;
         this.methodRepository = methodRepository;
         this.typeRepository = typeRepository;
     }
 
-    synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+    public synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
         AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
@@ -71,7 +73,7 @@ public class RecordingState {
         return published;
     }
 
-    synchronized boolean publish() {
+    public synchronized boolean publish() {
         if (!published) {
             published = true;
             return true;
@@ -79,7 +81,7 @@ public class RecordingState {
         return false;
     }
 
-    synchronized Recording toRecording() {
+    public synchronized Recording toRecording() {
         return new Recording(this);
     }
 
@@ -111,7 +113,7 @@ public class RecordingState {
         }
 
         RecordedCallState callState = getState(callId);
-        RecordedEnterMethodCall enterMethodCall = reader.readEnterMethodCall(callState.getEnterMethodCallAddr());
+        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr());
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()
                 .callId(callState.getCallId())
@@ -125,7 +127,7 @@ public class RecordingState {
                 .recordingState(this);
 
         if (callState.getExitMethodCallAddr() > 0) {
-            RecordedExitMethodCall exitMethodCall = reader.readExitMethodCall(callState.getExitMethodCallAddr());
+            RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr());
 
             builder = builder.thrown(exitMethodCall.isThrown())
                     .returnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));

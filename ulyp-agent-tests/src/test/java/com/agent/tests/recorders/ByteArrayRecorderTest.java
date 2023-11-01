@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.arrays.ByteArrayRecord;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 
 public class ByteArrayRecorderTest extends AbstractInstrumentationTest {
 

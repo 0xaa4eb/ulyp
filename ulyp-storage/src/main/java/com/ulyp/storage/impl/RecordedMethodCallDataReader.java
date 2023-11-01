@@ -4,6 +4,7 @@ import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.util.Preconditions;
+import com.ulyp.storage.R;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.impl.util.ByAddressFileReader;
 import com.ulyp.transport.*;
@@ -13,15 +14,15 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
-class DataReader implements Closeable {
+class RecordedMethodCallDataReader implements R, Closeable {
 
     private final ByAddressFileReader reader;
 
-    public DataReader(File file) {
+    public RecordedMethodCallDataReader(File file) {
         this.reader = new ByAddressFileReader(file);
     }
 
-    RecordedEnterMethodCall readEnterMethodCall(long addr) {
+    public RecordedEnterMethodCall readEnterMethodCall(long addr) {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
             UnsafeBuffer mem = new UnsafeBuffer(bytes);
@@ -43,7 +44,7 @@ class DataReader implements Closeable {
         }
     }
 
-    RecordedExitMethodCall readExitMethodCall(long addr) {
+    public RecordedExitMethodCall readExitMethodCall(long addr) {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
             UnsafeBuffer mem = new UnsafeBuffer(bytes);

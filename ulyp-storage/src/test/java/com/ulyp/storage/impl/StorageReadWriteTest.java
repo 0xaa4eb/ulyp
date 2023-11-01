@@ -6,7 +6,7 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingDataReader;

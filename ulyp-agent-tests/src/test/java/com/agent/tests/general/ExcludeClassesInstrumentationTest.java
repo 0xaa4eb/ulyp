@@ -5,7 +5,7 @@ import com.agent.tests.general.a.b.B;
 import com.agent.tests.general.a.c.C;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;

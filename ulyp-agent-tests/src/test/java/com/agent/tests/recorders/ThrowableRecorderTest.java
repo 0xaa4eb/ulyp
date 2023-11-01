@@ -5,7 +5,7 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.NullObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.ThrowableRecord;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.junit.Assert;
 import org.junit.Test;
 

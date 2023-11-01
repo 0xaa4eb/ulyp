@@ -1,6 +1,8 @@
 package com.ulyp.storage.impl;
 
 import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.RecordedEnterMethodCall;
+import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.storage.*;
 
 import java.util.Collections;
@@ -12,6 +14,21 @@ public class EmptyRecordingDataReader implements RecordingDataReader {
     @Override
     public void start() {
 
+    }
+
+    @Override
+    public CompletableFuture<Void> submitJob(RecordingDataReaderJob job) {
+        return null;
+    }
+
+    @Override
+    public RecordedEnterMethodCall readEnterMethodCall(long address) {
+        return null;
+    }
+
+    @Override
+    public RecordedExitMethodCall readExitMethodCall(long address) {
+        return null;
     }
 
     public CompletableFuture<ProcessMetadata> getProcessMetadataFuture() {

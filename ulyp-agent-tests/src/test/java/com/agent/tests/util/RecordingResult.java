@@ -1,6 +1,6 @@
 package com.agent.tests.util;
 
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.Recording;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.RecordingDataReader;

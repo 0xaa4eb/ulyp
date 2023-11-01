@@ -1,6 +1,8 @@
 package com.ulyp.storage;
 
 import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.RecordedEnterMethodCall;
+import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.storage.impl.EmptyRecordingDataReader;
 
 import java.util.List;
@@ -12,13 +14,26 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * All recorded calls are aggregated to {@link Recording} instances.
  */
-public interface RecordingDataReader extends AutoCloseable {
+public interface RecordingDataReader extends AutoCloseable, R {
 
     static RecordingDataReader empty() {
         return new EmptyRecordingDataReader();
     }
 
     void start();
+
+    CompletableFuture<Void> submitJob(RecordingDataReaderJob job);
+
+    /**
+     *
+     */
+    RecordedEnterMethodCall readEnterMethodCall(long address);
+
+    /**
+     *
+     */
+    RecordedExitMethodCall readExitMethodCall(long address);
+
 
     CompletableFuture<ProcessMetadata> getProcessMetadataFuture();
 
