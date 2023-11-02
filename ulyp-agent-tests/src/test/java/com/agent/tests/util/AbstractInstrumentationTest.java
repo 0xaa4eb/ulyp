@@ -1,7 +1,9 @@
 package com.agent.tests.util;
 
 import com.ulyp.storage.tree.CallRecord;
-import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.storage.tree.CallRecordTree;
+import com.ulyp.storage.tree.CallRecordTreeBuilder;
+
 import junit.framework.AssertionFailedError;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
@@ -31,14 +33,16 @@ public class AbstractInstrumentationTest {
         Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).getRecordings(), Matchers.empty());
     }
 
-    protected RecordingDataReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
+    protected CallRecordTree runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
         TestUtil.runClassInSeparateJavaProcess(settings);
         if (settings.getOutputFile() == null) {
-            return RecordingDataReader.empty();
+            return null;
         } else {
-            RecordingDataReader reader = settings.getOutputFile().toReader();
+            CallRecordTree tree = new CallRecordTreeBuilder(settings.getOutputFile().toReader())
+                .setReadUntilCompleteMark(false)
+                .build();
             try {
-                reader.getFinishedReadingFuture().get(300, TimeUnit.SECONDS);
+                tree.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
             } catch (ExecutionException ignored) {
@@ -46,8 +50,8 @@ public class AbstractInstrumentationTest {
             } catch (TimeoutException e) {
                 Assert.fail("Timed out waiting for process to finish");
             }
-            System.out.println("Got " + reader.getRecordings().size() + " recordings");
-            return reader;
+            System.out.println("Got " + tree.getRecordings().size() + " recordings");
+            return tree;
         }
     }
 }

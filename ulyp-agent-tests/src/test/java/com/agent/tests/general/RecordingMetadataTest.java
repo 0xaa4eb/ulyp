@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
-import com.ulyp.storage.Recording;
+import com.ulyp.storage.tree.Recording;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;

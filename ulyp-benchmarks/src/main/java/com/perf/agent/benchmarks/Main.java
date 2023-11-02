@@ -3,7 +3,7 @@ package com.perf.agent.benchmarks;
 import com.perf.agent.benchmarks.benchmarks.*;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.perf.agent.benchmarks.proc.OutputFile;
-import com.ulyp.storage.Recording;
+import com.ulyp.storage.tree.Recording;
 import com.ulyp.storage.RecordingDataReader;
 import org.HdrHistogram.Histogram;
 

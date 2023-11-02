@@ -12,6 +12,8 @@ import com.ulyp.core.util.FixedDelayBackoff;
 import com.ulyp.storage.*;
 import com.ulyp.storage.impl.util.BinaryListFileReader;
 import com.ulyp.core.util.NamedThreadFactory;
+import com.ulyp.storage.tree.Index;
+import com.ulyp.storage.tree.Recording;
 import com.ulyp.storage.tree.RecordingState;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
@@ -200,8 +202,9 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             data.iterator().next().wrapValue(buffer);
             BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
             decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
-            processMetadataFuture.complete(ProcessMetadata.deserialize(decoder));
-            job.onProcessMetadata(ProcessMetadata.deserialize(decoder));
+            ProcessMetadata processMetadata = ProcessMetadata.deserialize(decoder);
+            processMetadataFuture.complete(processMetadata);
+            job.onProcessMetadata(processMetadata);
         }
 
         protected void onRecordingMetadata(BinaryList data) {

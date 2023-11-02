@@ -1,7 +1,7 @@
 package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.core.ProcessMetadata
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.application.Platform
 import javafx.scene.layout.VBox

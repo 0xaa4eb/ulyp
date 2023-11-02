@@ -2,12 +2,12 @@ package com.ulyp.ui.reader
 
 import com.ulyp.core.util.FileUtil
 import com.ulyp.storage.Filter
-import com.ulyp.storage.Index
+import com.ulyp.storage.tree.Index
 import com.ulyp.storage.ReaderSettings
 import com.ulyp.storage.RecordingDataReader
 import com.ulyp.storage.impl.AsyncFileRecordingDataReader
-import com.ulyp.storage.impl.util.InMemoryIndex
-import com.ulyp.storage.impl.RocksdbIndex
+import com.ulyp.storage.tree.InMemoryIndex
+import com.ulyp.storage.tree.RocksdbIndex
 import com.ulyp.storage.util.RocksdbChecker
 import org.springframework.stereotype.Component
 import java.io.File

@@ -1,9 +1,10 @@
 package com.agent.tests.util;
 
 import com.ulyp.storage.tree.CallRecord;
-import com.ulyp.storage.Recording;
+import com.ulyp.storage.tree.CallRecordTree;
+import com.ulyp.storage.tree.Recording;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.RecordingDataReader;
+
 import org.junit.Assert;
 
 import java.util.ArrayList;
@@ -11,18 +12,18 @@ import java.util.List;
 
 public class RecordingResult {
 
-    private final RecordingDataReader reader;
+    private final CallRecordTree tree;
 
-    public RecordingResult(RecordingDataReader reader) {
-        this.reader = reader;
+    public RecordingResult(CallRecordTree tree) {
+        this.tree = tree;
     }
 
     public List<Recording> aggregateByRecordings() {
-        return reader.getRecordings();
+        return tree.getRecordings();
     }
 
     public List<Recording> recordings() {
-        return new ArrayList<>(reader.getRecordings());
+        return new ArrayList<>(tree.getRecordings());
     }
 
     public CallRecord getSingleRoot() throws StorageException {
@@ -64,7 +65,7 @@ public class RecordingResult {
     }
 
     public void assertIsEmpty() {
-        Assert.assertNull(reader.getProcessMetadataFuture().getNow(null));
+        Assert.assertNull(tree.getProcessMetadataFuture().getNow(null));
     }
 
     @Override

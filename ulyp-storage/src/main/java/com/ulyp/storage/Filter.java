@@ -1,5 +1,7 @@
 package com.ulyp.storage;
 
+import com.ulyp.storage.tree.Recording;
+
 public interface Filter {
 
     static Filter defaultFilter() {

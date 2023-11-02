@@ -1,6 +1,4 @@
-package com.ulyp.storage;
-
-import com.ulyp.storage.impl.RecordedCallState;
+package com.ulyp.storage.tree;
 
 /**
  * Index is used to store record call states tree. Every state usually includes enter and exit record calls addresses

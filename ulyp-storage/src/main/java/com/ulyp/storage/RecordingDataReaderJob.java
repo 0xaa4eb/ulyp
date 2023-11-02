@@ -6,7 +6,7 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 
-public interface RecordingDataReaderJob extends AutoCloseable {
+public interface RecordingDataReaderJob {
 
     void onProcessMetadata(ProcessMetadata processMetadata);
 

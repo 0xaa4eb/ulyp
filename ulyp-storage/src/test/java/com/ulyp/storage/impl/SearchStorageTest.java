@@ -59,9 +59,9 @@ public class SearchStorageTest {
 
     @Test
     public void testSearchByMethodName() throws Exception {
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
-        methodCalls.addEnterMethodCall(1, 0, method, typeResolver, new T(), new Object[]{"ABC"});
-        methodCalls.addExitMethodCall(1,0, typeResolver, false, "GHJ");
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(1);
+        methodCalls.addEnterMethodCall(0, method, typeResolver, new T(), new Object[]{"ABC"});
+        methodCalls.addExitMethodCall(0, typeResolver, false, "GHJ");
 
         writer.write(types);
         writer.write(methods);

@@ -1,7 +1,7 @@
 package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.core.ProcessMetadata
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.Recording
 import com.ulyp.storage.RecordingDataReader
 import com.ulyp.ui.elements.recording.list.RecordingsListView
 import com.ulyp.ui.settings.Settings

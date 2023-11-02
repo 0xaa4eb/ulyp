@@ -1,16 +1,15 @@
-package com.ulyp.storage;
+package com.ulyp.storage.tree;
 
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
-import com.ulyp.storage.tree.RecordingState;
-import com.ulyp.storage.tree.CallRecord;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
 /**
-* Recording class represents a single recorded method call along with its child subcalls.
+* Recording class represents a particular recorded method call along with all its child subcalls. There are
+* usually many recordings present
 */
 public class Recording {
 

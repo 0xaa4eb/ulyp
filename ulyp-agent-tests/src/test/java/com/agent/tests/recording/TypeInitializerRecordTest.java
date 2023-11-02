@@ -12,7 +12,7 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ThrowableRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
-import com.ulyp.storage.Recording;
+import com.ulyp.storage.tree.Recording;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

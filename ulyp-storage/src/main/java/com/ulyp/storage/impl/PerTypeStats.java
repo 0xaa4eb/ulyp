@@ -12,7 +12,7 @@ public class PerTypeStats {
     private final String name;
 
     private ByteSize totalBytes = new ByteSize(0L);
-    private AtomicLong totalCount = new AtomicLong(0L);
+    private final AtomicLong totalCount = new AtomicLong(0L);
 
     public void reset() {
 

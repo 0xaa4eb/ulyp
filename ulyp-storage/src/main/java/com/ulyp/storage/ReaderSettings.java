@@ -3,7 +3,8 @@ package com.ulyp.storage;
 import java.io.File;
 import java.util.function.Supplier;
 
-import com.ulyp.storage.impl.util.InMemoryIndex;
+import com.ulyp.storage.tree.InMemoryIndex;
+import com.ulyp.storage.tree.Index;
 
 import lombok.Builder;
 import lombok.Getter;

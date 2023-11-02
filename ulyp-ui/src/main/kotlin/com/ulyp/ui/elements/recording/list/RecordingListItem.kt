@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.list
 
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.ClassNameUtils
 import com.ulyp.ui.util.EnhancedText

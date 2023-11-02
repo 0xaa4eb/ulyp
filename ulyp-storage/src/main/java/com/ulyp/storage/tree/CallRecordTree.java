@@ -17,8 +17,6 @@ import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.core.util.Backoff;
 import com.ulyp.core.util.FixedDelayBackoff;
-import com.ulyp.storage.Index;
-import com.ulyp.storage.Recording;
 import com.ulyp.storage.RecordingDataReader;
 import com.ulyp.storage.RecordingDataReaderJob;
 import com.ulyp.storage.RecordingListener;
@@ -32,6 +30,7 @@ import lombok.Getter;
 public class CallRecordTree {
 
     private final RecordingDataReader dataReader;
+    private final boolean readUntilCompleteMark;
     @Getter
     private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
     private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
@@ -41,14 +40,18 @@ public class CallRecordTree {
     private final Index index;
     private final RecordingListener recordingListener;
 
-    public CallRecordTree(RecordingDataReader dataReader, RecordingListener recordingListener, Supplier<Index> indexSupplier) {
+    CallRecordTree(RecordingDataReader dataReader,
+                   RecordingListener recordingListener,
+                   Supplier<Index> indexSupplier,
+                   boolean readUntilCompleteMark) {
         this.recordingListener = recordingListener;
         this.index = indexSupplier.get();
         this.dataReader = dataReader;
+        this.readUntilCompleteMark = readUntilCompleteMark;
         this.dataReader.submitJob(new CallRecordTreeBuildingJob());
     }
 
-    CompletableFuture<Boolean> getFinishedReadingFuture() {
+    public CompletableFuture<Boolean> getFinishedReadingFuture() {
         return finishedReadingFuture;
     }
 
@@ -98,7 +101,7 @@ public class CallRecordTree {
             if (recordedMethodCalls.isEmpty()) {
                 return;
             }
-            int recordingId = recordedMethodCalls.iterator().next().getRecordingId();
+            int recordingId = recordedMethodCalls.getRecordingId();
             RecordingState recording = recordings.get(recordingId);
             if (recording == null) {
                 return;
@@ -116,21 +119,20 @@ public class CallRecordTree {
 
         @Override
         public boolean continueOnNoData() {
-            try {
-                backoff.await();
-            } catch (InterruptedException e) {
-                throw new StorageException("Interrupted", e);
+            if (readUntilCompleteMark) {
+                try {
+                    backoff.await();
+                } catch (InterruptedException e) {
+                    throw new StorageException("Interrupted", e);
+                }
+                return true;
+            } else {
+                return false;
             }
-            return true;
         }
 
         @Override
         public void onComplete() {
-            finishedReadingFuture.complete(true);
-        }
-
-        @Override
-        public void close() throws Exception {
             finishedReadingFuture.complete(true);
         }
     }

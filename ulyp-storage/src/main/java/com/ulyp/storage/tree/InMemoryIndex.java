@@ -1,9 +1,7 @@
-package com.ulyp.storage.impl.util;
+package com.ulyp.storage.tree;
 
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
-import com.ulyp.storage.Index;
-import com.ulyp.storage.impl.RecordedCallState;
 
 public class InMemoryIndex implements Index {
 
