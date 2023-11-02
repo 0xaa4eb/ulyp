@@ -16,7 +16,7 @@ dependencies {
     implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.2.1'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
     implementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
