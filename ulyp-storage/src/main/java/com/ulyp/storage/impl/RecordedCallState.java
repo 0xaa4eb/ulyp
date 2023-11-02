@@ -15,7 +15,8 @@ import lombok.ToString;
 @ToString
 public class RecordedCallState {
 
-    private final long callId;
+    // uniqueId is combined from both recordingId and callId and used as PK in Rocksdb index
+    private final long id;
     private final long enterMethodCallAddr;
     @Builder.Default
     private final LongList childrenCallIds = new LongArrayList();
@@ -33,7 +34,7 @@ public class RecordedCallState {
         }
 
         return RecordedCallState.builder()
-                .callId(decoder.callId())
+                .id(decoder.id())
                 .enterMethodCallAddr(decoder.enterMethodCallAddr())
                 .subtreeSize(decoder.subtreeSize())
                 .exitMethodCallAddr(decoder.exitMethodCallAddr())
@@ -54,7 +55,7 @@ public class RecordedCallState {
     }
 
     public void serialize(BinaryRecordedCallStateEncoder encoder) {
-        encoder.callId(callId);
+        encoder.id(id);
         encoder.enterMethodCallAddr(enterMethodCallAddr);
         encoder.subtreeSize(subtreeSize);
         encoder.exitMethodCallAddr(exitMethodCallAddr);

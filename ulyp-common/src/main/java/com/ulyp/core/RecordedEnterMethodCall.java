@@ -42,8 +42,7 @@ public class RecordedEnterMethodCall extends RecordedMethodCall {
                 .build();
 
         return RecordedEnterMethodCall.builder()
-                .recordingId(decoder.recordingId())
-                .callId(BitUtil.longFromInts(decoder.recordingId(), decoder.callId()))
+                .callId(decoder.callId())
                 .methodId(decoder.methodId())
                 .callee(callee)
                 .arguments(arguments)

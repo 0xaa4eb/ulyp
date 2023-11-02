@@ -29,7 +29,7 @@ public class RocksdbChecker {
             long callId = 555L;
 
             RecordedCallState value = RecordedCallState.builder()
-                    .callId(callId)
+                    .id(callId)
                     .childrenCallIds(childrenCallIds)
                     .build();
 
@@ -37,7 +37,7 @@ public class RocksdbChecker {
 
             RecordedCallState valueRead = index.get(callId);
 
-            if (valueRead.getCallId() != value.getCallId()) {
+            if (valueRead.getId() != value.getId()) {
                 throw new IllegalArgumentException("Inconsistency value read");
             }
             return new RocksdbAvailableResult(true);

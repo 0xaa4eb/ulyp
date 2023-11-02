@@ -91,7 +91,7 @@ public class Recorder {
 
                 threadLocalRecordingState.set(recordingState);
 
-                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer();
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(recordingMetadata.getId());
                 recordingState.setCallRecordBuffer(newCallRecordBuffer);
 
                 currentRecordingSessionCount.incrementAndGet();
@@ -117,7 +117,7 @@ public class Recorder {
                 recordingState.setRecordingMetadata(recordingMetadata);
                 threadLocalRecordingState.set(recordingState);
 
-                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer();
+                CallRecordBuffer newCallRecordBuffer = new CallRecordBuffer(recordingMetadata.getId());
                 recordingState.setCallRecordBuffer(newCallRecordBuffer);
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
@@ -156,7 +156,7 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                return callRecordBuffer.recordMethodEnter(typeResolver, recordingState.getRecordingId(), methodRepository.get(methodId), callee, args);
+                return callRecordBuffer.recordMethodEnter(typeResolver, methodRepository.get(methodId), callee, args);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -179,7 +179,7 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                callRecords.recordMethodExit(typeResolver, recordingState.getRecordingId(), result, thrown, callId);
+                callRecords.recordMethodExit(typeResolver, result, thrown, callId);
 
                 RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
                 Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");
