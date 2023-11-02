@@ -38,8 +38,8 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
     private final Index index;
     @Getter
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
-    private final Repository<Integer, Method> methods = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
+    private final Repository<Integer, Method> methods = new InMemoryRepository<>();
     private volatile StorageReaderTask readingTask;
     private volatile RecordingListener recordingListener = RecordingListener.empty();
 
@@ -444,7 +444,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
             if (recordedMethodCalls.isEmpty()) {
                 return;
             }
-            int recordingId = recordedMethodCalls.iterator().next().getRecordingId();
+            int recordingId = recordedMethodCalls.getRecordingId();
             RecordingState recording = recordings.get(recordingId);
             if (recording == null) {
                 return;

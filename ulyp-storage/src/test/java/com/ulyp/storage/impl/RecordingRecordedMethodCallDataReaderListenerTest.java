@@ -105,10 +105,9 @@ public class RecordingRecordedMethodCallDataReaderListenerTest {
 
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(1);
 
         methodCalls.addEnterMethodCall(
-                1,
                 0,
                 method,
                 typeResolver,
@@ -132,10 +131,9 @@ public class RecordingRecordedMethodCallDataReaderListenerTest {
                         }
                 );
 
-        methodCalls = new RecordedMethodCallList();
+        methodCalls = new RecordedMethodCallList(2);
 
         methodCalls.addEnterMethodCall(
-                2,
                 10,
                 method,
                 typeResolver,

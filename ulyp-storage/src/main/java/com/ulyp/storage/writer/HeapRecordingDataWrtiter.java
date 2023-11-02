@@ -3,6 +3,7 @@ package com.ulyp.storage.writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import org.jetbrains.annotations.TestOnly;
 
 import com.ulyp.core.Method;
@@ -22,6 +23,7 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     private final List<Type> types = new ArrayList<>();
     private final List<Method> methods = new ArrayList<>();
+    @Getter
     private final List<RecordedMethodCall> callRecords = new ArrayList<>();
 
     @Override
@@ -57,9 +59,5 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
     @Override
     public void close() throws StorageException {
         // NOP
-    }
-
-    public List<RecordedMethodCall> getCallRecords() {
-        return callRecords;
     }
 }

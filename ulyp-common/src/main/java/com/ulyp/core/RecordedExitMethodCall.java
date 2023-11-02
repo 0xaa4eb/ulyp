@@ -27,8 +27,7 @@ public class RecordedExitMethodCall extends RecordedMethodCall {
                                 .build()
                 )
                 .thrown(decoder.thrown() == BooleanType.T)
-                .recordingId(decoder.recordingId())
-                .callId(BitUtil.longFromInts(decoder.recordingId(), decoder.callId()))
+                .callId(decoder.callId())
                 .build();
     }
 }

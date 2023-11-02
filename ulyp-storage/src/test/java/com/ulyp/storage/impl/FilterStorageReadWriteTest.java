@@ -16,8 +16,6 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.RecordingDataReader;
@@ -79,10 +77,9 @@ public class FilterStorageReadWriteTest {
 
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(1);
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 0,
                 method,
                 typeResolver,
@@ -90,24 +87,21 @@ public class FilterStorageReadWriteTest {
                 new Object[]{"ABC"}
         );
         methodCalls.addEnterMethodCall(
-            recordingId,
-            1,
+                1,
             method,
             typeResolver,
             callee,
             new Object[]{"ABC"}
         );
         methodCalls.addEnterMethodCall(
-            recordingId,
-            2,
+                2,
             method,
             typeResolver,
             callee,
             new Object[]{"ABC"}
         );
         methodCalls.addEnterMethodCall(
-            recordingId,
-            3,
+                3,
             method,
             typeResolver,
             callee,

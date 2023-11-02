@@ -1,6 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.mem.RecordedMethodCallList;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,36 +14,41 @@ import javax.annotation.concurrent.NotThreadSafe;
 @Slf4j
 public class CallRecordBuffer {
 
-    private final RecordedMethodCallList recordedCalls = new RecordedMethodCallList();
+    @Getter
+    private final RecordedMethodCallList recordedCalls;
+    private final int recordingId;
     private final int rootCallId;
 
     private int lastExitCallId = -1;
     private int nextCallId;
 
-    public CallRecordBuffer() {
+    public CallRecordBuffer(int recordingId) {
+        this.recordingId = recordingId;
         this.nextCallId = 1;
         this.rootCallId = 1;
+        this.recordedCalls = new RecordedMethodCallList(recordingId);
     }
 
-    private CallRecordBuffer(int nextCallId, int rootCallId) {
+    private CallRecordBuffer(int recordingId, int nextCallId, int rootCallId) {
+        this.recordingId = recordingId;
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
+        this.recordedCalls = new RecordedMethodCallList(recordingId);
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.nextCallId, rootCallId);
+        return new CallRecordBuffer(this.recordingId, this.nextCallId, rootCallId);
     }
 
     public long estimateBytesSize() {
         return recordedCalls.getRawBytes().byteLength();
     }
 
-    public int recordMethodEnter(TypeResolver typeResolver, int recordingId, Method method, @Nullable Object callee, Object[] args) {
+    public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
         try {
 
             int callId = nextCallId++;
             recordedCalls.addEnterMethodCall(
-                    recordingId,
                     callId,
                     method,
                     typeResolver,
@@ -57,20 +63,18 @@ public class CallRecordBuffer {
         }
     }
 
-    public void recordMethodExit(TypeResolver typeResolver, int recordingId, Object returnValue, Throwable thrown, int callId) {
+    public void recordMethodExit(TypeResolver typeResolver, Object returnValue, Throwable thrown, int callId) {
         if (callId >= 0) {
             if (thrown == null) {
                 recordedCalls.addExitMethodCall(
-                    recordingId,
-                    callId,
+                        callId,
                     typeResolver,
                     false,
                     returnValue
                 );
             } else {
                 recordedCalls.addExitMethodCall(
-                    recordingId,
-                    callId,
+                        callId,
                     typeResolver,
                     true,
                     thrown
@@ -90,10 +94,6 @@ public class CallRecordBuffer {
 
     public int getRecordedCallsSize() {
         return recordedCalls.size();
-    }
-
-    public RecordedMethodCallList getRecordedCalls() {
-        return recordedCalls;
     }
 
     @Override

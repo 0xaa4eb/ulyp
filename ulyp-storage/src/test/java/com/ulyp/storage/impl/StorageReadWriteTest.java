@@ -69,10 +69,9 @@ public class StorageReadWriteTest {
     public void testReadWriteRecordingWithoutReturnValue() {
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(recordingId);
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 0,
                 method,
                 typeResolver,
@@ -116,10 +115,9 @@ public class StorageReadWriteTest {
     public void testReadWriteRecordingWithReturnValue() {
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(recordingId);
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 0,
                 method,
                 typeResolver,
@@ -128,7 +126,6 @@ public class StorageReadWriteTest {
         );
 
         methodCalls.addExitMethodCall(
-                recordingId,
                 0,
                 typeResolver,
                 false,
@@ -171,10 +168,9 @@ public class StorageReadWriteTest {
     public void testReadWriteWithCoupleOfChildren() {
         T callee = new T();
 
-        RecordedMethodCallList methodCalls = new RecordedMethodCallList();
+        RecordedMethodCallList methodCalls = new RecordedMethodCallList(recordingId);
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 0,
                 method,
                 typeResolver,
@@ -183,7 +179,6 @@ public class StorageReadWriteTest {
         );
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 1,
                 method,
                 typeResolver,
@@ -192,7 +187,6 @@ public class StorageReadWriteTest {
         );
 
         methodCalls.addExitMethodCall(
-                recordingId,
                 1,
                 typeResolver,
                 false,
@@ -200,7 +194,6 @@ public class StorageReadWriteTest {
         );
 
         methodCalls.addEnterMethodCall(
-                recordingId,
                 2,
                 method,
                 typeResolver,
@@ -209,7 +202,6 @@ public class StorageReadWriteTest {
         );
 
 
-        writer.write(recordingMetadata);
         writer.write(recordingMetadata);
         writer.write(types);
         writer.write(methods);
@@ -240,10 +232,9 @@ public class StorageReadWriteTest {
                 );
 
 
-        methodCalls = new RecordedMethodCallList();
+        methodCalls = new RecordedMethodCallList(recordingId);
 
         methodCalls.addExitMethodCall(
-                recordingId,
                 2,
                 typeResolver,
                 false,
@@ -251,7 +242,6 @@ public class StorageReadWriteTest {
         );
 
         methodCalls.addExitMethodCall(
-                recordingId,
                 0,
                 typeResolver,
                 false,
