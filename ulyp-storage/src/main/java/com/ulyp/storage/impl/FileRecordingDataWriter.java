@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 public class FileRecordingDataWriter implements RecordingDataWriter {
 
-    private final BinaryListFileWriter fileWriter;
+    private BinaryListFileWriter fileWriter;
 
     public FileRecordingDataWriter(File file) throws StorageException {
         try {
@@ -124,7 +124,10 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public synchronized void close() {
-        writePoisonPill();
-        fileWriter.close();
+        if (fileWriter != null) {
+            writePoisonPill();
+            fileWriter.close();
+            fileWriter = null;
+        }
     }
 }

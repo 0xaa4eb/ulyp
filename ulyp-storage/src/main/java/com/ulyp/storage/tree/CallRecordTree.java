@@ -42,9 +42,10 @@ public class CallRecordTree {
     private final RecordingListener recordingListener;
 
     public CallRecordTree(RecordingDataReader dataReader, RecordingListener recordingListener, Supplier<Index> indexSupplier) {
-        this.dataReader = dataReader;
         this.recordingListener = recordingListener;
         this.index = indexSupplier.get();
+        this.dataReader = dataReader;
+        this.dataReader.submitJob(new CallRecordTreeBuildingJob());
     }
 
     CompletableFuture<Boolean> getFinishedReadingFuture() {

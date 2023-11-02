@@ -57,7 +57,6 @@ public class StorageReadWriteTest {
 
         types.add(type);
         methods.add(method);
-
     }
 
     @After
