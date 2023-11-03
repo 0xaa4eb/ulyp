@@ -17,6 +17,10 @@ public class OutputFile {
         return new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file.toPath().toFile()).autoStartReading(true).build());
     }
 
+    public TempFile getFile() {
+        return file;
+    }
+
     @Override
     public String toString() {
         return file.toPath().toString();

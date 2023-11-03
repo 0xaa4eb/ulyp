@@ -1,11 +1,11 @@
 package com.agent.tests.util;
 
+import com.ulyp.core.util.ByteSize;
 import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.CallRecordTree;
 import com.ulyp.storage.tree.CallRecordTreeBuilder;
 
 import junit.framework.AssertionFailedError;
-import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 
@@ -18,7 +18,7 @@ public class AbstractInstrumentationTest {
     @NotNull
     protected CallRecord runSubprocessAndReadFile(ForkProcessBuilder settings) {
         try {
-            return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
+            return new RecordingResult(runProcess(settings)).getSingleRoot();
         } catch (Exception e) {
             throw new AssertionFailedError(e.getMessage());
         }
@@ -26,18 +26,15 @@ public class AbstractInstrumentationTest {
 
     @NotNull
     protected RecordingResult runSubprocess(ForkProcessBuilder settings) {
-        return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings));
+        return new RecordingResult(runProcess(settings));
     }
 
-    protected void assertNoRecording(ForkProcessBuilder settings) {
-        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).getRecordings(), Matchers.empty());
-    }
-
-    protected CallRecordTree runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
+    protected CallRecordTree runProcess(ForkProcessBuilder settings) {
         TestUtil.runClassInSeparateJavaProcess(settings);
         if (settings.getOutputFile() == null) {
             return null;
         } else {
+            System.out.println("Recording file " + ByteSize.toHumanReadable(settings.getOutputFile().getFile().toPath().toFile().length()));
             CallRecordTree tree = new CallRecordTreeBuilder(settings.getOutputFile().toReader())
                 .setReadUntilCompleteMark(false)
                 .build();
