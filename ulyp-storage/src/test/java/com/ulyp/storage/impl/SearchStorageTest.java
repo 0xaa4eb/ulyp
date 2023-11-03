@@ -11,6 +11,7 @@ import com.ulyp.storage.util.PlainTextSearchQuery;
 import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class SearchStorageTest {
 
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();

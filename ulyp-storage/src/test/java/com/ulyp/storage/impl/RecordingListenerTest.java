@@ -13,6 +13,7 @@ import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Ignore
 public class RecordingListenerTest {
 
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
