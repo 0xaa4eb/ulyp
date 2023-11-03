@@ -85,7 +85,7 @@ public class CallRecordTreeTest {
             0,
             typeResolver,
             false,
-            new Object[]{"CDE"}
+            "CDE"
         );
 
         writer.write(recordingMetadata);
@@ -104,7 +104,7 @@ public class CallRecordTreeTest {
         Assert.assertTrue(root.isFullyRecorded());
 
         StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();
-        Assert.assertThat(returnValue, Matchers.is("CDE"));
+        Assert.assertThat(returnValue.value(), Matchers.is("CDE"));
     }
 
     @Test

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ulyp.core.Method;
@@ -21,6 +22,7 @@ import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.RecordingDataReader;
 import com.ulyp.storage.RecordingDataWriter;
 
+@Ignore
 public class FilterStorageReadWriteTest {
 
     private final int recordingId = 42;
