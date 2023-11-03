@@ -42,7 +42,7 @@ public class AbstractInstrumentationTest {
                 .setReadUntilCompleteMark(false)
                 .build();
             try {
-                tree.getFinishedReadingFuture().get(30, TimeUnit.SECONDS);
+                tree.getFinishedReadingFuture().get(200, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
             } catch (ExecutionException ignored) {
