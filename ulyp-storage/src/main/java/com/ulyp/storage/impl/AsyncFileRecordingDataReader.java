@@ -150,6 +150,7 @@ public class AsyncFileRecordingDataReader implements RecordingDataReader {
                             throw new StorageException("Unknown binary data id " + data.getBytes().id());
                     }
                 } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
                     return;
                 } catch (Exception err) {
                     finishedReadingFuture.completeExceptionally(err);
