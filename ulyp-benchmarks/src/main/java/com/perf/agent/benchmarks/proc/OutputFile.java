@@ -41,6 +41,6 @@ public class OutputFile {
 
     @Override
     public String toString() {
-        return "" + file;
+        return file.toString();
     }
 }
