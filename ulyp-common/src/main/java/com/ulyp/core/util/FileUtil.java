@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class FileUtil {
 
     public static void deleteDirectory(Path directory) throws IOException {
@@ -23,7 +26,9 @@ public class FileUtil {
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                file.toFile().delete(); // temp file - ignore result
+                if (!file.toFile().delete()) {
+                    log.warn("Could not delete file " + file);
+                }
                 return FileVisitResult.CONTINUE;
             }
 
@@ -37,6 +42,8 @@ public class FileUtil {
                 return FileVisitResult.CONTINUE;
             }
         });
-        file.delete();
+        if (!file.delete()) {
+            log.warn("Could not delete file " + file);
+        }
     }
 }

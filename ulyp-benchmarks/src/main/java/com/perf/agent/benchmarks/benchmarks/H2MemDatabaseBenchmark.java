@@ -59,21 +59,21 @@ public class H2MemDatabaseBenchmark implements Benchmark {
 
         connection = DriverManager.getConnection("jdbc:h2:mem:", "sa", "");
 
-        Statement statement = connection.createStatement();
-        statement.execute("create table test(id int primary key, name varchar)");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("create table test(id int primary key, name varchar)");
+        }
     }
 
     public void tearDown() throws SQLException {
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select count(*) from test");
-        resultSet.next();
-        int count = resultSet.getInt(1);
-        if (count != MESSAGE_COUNT) {
-            throw new RuntimeException("Row number " + count + " doesn't match the expected value which is " + MESSAGE_COUNT);
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("select count(*) from test");
+            resultSet.next();
+            int count = resultSet.getInt(1);
+            if (count != MESSAGE_COUNT) {
+                throw new RuntimeException("Row number " + count + " doesn't match the expected value which is " + MESSAGE_COUNT);
+            }
         }
         connection.close();
-
-        statement.close();
     }
 
     public void run() throws Exception {
@@ -91,11 +91,11 @@ public class H2MemDatabaseBenchmark implements Benchmark {
         }
 
         public void insert(int id) throws SQLException {
-            PreparedStatement prep = connection.prepareStatement(
-                    "insert into test values(?, ?)");
-            prep.setInt(1, id);
-            prep.setString(2, "Hello");
-            prep.execute();
+            try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?)")) {
+                prep.setInt(1, id);
+                prep.setString(2, "Hello");
+                prep.execute();
+            }
         }
     }
 }

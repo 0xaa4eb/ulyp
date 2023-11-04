@@ -17,18 +17,14 @@ public class ActivemqBenchmark implements Benchmark {
     private static final int MESSAGE_COUNT = 5000;
 
     public static void main(String[] args) throws Exception {
-        try {
-            long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
-            ActivemqBenchmark benchmark = new ActivemqBenchmark();
-            benchmark.setUp();
-            benchmark.run();
-            benchmark.tearDown();
+        ActivemqBenchmark benchmark = new ActivemqBenchmark();
+        benchmark.setUp();
+        benchmark.run();
+        benchmark.tearDown();
 
-            System.out.println("Took: " + (System.currentTimeMillis() - start));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("Took: " + (System.currentTimeMillis() - start));
     }
 
     @Override

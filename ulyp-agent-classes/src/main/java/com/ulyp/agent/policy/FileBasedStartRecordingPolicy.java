@@ -66,7 +66,7 @@ public class FileBasedStartRecordingPolicy implements StartRecordingPolicy {
                 char charValue = new String(buf, StandardCharsets.US_ASCII).charAt(0);
                 boolean canStartRecordingValue = charValue == RECORDING_ENABLED_VALUE;
                 if (canStartRecordingValue) {
-                    log.info("Initial value in file " + file + " is " + charValue + ", recording can start any moment");
+                    log.info("Initial value in file {} is {}, recording can start any moment", file, charValue);
                     this.recordingCanStart = true;
                 } else {
                     log.info("Initial value in file " + file + " is " + charValue + ", recording is disabled until content of file is changed");

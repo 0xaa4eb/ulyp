@@ -6,11 +6,13 @@ import com.ulyp.storage.impl.RecordedCallState;
 import com.ulyp.storage.impl.RocksdbIndex;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Slf4j
 public class RocksdbChecker {
 
     public static RocksdbAvailableResult checkRocksdbAvailable() {
@@ -47,7 +49,7 @@ public class RocksdbChecker {
             try {
                 FileUtil.deleteDirectory(tempDirectory);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.warn("Failed to delete temp directory {}", tempDirectory, e);
             }
         }
     }

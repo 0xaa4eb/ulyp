@@ -89,7 +89,7 @@ public class CallRecordBuffer {
     }
 
     public long getTotalRecordedEnterCalls() {
-        return nextCallId - rootCallId;
+        return (long) nextCallId - rootCallId;
     }
 
     public int getRecordedCallsSize() {
