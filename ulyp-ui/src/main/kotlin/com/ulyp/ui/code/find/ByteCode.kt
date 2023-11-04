@@ -15,7 +15,7 @@ class ByteCode(private val className: String, private val bytecode: ByteArray) {
     fun decompile(): SourceCode {
         val classfile = TmpFile("$className.class")
         try {
-            FileOutputStream(classfile.path.toFile()).use { fileOutputStream -> fileOutputStream.write(bytecode) }
+            FileOutputStream(classfile.path.toFile()).use { it.write(bytecode) }
         } catch (e: Exception) {
             e.printStackTrace()
         }
