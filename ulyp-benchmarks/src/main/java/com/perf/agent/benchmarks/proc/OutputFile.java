@@ -23,10 +23,12 @@ public class OutputFile {
         }
     }
 
-    public RecordingDataReader toReader() {
+    public RecordingDataReader toReader() throws InterruptedException {
         RecordingDataReader reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file.toFile()).autoStartReading(true).build());
         try {
             reader.getFinishedReadingFuture().get(180, TimeUnit.SECONDS);
+        } catch (InterruptedException interruptedException) {
+            throw interruptedException;
         } catch (Exception e) {
             throw new UlypException("Timed out waiting for recording to finish", e);
         }

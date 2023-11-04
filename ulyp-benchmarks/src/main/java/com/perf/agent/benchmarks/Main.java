@@ -23,7 +23,6 @@ public class Main {
         runResults.addAll(runBenchmark(H2MemDatabaseBenchmark.class));
         runResults.addAll(runBenchmark(ActivemqBenchmark.class));
         runResults.addAll(runBenchmark(FibonacciNumbersBenchmark.class));
-//        runResults.addAll(runBenchmark(SpringHibernateSmallBenchmark.class));
         runResults.addAll(runBenchmark(SpringHibernateMediumBenchmark.class));
 
         for (BenchmarkRunResult runResult : runResults) {
@@ -42,7 +41,7 @@ public class Main {
         return runResults;
     }
 
-    private static BenchmarkRunResult runScenario(Class<? extends Benchmark> benchmarkClazz, BenchmarkScenario scenario) {
+    private static BenchmarkRunResult runScenario(Class<? extends Benchmark> benchmarkClazz, BenchmarkScenario scenario) throws InterruptedException {
         Histogram procRunTimeHistogram = emptyHistogram();
         Histogram recordTimeHistogram = emptyHistogram();
         Histogram recordsCallsCountHistogram = new Histogram(1, 2_000_000_000, 2);
@@ -52,7 +51,12 @@ public class Main {
         for (int i = 0; i < ITERATIONS_PER_PROFILE; i++) {
             OutputFile outputFile = run(benchmarkClazz, scenario, procRunTimeHistogram);
 
-            RecordingDataReader recordingDataReader = Optional.ofNullable(outputFile).map(OutputFile::toReader).orElse(RecordingDataReader.empty());
+            RecordingDataReader recordingDataReader;
+            if (outputFile != null) {
+                recordingDataReader = outputFile.toReader();
+            } else {
+                recordingDataReader = RecordingDataReader.empty();
+            }
 
             List<Recording> recordings = recordingDataReader.getRecordings();
             recordingsCountHistogram.recordValue(recordings.size());
