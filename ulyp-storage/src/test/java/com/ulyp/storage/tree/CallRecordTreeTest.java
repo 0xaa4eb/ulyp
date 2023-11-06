@@ -23,16 +23,14 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.ReaderSettings;
 import com.ulyp.storage.RecordingDataReader;
 import com.ulyp.storage.RecordingDataWriter;
-import com.ulyp.storage.RecordingListener;
-import com.ulyp.storage.impl.AsyncFileRecordingDataReader;
-import com.ulyp.storage.impl.FileRecordingDataWriter;
-import com.ulyp.storage.impl.StorageReadWriteTest;
+import com.ulyp.storage.reader.FileRecordingDataReader;
+import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 public class CallRecordTreeTest {
 
     private final int recordingId = 42;
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final Type type = typeResolver.get(StorageReadWriteTest.T.class);
+    private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
         .declaringType(type)
         .name("run")
@@ -43,15 +41,21 @@ public class CallRecordTreeTest {
         .build();
     private final TypeList types = new TypeList();
     private final MethodList methods = new MethodList();
-    private final StorageReadWriteTest.T obj = new StorageReadWriteTest.T();
+    private final T obj = new T();
     private RecordingDataReader reader;
     private RecordingDataWriter writer;
     private RecordingMetadata recordingMetadata;
 
+    public static class T {
+        public String foo(String in) {
+            return in;
+        }
+    }
+
     @Before
     public void setUp() throws IOException {
-        File file = Files.createTempFile(StorageReadWriteTest.class.getSimpleName(), "a").toFile();
-        this.reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
+        File file = Files.createTempFile(CallRecordTreeTest.class.getSimpleName(), "a").toFile();
+        this.reader = new FileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
         this.writer = new FileRecordingDataWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
@@ -72,21 +76,15 @@ public class CallRecordTreeTest {
     }
 
     @Test
+    public void testEmptyTree() throws ExecutionException, InterruptedException {
+
+    }
+
+    @Test
     public void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
         RecordedMethodCallList calls = new RecordedMethodCallList(recordingId);
-        calls.addEnterMethodCall(
-            0,
-            method,
-            typeResolver,
-            obj,
-            new Object[]{"ABC"}
-        );
-        calls.addExitMethodCall(
-            0,
-            typeResolver,
-            false,
-            "CDE"
-        );
+        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
+        calls.addExitMethodCall(0, typeResolver, false, "CDE");
 
         writer.write(recordingMetadata);
         writer.write(types);
@@ -94,12 +92,14 @@ public class CallRecordTreeTest {
         writer.write(calls);
         writer.close();
 
-        CallRecordTree callRecordTree = new CallRecordTree(reader, RecordingListener.empty(), InMemoryIndex::new, true);
-        callRecordTree.getFinishedReadingFuture().get();
+        CallRecordTree tree = new CallRecordTreeBuilder(reader)
+            .setIndexSupplier(InMemoryIndex::new)
+            .setReadContinuously(false)
+            .build();
 
-        Assert.assertEquals(1, callRecordTree.getRecordings().size());
+        Assert.assertEquals(1, tree.getRecordings().size());
 
-        Recording recording = callRecordTree.getRecordings().iterator().next();
+        Recording recording = tree.getRecordings().iterator().next();
         CallRecord root = recording.getRoot();
         Assert.assertTrue(root.isFullyRecorded());
 
@@ -110,13 +110,7 @@ public class CallRecordTreeTest {
     @Test
     public void testNotFinishedRecording() throws ExecutionException, InterruptedException {
         RecordedMethodCallList calls = new RecordedMethodCallList(recordingId);
-        calls.addEnterMethodCall(
-            0,
-            method,
-            typeResolver,
-            obj,
-            new Object[]{"ABC"}
-        );
+        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
 
         writer.write(recordingMetadata);
         writer.write(types);
@@ -125,7 +119,7 @@ public class CallRecordTreeTest {
         writer.close();
 
         CallRecordTree tree = new CallRecordTree(reader, RecordingListener.empty(), InMemoryIndex::new, true);
-        tree.getFinishedReadingFuture().get();
+        tree.getCompleteFuture().get();
 
         Assert.assertEquals(1, tree.getRecordings().size());
 

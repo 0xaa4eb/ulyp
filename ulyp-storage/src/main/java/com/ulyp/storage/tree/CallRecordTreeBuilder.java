@@ -3,12 +3,11 @@ package com.ulyp.storage.tree;
 import java.util.function.Supplier;
 
 import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.RecordingListener;
 
 public class CallRecordTreeBuilder {
 
     private final RecordingDataReader dataReader;
-    private boolean readUntilCompleteMark = true;
+    private boolean readContinuously = true;
     private RecordingListener recordingListener = RecordingListener.empty();
     private Supplier<Index> indexSupplier = InMemoryIndex::new;
 
@@ -16,10 +15,8 @@ public class CallRecordTreeBuilder {
         this.dataReader = dataReader;
     }
 
-    /** TODO
-     */
-    public CallRecordTreeBuilder setReadUntilCompleteMark(boolean readUntilCompleteMark) {
-        this.readUntilCompleteMark = readUntilCompleteMark;
+    public CallRecordTreeBuilder setReadContinuously(boolean readContinuously) {
+        this.readContinuously = readContinuously;
         return this;
     }
 
@@ -34,6 +31,6 @@ public class CallRecordTreeBuilder {
     }
 
     public CallRecordTree build() {
-        return new CallRecordTree(dataReader, recordingListener, indexSupplier, readUntilCompleteMark);
+        return new CallRecordTree(dataReader, recordingListener, indexSupplier, readContinuously);
     }
 }

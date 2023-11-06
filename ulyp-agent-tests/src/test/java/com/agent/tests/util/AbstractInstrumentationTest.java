@@ -36,10 +36,10 @@ public class AbstractInstrumentationTest {
         } else {
             System.out.println("Recording file " + ByteSize.toHumanReadable(settings.getOutputFile().getFile().toPath().toFile().length()));
             CallRecordTree tree = new CallRecordTreeBuilder(settings.getOutputFile().toReader())
-                .setReadUntilCompleteMark(false)
+                .setReadContinuously(false)
                 .build();
             try {
-                tree.getFinishedReadingFuture().get(200, TimeUnit.SECONDS);
+                tree.getCompleteFuture().get(200, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
             } catch (ExecutionException ignored) {

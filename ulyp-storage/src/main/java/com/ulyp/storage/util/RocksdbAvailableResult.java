@@ -2,20 +2,20 @@ package com.ulyp.storage.util;
 
 public class RocksdbAvailableResult {
 
-    private final boolean available;
+    private final boolean value;
     private final Throwable err;
 
-    public RocksdbAvailableResult(boolean available) {
-        this(available, null);
+    public RocksdbAvailableResult(boolean value) {
+        this(value, null);
     }
 
-    public RocksdbAvailableResult(boolean available, Throwable err) {
-        this.available = available;
+    public RocksdbAvailableResult(boolean value, Throwable err) {
+        this.value = value;
         this.err = err;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public boolean value() {
+        return value;
     }
 
     public Throwable getErr() {

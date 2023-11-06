@@ -5,10 +5,10 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.storage.impl.AsyncFileRecordingDataWriter;
-import com.ulyp.storage.impl.DevNullRecordingDataWriter;
-import com.ulyp.storage.impl.FileRecordingDataWriter;
-import com.ulyp.storage.impl.StatsRecordingDataWriter;
+import com.ulyp.storage.writer.AsyncFileRecordingDataWriter;
+import com.ulyp.storage.writer.DevNullRecordingDataWriter;
+import com.ulyp.storage.writer.FileRecordingDataWriter;
+import com.ulyp.storage.writer.StatsRecordingDataWriter;
 
 import java.io.File;
 

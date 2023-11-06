@@ -3,6 +3,8 @@ package com.ulyp.storage.tree;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -19,7 +21,6 @@ import com.ulyp.core.util.Backoff;
 import com.ulyp.core.util.FixedDelayBackoff;
 import com.ulyp.storage.RecordingDataReader;
 import com.ulyp.storage.RecordingDataReaderJob;
-import com.ulyp.storage.RecordingListener;
 import com.ulyp.storage.StorageException;
 
 import lombok.Getter;
@@ -27,32 +28,28 @@ import lombok.Getter;
 /**
  * Primary call tree implementation which is used by tests and UI (thus is located here)
  */
-public class CallRecordTree {
+public class CallRecordTree implements AutoCloseable {
 
     private final RecordingDataReader dataReader;
-    private final boolean readUntilCompleteMark;
+    private final boolean readContinuously;
     @Getter
-    private final CompletableFuture<ProcessMetadata> processMetadataFuture = new CompletableFuture<>();
-    private final CompletableFuture<Boolean> finishedReadingFuture = new CompletableFuture<>();
+    private final CompletableFuture<Boolean> completeFuture = new CompletableFuture<>();
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final Repository<Integer, Method> methods = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
     private final Index index;
-    private final RecordingListener recordingListener;
+    private volatile RecordingListener recordingListener;
+    private final Lock listenerLock = new ReentrantLock();
 
     CallRecordTree(RecordingDataReader dataReader,
                    RecordingListener recordingListener,
                    Supplier<Index> indexSupplier,
-                   boolean readUntilCompleteMark) {
+                   boolean readContinuously) {
         this.recordingListener = recordingListener;
         this.index = indexSupplier.get();
         this.dataReader = dataReader;
-        this.readUntilCompleteMark = readUntilCompleteMark;
-        this.dataReader.submitJob(new CallRecordTreeBuildingJob());
-    }
-
-    public CompletableFuture<Boolean> getFinishedReadingFuture() {
-        return finishedReadingFuture;
+        this.readContinuously = readContinuously;
+        this.dataReader.submitReaderJob(new CallRecordTreeBuildingJob());
     }
 
     public List<Recording> getRecordings() {
@@ -63,13 +60,40 @@ public class CallRecordTree {
             .collect(Collectors.toList());
     }
 
+    public ProcessMetadata getProcessMetadata() {
+        return dataReader.getProcessMetadata();
+    }
+
+    @Override
+    public void close() throws Exception {
+        try {
+            dataReader.close();
+        } finally {
+            index.close();
+        }
+    }
+
+    public void subscribe(RecordingListener recordingListener) {
+        listenerLock.lock();
+        try {
+            this.recordingListener = recordingListener;
+            this.recordings.values().forEach(recordingState -> {
+                if (recordingState.isPublished()) {
+                    recordingListener.onRecordingUpdated(recordingState.toRecording());
+                }
+            });
+        } finally {
+            listenerLock.unlock();
+        }
+    }
+
     private class CallRecordTreeBuildingJob implements RecordingDataReaderJob {
 
         private final Backoff backoff = new FixedDelayBackoff(Duration.ofMillis(100));
 
         @Override
         public void onProcessMetadata(ProcessMetadata processMetadata) {
-            processMetadataFuture.complete(processMetadata);
+
         }
 
         @Override
@@ -106,20 +130,25 @@ public class CallRecordTree {
             if (recording == null) {
                 return;
             }
-            recording.onNewRecordedCalls(address, recordedMethodCalls);
-            if (recording.isPublished()) {
-                recordingListener.onRecordingUpdated(recording.toRecording());
-            } else {
-                Recording converted = recording.toRecording();
-                if (recording.getRoot() != null && true/*settings.getFilter().shouldPublish(converted)*/ && recording.publish()) {
-                    recordingListener.onRecordingUpdated(converted);
+            listenerLock.lock();
+            try {
+                recording.onNewRecordedCalls(address, recordedMethodCalls);
+                if (recording.isPublished()) {
+                    recordingListener.onRecordingUpdated(recording.toRecording());
+                } else {
+                    Recording converted = recording.toRecording();
+                    if (recording.getRoot() != null && true/*settings.getFilter().shouldPublish(converted)*/ && recording.publish()) {
+                        recordingListener.onRecordingUpdated(converted);
+                    }
                 }
+            } finally {
+                listenerLock.unlock();
             }
         }
 
         @Override
         public boolean continueOnNoData() {
-            if (readUntilCompleteMark) {
+            if (readContinuously) {
                 try {
                     backoff.await();
                 } catch (InterruptedException e) {
@@ -129,11 +158,6 @@ public class CallRecordTree {
             } else {
                 return false;
             }
-        }
-
-        @Override
-        public void onComplete() {
-            finishedReadingFuture.complete(true);
         }
     }
 }

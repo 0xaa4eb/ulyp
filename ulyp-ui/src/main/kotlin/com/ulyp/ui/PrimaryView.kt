@@ -1,7 +1,7 @@
 package com.ulyp.ui
 
 import com.ulyp.core.exception.UlypException
-import com.ulyp.storage.RecordingDataReader
+import com.ulyp.storage.tree.CallRecordTree
 import com.ulyp.storage.util.RocksdbChecker
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsModalView
@@ -125,22 +125,31 @@ class PrimaryView(
 
     fun openRecordingFile() {
         val file: File = fileChooser.get() ?: return
-        val recordingDataReader: RecordingDataReader = recordingReaderRegistry.newReader(file)
+        val callRecordTree: CallRecordTree = recordingReaderRegistry.newCallRecordTree(file) ?: return
 
-        recordingDataReader.processMetadataFuture.thenAccept { processMetadata ->
-
-            val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(FileRecordingsTabName(file, processMetadata), recordingDataReader)
-            fileRecordingsTab.setOnClosed {
-                recordingDataReader.close()
-            }
-            recordingDataReader.subscribe { recording ->
-                fileRecordingsTab.updateOrCreateRecordingTab(processMetadata, recording)
-            }
+        val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(
+            FileRecordingsTabName(file, callRecordTree.processMetadata)
+        )
+        fileRecordingsTab.setOnClosed {
+            callRecordTree.close()
         }
 
-        recordingDataReader.start()
+        val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
+        if (!rocksdbAvailable.value()) {
+            val errorPopup = applicationContext.getBean(
+                ErrorModalView::class.java,
+                applicationContext.getBean(SceneRegistry::class.java),
+                "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
+                ExceptionAsTextView(rocksdbAvailable.err!!)
+            )
+            errorPopup.show()
+        }
 
-        recordingDataReader.finishedReadingFuture.exceptionally {
+        callRecordTree.subscribe {
+            recording -> fileRecordingsTab.updateOrCreateRecordingTab(callRecordTree.processMetadata, recording)
+        }
+
+        callRecordTree.completeFuture.exceptionally {
             FxThreadExecutor.execute {
                 val errorPopup = applicationContext.getBean(
                         ErrorModalView::class.java,
@@ -151,17 +160,6 @@ class PrimaryView(
                 errorPopup.show()
             }
             true
-        }
-
-        val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
-        if (!rocksdbAvailable.isAvailable) {
-            val errorPopup = applicationContext.getBean(
-                ErrorModalView::class.java,
-                applicationContext.getBean(SceneRegistry::class.java),
-                "Rocksdb is not available on your platform, in-memory index will be used. Please note this may cause OOM on large recordings",
-                ExceptionAsTextView(rocksdbAvailable.err!!)
-            )
-            errorPopup.show()
         }
     }
 }

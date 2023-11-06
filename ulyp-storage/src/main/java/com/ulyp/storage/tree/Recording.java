@@ -1,15 +1,12 @@
 package com.ulyp.storage.tree;
 
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.recorders.NotRecordedObjectRecord;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.time.Duration;
 
 /**
 * Recording class represents a particular recorded method call along with all its child subcalls. There are
-* usually many recordings present
+* usually many recordings present.
 */
 public class Recording {
 
@@ -26,10 +23,6 @@ public class Recording {
     @NotNull
     public CallRecord getRoot() {
         return recordingState.getRoot();
-    }
-
-    public boolean isComplete() {
-        return !(getRoot().getReturnValue() instanceof NotRecordedObjectRecord);
     }
 
     public int callCount() {

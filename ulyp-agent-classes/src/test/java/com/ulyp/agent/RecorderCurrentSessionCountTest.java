@@ -23,8 +23,8 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.impl.DevNullRecordingDataWriter;
-import com.ulyp.storage.impl.StatsRecordingDataWriter;
+import com.ulyp.storage.writer.DevNullRecordingDataWriter;
+import com.ulyp.storage.writer.StatsRecordingDataWriter;
 
 public class RecorderCurrentSessionCountTest {
 

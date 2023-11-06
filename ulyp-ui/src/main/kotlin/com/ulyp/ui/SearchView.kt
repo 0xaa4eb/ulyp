@@ -1,6 +1,5 @@
 package com.ulyp.ui
 
-import com.ulyp.storage.SearchResultListener
 import com.ulyp.storage.util.PlainTextSearchQuery
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTab
@@ -30,12 +29,12 @@ class SearchView() : Initializable {
 
     fun apply() {
         val selectedItem = fileRecordingTabPane.selectionModel.selectedItem as FileRecordingsTab?
-        if (selectedItem != null) {
+/*        if (selectedItem != null) {
             selectedItem.recordingDataReader.initiateSearch(
                 PlainTextSearchQuery(searchTextField.text),
                 SearchListener(selectedItem)
             )
             stage?.close()
-        }
+        }*/
     }
 }

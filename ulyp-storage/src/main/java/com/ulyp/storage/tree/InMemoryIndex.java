@@ -5,20 +5,20 @@ import com.ulyp.core.repository.Repository;
 
 public class InMemoryIndex implements Index {
 
-    private final Repository<Long, RecordedCallState> repository = new InMemoryRepository<>();
+    private final Repository<Long, CallRecordIndexState> repository = new InMemoryRepository<>();
 
     @Override
-    public RecordedCallState get(long id) {
+    public CallRecordIndexState get(long id) {
         return repository.get(id);
     }
 
     @Override
-    public void store(long id, RecordedCallState callState) {
+    public void store(long id, CallRecordIndexState callState) {
         repository.store(id, callState);
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws RuntimeException {
         // NOP
     }
 }

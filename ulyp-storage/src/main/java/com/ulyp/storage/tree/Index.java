@@ -7,7 +7,9 @@ package com.ulyp.storage.tree;
  */
 public interface Index extends AutoCloseable {
 
-    RecordedCallState get(long id);
+    CallRecordIndexState get(long id);
 
-    void store(long id, RecordedCallState callState);
+    void store(long id, CallRecordIndexState callState);
+
+    void close() throws RuntimeException;
 }

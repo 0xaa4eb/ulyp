@@ -1,5 +1,8 @@
 package com.ulyp.agent;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ulyp.core.CallRecordBuffer;
@@ -25,6 +28,7 @@ public class RecordDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
     private final MethodRepository methodRepository;
+    private final Set<Integer> writtenRecordingIds = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
@@ -112,7 +116,9 @@ public class RecordDataWriter {
             }
         }
 
-        recordingDataWriter.write(recordingMetadata);
+        if (writtenRecordingIds.add(recordingMetadata.getId())) {
+            recordingDataWriter.write(recordingMetadata);
+        }
         recordingDataWriter.write(callRecordBuffer.getRecordedCalls());
     }
 }

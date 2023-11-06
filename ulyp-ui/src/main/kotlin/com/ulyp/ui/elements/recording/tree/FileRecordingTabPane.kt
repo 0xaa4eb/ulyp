@@ -3,6 +3,7 @@ package com.ulyp.ui.elements.recording.tree
 import com.ulyp.storage.RecordingDataReader
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.settings.Settings
+import com.ulyp.ui.util.FxThreadExecutor
 import com.ulyp.ui.util.FxThreadExecutor.execute
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
@@ -37,8 +38,8 @@ class FileRecordingTabPane : TabPane() {
     private val selectedTab: FileRecordingsTab
         get() = selectionModel.selectedItem as FileRecordingsTab
 
-    fun getOrCreateProcessTab(name: FileRecordingsTabName, recordingDataReader: RecordingDataReader): FileRecordingsTab {
-        return execute {
+    fun getOrCreateProcessTab(name: FileRecordingsTabName): FileRecordingsTab {
+        return FxThreadExecutor.execute {
             val processTab = tabs
                     .stream()
                     .filter { tab: Tab -> name == (tab as FileRecordingsTab).name }
@@ -46,7 +47,7 @@ class FileRecordingTabPane : TabPane() {
             if (processTab.isPresent) {
                 return@execute processTab.get() as FileRecordingsTab
             } else {
-                val tab = context.getBean(FileRecordingsTab::class.java, name, context, recordingDataReader, settings)
+                val tab = context.getBean(FileRecordingsTab::class.java, name, context, settings)
                 tabs.add(tab)
                 return@execute tab
             }

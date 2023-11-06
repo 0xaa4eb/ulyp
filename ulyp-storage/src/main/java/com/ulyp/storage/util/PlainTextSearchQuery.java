@@ -6,7 +6,7 @@ import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.util.StringUtils;
-import com.ulyp.storage.SearchQuery;
+import com.ulyp.storage.search.SearchQuery;
 
 public class PlainTextSearchQuery implements SearchQuery {
 

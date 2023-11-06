@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct
 class FileRecordingsTab internal constructor(
         val name: FileRecordingsTabName,
         private val applicationContext: ApplicationContext,
-        val recordingDataReader: RecordingDataReader,
         settings: Settings
 ) : Tab(name.toString()) {
 

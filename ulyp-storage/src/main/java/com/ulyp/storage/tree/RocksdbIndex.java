@@ -40,7 +40,7 @@ public class RocksdbIndex implements Index {
     }
 
     @Override
-    public RecordedCallState get(long id) {
+    public CallRecordIndexState get(long id) {
         byte[] keyBytes = keyBuffer.get();
         BitUtil.longToBytes(id, keyBytes, 0);
         byte[] bytes;
@@ -54,11 +54,11 @@ public class RocksdbIndex implements Index {
         }
         BinaryRecordedCallStateDecoder decoder = this.decoder.get();
         decoder.wrap(new UnsafeBuffer(bytes), 0, BinaryRecordedCallStateDecoder.BLOCK_LENGTH, 0);
-        return RecordedCallState.deserialize(decoder);
+        return CallRecordIndexState.deserialize(decoder);
     }
 
     @Override
-    public void store(long id, RecordedCallState value) {
+    public void store(long id, CallRecordIndexState value) {
         MutableDirectBuffer buffer = tempBuffer.get();
         BinaryRecordedCallStateEncoder encoder = this.encoder.get();
         encoder.wrap(buffer, 0);
@@ -85,7 +85,7 @@ public class RocksdbIndex implements Index {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws RuntimeException {
         db.close();
     }
 }

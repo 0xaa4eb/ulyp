@@ -5,7 +5,6 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.storage.*;
-import com.ulyp.storage.impl.MemCallStack;
 
 import lombok.Getter;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class RecordingState {
 
-    private final R recordingDataReader;
+    private final RecordingDataReader recordingDataReader;
     private final Index index;
     private final MemCallStack memCallStack = new MemCallStack();
     private final ReadableRepository<Integer, Method> methodRepository;
@@ -29,7 +28,7 @@ public class RecordingState {
     public RecordingState(
             RecordingMetadata metadata,
             Index index,
-            R recordingDataReader,
+            RecordingDataReader recordingDataReader,
             ReadableRepository<Integer, Method> methodRepository,
             ReadableRepository<Integer, Type> typeRepository) {
         this.index = index;
@@ -39,7 +38,7 @@ public class RecordingState {
         this.typeRepository = typeRepository;
     }
 
-    public synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
+    synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
         AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
@@ -49,14 +48,14 @@ public class RecordingState {
                 if (rootUniqueId < 0) {
                     rootUniqueId = uniqueId;
                 }
-                RecordedCallState callState = RecordedCallState.builder()
+                CallRecordIndexState callState = CallRecordIndexState.builder()
                     .id(uniqueId)
                     .enterMethodCallAddr(fileAddr + relativeAddress)
                     .build();
                 memCallStack.push(callState);
             } else {
 
-                RecordedCallState lastCallState = memCallStack.peek();
+                CallRecordIndexState lastCallState = memCallStack.peek();
                 if (lastCallState == null || lastCallState.getId() != uniqueId) {
 /*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
@@ -85,8 +84,8 @@ public class RecordingState {
         return new Recording(this);
     }
 
-    public synchronized RecordedCallState getState(long callId) {
-        RecordedCallState callState = memCallStack.get(callId);
+    public synchronized CallRecordIndexState getState(long callId) {
+        CallRecordIndexState callState = memCallStack.get(callId);
         if (callState != null) {
             return callState;
         }
@@ -112,7 +111,7 @@ public class RecordingState {
             return null;
         }
 
-        RecordedCallState callState = getState(callId);
+        CallRecordIndexState callState = getState(callId);
         RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr());
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()

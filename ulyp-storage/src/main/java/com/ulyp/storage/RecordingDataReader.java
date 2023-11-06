@@ -3,10 +3,10 @@ package com.ulyp.storage;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
-import com.ulyp.storage.impl.EmptyRecordingDataReader;
+import com.ulyp.storage.search.SearchQuery;
+import com.ulyp.storage.search.SearchResultListener;
 import com.ulyp.storage.tree.Recording;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -15,15 +15,11 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * All recorded calls are aggregated to {@link Recording} instances.
  */
-public interface RecordingDataReader extends AutoCloseable, R {
-
-    static RecordingDataReader empty() {
-        return new EmptyRecordingDataReader();
-    }
+public interface RecordingDataReader extends AutoCloseable {
 
     void start();
 
-    CompletableFuture<Void> submitJob(RecordingDataReaderJob job);
+    CompletableFuture<Void> submitReaderJob(RecordingDataReaderJob job);
 
     /**
      *
@@ -35,18 +31,7 @@ public interface RecordingDataReader extends AutoCloseable, R {
      */
     RecordedExitMethodCall readExitMethodCall(long address);
 
-
-    CompletableFuture<ProcessMetadata> getProcessMetadataFuture();
-
-    /**
-     * If reading finishes successfully, then the returned future will be completed
-     * with true value, otherwise it completes exceptionally
-     */
-    CompletableFuture<Boolean> getFinishedReadingFuture();
-
-    void subscribe(RecordingListener listener);
-
-    List<Recording> getRecordings();
+    ProcessMetadata getProcessMetadata();
 
     void close() throws StorageException;
 
