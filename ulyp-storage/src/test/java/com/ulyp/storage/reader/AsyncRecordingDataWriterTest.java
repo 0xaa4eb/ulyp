@@ -12,8 +12,7 @@ import org.junit.Test;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 public class AsyncRecordingDataWriterTest {
@@ -24,7 +23,7 @@ public class AsyncRecordingDataWriterTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(AsyncRecordingDataWriterTest.class.getSimpleName(), "a").toFile();
-        this.reader = new FileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(false).build());
+        this.reader = new FileRecordingDataReaderBuilder(file).build();
         this.writer = new FileRecordingDataWriter(file);
     }
 
@@ -34,7 +33,7 @@ public class AsyncRecordingDataWriterTest {
     }
 
     @Test
-    public void shouldReturn() {
+    public void shouldReturnNullProcessMetadataIfNotWritten() {
         Assert.assertNull(reader.getProcessMetadata());
     }
 

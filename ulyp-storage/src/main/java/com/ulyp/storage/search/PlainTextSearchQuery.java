@@ -1,4 +1,4 @@
-package com.ulyp.storage.util;
+package com.ulyp.storage.search;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.RecordedEnterMethodCall;

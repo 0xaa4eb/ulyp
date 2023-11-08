@@ -31,9 +31,9 @@ public class RecordingMetadata {
     private List<String> stackTraceElements = Collections.emptyList();
 
     public RecordingMetadata withNewCreationTimestamp() {
-        // other fields are needed for the first chunk only
         return RecordingMetadata.builder()
             .id(id)
+            .recordingStartedEpochMillis(recordingStartedEpochMillis)
             .logCreatedEpochMillis(System.currentTimeMillis())
             .build();
     }

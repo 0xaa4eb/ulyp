@@ -5,9 +5,7 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.RecordingDataWriter;
 import com.ulyp.core.util.NamedThreadFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +33,8 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void reset(ResetMetadata resetMetadata) throws StorageException {
-        writeAsync(() -> delegate.reset(resetMetadata));
+    public void reset(ResetRequest resetRequest) throws StorageException {
+        writeAsync(() -> delegate.reset(resetRequest));
     }
 
     @Override

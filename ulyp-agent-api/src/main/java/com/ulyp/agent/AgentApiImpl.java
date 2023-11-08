@@ -9,8 +9,8 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.storage.RecordingDataWriter;
-import com.ulyp.storage.ResetMetadata;
+import com.ulyp.storage.writer.RecordingDataWriter;
+import com.ulyp.storage.writer.ResetRequest;
 
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
                 }
             }
 
-            recordingDataWriter.reset(ResetMetadata.builder()
+            recordingDataWriter.reset(ResetRequest.builder()
                             .methods(methods)
                             .types(types)
                             .processMetadata(processMetadata)

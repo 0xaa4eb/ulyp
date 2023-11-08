@@ -20,8 +20,8 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.reader.RecordingDataReader;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 @Ignore

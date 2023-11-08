@@ -4,7 +4,7 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,7 +110,7 @@ public class Settings {
                 recordingDataWriterSupplier = new Supplier<RecordingDataWriter>() {
                     @Override
                     public RecordingDataWriter get() {
-                        return RecordingDataWriter.devNull();
+                        return RecordingDataWriter.blackhole();
                     }
 
                     @Override

@@ -1,23 +1,16 @@
-package com.ulyp.storage;
+package com.ulyp.storage.reader;
+
+import java.util.concurrent.CompletableFuture;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
-import com.ulyp.storage.search.SearchQuery;
-import com.ulyp.storage.search.SearchResultListener;
-import com.ulyp.storage.tree.Recording;
-
-import java.util.concurrent.CompletableFuture;
+import com.ulyp.storage.StorageException;
 
 /**
- * The entry point to all data recorded by the agent. All reading happens in a background thread
- * asynchronously.
- * <p>
- * All recorded calls are aggregated to {@link Recording} instances.
+ * The entry point to all data recorded by the agent
  */
 public interface RecordingDataReader extends AutoCloseable {
-
-    void start();
 
     CompletableFuture<Void> submitReaderJob(RecordingDataReaderJob job);
 
@@ -34,6 +27,4 @@ public interface RecordingDataReader extends AutoCloseable {
     ProcessMetadata getProcessMetadata();
 
     void close() throws StorageException;
-
-    CompletableFuture<Void> initiateSearch(SearchQuery query, SearchResultListener listener);
 }

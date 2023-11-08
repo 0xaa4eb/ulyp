@@ -19,8 +19,8 @@ import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.core.util.Backoff;
 import com.ulyp.core.util.FixedDelayBackoff;
-import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.RecordingDataReaderJob;
+import com.ulyp.storage.reader.RecordingDataReader;
+import com.ulyp.storage.reader.RecordingDataReaderJob;
 import com.ulyp.storage.StorageException;
 
 import lombok.Getter;

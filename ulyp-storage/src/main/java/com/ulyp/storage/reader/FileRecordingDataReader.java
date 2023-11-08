@@ -20,9 +20,6 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.NamedThreadFactory;
-import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.RecordingDataReaderJob;
 import com.ulyp.storage.search.SearchQuery;
 import com.ulyp.storage.search.SearchResultListener;
 import com.ulyp.storage.StorageException;
@@ -34,28 +31,18 @@ public class FileRecordingDataReader implements RecordingDataReader {
 
     private final File file;
     private final RecordedMethodCallDataReader recordedMethodCallDataReader;
-    private final ReaderSettings settings;
     private final ExecutorService executorService;
 
-    public FileRecordingDataReader(ReaderSettings settings) {
-        this.file = settings.getFile();
-        this.settings = settings;
+    FileRecordingDataReader(File file, int threads) {
+        this.file = file;
         this.recordedMethodCallDataReader = new RecordedMethodCallDataReader(file);
         this.executorService = Executors.newFixedThreadPool(
-                5,
-                NamedThreadFactory.builder()
-                        .name("Reader-" + file.toString())
-                        .daemon(true)
-                        .build()
+            threads,
+            NamedThreadFactory.builder()
+                .name("Reader-" + file.toString())
+                .daemon(true)
+                .build()
         );
-
-        if (settings.isAutoStartReading()) {
-            start();
-        }
-    }
-
-    public synchronized void start() {
-
     }
 
     @Override
@@ -102,16 +89,6 @@ public class FileRecordingDataReader implements RecordingDataReader {
         } catch (InterruptedException e) {
             // nop
         }
-    }
-
-    @Override
-    public CompletableFuture<Void> initiateSearch(SearchQuery query, SearchResultListener listener) {
-        /*try {
-            return CompletableFuture.runAsync(new SearchTask(file, query, listener), executorService);
-        } catch (IOException e) {
-            throw new StorageException(e);
-        }*/
-        return null;
     }
 
     private static class JobRunner implements Runnable, Closeable {

@@ -1,4 +1,4 @@
-package com.ulyp.storage;
+package com.ulyp.storage.reader;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;

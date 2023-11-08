@@ -25,11 +25,6 @@ public class ByAddressFileReader implements Closeable {
         return buf;
     }
 
-    public synchronized byte readByte(long address) throws IOException {
-        randomAccessFile.seek(address);
-        return randomAccessFile.readByte();
-    }
-
     @Override
     public String toString() {
         return "ByAddressFileReader{file=" + file + "}";

@@ -4,9 +4,12 @@ import com.perf.agent.benchmarks.benchmarks.*;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.perf.agent.benchmarks.proc.OutputFile;
 import com.perf.agent.benchmarks.proc.RecordingResult;
+import com.ulyp.core.RecordingMetadata;
+
 import org.HdrHistogram.Histogram;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -49,23 +52,29 @@ public class Main {
         for (int i = 0; i < ITERATIONS_PER_PROFILE; i++) {
             OutputFile outputFile = run(benchmarkClazz, scenario, procRunTimeHistogram);
 
-            RecordingResult recordingResult = null;
             if (outputFile != null) {
-                recordingResult = outputFile.toRecordingResult();
+                RecordingResult recordingResult = outputFile.toRecordingResult();
 
                 recordingsCountHistogram.recordValue(recordingResult.getRecordingsCount());
                 outputFileSizeHistogram.recordValue(outputFile.size());
+
+                Collection<RecordingMetadata> recordingMetadataMap = recordingResult.getRecordingMetadataMap();
+
+                if (!recordingMetadataMap.isEmpty()) {
+                    int calls = 0;
+                    for (RecordingMetadata recordingMetadata : recordingMetadataMap) {
+                        recordTimeHistogram.recordValue(recordingMetadata.getRecordingCompletedEpochMillis() - recordingMetadata.getRecordingStartedEpochMillis());
+                        calls += recordingResult.getRecordedCalls(recordingMetadata.getId());
+                    }
+                    recordsCallsCountHistogram.recordValue(calls);
+                } else {
+                    recordTimeHistogram.recordValue(0L);
+                    recordsCallsCountHistogram.recordValue(0);
+                }
             } else {
                 recordingsCountHistogram.recordValue(0);
                 outputFileSizeHistogram.recordValue(0);
             }
-/*            if (!recordings.isEmpty()) {
-                recordings.forEach(recording -> recordTimeHistogram.recordValue(recording.getLifetime().toMillis()));
-                recordsCallsCountHistogram.recordValue(recordings.stream().mapToInt(Recording::callCount).sum());
-            } else {
-                recordTimeHistogram.recordValue(0L);
-                recordsCallsCountHistogram.recordValue(0);
-            }*/
         }
 
         return new BenchmarkRunResult(benchmarkClazz, scenario, procRunTimeHistogram, recordTimeHistogram, recordsCallsCountHistogram, recordingsCountHistogram, outputFileSizeHistogram);

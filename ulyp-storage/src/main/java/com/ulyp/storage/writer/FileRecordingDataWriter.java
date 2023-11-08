@@ -8,9 +8,7 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.RecordingDataWriter;
 import com.ulyp.storage.util.BinaryListFileWriter;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import com.ulyp.transport.BinaryRecordingMetadataEncoder;
@@ -34,11 +32,11 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void reset(ResetMetadata resetMetadata) throws StorageException {
+    public void reset(ResetRequest resetRequest) throws StorageException {
         fileWriter.moveToBeginning();
-        write(resetMetadata.getProcessMetadata());
-        write(resetMetadata.getTypes());
-        write(resetMetadata.getMethods());
+        write(resetRequest.getProcessMetadata());
+        write(resetRequest.getTypes());
+        write(resetRequest.getMethods());
     }
 
     @Override

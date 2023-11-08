@@ -1,8 +1,7 @@
-package com.ulyp.storage.reader;
+package com.ulyp.storage.util;
 
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.storage.util.BinaryListFileReader;
-import com.ulyp.storage.util.BinaryListFileWriter;
+
 import lombok.Builder;
 import lombok.Value;
 import org.junit.After;

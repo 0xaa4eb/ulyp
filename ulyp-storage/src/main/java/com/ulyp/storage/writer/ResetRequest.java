@@ -1,4 +1,4 @@
-package com.ulyp.storage;
+package com.ulyp.storage.writer;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.mem.MethodList;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class ResetMetadata {
+public class ResetRequest {
 
     private final ProcessMetadata processMetadata;
     private final TypeList types;

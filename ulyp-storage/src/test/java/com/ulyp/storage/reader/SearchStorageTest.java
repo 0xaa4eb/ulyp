@@ -9,7 +9,7 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.*;
 import com.ulyp.storage.reader.util.MemSearchResultListener;
 import com.ulyp.storage.search.SearchQuery;
-import com.ulyp.storage.util.PlainTextSearchQuery;
+import com.ulyp.storage.search.PlainTextSearchQuery;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 import org.junit.After;

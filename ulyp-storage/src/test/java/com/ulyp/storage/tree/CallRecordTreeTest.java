@@ -20,10 +20,9 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.RecordingDataWriter;
-import com.ulyp.storage.reader.FileRecordingDataReader;
+import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
+import com.ulyp.storage.reader.RecordingDataReader;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 public class CallRecordTreeTest {
@@ -55,7 +54,7 @@ public class CallRecordTreeTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(CallRecordTreeTest.class.getSimpleName(), "a").toFile();
-        this.reader = new FileRecordingDataReader(ReaderSettings.builder().file(file).autoStartReading(true).build());
+        this.reader = new FileRecordingDataReaderBuilder(file).build();
         this.writer = new FileRecordingDataWriter(file);
 
         recordingMetadata = RecordingMetadata.builder()
@@ -77,7 +76,12 @@ public class CallRecordTreeTest {
 
     @Test
     public void testEmptyTree() throws ExecutionException, InterruptedException {
+        CallRecordTree tree = new CallRecordTreeBuilder(reader)
+            .setIndexSupplier(InMemoryIndex::new)
+            .setReadContinuously(false)
+            .build();
 
+        Assert.assertEquals(0, tree.getRecordings().size());
     }
 
     @Test

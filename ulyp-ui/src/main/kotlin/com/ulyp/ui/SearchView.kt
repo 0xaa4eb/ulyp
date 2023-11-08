@@ -1,9 +1,7 @@
 package com.ulyp.ui
 
-import com.ulyp.storage.util.PlainTextSearchQuery
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTab
-import com.ulyp.ui.util.SearchListener
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Button

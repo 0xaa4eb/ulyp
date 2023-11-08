@@ -35,13 +35,13 @@ public class ActivemqBenchmark implements Benchmark {
                         .build(),
                 new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(ActivemqBenchmark.class, "run"))
-                        .build(),
+                        .build()/*,
                 new BenchmarkScenarioBuilder()
                         .withMethodToRecord(new MethodMatcher(ActivemqBenchmark.class, "doesntExist"))
                         .build(),
                 new BenchmarkScenarioBuilder()
                         .withAgentDisabled()
-                        .build()
+                        .build()*/
         );
     }
 

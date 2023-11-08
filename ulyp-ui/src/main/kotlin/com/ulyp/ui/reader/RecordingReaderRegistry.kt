@@ -2,9 +2,8 @@ package com.ulyp.ui.reader
 
 import com.ulyp.core.util.FileUtil
 import com.ulyp.storage.tree.Filter
-import com.ulyp.storage.ReaderSettings
-import com.ulyp.storage.RecordingDataReader
-import com.ulyp.storage.reader.FileRecordingDataReader
+import com.ulyp.storage.reader.RecordingDataReader
+import com.ulyp.storage.reader.FileRecordingDataReaderBuilder
 import com.ulyp.storage.tree.CallRecordTree
 import com.ulyp.storage.tree.CallRecordTreeBuilder
 import com.ulyp.storage.tree.InMemoryIndex
@@ -23,12 +22,7 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
 
     @Synchronized
     fun newCallRecordTree(file: File): CallRecordTree? {
-        val recordingDataReader =
-            FileRecordingDataReader(
-                ReaderSettings.builder()
-                    .file(file)
-                    .build()
-            )
+        val recordingDataReader = FileRecordingDataReaderBuilder(file).build()
         val processMetadata = recordingDataReader.processMetadata ?: return null
 
         val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()

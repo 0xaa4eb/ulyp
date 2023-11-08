@@ -14,7 +14,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,6 @@ public class RecordDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
     private final MethodRepository methodRepository;
-    private final Set<Integer> writtenRecordingIds = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
@@ -116,9 +115,7 @@ public class RecordDataWriter {
             }
         }
 
-        if (writtenRecordingIds.add(recordingMetadata.getId())) {
-            recordingDataWriter.write(recordingMetadata);
-        }
+        recordingDataWriter.write(recordingMetadata);
         recordingDataWriter.write(callRecordBuffer.getRecordedCalls());
     }
 }

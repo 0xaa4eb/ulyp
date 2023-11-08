@@ -1,6 +1,5 @@
 package com.ulyp.core;
 
-import com.ulyp.core.util.BitUtil;
 import com.ulyp.transport.BinaryRecordedEnterMethodCallDecoder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

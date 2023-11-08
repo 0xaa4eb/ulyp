@@ -1,14 +1,11 @@
-package com.ulyp.storage;
+package com.ulyp.storage.writer;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.storage.writer.AsyncFileRecordingDataWriter;
-import com.ulyp.storage.writer.DevNullRecordingDataWriter;
-import com.ulyp.storage.writer.FileRecordingDataWriter;
-import com.ulyp.storage.writer.StatsRecordingDataWriter;
+import com.ulyp.storage.StorageException;
 
 import java.io.File;
 
@@ -26,13 +23,16 @@ public interface RecordingDataWriter extends AutoCloseable {
         return new FileRecordingDataWriter(file);
     }
 
-    static RecordingDataWriter devNull() {
-        return new DevNullRecordingDataWriter();
+    static RecordingDataWriter blackhole() {
+        return new BlackholeRecordingDataWriter();
     }
 
-    void reset(ResetMetadata resetMetadata) throws StorageException;
-
     void write(ProcessMetadata processMetadata) throws StorageException;
+
+    /**
+     * Trims a recording file. The request should have all known type and method metadata.
+     */
+    void reset(ResetRequest resetRequest) throws StorageException;
 
     void write(RecordingMetadata recordingMetadata) throws StorageException;
 

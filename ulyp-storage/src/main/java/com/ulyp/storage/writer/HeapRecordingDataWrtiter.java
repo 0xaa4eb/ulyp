@@ -14,9 +14,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.storage.ResetMetadata;
 import com.ulyp.storage.StorageException;
-import com.ulyp.storage.RecordingDataWriter;
 
 @TestOnly
 public class HeapRecordingDataWrtiter implements RecordingDataWriter {
@@ -27,7 +25,7 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
     private final List<RecordedMethodCall> callRecords = new ArrayList<>();
 
     @Override
-    public void reset(ResetMetadata resetMetadata) throws StorageException {
+    public void reset(ResetRequest resetRequest) throws StorageException {
 
     }
 

@@ -1,10 +1,8 @@
 package com.ulyp.ui.elements.recording.tree
 
-import com.ulyp.storage.RecordingDataReader
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
-import com.ulyp.ui.util.FxThreadExecutor.execute
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
