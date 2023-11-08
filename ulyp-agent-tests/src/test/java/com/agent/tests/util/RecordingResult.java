@@ -64,10 +64,6 @@ public class RecordingResult {
         );
     }
 
-    public void assertIsEmpty() {
-        Assert.assertNull(tree.getProcessMetadataFuture().getNow(null));
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

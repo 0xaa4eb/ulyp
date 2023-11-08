@@ -14,6 +14,7 @@ dependencies {
     runtimeOnly files('../ulyp-agent-classes/build/libs/ulyp-agent-classes.jarr')
 
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
+    implementation group: 'org.lz4', name: 'lz4-java', version: '1.8.0'
 
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'

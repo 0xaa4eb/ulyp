@@ -14,7 +14,7 @@ public class BinaryListFileWriter implements AutoCloseable {
 
     public BinaryListFileWriter(File file) throws IOException {
         this.file = file;
-        this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
+        this.outputStream = new KafkaLZ4BlockOutputStream(new FileOutputStream(file, false));
         this.byAddressFileWriter = new ByAddressFileWriter(file);
     }
 
@@ -23,7 +23,7 @@ public class BinaryListFileWriter implements AutoCloseable {
             this.byAddressFileWriter.close();
             this.outputStream.close();
 
-            this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
+            this.outputStream = new KafkaLZ4BlockOutputStream(new FileOutputStream(file, false));
             this.byAddressFileWriter = new ByAddressFileWriter(file);
             this.address = 0;
         } catch (IOException e) {
@@ -37,8 +37,8 @@ public class BinaryListFileWriter implements AutoCloseable {
             outputStream.write(0);
             values.writeTo(this.outputStream);
             address += (values.byteLength() + 1);
-            outputStream.flush();
-            byAddressFileWriter.writeAt(lastAddr, (byte) 1);
+//            outputStream.flush();
+//            byAddressFileWriter.writeAt(lastAddr, (byte) 1);
         } catch (IOException ioe) {
             throw new StorageException("Error while writing data", ioe);
         }
