@@ -26,7 +26,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
 
     testImplementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
-    testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
+    testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '8.6.7'
     testImplementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
     testImplementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
