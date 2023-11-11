@@ -36,7 +36,7 @@ public class AbstractInstrumentationTest {
         } else {
             System.out.println("Recording file " + ByteSize.toHumanReadable(settings.getOutputFile().getFile().toPath().toFile().length()));
             CallRecordTree tree = new CallRecordTreeBuilder(settings.getOutputFile().toReader())
-                .setReadContinuously(false)
+                .setReadInfinitely(false)
                 .build();
             try {
                 tree.getCompleteFuture().get(200, TimeUnit.SECONDS);

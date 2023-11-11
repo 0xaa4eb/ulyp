@@ -1,7 +1,6 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,27 +18,10 @@ public class RecordedMethodCallListTest {
 
         Type type = typeResolver.get(A.class);
 
-        Method method = Method.builder()
-                .id(5)
-                .name("convert")
-                .declaringType(type)
-                .build();
+        Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
-        list.addEnterMethodCall(
-                134,
-                method,
-                typeResolver,
-                new A(),
-                new Object[]{5}
-        );
-
-        list.addExitMethodCall(
-                134,
-                typeResolver,
-                false,
-                "ABC"
-        );
-
+        list.addEnterMethodCall(134, method, typeResolver, new A(), new Object[]{5});
+        list.addExitMethodCall(134, typeResolver, "ABC");
 
         List<RecordedMethodCall> calls = list.stream().collect(Collectors.toList());
 

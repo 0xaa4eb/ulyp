@@ -3,14 +3,14 @@ package com.ulyp.storage.search;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.RecordedMethodCall;
-import com.ulyp.storage.search.SearchResultListener;
+
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class MemSearchResultListener implements SearchResultListener {
+public class StubSearchResultListener implements SearchResultListener {
 
     private final List<RecordedMethodCall> matchedCalls = new ArrayList<>();
 

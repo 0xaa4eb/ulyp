@@ -27,7 +27,6 @@ import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 public class CallRecordTreeTest {
 
-    private final int recordingId = 42;
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
@@ -43,7 +42,6 @@ public class CallRecordTreeTest {
     private final T obj = new T();
     private RecordingDataReader reader;
     private RecordingDataWriter writer;
-    private RecordingMetadata recordingMetadata;
 
     public static class T {
         public String foo(String in) {
@@ -54,16 +52,8 @@ public class CallRecordTreeTest {
     @Before
     public void setUp() throws IOException {
         File file = Files.createTempFile(CallRecordTreeTest.class.getSimpleName(), "a").toFile();
-        this.reader = new FileRecordingDataReaderBuilder(file).build();
-        this.writer = new FileRecordingDataWriter(file);
-
-        recordingMetadata = RecordingMetadata.builder()
-            .id(recordingId)
-            .recordingStartedEpochMillis(System.currentTimeMillis())
-            .threadName("Thread-1")
-            .threadId(4343L)
-            .build();
-
+        reader = new FileRecordingDataReaderBuilder(file).build();
+        writer = new FileRecordingDataWriter(file);
         types.add(type);
         methods.add(method);
     }
@@ -75,22 +65,23 @@ public class CallRecordTreeTest {
     }
 
     @Test
-    public void testEmptyTree() throws ExecutionException, InterruptedException {
-        CallRecordTree tree = new CallRecordTreeBuilder(reader)
+    public void testEmptyTree() throws Exception {
+        try (CallRecordTree tree = new CallRecordTreeBuilder(reader)
             .setIndexSupplier(InMemoryIndex::new)
-            .setReadContinuously(false)
-            .build();
+            .setReadInfinitely(false)
+            .build()) {
 
-        Assert.assertEquals(0, tree.getRecordings().size());
+            Assert.assertEquals(0, tree.getRecordings().size());
+        }
     }
 
     @Test
     public void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
-        RecordedMethodCallList calls = new RecordedMethodCallList(recordingId);
+        RecordedMethodCallList calls = new RecordedMethodCallList(1);
         calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
-        calls.addExitMethodCall(0, typeResolver, false, "CDE");
+        calls.addExitMethodCall(0, typeResolver, "CDE");
 
-        writer.write(recordingMetadata);
+        writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);
         writer.write(methods);
         writer.write(calls);
@@ -98,8 +89,9 @@ public class CallRecordTreeTest {
 
         CallRecordTree tree = new CallRecordTreeBuilder(reader)
             .setIndexSupplier(InMemoryIndex::new)
-            .setReadContinuously(false)
+            .setReadInfinitely(false)
             .build();
+        tree.getCompleteFuture().get();
 
         Assert.assertEquals(1, tree.getRecordings().size());
 
@@ -113,10 +105,10 @@ public class CallRecordTreeTest {
 
     @Test
     public void testNotFinishedRecording() throws ExecutionException, InterruptedException {
-        RecordedMethodCallList calls = new RecordedMethodCallList(recordingId);
+        RecordedMethodCallList calls = new RecordedMethodCallList(1);
         calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
 
-        writer.write(recordingMetadata);
+        writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);
         writer.write(methods);
         writer.write(calls);

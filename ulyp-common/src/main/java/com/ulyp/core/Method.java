@@ -2,12 +2,14 @@ package com.ulyp.core;
 
 import com.ulyp.transport.*;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 @Builder
 @ToString
+@EqualsAndHashCode(exclude = "shouldStartRecording")
 public class Method {
 
     private final int id;

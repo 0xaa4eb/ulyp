@@ -57,7 +57,15 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         this.recordingId = (int) BitUtil.bytesToLong(buf, 0);
     }
 
-    public void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue) {
+    public void addExitMethodCall(int callId, TypeResolver typeResolver, Object returnValue) {
+        addExitMethodCall(callId, typeResolver, false, returnValue);
+    }
+
+    public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject) {
+        addExitMethodCall(callId, typeResolver, true, throwObject);
+    }
+
+    private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();

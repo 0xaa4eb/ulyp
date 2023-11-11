@@ -7,7 +7,7 @@ import com.ulyp.storage.reader.RecordingDataReader;
 public class CallRecordTreeBuilder {
 
     private final RecordingDataReader dataReader;
-    private boolean readContinuously = true;
+    private boolean readInfinitely = true;
     private RecordingListener recordingListener = RecordingListener.empty();
     private Supplier<Index> indexSupplier = InMemoryIndex::new;
 
@@ -15,8 +15,8 @@ public class CallRecordTreeBuilder {
         this.dataReader = dataReader;
     }
 
-    public CallRecordTreeBuilder setReadContinuously(boolean readContinuously) {
-        this.readContinuously = readContinuously;
+    public CallRecordTreeBuilder setReadInfinitely(boolean readInfinitely) {
+        this.readInfinitely = readInfinitely;
         return this;
     }
 
@@ -31,6 +31,6 @@ public class CallRecordTreeBuilder {
     }
 
     public CallRecordTree build() {
-        return new CallRecordTree(dataReader, recordingListener, indexSupplier, readContinuously);
+        return new CallRecordTree(dataReader, recordingListener, indexSupplier, readInfinitely);
     }
 }

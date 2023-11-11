@@ -20,18 +20,19 @@ import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.NamedThreadFactory;
-import com.ulyp.storage.search.SearchQuery;
-import com.ulyp.storage.search.SearchResultListener;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.BinaryListFileReader;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
+
+import lombok.SneakyThrows;
 
 public class FileRecordingDataReader implements RecordingDataReader {
 
     private final File file;
     private final RecordedMethodCallDataReader recordedMethodCallDataReader;
     private final ExecutorService executorService;
+    private boolean closed = false;
 
     FileRecordingDataReader(File file, int threads) {
         this.file = file;
@@ -83,73 +84,74 @@ public class FileRecordingDataReader implements RecordingDataReader {
 
     @Override
     public void close() throws StorageException {
-        executorService.shutdownNow();
-        try {
-            executorService.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            // nop
+        if (!closed) {
+            executorService.shutdownNow();
+            try {
+                executorService.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            try {
+                recordedMethodCallDataReader.close();
+            } catch (IOException e) {
+                throw new StorageException(e);
+            }
         }
     }
 
-    private static class JobRunner implements Runnable, Closeable {
+    private static class JobRunner implements Runnable {
 
-        private final BinaryListFileReader reader;
+        private final File file;
         private final RecordingDataReaderJob job;
 
         private JobRunner(RecordingDataReaderJob job, File file) throws IOException {
-            this.reader = new BinaryListFileReader(file);
+            this.file = file;
             this.job = job;
         }
 
+        @SneakyThrows
         @Override
         public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
+            try (BinaryListFileReader reader = new BinaryListFileReader(file)) {
+                while (!Thread.currentThread().isInterrupted()) {
 
-                try {
-                    BinaryListWithAddress data = this.reader.readWithAddress();
+                    try {
+                        BinaryListWithAddress data = reader.readWithAddress();
 
-                    if (data == null) {
-                        if (job.continueOnNoData()) {
-                            continue;
-                        } else {
-                            return;
+                        if (data == null) {
+                            if (job.continueOnNoData()) {
+                                continue;
+                            } else {
+                                return;
+                            }
                         }
-                    }
 
-                    switch (data.getBytes().id()) {
-                        case ProcessMetadata.WIRE_ID:
-                            onProcessMetadata(data.getBytes());
-                            break;
-                        case RecordingMetadata.WIRE_ID:
-                            onRecordingMetadata(data.getBytes());
-                            break;
-                        case TypeList.WIRE_ID:
-                            onTypes(data.getBytes());
-                            break;
-                        case MethodList.WIRE_ID:
-                            onMethods(data.getBytes());
-                            break;
-                        case RecordedMethodCallList.WIRE_ID:
-                            onRecordedCalls(data);
-                            break;
-                        case RecordingCompleteMark.WIRE_ID:
-                            return;
-                        default:
-                            throw new StorageException("Unknown binary data id " + data.getBytes().id());
+                        switch (data.getBytes().id()) {
+                            case ProcessMetadata.WIRE_ID:
+                                onProcessMetadata(data.getBytes());
+                                break;
+                            case RecordingMetadata.WIRE_ID:
+                                onRecordingMetadata(data.getBytes());
+                                break;
+                            case TypeList.WIRE_ID:
+                                onTypes(data.getBytes());
+                                break;
+                            case MethodList.WIRE_ID:
+                                onMethods(data.getBytes());
+                                break;
+                            case RecordedMethodCallList.WIRE_ID:
+                                onRecordedCalls(data);
+                                break;
+                            case RecordingCompleteMark.WIRE_ID:
+                                return;
+                            default:
+                                throw new StorageException("Unknown binary data id " + data.getBytes().id());
+                        }
+                    } catch (Exception err) {
+                        throw new RuntimeException(err);
                     }
-                } catch (Exception err) {
-                    throw new RuntimeException(err);
                 }
-            }
-        }
-
-        @Override
-        public void close() {
-            try {
-                this.reader.close();
-            } catch (IOException e) {
-                // TODO log only
-                throw new RuntimeException(e);
             }
         }
 

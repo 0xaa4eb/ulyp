@@ -33,7 +33,7 @@ public class CallRecordTree implements AutoCloseable {
     private final RecordingDataReader dataReader;
     private final boolean readContinuously;
     @Getter
-    private final CompletableFuture<Boolean> completeFuture = new CompletableFuture<>();
+    private final CompletableFuture<Void> completeFuture;
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final Repository<Integer, Method> methods = new InMemoryRepository<>();
     private final InMemoryRepository<Integer, RecordingState> recordings = new InMemoryRepository<>();
@@ -49,7 +49,7 @@ public class CallRecordTree implements AutoCloseable {
         this.index = indexSupplier.get();
         this.dataReader = dataReader;
         this.readContinuously = readContinuously;
-        this.dataReader.submitReaderJob(new CallRecordTreeBuildingJob());
+        this.completeFuture = this.dataReader.submitReaderJob(new CallRecordTreeBuildingJob());
     }
 
     public List<Recording> getRecordings() {

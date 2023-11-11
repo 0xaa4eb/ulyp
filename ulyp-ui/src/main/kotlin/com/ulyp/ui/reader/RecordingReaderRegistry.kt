@@ -38,7 +38,7 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
         readers.add(recordingDataReader)
 
         val callRecordTree = CallRecordTreeBuilder(recordingDataReader)
-            .setReadContinuously(true)
+            .setReadInfinitely(true)
             .setIndexSupplier { index }
             .build()
         CloseReaderOnExitHook.add(Pair(readerDirectory, callRecordTree))
