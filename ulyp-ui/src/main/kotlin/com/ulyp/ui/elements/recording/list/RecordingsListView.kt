@@ -47,8 +47,4 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
         }
         fromStateItem.update(recording)
     }
-
-    fun highlight(recordingId: Int) {
-        recordings[recordingId]!!.markHighlighted()
-    }
 }

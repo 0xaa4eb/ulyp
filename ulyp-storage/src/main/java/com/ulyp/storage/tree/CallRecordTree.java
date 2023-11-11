@@ -152,6 +152,7 @@ public class CallRecordTree implements AutoCloseable {
                 try {
                     backoff.await();
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     throw new StorageException("Interrupted", e);
                 }
                 return true;
