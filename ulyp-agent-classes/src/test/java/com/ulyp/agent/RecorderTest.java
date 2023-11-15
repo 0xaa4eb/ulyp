@@ -15,7 +15,7 @@ import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.util.HeapRecordingDataWrtiter;
+import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

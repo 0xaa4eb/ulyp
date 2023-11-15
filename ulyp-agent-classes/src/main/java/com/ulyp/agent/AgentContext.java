@@ -6,7 +6,7 @@ import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.Classpath;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;

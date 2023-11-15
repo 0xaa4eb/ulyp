@@ -4,7 +4,7 @@ import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.Preconditions;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -174,30 +174,30 @@ public class Recorder {
         try {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null || !recordingState.isEnabled()) return;
-            CallRecordBuffer callRecords = recordingState.getCallRecordBuffer();
-            if (callRecords == null) return;
+            CallRecordBuffer callRecordBuf = recordingState.getCallRecordBuffer();
+            if (callRecordBuf == null) return;
 
             try {
                 recordingState.setEnabled(false);
-                callRecords.recordMethodExit(typeResolver, result, thrown, callId);
+                callRecordBuf.recordMethodExit(typeResolver, result, thrown, callId);
 
                 RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
                 Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");
-                if (callRecords.isComplete()) {
+                if (callRecordBuf.isComplete()) {
                     recordingMetadata.setRecordingCompletedEpochMillis(System.currentTimeMillis());
                 }
 
-                if (callRecords.isComplete() ||
-                    callRecords.estimateBytesSize() > 32 * 1024 * 1024 || // TODO move to props
+                if (callRecordBuf.isComplete() ||
+                    callRecordBuf.estimateBytesSize() > 32 * 1024 * 1024 || // TODO move to props
                     (
                         (System.currentTimeMillis() - recordingState.getRecordingMetadata().getLogCreatedEpochMillis()) > 100 // TODO move to props
                             &&
-                            callRecords.getRecordedCallsSize() > 0
+                            callRecordBuf.getRecordedCallsSize() > 0
                     )) {
 
-                    CallRecordBuffer newBuffer = callRecords.cloneWithoutData();
+                    CallRecordBuffer newBuffer = callRecordBuf.cloneWithoutData();
 
-                    if (!callRecords.isComplete()) {
+                    if (!callRecordBuf.isComplete()) {
                         recordingState.setCallRecordBuffer(newBuffer);
                         recordingState.setRecordingMetadata(recordingMetadata.withNewCreationTimestamp());
                     } else {
@@ -205,11 +205,11 @@ public class Recorder {
                         currentRecordingSessionCount.decrementAndGet();
                         if (LoggingSettings.INFO_ENABLED) {
                             Method method = methodRepository.get(methodId);
-                            log.info("Finished recording {} at method {}, recorded {} calls", recordingMetadata.getId(), method.toShortString(), callRecords.getTotalRecordedEnterCalls());
+                            log.info("Finished recording {} at method {}, recorded {} calls", recordingMetadata.getId(), method.toShortString(), callRecordBuf.getTotalRecordedEnterCalls());
                         }
                     }
 
-                    recordDataWriter.write(typeResolver, recordingMetadata, callRecords);
+                    recordDataWriter.write(typeResolver, recordingMetadata, callRecordBuf);
                 }
             } finally {
                 recordingState.setEnabled(true);

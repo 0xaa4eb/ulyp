@@ -1,14 +1,11 @@
 package com.perf.agent.benchmarks.proc;
 
-import com.ulyp.core.exception.UlypException;
-import com.ulyp.storage.ReaderSettings;
-import com.ulyp.storage.RecordingDataReader;
-import com.ulyp.storage.impl.AsyncFileRecordingDataReader;
+import com.ulyp.storage.reader.FileRecordingDataReader;
+import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 public class OutputFile {
 
@@ -23,16 +20,10 @@ public class OutputFile {
         }
     }
 
-    public RecordingDataReader toReader() throws InterruptedException {
-        RecordingDataReader reader = new AsyncFileRecordingDataReader(ReaderSettings.builder().file(file.toFile()).autoStartReading(true).build());
-        try {
-            reader.getFinishedReadingFuture().get(180, TimeUnit.SECONDS);
-        } catch (InterruptedException interruptedException) {
-            throw interruptedException;
-        } catch (Exception e) {
-            throw new UlypException("Timed out waiting for recording to finish", e);
+    public RecordingResult toRecordingResult() {
+        try (FileRecordingDataReader reader = new FileRecordingDataReaderBuilder(file.toFile()).build()) {
+            return new RecordingResult(reader);
         }
-        return reader;
     }
 
     public long size() {

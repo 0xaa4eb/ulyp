@@ -23,8 +23,8 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.impl.DevNullRecordingDataWriter;
-import com.ulyp.storage.impl.StatsRecordingDataWriter;
+import com.ulyp.storage.writer.BlackholeRecordingDataWriter;
+import com.ulyp.storage.writer.StatsRecordingDataWriter;
 
 public class RecorderCurrentSessionCountTest {
 
@@ -39,7 +39,7 @@ public class RecorderCurrentSessionCountTest {
 
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new DevNullRecordingDataWriter());
+    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new BlackholeRecordingDataWriter());
     private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingDataWriter);
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;

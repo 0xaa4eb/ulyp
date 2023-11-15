@@ -4,7 +4,7 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.exception.AgentConfigurationException;
-import com.ulyp.storage.RecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;

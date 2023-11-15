@@ -10,6 +10,10 @@ import java.util.function.Supplier
 object FxThreadExecutor {
     @JvmStatic
     fun <T> execute(supplier: Supplier<T>): T {
+        if (Thread.currentThread().name.contains("JavaFX")) {
+            return supplier.get()
+        }
+
         val future = CompletableFuture<T>()
         Platform.runLater {
             try {

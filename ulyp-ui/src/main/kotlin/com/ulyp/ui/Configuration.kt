@@ -81,6 +81,14 @@ open class Configuration {
 
     @Bean
     @Lazy
+    open fun searchView(
+        applicationContext: ApplicationContext
+    ): SearchView {
+        return SearchView()
+    }
+
+    @Bean
+    @Lazy
     open fun fileRecordingTabPane(): FileRecordingTabPane {
         val tabPane = FileRecordingTabPane()
 

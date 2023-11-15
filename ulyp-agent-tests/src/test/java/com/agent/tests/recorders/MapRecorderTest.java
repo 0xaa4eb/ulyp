@@ -6,7 +6,7 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapEntryRecord;
 import com.ulyp.core.recorders.collections.MapRecord;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;

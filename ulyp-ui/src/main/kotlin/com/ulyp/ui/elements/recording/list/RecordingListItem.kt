@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.list
 
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.ClassNameUtils
 import com.ulyp.ui.util.EnhancedText
@@ -85,6 +85,15 @@ class RecordingListItem(private val recording: Recording, settings: Settings): T
         if (children.none { it is RecordingListItemSelectionMark }) {
             this.children.add(0, RecordingListItemSelectionMark())
         }
+    }
+
+    fun markHighlighted() {
+        this.children.add(RecordingListItemSelectionMark())
+    }
+
+    fun clearHighlight() {
+        // TODO
+        this.children.removeIf { it is RecordingListItemSelectionMark }
     }
 
     fun clearSelection() {

@@ -1,13 +1,14 @@
 package com.ulyp.ui.reader
 
 import com.ulyp.core.util.FileUtil
-import com.ulyp.storage.Filter
-import com.ulyp.storage.Index
-import com.ulyp.storage.ReaderSettings
-import com.ulyp.storage.RecordingDataReader
-import com.ulyp.storage.impl.AsyncFileRecordingDataReader
-import com.ulyp.storage.impl.InMemoryIndex
-import com.ulyp.storage.impl.RocksdbIndex
+import com.ulyp.storage.tree.Filter
+import com.ulyp.storage.reader.RecordingDataReader
+import com.ulyp.storage.reader.FileRecordingDataReaderBuilder
+import com.ulyp.storage.tree.CallRecordTree
+import com.ulyp.storage.tree.CallRecordTreeBuilder
+import com.ulyp.storage.tree.InMemoryIndex
+import com.ulyp.storage.tree.Index
+import com.ulyp.storage.tree.RocksdbIndex
 import com.ulyp.storage.util.RocksdbChecker
 import org.springframework.stereotype.Component
 import java.io.File
@@ -20,10 +21,13 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
     private val readers = mutableSetOf<RecordingDataReader>()
 
     @Synchronized
-    fun newReader(file: File): RecordingDataReader {
+    fun newCallRecordTree(file: File): CallRecordTree? {
+        val recordingDataReader = FileRecordingDataReaderBuilder(file).build()
+        val processMetadata = recordingDataReader.processMetadata ?: return null
+
         val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
         val readerDirectory = Files.createTempDirectory("ulyp.Reader")
-        val index: Index = if (rocksdbAvailable.isAvailable) {
+        val index: Index = if (rocksdbAvailable.value()) {
             RocksdbIndex(readerDirectory)
         } else {
             InMemoryIndex()
@@ -31,31 +35,26 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
 
         val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()
 
-        val recordingDataReader =
-            AsyncFileRecordingDataReader(
-                ReaderSettings.builder()
-                    .file(file)
-                    .autoStartReading(false)
-                    .indexSupplier { index }
-                    .filter(storageFilter)
-                    .build()
-            )
-
         readers.add(recordingDataReader)
-        CloseReaderOnExitHook.add(Pair(readerDirectory, recordingDataReader))
 
-        return recordingDataReader
+        val callRecordTree = CallRecordTreeBuilder(recordingDataReader)
+            .setReadInfinitely(true)
+            .setIndexSupplier { index }
+            .build()
+        CloseReaderOnExitHook.add(Pair(readerDirectory, callRecordTree))
+
+        return callRecordTree
     }
 
     private object CloseReaderOnExitHook {
-        private var readers = mutableListOf<Pair<Path, RecordingDataReader>>()
+        private var readers = mutableListOf<Pair<Path, CallRecordTree>>()
 
         init {
             Runtime.getRuntime().addShutdownHook(Thread { runHooks() })
         }
 
         @Synchronized
-        fun add(readerEntry: Pair<Path, RecordingDataReader>) {
+        fun add(readerEntry: Pair<Path, CallRecordTree>) {
             readers.add(readerEntry)
         }
 
@@ -65,7 +64,7 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
                 try {
                     it.second.close()
                 } catch (e: Exception) {
-                    // TODO setup logging
+                    e.printStackTrace()
                 } finally {
                     FileUtil.deleteDirectory(it.first)
                 }

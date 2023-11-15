@@ -1,9 +1,11 @@
 package com.agent.tests.util;
 
-import com.ulyp.storage.CallRecord;
-import com.ulyp.storage.RecordingDataReader;
+import com.ulyp.core.util.ByteSize;
+import com.ulyp.storage.tree.CallRecord;
+import com.ulyp.storage.tree.CallRecordTree;
+import com.ulyp.storage.tree.CallRecordTreeBuilder;
+
 import junit.framework.AssertionFailedError;
-import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 
@@ -16,7 +18,7 @@ public class AbstractInstrumentationTest {
     @NotNull
     protected CallRecord runSubprocessAndReadFile(ForkProcessBuilder settings) {
         try {
-            return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings)).getSingleRoot();
+            return new RecordingResult(runProcess(settings)).getSingleRoot();
         } catch (Exception e) {
             throw new AssertionFailedError(e.getMessage());
         }
@@ -24,21 +26,20 @@ public class AbstractInstrumentationTest {
 
     @NotNull
     protected RecordingResult runSubprocess(ForkProcessBuilder settings) {
-        return new RecordingResult(runForkProcessWithUiAndReturnProtoRequest(settings));
+        return new RecordingResult(runProcess(settings));
     }
 
-    protected void assertNoRecording(ForkProcessBuilder settings) {
-        Assert.assertThat(runForkProcessWithUiAndReturnProtoRequest(settings).getRecordings(), Matchers.empty());
-    }
-
-    protected RecordingDataReader runForkProcessWithUiAndReturnProtoRequest(ForkProcessBuilder settings) {
+    protected CallRecordTree runProcess(ForkProcessBuilder settings) {
         TestUtil.runClassInSeparateJavaProcess(settings);
         if (settings.getOutputFile() == null) {
-            return RecordingDataReader.empty();
+            return null;
         } else {
-            RecordingDataReader reader = settings.getOutputFile().toReader();
+            System.out.println("Recording file " + ByteSize.toHumanReadable(settings.getOutputFile().getFile().toPath().toFile().length()));
+            CallRecordTree tree = new CallRecordTreeBuilder(settings.getOutputFile().toReader())
+                .setReadInfinitely(false)
+                .build();
             try {
-                reader.getFinishedReadingFuture().get(300, TimeUnit.SECONDS);
+                tree.getCompleteFuture().get(200, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
             } catch (ExecutionException ignored) {
@@ -46,8 +47,8 @@ public class AbstractInstrumentationTest {
             } catch (TimeoutException e) {
                 Assert.fail("Timed out waiting for process to finish");
             }
-            System.out.println("Got " + reader.getRecordings().size() + " recordings");
-            return reader;
+            System.out.println("Got " + tree.getRecordings().size() + " recordings");
+            return tree;
         }
     }
 }

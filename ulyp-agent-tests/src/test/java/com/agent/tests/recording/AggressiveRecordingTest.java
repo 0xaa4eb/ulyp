@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.SystemProp;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;

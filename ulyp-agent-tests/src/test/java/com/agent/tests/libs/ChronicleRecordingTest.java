@@ -2,7 +2,7 @@ package com.agent.tests.libs;
 
 import com.agent.tests.util.*;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptTailer;

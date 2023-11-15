@@ -1,7 +1,7 @@
 package com.agent.tests.util;
 
 import com.ulyp.core.Method;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

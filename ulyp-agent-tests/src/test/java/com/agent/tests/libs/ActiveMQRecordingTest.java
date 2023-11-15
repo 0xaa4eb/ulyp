@@ -18,7 +18,7 @@ import com.agent.tests.util.DebugCallRecordTreePrinter;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;

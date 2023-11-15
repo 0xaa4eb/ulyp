@@ -5,7 +5,7 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.collections.CollectionRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;

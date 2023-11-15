@@ -1,6 +1,5 @@
 package com.ulyp.core;
 
-import com.ulyp.core.util.BitUtil;
 import com.ulyp.transport.BinaryRecordedExitMethodCallDecoder;
 import com.ulyp.transport.BooleanType;
 import lombok.Getter;

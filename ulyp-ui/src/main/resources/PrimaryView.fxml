@@ -20,6 +20,7 @@
                 <Menu mnemonicParsing="false" text="Recordings">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#showFilterView" text="Apply filter"/>
+                        <MenuItem mnemonicParsing="false" onAction="#showSearchView" text="Search"/>
                         <MenuItem mnemonicParsing="false" onAction="#clearAll" text="Close all"/>
                     </items>
                 </Menu>

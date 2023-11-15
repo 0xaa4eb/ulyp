@@ -1,9 +1,9 @@
 package com.ulyp.storage.util;
 
 import com.ulyp.core.util.FileUtil;
-import com.ulyp.storage.Index;
-import com.ulyp.storage.impl.RecordedCallState;
-import com.ulyp.storage.impl.RocksdbIndex;
+import com.ulyp.storage.tree.Index;
+import com.ulyp.storage.tree.CallRecordIndexState;
+import com.ulyp.storage.tree.RocksdbIndex;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.extern.slf4j.Slf4j;
@@ -30,14 +30,14 @@ public class RocksdbChecker {
 
             long callId = 555L;
 
-            RecordedCallState value = RecordedCallState.builder()
+            CallRecordIndexState value = CallRecordIndexState.builder()
                     .id(callId)
                     .childrenCallIds(childrenCallIds)
                     .build();
 
             index.store(callId, value);
 
-            RecordedCallState valueRead = index.get(callId);
+            CallRecordIndexState valueRead = index.get(callId);
 
             if (valueRead.getId() != value.getId()) {
                 throw new IllegalArgumentException("Inconsistency value read");

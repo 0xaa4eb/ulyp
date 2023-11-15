@@ -2,7 +2,7 @@ package com.ulyp.ui.elements.recording.tree
 
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.settings.Settings
-import com.ulyp.ui.util.FxThreadExecutor.execute
+import com.ulyp.ui.util.FxThreadExecutor
 import javafx.event.EventHandler
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
@@ -37,7 +37,7 @@ class FileRecordingTabPane : TabPane() {
         get() = selectionModel.selectedItem as FileRecordingsTab
 
     fun getOrCreateProcessTab(name: FileRecordingsTabName): FileRecordingsTab {
-        return execute {
+        return FxThreadExecutor.execute {
             val processTab = tabs
                     .stream()
                     .filter { tab: Tab -> name == (tab as FileRecordingsTab).name }

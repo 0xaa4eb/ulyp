@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.list
 
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.settings.Settings
 import javafx.collections.ListChangeListener
 import javafx.scene.control.ListView
@@ -11,7 +11,7 @@ import javafx.scene.control.ListView
  */
 class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>() {
 
-    private val recordingIds = mutableMapOf<Int, RecordingListItem>()
+    private val recordings = mutableMapOf<Int, RecordingListItem>()
 
     init {
         selectionModel.selectedItems.addListener(
@@ -33,7 +33,7 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
         )
 
         settings.recordingListShowThreads.addListener { _, _, newVal ->
-            recordingIds.values.forEach {
+            recordings.values.forEach {
                 it.updateShowThreadName(newVal)
             }
         }
@@ -41,7 +41,7 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
 
     fun createOrUpdate(recording: Recording) {
         val item = RecordingListItem(recording, settings)
-        val fromStateItem = recordingIds.computeIfAbsent(item.recordingId) {
+        val fromStateItem = recordings.computeIfAbsent(item.recordingId) {
             items.add(item)
             item
         }

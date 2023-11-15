@@ -1,7 +1,7 @@
 package com.ulyp.ui.elements.recording.tree
 
-import com.ulyp.storage.CallRecord
-import com.ulyp.storage.Recording
+import com.ulyp.storage.tree.CallRecord
+import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.RenderSettings
 import javafx.collections.ObservableList
 import javafx.event.EventHandler

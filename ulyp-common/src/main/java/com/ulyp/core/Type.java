@@ -5,6 +5,7 @@ import com.ulyp.transport.BinaryTypeDecoder;
 import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import java.util.Collections;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 @Builder
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "recorderHint")
 public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();

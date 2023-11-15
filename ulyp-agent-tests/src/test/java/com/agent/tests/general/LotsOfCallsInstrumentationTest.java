@@ -2,7 +2,7 @@ package com.agent.tests.general;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.storage.CallRecord;
+import com.ulyp.storage.tree.CallRecord;
 import org.junit.Assert;
 import org.junit.Test;
 
