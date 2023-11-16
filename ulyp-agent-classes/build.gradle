@@ -22,7 +22,7 @@ dependencies {
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
 

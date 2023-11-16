@@ -30,7 +30,7 @@ dependencies {
     testImplementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
     testImplementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
     testImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
     testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
