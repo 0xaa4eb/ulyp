@@ -1,9 +1,12 @@
 package com.perf.agent.benchmarks;
 
-import com.perf.agent.benchmarks.benchmarks.*;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.perf.agent.benchmarks.proc.OutputFile;
 import com.perf.agent.benchmarks.proc.RecordingResult;
+import com.perf.agent.benchmarks.recording.ActivemqBenchmark;
+import com.perf.agent.benchmarks.recording.FibonacciNumbersBenchmark;
+import com.perf.agent.benchmarks.recording.H2MemDatabaseBenchmark;
+import com.perf.agent.benchmarks.recording.SpringHibernateMediumBenchmark;
 import com.ulyp.core.RecordingMetadata;
 
 import org.HdrHistogram.Histogram;

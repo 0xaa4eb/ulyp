@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.benchmarks.util;
+package com.perf.agent.benchmarks.recording.util;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

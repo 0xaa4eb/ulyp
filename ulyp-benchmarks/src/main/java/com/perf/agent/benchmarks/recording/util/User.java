@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.benchmarks.util;
+package com.perf.agent.benchmarks.recording.util;
 
 public class User {
 

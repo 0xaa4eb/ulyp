@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.benchmarks;
+package com.perf.agent.benchmarks.recording;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
