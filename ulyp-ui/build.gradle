@@ -82,5 +82,18 @@ task fatJar(type: Jar) {
     group = 'build'
     archiveName = "ulyp-ui-${rootProject.version}.jar"
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    filesMatching([
+            '**/fastutil/booleans/*.class',
+            '**/fastutil/bytes/*.class',
+            '**/fastutil/chars/*.class',
+            '**/fastutil/doubles/*.class',
+            '**/fastutil/floats/*.class',
+            '**/fastutil/ints/*.class',
+            '**/fastutil/io/*.class',
+            '**/fastutil/shorts/*.class',
+            '**/fastutil/objects/Object*.class',
+            '**/fastutil/objects/Reference*.class'], { fileCopyDetails ->
+        fileCopyDetails.exclude()
+    })
     with jar
 }
