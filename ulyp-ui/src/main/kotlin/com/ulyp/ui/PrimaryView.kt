@@ -159,7 +159,7 @@ class PrimaryView(
                 )
                 errorPopup.show()
             }
-            true
+            null
         }
     }
 }

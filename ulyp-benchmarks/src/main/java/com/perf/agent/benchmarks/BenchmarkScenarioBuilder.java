@@ -21,6 +21,11 @@ public class BenchmarkScenarioBuilder {
     @Nullable
     private OutputFile outputFile = new OutputFile("ulyp-benchmark", "dat");
 
+    public BenchmarkScenarioBuilder withOutputFile(OutputFile outputFile) {
+        this.outputFile = outputFile;
+        return this;
+    }
+
     public BenchmarkScenarioBuilder withAdditionalArgs(String... args) {
         additionalProcessArgs.addAll(Arrays.asList(args));
         return this;

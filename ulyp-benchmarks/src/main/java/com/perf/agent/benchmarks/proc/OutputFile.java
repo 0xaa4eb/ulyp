@@ -26,6 +26,10 @@ public class OutputFile {
         }
     }
 
+    public Path getFile() {
+        return file;
+    }
+
     public long size() {
         return file.toFile().length();
     }

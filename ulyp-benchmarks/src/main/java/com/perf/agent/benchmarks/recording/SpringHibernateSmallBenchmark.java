@@ -1,11 +1,11 @@
-package com.perf.agent.benchmarks.benchmarks;
+package com.perf.agent.benchmarks.recording;
 
 import com.perf.agent.benchmarks.Benchmark;
 import com.perf.agent.benchmarks.BenchmarkScenario;
 import com.perf.agent.benchmarks.BenchmarkScenarioBuilder;
-import com.perf.agent.benchmarks.benchmarks.util.ApplicationConfiguration;
-import com.perf.agent.benchmarks.benchmarks.util.User;
-import com.perf.agent.benchmarks.benchmarks.util.UserService;
+import com.perf.agent.benchmarks.recording.util.ApplicationConfiguration;
+import com.perf.agent.benchmarks.recording.util.User;
+import com.perf.agent.benchmarks.recording.util.UserService;
 import com.ulyp.core.util.MethodMatcher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.benchmarks.util;
+package com.perf.agent.benchmarks.recording.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,9 +17,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.perf.agent.benchmarks.benchmarks.util")
+@ComponentScan("com.perf.agent.benchmarks.recording.util")
 @EnableTransactionManagement
-@EnableJpaRepositories("com.perf.agent.benchmarks.benchmarks.util")
+@EnableJpaRepositories("com.perf.agent.benchmarks.recording.util")
 public class ApplicationConfiguration {
 
     @Bean
@@ -41,7 +41,7 @@ public class ApplicationConfiguration {
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource);
         bean.setJpaVendorAdapter(jpaVendorAdapter);
-        bean.setPackagesToScan("com.perf.agent.benchmarks.benchmarks.util");
+        bean.setPackagesToScan("com.perf.agent.benchmarks.recording.util");
         return bean;
     }
 
