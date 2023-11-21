@@ -67,6 +67,8 @@ run {
     workingDir = rootDir
 }
 
+def platform = project.getProperties().get("platform")
+
 task fatJar(type: Jar) {
     manifest {
         attributes(
@@ -94,6 +96,11 @@ task fatJar(type: Jar) {
             '**/fastutil/objects/Object*.class',
             '**/fastutil/objects/Reference*.class'], { fileCopyDetails ->
         fileCopyDetails.exclude()
+    })
+    filesMatching(['**/*.dll'], { fileCopyDetails ->
+        if (platform != null && platform != "win") {
+            fileCopyDetails.exclude()
+        }
     })
     with jar
 }
