@@ -44,8 +44,8 @@ dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
 
-    compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
-    testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
+    compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '8.8.1'
+    testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '8.8.1'
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
