@@ -26,13 +26,18 @@ public class GenerateTestClasses {
                 writer.newLine();
                 writer.append("public class ").append(name).append(" {");
                 writer.newLine();
-                appendMethod(writer, "foo");
-                appendMethod(writer, "bar");
-                appendMethod(writer, "xyz");
-                appendMethod(writer, "qwe");
-                appendMethod(writer, "asd");
-                appendMethod(writer, "vcd");
-                appendMethod(writer, "tyu");
+                appendMethod(writer, "vgkdsdfg");
+                appendMethod(writer, "gkfjdyfw");
+                appendMethod(writer, "fdkjskjw");
+                appendMethod(writer, "fdkjshfr");
+                appendMethod(writer, "ffdjshfe");
+                appendMethod(writer, "fdkjshdf");
+                appendMethod(writer, "mfjcvghs");
+                appendMethod(writer, "uioocxvf");
+                appendMethod(writer, "lkhgjhds");
+                appendMethod(writer, "vcmxnmdf");
+                appendMethod(writer, "mfdsjdhs");
+                appendMethod(writer, "go8udsuy");
                 writer.append("}");
                 writer.newLine();
             }
@@ -40,9 +45,11 @@ public class GenerateTestClasses {
     }
 
     private static void appendMethod(BufferedWriter writer, String methodName) throws IOException {
-        writer.append("\tpublic void ").append(methodName).append("() {");
+        writer.append("\tpublic String ").append(methodName).append("() {");
         writer.newLine();
         writer.append("\t\tSystem.out.println(\"1\");");
+        writer.newLine();
+        writer.append("\t\treturn \"1\";");
         writer.newLine();
         writer.append("\t}");
         writer.newLine();

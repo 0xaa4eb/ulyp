@@ -1,5 +1,6 @@
 package com.perf.agent.benchmarks;
 
+import com.perf.agent.benchmarks.instrumentation.InstrumentationBenchmark;
 import com.perf.agent.benchmarks.proc.BenchmarkProcessRunner;
 import com.perf.agent.benchmarks.proc.OutputFile;
 import com.perf.agent.benchmarks.proc.RecordingResult;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
-    private static final int ITERATIONS_PER_PROFILE = 2;
+    private static final int ITERATIONS_PER_PROFILE = 5;
 
     public static void main(String[] args) throws Exception {
 
@@ -28,6 +29,7 @@ public class Main {
         runResults.addAll(runBenchmark(ActivemqBenchmark.class));
         runResults.addAll(runBenchmark(FibonacciNumbersBenchmark.class));
         runResults.addAll(runBenchmark(SpringHibernateMediumBenchmark.class));
+        runResults.addAll(runBenchmark(InstrumentationBenchmark.class));
 
         for (BenchmarkRunResult runResult : runResults) {
             runResult.print();

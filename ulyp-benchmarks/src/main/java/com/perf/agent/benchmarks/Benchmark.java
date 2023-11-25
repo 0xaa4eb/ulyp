@@ -6,9 +6,15 @@ public interface Benchmark {
 
     List<BenchmarkScenario> getProfiles();
 
-    void setUp() throws Exception;
+    default void setUp() throws Exception {
 
-    void tearDown() throws Exception;
+    }
 
-    void run() throws Exception;
+    default void tearDown() throws Exception {
+
+    }
+
+    default void run() throws Exception {
+
+    }
 }
