@@ -2,6 +2,7 @@ package com.agent.tests.util;
 
 import com.ulyp.agent.Settings;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
+import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
@@ -166,6 +167,7 @@ public class ForkProcessBuilder {
             params.add("-D" + Settings.INSTRUMENT_TYPE_INITIALIZERS);
         }
 
+        params.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + logLevel);
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
         params.add("-D" + Settings.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
         params.add("-D" + Settings.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
