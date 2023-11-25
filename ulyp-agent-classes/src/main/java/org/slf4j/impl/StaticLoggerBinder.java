@@ -25,20 +25,13 @@
 package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 import com.ulyp.agent.log.SimpleLoggerFactory;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
- * ulyp.org.slf4j package, thus the binders will also be relocated there at jar build time.
- *
- * The binding of {@link LoggerFactory} class with an actual instance of
- * {@link ILoggerFactory} is performed using information returned by this class.
- * 
- * 
- * @author Ceki G&uuml;lc&uuml;
+ * com.ulyp.slf4j package, thus the binders will also be relocated there at jar build time.
  */
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 

@@ -22,7 +22,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-
 package org.slf4j.impl;
 
 import org.slf4j.IMarkerFactory;
@@ -32,7 +31,7 @@ import org.slf4j.spi.MarkerFactoryBinder;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
- * ulyp.org.slf4j package, thus the binders will also be relocated there at jar build time.
+ * com.ulyp.slf4j package, thus the binders will also be relocated there at jar build time.
  *
  * The binding of {@link MarkerFactory} class with an actual instance of 
  * {@link IMarkerFactory} is performed using information returned by this class. 

@@ -31,12 +31,6 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
-/**
- * An implementation of {@link ILoggerFactory} which always returns
- * {@link SimpleLogger} instances.
- * 
- * @author Ceki G&uuml;lc&uuml;
- */
 public class SimpleLoggerFactory implements ILoggerFactory {
 
     ConcurrentMap<String, SimpleLogger> loggerMap;
