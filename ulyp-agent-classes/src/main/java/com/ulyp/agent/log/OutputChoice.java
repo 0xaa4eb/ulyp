@@ -2,12 +2,6 @@ package com.ulyp.agent.log;
 
 import java.io.PrintStream;
 
-/**
- * This class encapsulates the user's choice of output target.
- * 
- * @author Ceki G&uuml;lc&uuml;
- *
- */
 class OutputChoice {
 
     enum OutputChoiceType {

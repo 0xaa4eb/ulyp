@@ -29,11 +29,7 @@ import org.slf4j.spi.MDCAdapter;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to
- * ulyp.org.slf4j package, thus the binders will also be relocated there at jar build time.
- *
- * This implementation is bound to {@link NOPMDCAdapter}.
- *
- * @author Ceki G&uuml;lc&uuml;
+ * com.ulyp.slf4j package, thus the binders will also be relocated there at jar build time.
  */
 public class StaticMDCBinder {
 

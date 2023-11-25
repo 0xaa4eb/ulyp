@@ -12,20 +12,6 @@ import java.util.Properties;
 
 import org.slf4j.helpers.Util;
 
-/**
- * This class holds configuration values for {@link SimpleLogger}. The
- * values are computed at runtime. See {@link SimpleLogger} documentation for
- * more information.
- * 
- * 
- * @author Ceki G&uuml;lc&uuml;
- * @author Scott Sanders
- * @author Rod Waldhoff
- * @author Robert Burrell Donkin
- * @author C&eacute;drik LIME
- * 
- * @since 1.7.25
- */
 public class SimpleLoggerConfiguration {
 
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
