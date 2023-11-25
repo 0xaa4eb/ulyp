@@ -19,7 +19,7 @@ public class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestRunner.class)
                         .withMethodToRecord(MethodMatcher.parse("**.X5.*"))
-                        .withLogLevel("TRACE")
+                        .withLogLevel("OFF")
         );
 
         Assert.assertEquals(0, recordingResult.recordings().size());
@@ -43,6 +43,7 @@ public class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
                         throw new RuntimeException(e);
                     }
 
+                    long startTime = System.currentTimeMillis();
                     for (int num = workerIdFinal * classesPerWorker; num < (workerIdFinal + 1) * classesPerWorker; num++) {
                         try {
                             Class<?> aClass = Class.forName("com.agent.tests.concurrent.classes.X" + num);
@@ -51,6 +52,8 @@ public class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
                             throw new RuntimeException("Class not found, test failed", e);
                         }
                     }
+                    long elapsed = System.currentTimeMillis() - startTime;
+                    System.out.println("Elapsed: " + elapsed + " ms");
                 }));
             }
 
