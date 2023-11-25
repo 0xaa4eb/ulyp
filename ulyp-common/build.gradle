@@ -41,11 +41,11 @@ dependencies {
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     compileOnly group: 'org.agrona', name: 'agrona', version: '1.4.0'
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     testImplementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
-    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
