@@ -78,10 +78,6 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public String getLogLevel() {
-        return logLevel;
-    }
-
     public ForkProcessBuilder withInstrumentLambdas(Boolean instrumentLambdas) {
         this.instrumentLambdas = instrumentLambdas;
         return this;
