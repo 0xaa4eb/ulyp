@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class Version {
 
-    private static final String PROPERTIES_FILENAME = "version.properties";
+    private static final String PROPERTIES_FILENAME = "version2.properties";
 
     public static String get() {
         return getBuildProperty("version");
