@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import com.ulyp.core.Type;
+import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,6 +72,10 @@ public class AsyncRecordingDataWriterTest {
                 .mainClassName("a.b.c.D")
                 .build()
         );
+
+        TypeList types = new TypeList();
+        types.add(Type.builder().name("a.b.Type").build());
+        writer.write(types);
 
         ProcessMetadata processMetadata = reader.getProcessMetadata();
 

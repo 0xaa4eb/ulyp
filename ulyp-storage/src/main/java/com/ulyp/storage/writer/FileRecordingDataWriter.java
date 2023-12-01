@@ -145,6 +145,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (fileWriter != null) {
             fileWriter.append(new BinaryList(RecordingCompleteMark.WIRE_ID));
             fileWriter.close();
+            fileWriter = null;
         }
     }
 }
