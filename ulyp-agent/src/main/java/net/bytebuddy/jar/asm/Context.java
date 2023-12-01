@@ -134,4 +134,13 @@ final class Context {
      * MethodVisitor#visitFrame}.
      */
     Object[] currentFrameStackTypes;
+
+    public Context fork() {
+        Context forked = new Context();
+        forked.attributePrototypes = this.attributePrototypes;
+        forked.parsingOptions = this.parsingOptions;
+        forked.charBuffer = this.charBuffer;
+        forked.currentTypeAnnotationTarget = this.currentTypeAnnotationTarget; // TODO
+        return forked;
+    }
 }
