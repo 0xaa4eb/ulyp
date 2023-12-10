@@ -161,7 +161,7 @@
     -fx-background-color: black;
     -fx-border-style: solid;
     -fx-border-width: 2;
-    -fx-border-color: rgb(50, 50, 50);
+    -fx-border-color: black;
     -fx-min-height: 20;
     -fx-max-height: 20;
 }
