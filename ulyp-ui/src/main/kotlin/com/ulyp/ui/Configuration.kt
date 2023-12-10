@@ -2,7 +2,7 @@ package com.ulyp.ui
 
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
-import com.ulyp.ui.looknfeel.FontSizeUpdater
+import com.ulyp.ui.looknfeel.FontStyleUpdater
 import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.reader.RecordingReaderRegistry
@@ -44,7 +44,7 @@ open class Configuration {
         sourceCodeView: SourceCodeView,
         fileRecordingTabPane: FileRecordingTabPane,
         settings: Settings,
-        fontSizeUpdater: FontSizeUpdater,
+        fontStyleUpdater: FontStyleUpdater,
         stage: Stage,
         viewInitializer: ViewInitializer
     ): PrimaryView {

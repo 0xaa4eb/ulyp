@@ -55,6 +55,10 @@
     -fx-background-color: -fx-mark-highlight-color, rgb(255, 255, 255);
 }
 
+.list-cell {
+    -fx-padding: 0 0 0 0;
+}
+
 /* ULYP part */
 
 .ulyp-recording-list-item {

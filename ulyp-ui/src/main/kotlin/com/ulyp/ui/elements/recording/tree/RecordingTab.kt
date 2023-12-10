@@ -7,7 +7,7 @@ import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.code.SourceCode
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.code.find.SourceCodeFinder
-import com.ulyp.ui.looknfeel.FontSizeUpdater
+import com.ulyp.ui.looknfeel.FontStyleUpdater
 import com.ulyp.ui.settings.Settings
 import javafx.application.Platform
 import javafx.beans.value.ObservableValue
@@ -45,7 +45,7 @@ class RecordingTab(
     @Autowired
     private lateinit var settings: Settings
     @Autowired
-    private lateinit var fontSizeUpdater: FontSizeUpdater
+    private lateinit var fontStyleUpdater: FontStyleUpdater
 
     private var initialized = false
 
