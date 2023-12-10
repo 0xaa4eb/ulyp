@@ -2,27 +2,22 @@ package com.ulyp.ui.elements.recording.list
 
 import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.settings.Settings
-import com.ulyp.ui.util.ClassNameUtils
-import com.ulyp.ui.util.EnhancedText
-import com.ulyp.ui.util.Style
-import com.ulyp.ui.util.StyledText
-import javafx.scene.text.Text
-import javafx.scene.text.TextFlow
-import java.sql.Timestamp
-import java.time.format.DateTimeFormatter
+import javafx.geometry.Pos
+import javafx.scene.layout.StackPane
 
-class RecordingListItem(private val recording: Recording, settings: Settings): TextFlow() {
+class RecordingListItem(recording: Recording, settings: Settings): StackPane() {
 
-    companion object {
-        private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss.SSS")
-    }
-
-    private var showThreadName: Boolean = false
     val recordingId = recording.id
+    private val selectionMark = RecordingListItemSelectionMark()
+    private val method = RecordingListItemMethod(recording, settings)
 
     init {
-        this.showThreadName = settings.recordingListShowThreads.get()
-        refreshName()
+        alignment = Pos.CENTER_LEFT
+        styleClass += "ulyp-recording-list-item"
+
+        children.addAll(selectionMark, method)
+        selectionMark.prefHeightProperty().bind(this.prefHeightProperty())
+        selectionMark.prefWidthProperty().bind(this.prefWidthProperty())
     }
 
 /*        @get:Synchronized
@@ -49,61 +44,31 @@ class RecordingListItem(private val recording: Recording, settings: Settings): T
         }*/
 
     private fun refreshName() {
-        children.clear()
-
-        val recordingMetadata = recording.metadata
-        val rootCallRecord = recording.root
-        children.add(EnhancedText(
-            Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter),
-            Style.RECORDING_LIST_ITEM)
-        )
-        children.add(Text(" "))
-        if (showThreadName) {
-            children.add(EnhancedText(recordingMetadata.threadName,
-                Style.RECORDING_LIST_ITEM,
-                Style.RECORDING_LIST_ITEM_THREAD,
-                Style.HIDDEN))
-        }
-        children.add(Text(" "))
-        children.add(EnhancedText(
-            "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
-            Style.RECORDING_LIST_ITEM,
-            Style.BOLD_TEXT
-        ))
-        children.add(EnhancedText(
-            " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
-            Style.RECORDING_LIST_ITEM)
-        )
+        method.refreshName()
     }
 
     fun updateShowThreadName(showThreadName: Boolean) {
-        this.showThreadName = showThreadName
+        method.updateShowThreadName(showThreadName)
         refreshName()
     }
 
     fun markSelected() {
-        if (children.none { it is RecordingListItemSelectionMark }) {
-            this.children.add(0, RecordingListItemSelectionMark())
-        }
-    }
-
-    fun markHighlighted() {
-        this.children.add(RecordingListItemSelectionMark())
-    }
-
-    fun clearHighlight() {
-        // TODO
-        this.children.removeIf { it is RecordingListItemSelectionMark }
+        styleClass.add("selected")
     }
 
     fun clearSelection() {
-        this.children.removeIf { it is RecordingListItemSelectionMark }
+        styleClass.remove("selected")
+    }
+
+    fun markHighlighted() {
+//        this.children.add(RecordingListItemSelectionMark())
+    }
+
+    fun clearHighlight() {
+
     }
 
     fun update(recording: Recording) {
-        children[children.size - 1] = StyledText.of(
-            " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
-            Style.RECORDING_LIST_ITEM
-        )
+        method.update(recording)
     }
 }

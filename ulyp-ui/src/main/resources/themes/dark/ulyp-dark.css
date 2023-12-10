@@ -161,3 +161,7 @@
     -fx-min-height: 20;
     -fx-max-height: 20;
 }
+
+.ulyp-recording-list-item.selected {
+    -fx-background-color: rgb(0, 80, 100);
+}
