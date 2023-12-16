@@ -32,7 +32,7 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
             }
         )
 
-        settings.recordingListShowThreads.addListener { _, _, newVal ->
+        settings.recordingListShowThreads.addWeakListener { _, _, newVal ->
             recordings.values.forEach {
                 it.updateShowThreadName(newVal)
             }

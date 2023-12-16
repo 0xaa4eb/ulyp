@@ -30,7 +30,7 @@ import kotlin.system.exitProcess
 class PrimaryView(
     private val applicationContext: ApplicationContext,
     private val viewInitializer: ViewInitializer,
-    private val recordingReaderRegistry: RecordingReaderRegistry,
+    private val readerRegistry: RecordingReaderRegistry,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settings: Settings,
     private val fileChooser: Supplier<File?>
@@ -116,12 +116,13 @@ class PrimaryView(
 
     fun openRecordingFile() {
         val file: File = fileChooser.get() ?: return
-        val callRecordTree: CallRecordTree = recordingReaderRegistry.newCallRecordTree(file) ?: return
+        val callRecordTree: CallRecordTree = readerRegistry.newCallRecordTree(file) ?: return
 
         val fileRecordingsTab = fileRecordingTabPane.getOrCreateProcessTab(
             FileRecordingsTabName(file, callRecordTree.processMetadata)
         )
         fileRecordingsTab.setOnClosed {
+            readerRegistry.dispose(callRecordTree)
             callRecordTree.close()
         }
 
