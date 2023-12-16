@@ -1,10 +1,11 @@
 package com.ulyp.ui.settings
 
 import com.ulyp.ui.looknfeel.Theme
-import com.ulyp.ui.settings.props.BooleanProperty
 import com.ulyp.ui.settings.serializer.BooleanPropertySerializer
 import com.ulyp.ui.settings.serializer.IntegerPropertySerializer
 import com.ulyp.ui.settings.serializer.StringPropertySerializer
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.beans.value.ChangeListener
@@ -27,9 +28,9 @@ class Settings {
     @Serializable(with = StringPropertySerializer::class)
     val recordingTreeFontName: StringProperty = SimpleStringProperty(Font.getDefault().name)
     @Serializable(with = BooleanPropertySerializer::class)
-    val recordingListShowThreads: BooleanProperty = BooleanProperty(true)
+    val recordingListShowThreads: BooleanProperty = SimpleBooleanProperty(true)
     @Serializable(with = BooleanPropertySerializer::class)
-    val recordingTreeBoldElements: BooleanProperty = BooleanProperty(true)
+    val recordingTreeBoldElements: BooleanProperty = SimpleBooleanProperty(true)
     @Serializable(with = IntegerPropertySerializer::class)
     val recordingListSpacing = SimpleIntegerProperty(3)
 

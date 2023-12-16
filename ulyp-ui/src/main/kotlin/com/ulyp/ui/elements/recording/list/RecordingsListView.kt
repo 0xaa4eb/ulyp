@@ -11,7 +11,7 @@ import javafx.scene.control.ListView
  */
 class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>() {
 
-    private val recordings = mutableMapOf<Int, RecordingListItem>()
+    val recordings = mutableMapOf<Int, RecordingListItem>()
 
     init {
         selectionModel.selectedItems.addListener(
@@ -32,11 +32,7 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
             }
         )
 
-        settings.recordingListShowThreads.addWeakListener { _, _, newVal ->
-            recordings.values.forEach {
-                it.updateShowThreadName(newVal)
-            }
-        }
+        settings.recordingListShowThreads.addListener(ShowThreadNameListener(this))
     }
 
     fun createOrUpdate(recording: Recording) {

@@ -1,6 +1,7 @@
 package com.ulyp.ui.settings.serializer
 
-import com.ulyp.ui.settings.props.BooleanProperty
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -16,6 +17,6 @@ object BooleanPropertySerializer : KSerializer<BooleanProperty> {
     }
 
     override fun deserialize(decoder: Decoder): BooleanProperty {
-        return BooleanProperty(decoder.decodeBoolean())
+        return SimpleBooleanProperty(decoder.decodeBoolean())
     }
 }

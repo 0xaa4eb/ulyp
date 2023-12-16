@@ -4,7 +4,7 @@ import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import java.lang.ref.WeakReference
 
-class Listener(recordingsListView: RecordingsListView) : ChangeListener<Boolean> {
+class ShowThreadNameListener(recordingsListView: RecordingsListView) : ChangeListener<Boolean> {
 
     private val recordingsListViewRef = WeakReference(recordingsListView)
 
