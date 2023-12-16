@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: "Run gradle build"
-          command: "chmod +x gradlew && ./gradlew ulyp-common:check ulyp-storage:check ulyp-agent-classes:check ulyp-agent-tests:check -i"
+          command: "chmod +x gradlew && ./gradlew ulyp-common:check ulyp-storage:check ulyp-agent-core:check ulyp-agent-tests:check -i"
   jdk-14-build:
     environment:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
@@ -20,7 +20,7 @@ jobs:
       - checkout
       - run:
           name: "Run gradle build"
-          command: "chmod +x gradlew && ./gradlew ulyp-common:check ulyp-storage:check ulyp-agent-classes:check ulyp-agent-tests:check -i"
+          command: "chmod +x gradlew && ./gradlew ulyp-common:check ulyp-storage:check ulyp-agent-core:check ulyp-agent-tests:check -i"
 
 workflows:
   build-workflow:

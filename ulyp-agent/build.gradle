@@ -10,8 +10,8 @@ repositories {
 
 dependencies {
     implementation project(':ulyp-common')
-    compileOnly project(':ulyp-agent-classes')
-    runtimeOnly files('../ulyp-agent-classes/build/libs/ulyp-agent-classes.jarr')
+    compileOnly project(':ulyp-agent-core')
+    runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarr')
 
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
 
@@ -20,8 +20,8 @@ dependencies {
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    testImplementation project(':ulyp-agent-core')
 
-    testImplementation project(':ulyp-agent-classes')
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
@@ -60,8 +60,8 @@ jar {
 }
 
 shadowJar {
-    dependsOn(':ulyp-agent-classes:shadowJar')
-    dependsOn(':ulyp-agent-classes:copyShadowJar')
+    dependsOn(':ulyp-agent-core:shadowJar')
+    dependsOn(':ulyp-agent-core:copyShadowJar')
 
     relocate 'org.agrona', 'shadowed.org.agrona'
     relocate 'org.slf4j', 'com.ulyp.slf4j'

@@ -10,15 +10,15 @@ import java.nio.file.Paths;
 import java.util.jar.JarFile;
 
 /**
- * Takes ulyp-agent-classes.jar added as a file into the ulyp-agent.jar and extracts it into
+ * Takes ulyp-agent-core.jar added as a file into the ulyp-agent.jar and extracts it into
  * temporary jar file.
  * <p>
- * It then appends ulyp-agent-classes.jar to bootstrap loader search. This is necessary because some classes are
+ * It then appends ulyp-agent-core.jar to bootstrap loader search. This is necessary because some classes are
  * defined by custom class loaders which should be later recorded by the agent.
  */
 public class AgentBootstrap {
 
-    private static final String AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME = "ulyp-agent-classes.jarr";
+    private static final String AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME = "ulyp-agent-core.jarr";
     private static final String ULYP_TMP_DIR_PROPERTY = "ulyp.tmp-dir";
     private static final Class<?> thisClass = AgentBootstrap.class;
 
@@ -39,7 +39,7 @@ public class AgentBootstrap {
         File tmpJarFile;
         try {
             String tmpDir = System.getProperty(ULYP_TMP_DIR_PROPERTY);
-            String fileName = "ulyp-agent-classes-" + Version.get() + "-" + Version.getBuildTimeEpochMilli() + ".jar";
+            String fileName = "ulyp-agent-core-" + Version.get() + "-" + Version.getBuildTimeEpochMilli() + ".jar";
             if (tmpDir != null) {
                 tmpJarFile = Paths.get(tmpDir, fileName).toFile();
             } else {
@@ -49,9 +49,9 @@ public class AgentBootstrap {
             if (tmpJarFile.exists() && tmpJarFile.length() == 0L) {
                 if (!tmpJarFile.delete()) {
                     if (tmpDir != null) {
-                        tmpJarFile = Files.createTempFile(Paths.get(tmpDir), "ulyp-agent-classes", ".jar").toFile();
+                        tmpJarFile = Files.createTempFile(Paths.get(tmpDir), "ulyp-agent-core", ".jar").toFile();
                     } else {
-                        tmpJarFile = Files.createTempFile("ulyp-agent-classes", ".jar").toFile();
+                        tmpJarFile = Files.createTempFile("ulyp-agent-core", ".jar").toFile();
                     }
                 }
             }
@@ -79,7 +79,7 @@ public class AgentBootstrap {
         ) {
             outputStream.write(new StreamDrainer().drain(inputStream));
             File classesJar = tmpJarFile;
-            System.out.println("Unpacking ulyp-agent-classes jar file to " + classesJar);
+            System.out.println("Unpacking ulyp-agent-core jar file to " + classesJar);
             classesJar.deleteOnExit();
             return classesJar;
         } catch (IOException e) {

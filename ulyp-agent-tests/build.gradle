@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     implementation project(':ulyp-common')
-    implementation project(':ulyp-agent-classes')
+    implementation project(':ulyp-agent-core')
     implementation project(':ulyp-storage')
 
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
