@@ -119,7 +119,7 @@
 }
 
 .ulyp-call-tree-printed.ulyp-call-tree-bold {
-    -fx-fill: rgb(152, 118, 170);
+    -fx-fill: rgb(0, 102, 204);
 }
 
 .ulyp-call-tree-object-value {
