@@ -1,6 +1,5 @@
 package com.ulyp.ui
 
-import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.FontStyleUpdater
 import com.ulyp.ui.looknfeel.ThemeManager
@@ -41,7 +40,6 @@ open class Configuration {
     open fun primaryView(
         applicationContext: ApplicationContext,
         recordingReaderRegistry: RecordingReaderRegistry,
-        sourceCodeView: SourceCodeView,
         fileRecordingTabPane: FileRecordingTabPane,
         settings: Settings,
         fontStyleUpdater: FontStyleUpdater,
@@ -54,7 +52,6 @@ open class Configuration {
             applicationContext,
             viewInitializer,
             recordingReaderRegistry,
-            sourceCodeView,
             fileRecordingTabPane,
             settings
         ) { fileChooser.showOpenDialog(stage) }

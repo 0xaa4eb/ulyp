@@ -25,27 +25,5 @@ class RecordingTreeView(recording: RecordedCallTreeItem) : TreeView<RecordedCall
                 settings.recordingTreeFontSize.value -= 1
             }
         }
-
-        /*
-        source code view Currently disabled
-        val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
-               treeView!!.selectionModel.selectedItemProperty()
-                       .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
-                           val selectedNode = newValue as RecordedCallTreeItem?
-                           if (selectedNode?.callRecord != null) {
-                               val sourceCodeFuture = sourceCodeFinder.find(
-                                       selectedNode.callRecord.method.declaringType.name
-                               )
-                               sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
-                                   Platform.runLater {
-                                       val currentlySelected = treeView!!.selectionModel.selectedItem
-                                       val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
-                                       if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
-                                           sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
-                                       }
-                                   }
-                               }
-                           }
-                       }*/
     }
 }

@@ -3,7 +3,6 @@ package com.ulyp.ui
 import com.ulyp.core.exception.UlypException
 import com.ulyp.storage.tree.CallRecordTree
 import com.ulyp.storage.util.RocksdbChecker
-import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsModalView
 import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
@@ -32,7 +31,6 @@ class PrimaryView(
     private val applicationContext: ApplicationContext,
     private val viewInitializer: ViewInitializer,
     private val recordingReaderRegistry: RecordingReaderRegistry,
-    private val sourceCodeView: SourceCodeView,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settings: Settings,
     private val fileChooser: Supplier<File?>
@@ -42,8 +40,6 @@ class PrimaryView(
     lateinit var primaryPane: VBox
     @FXML
     lateinit var fileTabPaneAnchorPane: AnchorPane
-//    @FXML
-//    lateinit var sourceCodeViewAnchorPane: AnchorPane
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         fileTabPaneAnchorPane.children.add(fileRecordingTabPane)
@@ -51,11 +47,6 @@ class PrimaryView(
         AnchorPane.setBottomAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setRightAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setLeftAnchor(fileRecordingTabPane, 0.0)
-//        sourceCodeViewAnchorPane.children.add(sourceCodeView)
-//        AnchorPane.setTopAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
 
         viewInitializer.init()
     }

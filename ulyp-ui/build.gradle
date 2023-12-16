@@ -29,7 +29,6 @@ if (javaVersion >= JavaVersion.VERSION_1_7 && javaVersion < JavaVersion.VERSION_
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
-    implementation files('libs/fernflower.jar')
 
     implementation "javax.annotation:javax.annotation-api:1.3.2"
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
