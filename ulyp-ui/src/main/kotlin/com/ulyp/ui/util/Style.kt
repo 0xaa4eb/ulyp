@@ -4,6 +4,7 @@ enum class Style(vararg classes: String) {
 
     SMALLER_TEXT("ulyp-smaller-text"),
     BOLD_TEXT("ulyp-bold-text"),
+    ZERO_PADDING("zero-padding"),
     BRIGHT_TEXT("ulyp-bright-text"),
     TOOLTIP_TEXT("ulyp-tooltip-text"),
     ERROR_TEXT("ulyp-error-text"),

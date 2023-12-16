@@ -36,16 +36,12 @@ class RecordingTab(
 
     val recordingId = recording.id
     private var root: CallRecord? = null
-    private var treeView: TreeView<RecordedCallNodeContent>? = null
+    private var treeView: RecordingTreeView? = null
 
     @Autowired
     private lateinit var sourceCodeView: SourceCodeView
     @Autowired
     private lateinit var renderSettings: RenderSettings
-    @Autowired
-    private lateinit var settings: Settings
-    @Autowired
-    private lateinit var fontStyleUpdater: FontStyleUpdater
 
     private var initialized = false
 
@@ -55,39 +51,10 @@ class RecordingTab(
             return
         }
 
-        treeView = TreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings))
-        treeView!!.styleClass += "ulyp-call-tree-view"
+        treeView = RecordingTreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings))
 
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())
-
-        val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
-        treeView!!.selectionModel.selectedItemProperty()
-                .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
-                    val selectedNode = newValue as RecordedCallTreeItem?
-                    if (selectedNode?.callRecord != null) {
-                        val sourceCodeFuture = sourceCodeFinder.find(
-                                selectedNode.callRecord.method.declaringType.name
-                        )
-                        sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
-                            Platform.runLater {
-                                val currentlySelected = treeView!!.selectionModel.selectedItem
-                                val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
-                                if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
-                                    sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
-                                }
-                            }
-                        }
-                    }
-                }
-        treeView!!.onKeyPressed = EventHandler { key: KeyEvent ->
-            if (key.code == KeyCode.EQUALS) {
-                settings.recordingTreeFontSize.value += 1
-            }
-            if (key.code == KeyCode.MINUS) {
-                settings.recordingTreeFontSize.value -= 1
-            }
-        }
 
         children.add(treeView)
         // TODO tooltip = tooltipText
