@@ -54,28 +54,28 @@ public class H2BootstrapBenchmark {
     }, value = 2)
     @Benchmark
     public void bootstrapInstrumented() throws Exception {
-        bootstrapDbAndInsertRows();
+        run();
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2MemDatabaseBenchmark.insertRecord",
+            "-Dulyp.methods=**.H2MemDatabaseBenchmark.run",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
     public void bootstrapRecord() throws Exception {
-        bootstrapDbAndInsertRows();
+        run();
     }
 
     @Fork(value = 2)
     @Benchmark
-    public void bootstrap() throws Exception {
-        bootstrapDbAndInsertRows();
+    public void bootstrapBaseline() throws Exception {
+        run();
     }
 
-    private void bootstrapDbAndInsertRows() throws Exception {
+    private void run() throws Exception {
         setUp();
         for (int i = 0; i < insertCount; i++) {
             try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?)")) {

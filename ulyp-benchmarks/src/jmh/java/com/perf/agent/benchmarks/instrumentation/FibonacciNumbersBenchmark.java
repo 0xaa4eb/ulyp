@@ -52,7 +52,7 @@ public class FibonacciNumbersBenchmark {
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public int computeNoAgent() {
+    public int computeBaseline() {
         return compute(18);
     }
 }

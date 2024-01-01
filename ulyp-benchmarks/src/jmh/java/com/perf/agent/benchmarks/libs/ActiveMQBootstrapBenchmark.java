@@ -61,7 +61,7 @@ public class ActiveMQBootstrapBenchmark {
 
     @Fork(value = 2)
     @Benchmark
-    public void noAgent() throws JMSException {
+    public void baseline() throws JMSException {
         setup();
         sendMessages();
         receiveMessages();

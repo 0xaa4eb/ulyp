@@ -19,13 +19,9 @@ public class InstrumentationBenchmark {
     private static final int CLASSLOADER_COUNT = 10;
     private static final int CLASES_PER_CLASSLOADER = 100;
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.DoesntExist.zxc"
-    })
+    @Fork(value = 2)
     @Benchmark
-    public List<Class<?>> loadWithNoInstrumentation() {
+    public List<Class<?>> loadWithBaseline() {
         return loadClasses();
     }
 
@@ -33,7 +29,7 @@ public class InstrumentationBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.DoesntExist.zxc"
-    })
+    }, value = 2)
     @Benchmark
     public List<Class<?>> instrumentClasses() {
         return loadClasses();
