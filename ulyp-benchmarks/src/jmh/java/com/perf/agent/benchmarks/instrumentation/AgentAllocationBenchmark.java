@@ -41,31 +41,32 @@ public class AgentAllocationBenchmark {
         }
     }
 
+    @Fork(value = 2)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    public String returnObjectNoAgent(State1 s1, State2 s2, State3 s3) {
+    public String returnObjectBaseline(State1 s1, State2 s2, State3 s3) {
         return "ABC";
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.AgentAllocationBenchmark.doesntExst",
+            "-Dulyp.methods=**.AgentAllocationBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    public String returnObject(State1 s1, State2 s2, State3 s3) {
+    public String returnObjectInstrumented(State1 s1, State2 s2, State3 s3) {
         return "ABC";
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.AgentAllocationBenchmark.doesntExst",
+            "-Dulyp.methods=**.AgentAllocationBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)

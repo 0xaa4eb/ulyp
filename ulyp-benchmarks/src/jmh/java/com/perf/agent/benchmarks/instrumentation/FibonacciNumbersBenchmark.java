@@ -22,17 +22,11 @@ public class FibonacciNumbersBenchmark {
         return compute(x - 2) + compute(x - 1);
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    @Fork(value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public int computeAndRecord() {
-        // TODO direct mem limit reached with 31
+    public int computeBaseline() {
         return compute(18);
     }
 
@@ -48,11 +42,17 @@ public class FibonacciNumbersBenchmark {
         return compute(18);
     }
 
-    @Fork(value = 5)
+    @Fork(jvmArgs = {
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+    }, value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public int computeBaseline() {
+    public int computeAndRecord() {
+        // TODO direct mem limit reached with 31
         return compute(18);
     }
 }
