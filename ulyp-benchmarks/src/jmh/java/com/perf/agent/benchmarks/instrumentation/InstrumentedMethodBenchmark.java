@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SampleTime)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
-public class AgentAllocationBenchmark {
+public class InstrumentedMethodBenchmark {
 
     @State(Scope.Benchmark)
     public static class State1 {
