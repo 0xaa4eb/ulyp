@@ -15,6 +15,7 @@ import lombok.Setter;
 public class RecordingState {
 
     private int recordingId;
+    private long callId = 0;
     private boolean enabled;
     @Nullable
     private RecordingMetadata recordingMetadata;

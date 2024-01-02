@@ -14,12 +14,8 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Gathers all necessary recording data like types, calls, methods and passes it to the recording data storage layer.
- * It also tracks what methods and types have already been written to the underlying storage by maintaining watermarks.
- * Sadly, moving that logic to storage level is not feasible right now
- */
 @Slf4j
 public class RecordDataWriter {
 
@@ -32,6 +28,14 @@ public class RecordDataWriter {
     public RecordDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
         this.recordingDataWriter = recordingDataWriter;
         this.methodRepository = methodRepository;
+    }
+
+    public void recordMethodEnter(long callId, int methodId, @Nullable Object callee, Object[] args) {
+
+    }
+
+    public void recordMethodExit(long callId, Object returnValue, boolean thrown) {
+
     }
 
     public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
