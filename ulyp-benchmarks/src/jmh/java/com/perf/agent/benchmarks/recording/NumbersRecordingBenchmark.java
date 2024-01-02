@@ -39,7 +39,7 @@ public class NumbersRecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.RecordingNumbersBenchmark.sdjfhgsdhjfsd"
+            "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd"
     }, value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
@@ -60,7 +60,7 @@ public class NumbersRecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.RecordingNumbersBenchmark.computeRecord",
+            "-Dulyp.methods=**.NumbersRecordingBenchmark.computeRecord",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
     @BenchmarkMode(Mode.AverageTime)

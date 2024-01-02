@@ -6,9 +6,10 @@ import org.openjdk.jmh.annotations.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-@BenchmarkMode(Mode.SampleTime)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Mode.AverageTime)
 public class InstrumentedMethodBenchmark {
 
     @State(Scope.Benchmark)
@@ -42,8 +43,6 @@ public class InstrumentedMethodBenchmark {
     }
 
     @Fork(value = 2)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     public String returnObjectBaseline(State1 s1, State2 s2, State3 s3) {
         return "ABC";
@@ -52,12 +51,10 @@ public class InstrumentedMethodBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.AgentAllocationBenchmark.c",
+            "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     public String returnObjectInstrumented(State1 s1, State2 s2, State3 s3) {
         return "ABC";
@@ -66,12 +63,10 @@ public class InstrumentedMethodBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.AgentAllocationBenchmark.c",
+            "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @CompilerControl(CompilerControl.Mode.EXCLUDE)
     public String returnObjectNoCompile(State1 s1, State2 s2, State3 s3) {

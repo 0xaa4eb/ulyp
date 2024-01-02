@@ -14,7 +14,7 @@ import com.perf.agent.benchmarks.libs.util.DepartmentService;
 import com.perf.agent.benchmarks.libs.util.Person;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.SampleTime)
+@BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 5, time = 3)
 @Measurement(iterations = 10, time = 3)

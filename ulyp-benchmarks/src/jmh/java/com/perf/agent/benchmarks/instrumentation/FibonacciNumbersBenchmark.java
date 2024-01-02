@@ -5,8 +5,10 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
+@BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciNumbersBenchmark {
 
     private int compute(int x) {
@@ -23,9 +25,7 @@ public class FibonacciNumbersBenchmark {
     }
 
     @Fork(value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeBaseline() {
         return compute(18);
     }
@@ -35,9 +35,7 @@ public class FibonacciNumbersBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeInstrumented() {
         return compute(18);
     }
@@ -48,9 +46,7 @@ public class FibonacciNumbersBenchmark {
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeAndRecord() {
         // TODO direct mem limit reached with 31
         return compute(18);
