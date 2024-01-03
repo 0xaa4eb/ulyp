@@ -7,14 +7,15 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import com.ulyp.agent.RecordDataWriter;
+import com.ulyp.core.RecordingMetadata;
 
 public class CallRecordQueue {
 
-    private final Disruptor<CallRecordQueueEntry> disruptor;
+    private final Disruptor<CallRecordQueueItemHolder> disruptor;
 
     public CallRecordQueue(RecordDataWriter recordDataWriter) {
         this.disruptor = new Disruptor<>(
-            CallRecordQueueEntry::new,
+            CallRecordQueueItemHolder::new,
             256 * 1024,
             DaemonThreadFactory.INSTANCE,
             ProducerType.MULTI,
@@ -23,12 +24,12 @@ public class CallRecordQueue {
         disruptor.start();
     }
 
-    public void enqueueMethodEnter(int callId, int methodId, @Nullable Object callee, Object[] args) {
-        disruptor.publishEvent((entry, seq) -> entry.setEnterCall(callId, methodId, callee, args));
+    public void enqueueMethodEnter(RecordingMetadata recordingMetadata, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+        disruptor.publishEvent((entry, seq) -> entry.item = new EnterRecordQueueItem(recordingMetadata, callId, methodId, callee, args, nanoTime));
     }
 
-    public void enqueueMethodExit(int callId, Object returnValue, boolean thrown) {
-        disruptor.publishEvent((entry, seq) -> entry.setExitCall(callId, returnValue, thrown));
+    public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
+        disruptor.publishEvent((entry, seq) -> entry.setExitCall(recordingId, callId, returnValue, thrown));
     }
 
 }

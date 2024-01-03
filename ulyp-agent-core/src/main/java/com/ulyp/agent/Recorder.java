@@ -154,7 +154,7 @@ public class Recorder {
             }
             if (RecordingState.newFlowEnabled) {
                 int callId = recordingState.nextCallId();
-                callRecordQueue.enqueueMethodEnter(callId, methodId, callee, args);
+                callRecordQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
                 return callId;
             }
             CallRecordBuffer callRecordBuffer = recordingState.getCallRecordBuffer();
@@ -184,7 +184,7 @@ public class Recorder {
             if (recordingState == null || !recordingState.isEnabled()) return;
 
             if (RecordingState.newFlowEnabled) {
-                callRecordQueue.enqueueMethodExit(callId, thrown != null ? thrown : result, thrown != null);
+                callRecordQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
                 return;
             }
 
