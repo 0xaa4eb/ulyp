@@ -27,6 +27,7 @@ public class RecordedExitMethodCall extends RecordedMethodCall {
                 )
                 .thrown(decoder.thrown() == BooleanType.T)
                 .callId(decoder.callId())
+                .nanoTime(decoder.nanoTime())
                 .build();
     }
 }

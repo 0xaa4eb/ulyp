@@ -43,6 +43,7 @@ public class RecordedEnterMethodCall extends RecordedMethodCall {
         return RecordedEnterMethodCall.builder()
                 .callId(decoder.callId())
                 .methodId(decoder.methodId())
+                .nanoTime(decoder.nanoTime())
                 .callee(callee)
                 .arguments(arguments)
                 .build();

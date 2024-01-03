@@ -58,14 +58,22 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     }
 
     public void addExitMethodCall(int callId, TypeResolver typeResolver, Object returnValue) {
-        addExitMethodCall(callId, typeResolver, false, returnValue);
+        addExitMethodCall(callId, typeResolver, false, returnValue, -1);
+    }
+
+    public void addExitMethodCall(int callId, TypeResolver typeResolver, Object returnValue, long nanoTime) {
+        addExitMethodCall(callId, typeResolver, false, returnValue, nanoTime);
     }
 
     public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject) {
-        addExitMethodCall(callId, typeResolver, true, throwObject);
+        addExitMethodCall(callId, typeResolver, true, throwObject, -1L);
     }
 
-    private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue) {
+    public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject, long nanoTime) {
+        addExitMethodCall(callId, typeResolver, true, throwObject, nanoTime);
+    }
+
+    private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -78,6 +86,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     exitMethodCallEncoder.callId(callId);
                     exitMethodCallEncoder.thrown(thrown ? BooleanType.T : BooleanType.F);
+                    exitMethodCallEncoder.nanoTime(nanoTime);
                     Type type = typeResolver.get(returnValue);
                     exitMethodCallEncoder.returnValueTypeId(type.getId());
 
@@ -107,6 +116,10 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
     }
 
     public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args) {
+        addEnterMethodCall(callId, method, typeResolver, callee, args, -1L);
+    }
+
+    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -119,6 +132,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.callId(callId);
                     enterMethodCallEncoder.methodId(method.getId());
+                    enterMethodCallEncoder.nanoTime(nanoTime);
 
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);
 

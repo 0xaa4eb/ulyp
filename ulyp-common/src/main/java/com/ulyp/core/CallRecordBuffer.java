@@ -45,16 +45,14 @@ public class CallRecordBuffer {
     }
 
     public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
+        return recordMethodEnter(typeResolver, method, callee, args, -1L);
+    }
+
+    public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args, long nanoTime) {
         try {
 
             int callId = nextCallId++;
-            recordedCalls.addEnterMethodCall(
-                    callId,
-                    method,
-                    typeResolver,
-                    callee,
-                    args
-            );
+            recordedCalls.addEnterMethodCall(callId, method, typeResolver, callee, args, nanoTime);
             return callId;
         } catch (Throwable err) {
             // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted
@@ -64,11 +62,15 @@ public class CallRecordBuffer {
     }
 
     public void recordMethodExit(TypeResolver typeResolver, Object returnValue, Throwable thrown, int callId) {
+        recordMethodExit(typeResolver, returnValue, thrown, callId, -1L);
+    }
+
+    public void recordMethodExit(TypeResolver typeResolver, Object returnValue, Throwable thrown, int callId, long nanoTime) {
         if (callId >= 0) {
             if (thrown == null) {
-                recordedCalls.addExitMethodCall(callId, typeResolver, returnValue);
+                recordedCalls.addExitMethodCall(callId, typeResolver, returnValue, nanoTime);
             } else {
-                recordedCalls.addExitMethodThrow(callId, typeResolver, thrown);
+                recordedCalls.addExitMethodThrow(callId, typeResolver, thrown, nanoTime);
             }
             lastExitCallId = callId;
         }

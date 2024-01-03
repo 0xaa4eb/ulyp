@@ -1,5 +1,6 @@
 package com.ulyp.ui.elements.recording.tree
 
+import com.ulyp.core.util.Duration
 import com.ulyp.storage.tree.CallRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.elements.recording.objects.RenderedObject.Companion.of
@@ -11,13 +12,16 @@ import javafx.scene.Node
 import javafx.scene.text.TextFlow
 import java.util.function.Consumer
 
-class RecordedCallView(node: CallRecord, renderSettings: RenderSettings) : TextFlow() {
+class RecordedCallView(callRecord: CallRecord, renderSettings: RenderSettings) : TextFlow() {
 
     init {
         val text: MutableList<Node> = ArrayList()
-        text.addAll(renderReturnValue(node, renderSettings))
-        text.addAll(renderCallee(node, renderSettings))
-        text.addAll(renderArguments(node, renderSettings))
+        if (renderSettings.showTimestamps) {
+            text.addAll(renderTimestamp(callRecord))
+        }
+        text.addAll(renderReturnValue(callRecord, renderSettings))
+        text.addAll(renderCallee(callRecord, renderSettings))
+        text.addAll(renderArguments(callRecord, renderSettings))
         children.addAll(text)
     }
 
@@ -125,6 +129,14 @@ class RecordedCallView(node: CallRecord, renderSettings: RenderSettings) : TextF
                     .style(Style.CALL_TREE_METHOD_NAME)
         }
         result.add(methodNameBuilder.build())
+        return result
+    }
+
+    private fun renderTimestamp(node: CallRecord): List<Node> {
+        val result: MutableList<Node> = ArrayList()
+        result.add(text().text("${Duration(node.nanosDuration)} ")
+                .style(Style.CALL_TREE_TIMESTAMP)
+                .build())
         return result
     }
 }

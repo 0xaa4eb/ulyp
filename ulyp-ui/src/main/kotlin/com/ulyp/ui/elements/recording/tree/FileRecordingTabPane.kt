@@ -23,6 +23,7 @@ class FileRecordingTabPane : TabPane() {
     private lateinit var settings: Settings
 
     private var lastSelectedOnShowTypes: RecordedCallTreeItem? = null
+    private var lastSelectedOnShowTimestamps: RecordedCallTreeItem? = null
 
     fun clear() {
         for (tab in tabs) {
@@ -54,11 +55,15 @@ class FileRecordingTabPane : TabPane() {
 
     fun keyPressed(event: KeyEvent) {
         if (event.code == KeyCode.SHIFT) {
-
-
             selectedTab.selectedTreeTab?.getSelected()?.let {
                 renderSettings.showTypes = true
                 lastSelectedOnShowTypes = it
+                it.refresh()
+            }
+        } else if (event.code == KeyCode.X) {
+            selectedTab.selectedTreeTab?.getSelected()?.let {
+                renderSettings.showTimestamps = true
+                lastSelectedOnShowTimestamps = it
                 it.refresh()
             }
         } else {
@@ -80,6 +85,13 @@ class FileRecordingTabPane : TabPane() {
             renderSettings.showTypes = false
             if (lastSelectedOnShowTypes != null) {
                 lastSelectedOnShowTypes!!.refresh()
+            } else {
+                selectedTab.selectedTreeTab?.getSelected()?.refresh()
+            }
+        } else if (event.code == KeyCode.X) {
+            renderSettings.showTimestamps = false
+            if (lastSelectedOnShowTimestamps != null) {
+                lastSelectedOnShowTimestamps!!.refresh()
             } else {
                 selectedTab.selectedTreeTab?.getSelected()?.refresh()
             }
