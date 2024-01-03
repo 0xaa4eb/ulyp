@@ -29,7 +29,7 @@ dependencies {
     jmhImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     jmhImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
-    jmhImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
+    jmhImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '6.0.1'
     jmhImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
     jmhImplementation group: 'org.springframework', name: 'spring-core', version: '4.2.6.RELEASE'
     jmhImplementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.1.RELEASE'
