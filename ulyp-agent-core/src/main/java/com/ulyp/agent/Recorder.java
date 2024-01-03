@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.policy.StartRecordingPolicy;
+import com.ulyp.agent.queue.CallRecordQueue;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.Preconditions;
@@ -39,11 +40,13 @@ public class Recorder {
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
     private final StartRecordingPolicy startRecordingPolicy;
     private final RecordDataWriter recordDataWriter;
+    private final CallRecordQueue callRecordQueue;
 
     public Recorder(TypeResolver typeResolver, MethodRepository methodRepository, StartRecordingPolicy startRecordingPolicy, RecordingDataWriter recordingDataWriter) {
         this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
         this.recordDataWriter = new RecordDataWriter(recordingDataWriter, methodRepository);
+        this.callRecordQueue = new CallRecordQueue(recordDataWriter);
         this.startRecordingPolicy = startRecordingPolicy;
     }
 
@@ -149,6 +152,11 @@ public class Recorder {
             if (recordingState == null || !recordingState.isEnabled()) {
                 return -1;
             }
+            if (RecordingState.newFlowEnabled) {
+                int callId = recordingState.nextCallId();
+                callRecordQueue.enqueueMethodEnter(callId, methodId, callee, args);
+                return callId;
+            }
             CallRecordBuffer callRecordBuffer = recordingState.getCallRecordBuffer();
             if (callRecordBuffer == null) {
                 return -1;
@@ -176,7 +184,7 @@ public class Recorder {
             if (recordingState == null || !recordingState.isEnabled()) return;
 
             if (RecordingState.newFlowEnabled) {
-                recordDataWriter.recordMethodExit(callId, thrown != null ? thrown : result, thrown != null);
+                callRecordQueue.enqueueMethodExit(callId, thrown != null ? thrown : result, thrown != null);
                 return;
             }
 

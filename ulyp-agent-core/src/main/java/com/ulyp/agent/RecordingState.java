@@ -17,14 +17,14 @@ public class RecordingState {
     public static boolean newFlowEnabled = false;
 
     private int recordingId;
-    private long callId = 0;
+    private int callId = 0;
     private boolean enabled;
     @Nullable
     private RecordingMetadata recordingMetadata;
     @Nullable
     private CallRecordBuffer callRecordBuffer;
 
-    public long nextCallId() {
+    public int nextCallId() {
         return callId++;
     }
 

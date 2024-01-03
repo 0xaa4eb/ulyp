@@ -1,6 +1,5 @@
 package com.ulyp.agent;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ulyp.core.CallRecordBuffer;
@@ -15,7 +14,6 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 
 @Slf4j
 public class RecordDataWriter {
@@ -26,37 +24,9 @@ public class RecordDataWriter {
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
-    class Call {
-        private final int methodId;
-        private final long callId;
-        private final boolean enterCall;
-        private final Object callee;
-        private final Object[] args;
-        private final boolean thrown;
-
-        Call(int methodId, long callId, boolean enterCall, Object callee, Object[] args, boolean thrown) {
-            this.methodId = methodId;
-            this.callId = callId;
-            this.enterCall = enterCall;
-            this.callee = callee;
-            this.args = args;
-            this.thrown = thrown;
-        }
-    }
-
-    private ConcurrentLinkedQueue<Call> callQueue = new ConcurrentLinkedQueue<>();
-
     public RecordDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
         this.recordingDataWriter = recordingDataWriter;
         this.methodRepository = methodRepository;
-    }
-
-    public void recordMethodEnter(long callId, int methodId, @Nullable Object callee, Object[] args) {
-        callQueue.add(new Call(methodId, callId, true, callee, args, false));
-    }
-
-    public void recordMethodExit(long callId, Object returnValue, boolean thrown) {
-        callQueue.add(new Call(0, callId, false, returnValue, null, true));
     }
 
     public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
