@@ -174,6 +174,12 @@ public class Recorder {
         try {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null || !recordingState.isEnabled()) return;
+
+            if (RecordingState.newFlowEnabled) {
+                recordDataWriter.recordMethodExit(callId, thrown != null ? thrown : result, thrown != null);
+                return;
+            }
+
             CallRecordBuffer callRecordBuf = recordingState.getCallRecordBuffer();
             if (callRecordBuf == null) return;
 

@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class RecordingState {
 
+    public static boolean newFlowEnabled = false;
+
     private int recordingId;
     private long callId = 0;
     private boolean enabled;
@@ -21,6 +23,10 @@ public class RecordingState {
     private RecordingMetadata recordingMetadata;
     @Nullable
     private CallRecordBuffer callRecordBuffer;
+
+    public long nextCallId() {
+        return callId++;
+    }
 
     public void setRecordingMetadata(@Nullable RecordingMetadata recordingMetadata) {
         if (recordingMetadata != null) {
