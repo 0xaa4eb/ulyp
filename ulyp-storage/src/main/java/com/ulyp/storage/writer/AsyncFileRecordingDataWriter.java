@@ -74,7 +74,7 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     @SneakyThrows
     public synchronized void close() {
         try {
-            executorService.shutdownNow();
+            executorService.shutdown();
             executorService.awaitTermination(30, TimeUnit.SECONDS);
         } finally {
             delegate.close();
