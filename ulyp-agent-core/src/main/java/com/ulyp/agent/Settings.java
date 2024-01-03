@@ -5,6 +5,7 @@ import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
 import com.ulyp.storage.writer.RecordingDataWriter;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,14 @@ public class Settings {
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
+    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
+    public static final boolean TIMESTAMPS_ENABLED;
+
+    static {
+        // make 'static final'. bytecode will be thrown off if the feature is disabled
+        TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
+    }
 
     @NotNull
     private final Supplier<RecordingDataWriter> recordingDataWriterSupplier;
@@ -55,6 +63,8 @@ public class Settings {
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
     private final boolean agentDisabled;
+    @Getter
+    private final boolean timestampsEnabled;
 
     public Settings(
             @NotNull Supplier<RecordingDataWriter> recordingDataWriterSupplier,
@@ -70,7 +80,8 @@ public class Settings {
             String startRecordingPolicyPropertyValue,
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
-            boolean agentDisabled) {
+            boolean agentDisabled,
+            boolean timestampsEnabled) {
         this.recordingDataWriterSupplier = recordingDataWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
@@ -85,6 +96,7 @@ public class Settings {
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
         this.bindNetworkAddress = bindNetworkAddress;
         this.agentDisabled = agentDisabled;
+        this.timestampsEnabled = timestampsEnabled;
     }
 
     public static Settings fromSystemProperties() {
@@ -147,6 +159,7 @@ public class Settings {
         boolean recordConstructors = aggressive || System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
         boolean instrumentLambdas = aggressive || System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
         boolean instrumentTypeInitializers = aggressive || System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
+        boolean timestampsEnabled = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
 
         String recordCollectionsProp;
         if (aggressive) {
@@ -181,7 +194,8 @@ public class Settings {
                 startRecordingPolicy,
                 excludeClassesFromInstrumentation,
                 bindNetworkAddress,
-                agentDisabled
+                agentDisabled,
+                timestampsEnabled
         );
     }
 
@@ -255,6 +269,7 @@ public class Settings {
                 ",\ninstrument lambdas: " + instrumentLambdas +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
+                ",\ntimstamps enabled: " + timestampsEnabled +
                 ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 }

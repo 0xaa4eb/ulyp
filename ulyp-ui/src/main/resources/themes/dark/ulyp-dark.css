@@ -61,6 +61,10 @@
 
 /* ULYP part */
 
+.ulyp-call-tree-timestamp {
+    -fx-fill: rgb(161, 201, 52);
+}
+
 .ulyp-recording-list-item {
     -fx-fill: rgb(169, 183, 198);
 }

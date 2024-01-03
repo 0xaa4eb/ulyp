@@ -17,4 +17,13 @@ class RenderSettings(val settings: Settings) {
             Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
             field = value
         }
+    var showTimestamps = false
+        get() {
+            Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
+            return field
+        }
+        set(value) {
+            Preconditions.checkState(Platform.isFxApplicationThread(), "Not in FX application thread")
+            field = value
+        }
 }

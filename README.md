@@ -100,6 +100,7 @@ Try running some code with additional properties `-Dulyp.constructors -Dulyp.col
 		<th>Action</th>
 </tr>
 <tr><td>Hold Shift</td><td>Show full type names</td></tr>
+<tr><td>Hold X</td><td>Show method call duration (if enabled with -Dulyp.timestamps)</td></tr>
 <tr><td>Press =</td><td>Increase font size</td></tr>
 <tr><td>Press -</td><td>Decrease font size</td></tr>
 </table>

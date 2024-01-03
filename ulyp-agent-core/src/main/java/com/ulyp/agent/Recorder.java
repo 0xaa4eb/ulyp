@@ -156,7 +156,11 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                return callRecordBuffer.recordMethodEnter(typeResolver, methodRepository.get(methodId), callee, args);
+                long nanoTime = 0;
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    nanoTime = System.nanoTime();
+                }
+                return callRecordBuffer.recordMethodEnter(typeResolver, methodRepository.get(methodId), callee, args, nanoTime);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -179,7 +183,11 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                callRecordBuf.recordMethodExit(typeResolver, result, thrown, callId);
+                long nanoTime = 0;
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    nanoTime = System.nanoTime();
+                }
+                callRecordBuf.recordMethodExit(typeResolver, result, thrown, callId, nanoTime);
 
                 RecordingMetadata recordingMetadata = recordingState.getRecordingMetadata();
                 Preconditions.checkNotNull(recordingMetadata, "Recording metadata must not be null if recording is active");

@@ -128,7 +128,13 @@ public class RecordingState {
         if (callState.getExitMethodCallAddr() > 0) {
             RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr());
 
-            builder = builder.thrown(exitMethodCall.isThrown())
+            if (exitMethodCall.getNanoTime() > 0) {
+                long nanosDuration = exitMethodCall.getNanoTime() - enterMethodCall.getNanoTime();
+                builder = builder.nanosDuration(nanosDuration);
+            }
+
+            builder = builder
+                    .thrown(exitMethodCall.isThrown())
                     .returnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
         }
 
