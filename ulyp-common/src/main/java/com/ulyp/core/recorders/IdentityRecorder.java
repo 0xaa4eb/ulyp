@@ -19,6 +19,11 @@ public class IdentityRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return true;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         int identityHashCode = input.readInt();
         return new IdentityObjectRecord(objectType, identityHashCode);

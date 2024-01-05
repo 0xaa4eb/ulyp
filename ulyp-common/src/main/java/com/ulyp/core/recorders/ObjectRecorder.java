@@ -31,6 +31,10 @@ public abstract class ObjectRecorder {
 
     public abstract boolean supports(Class<?> type);
 
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
     public abstract ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
 
     public abstract void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception;

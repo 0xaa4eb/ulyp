@@ -12,14 +12,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class ToStringPrintingRecorder extends ObjectRecorder {
+public class PrintingRecorder extends ObjectRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
     private final Set<TypeMatcher> classesToPrint = new CopyOnWriteArraySet<>();
 
-    protected ToStringPrintingRecorder(byte id) {
+    protected PrintingRecorder(byte id) {
         super(id);
     }
 

@@ -39,6 +39,11 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 

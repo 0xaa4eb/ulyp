@@ -74,10 +74,10 @@ public class FilterStorageReadWriteTest {
 
         RecordedMethodCallList methodCalls1 = new RecordedMethodCallList(1);
 
-        methodCalls1.addEnterMethodCall(0, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(1, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(2, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(3, method, typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(0, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(1, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(2, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(3, method.getId(), typeResolver, callee, new Object[]{"ABC"});
 
         RecordedMethodCallList methodCalls2 = new RecordedMethodCallList(1);
         methodCalls2.addExitMethodCall(3, typeResolver, "BVBC");

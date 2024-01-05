@@ -2,6 +2,9 @@ package com.ulyp.agent.queue;
 
 import com.ulyp.core.RecordingMetadata;
 
+import lombok.Getter;
+
+@Getter
 class EnterRecordQueueItem {
 
     private final RecordingMetadata recordingMetadata;

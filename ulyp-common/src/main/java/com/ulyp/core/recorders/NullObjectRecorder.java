@@ -19,6 +19,11 @@ public class NullObjectRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return true;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
         // still need to read as this recorder may be used inside another recorder
         input.readBoolean();

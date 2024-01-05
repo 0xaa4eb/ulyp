@@ -26,6 +26,7 @@ public enum ObjectRecorderRegistry {
     ENUM_RECORDER(new EnumRecorder((byte) 6), 5),
     INTEGRAL_RECORDER(new IntegralRecorder((byte) 12), 0),
     BOOLEAN_RECORDER(new BooleanRecorder((byte) 100), 1),
+    QUEUE_IDENTITY_RECORDER(new CallRecordQueueIdentityObjectRecorder((byte) 101), 95),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
     BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),
@@ -36,7 +37,7 @@ public enum ObjectRecorderRegistry {
     FILE_RECORDER(new FileRecorder((byte) 26), 90),
     PATH_RECORDER(new PathRecorder((byte) 27), 90),
     DATE_RECORDER(new DateRecorder((byte) 20), 90),
-    TO_STRING_RECORDER(new ToStringPrintingRecorder((byte) 91), 99),
+    TO_STRING_RECORDER(new PrintingRecorder((byte) 91), 99),
     IDENTITY_RECORDER(new IdentityRecorder((byte) 0), Integer.MAX_VALUE / 2),
     // Null recorder is only used manually, so it has max available order
     NULL_RECORDER(new NullObjectRecorder((byte) 9), Integer.MAX_VALUE);

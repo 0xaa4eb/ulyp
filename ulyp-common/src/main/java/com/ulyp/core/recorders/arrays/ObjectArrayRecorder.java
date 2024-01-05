@@ -20,6 +20,11 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
+    @Override
     public boolean supports(Class<?> type) {
         return Object[].class.isAssignableFrom(type);
     }

@@ -17,6 +17,11 @@ public class ByteArrayRecorder extends IdentityRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
+    @Override
     public boolean supports(Class<?> type) {
         return type == byte[].class;
     }

@@ -38,6 +38,11 @@ public class CollectionRecorder extends ObjectRecorder {
         return mode.supports(type) && Collection.class.isAssignableFrom(type);
     }
 
+    @Override
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
     public void setMode(CollectionsRecordingMode mode) {
         this.mode = mode;
         log.info("Set collection recording mode to {}", mode);

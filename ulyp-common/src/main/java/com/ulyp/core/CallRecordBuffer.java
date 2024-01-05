@@ -44,15 +44,15 @@ public class CallRecordBuffer {
         return recordedCalls.getRawBytes().byteLength();
     }
 
-    public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {
-        return recordMethodEnter(typeResolver, method, callee, args, -1L);
+    public int recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args) {
+        return recordMethodEnter(typeResolver, methodId, callee, args, -1L);
     }
 
-    public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args, long nanoTime) {
+    public int recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         try {
 
             int callId = nextCallId++;
-            recordedCalls.addEnterMethodCall(callId, method, typeResolver, callee, args, nanoTime);
+            recordedCalls.addEnterMethodCall(callId, methodId, typeResolver, callee, args, nanoTime);
             return callId;
         } catch (Throwable err) {
             // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted

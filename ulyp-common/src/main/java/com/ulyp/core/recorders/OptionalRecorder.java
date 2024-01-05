@@ -24,6 +24,11 @@ public class OptionalRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return true;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         boolean hasSomething = input.readBoolean();
         if (hasSomething) {

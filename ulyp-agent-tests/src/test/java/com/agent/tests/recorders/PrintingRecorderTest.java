@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ToStringPrintingRecorderTest extends AbstractInstrumentationTest {
+public class PrintingRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     public void shouldNotPrintObjectIfSettingNotSet() {

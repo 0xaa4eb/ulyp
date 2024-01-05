@@ -78,7 +78,7 @@ public class CallRecordTreeTest {
     @Test
     public void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
         RecordedMethodCallList calls = new RecordedMethodCallList(1);
-        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
+        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
         calls.addExitMethodCall(0, typeResolver, "CDE");
 
         writer.write(RecordingMetadata.builder().id(1).build());
@@ -106,7 +106,7 @@ public class CallRecordTreeTest {
     @Test
     public void testNotFinishedRecording() throws ExecutionException, InterruptedException {
         RecordedMethodCallList calls = new RecordedMethodCallList(1);
-        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
+        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
 
         writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);

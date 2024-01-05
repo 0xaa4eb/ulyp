@@ -14,10 +14,10 @@ import lombok.Setter;
 @Setter
 public class RecordingState {
 
-    public static boolean newFlowEnabled = false;
+    public static boolean newFlowEnabled = true;
 
     private int recordingId;
-    private int callId = 0;
+    private int callId = 1;
     private boolean enabled;
     @Nullable
     private RecordingMetadata recordingMetadata;

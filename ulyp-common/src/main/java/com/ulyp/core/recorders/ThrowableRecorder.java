@@ -20,6 +20,11 @@ public class ThrowableRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return true;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new ThrowableRecord(type, input.readObject(typeResolver));
     }

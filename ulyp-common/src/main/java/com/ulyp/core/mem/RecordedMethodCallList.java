@@ -115,11 +115,11 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
         );
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args) {
-        addEnterMethodCall(callId, method, typeResolver, callee, args, -1L);
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
+        addEnterMethodCall(callId, methodId, typeResolver, callee, args, -1L);
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         bytes.add(
                 encoder -> {
                     MutableDirectBuffer wrappedBuffer = encoder.buffer();
@@ -131,7 +131,7 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                     enterMethodCallEncoder.wrap(wrappedBuffer, limit + headerLength);
 
                     enterMethodCallEncoder.callId(callId);
-                    enterMethodCallEncoder.methodId(method.getId());
+                    enterMethodCallEncoder.methodId(methodId);
                     enterMethodCallEncoder.nanoTime(nanoTime);
 
                     BinaryRecordedEnterMethodCallEncoder.ArgumentsEncoder argumentsEncoder = enterMethodCallEncoder.argumentsCount(args.length);

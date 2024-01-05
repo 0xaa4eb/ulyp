@@ -2,6 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.agent.queue.CallRecordQueue;
+import com.ulyp.agent.queue.CallRecordQueueProcessorThreadFactory;
 import com.ulyp.core.*;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.Preconditions;
@@ -46,7 +47,7 @@ public class Recorder {
         this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
         this.recordDataWriter = new RecordDataWriter(recordingDataWriter, methodRepository);
-        this.callRecordQueue = new CallRecordQueue(recordDataWriter);
+        this.callRecordQueue = new CallRecordQueue(typeResolver, recordDataWriter);
         this.startRecordingPolicy = startRecordingPolicy;
     }
 
@@ -111,6 +112,9 @@ public class Recorder {
     }
 
     public int startOrContinueRecordingOnConstructorEnter(int methodId, Object[] args) {
+        if (Thread.currentThread() instanceof CallRecordQueueProcessorThreadFactory.ProcessorThread) {
+            return -1;
+        }
         if (startRecordingPolicy.canStartRecording()) {
             RecordingState recordingState = threadLocalRecordingState.get();
             if (recordingState == null) {
@@ -153,8 +157,12 @@ public class Recorder {
                 return -1;
             }
             if (RecordingState.newFlowEnabled) {
+                long nanoTime = 0;
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    nanoTime = System.nanoTime();
+                }
                 int callId = recordingState.nextCallId();
-                callRecordQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
+                callRecordQueue.enqueueMethodEnter(recordingState.getRecordingMetadata(), callId, methodId, callee, args, nanoTime);
                 return callId;
             }
             CallRecordBuffer callRecordBuffer = recordingState.getCallRecordBuffer();
@@ -168,7 +176,7 @@ public class Recorder {
                 if (Settings.TIMESTAMPS_ENABLED) {
                     nanoTime = System.nanoTime();
                 }
-                return callRecordBuffer.recordMethodEnter(typeResolver, methodRepository.get(methodId), callee, args, nanoTime);
+                return callRecordBuffer.recordMethodEnter(typeResolver, methodId, callee, args, nanoTime);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -188,7 +196,11 @@ public class Recorder {
             if (recordingState == null || !recordingState.isEnabled()) return;
 
             if (RecordingState.newFlowEnabled) {
-                callRecordQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
+                long nanoTime = 0;
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    nanoTime = System.nanoTime();
+                }
+                callRecordQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, nanoTime);
                 return;
             }
 

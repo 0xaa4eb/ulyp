@@ -19,6 +19,11 @@ public class EnumRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return true;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         return new EnumRecord(type, input.readString());
     }

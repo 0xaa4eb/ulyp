@@ -7,7 +7,7 @@ import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.ToStringPrintingRecorder;
+import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
@@ -71,7 +71,7 @@ public class Agent {
         MapRecorder mapRecorder = (MapRecorder) ObjectRecorderRegistry.MAP_RECORDER.getInstance();
         mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
-        ToStringPrintingRecorder toStringRecorder = (ToStringPrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
+        PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getTypesToPrint());
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);

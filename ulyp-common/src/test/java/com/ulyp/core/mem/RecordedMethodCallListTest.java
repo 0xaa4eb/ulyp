@@ -15,12 +15,7 @@ public class RecordedMethodCallListTest {
 
     @Test
     public void testAddAndIterate() {
-
-        Type type = typeResolver.get(A.class);
-
-        Method method = Method.builder().id(5).name("convert").declaringType(type).build();
-
-        list.addEnterMethodCall(134, method, typeResolver, new A(), new Object[]{5});
+        list.addEnterMethodCall(134, 5, typeResolver, new A(), new Object[]{5});
         list.addExitMethodCall(134, typeResolver, "ABC");
 
         List<RecordedMethodCall> calls = list.stream().collect(Collectors.toList());
