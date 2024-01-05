@@ -16,7 +16,7 @@ public class CallRecordQueueProcessorThreadFactory implements ThreadFactory {
         return t;
     }
 
-    public static class ProcessorThread extends Thread {
+    private static class ProcessorThread extends Thread {
         public ProcessorThread(Runnable target) {
             super(target);
         }

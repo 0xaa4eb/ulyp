@@ -7,15 +7,15 @@ import lombok.Getter;
 @Getter
 class EnterRecordQueueItem {
 
-    private final RecordingMetadata recordingMetadata;
+    private final int recordingId;
     private final int callId;
     private final int methodId;
     private final Object callee;
     private final Object[] args;
     private final long nanoTime;
 
-    EnterRecordQueueItem(RecordingMetadata recordingMetadata, int callId, int methodId, Object callee, Object[] args, long nanoTime) {
-        this.recordingMetadata = recordingMetadata;
+    EnterRecordQueueItem(int recordingId, int callId, int methodId, Object callee, Object[] args, long nanoTime) {
+        this.recordingId = recordingId;
         this.callId = callId;
         this.methodId = methodId;
         this.callee = callee;

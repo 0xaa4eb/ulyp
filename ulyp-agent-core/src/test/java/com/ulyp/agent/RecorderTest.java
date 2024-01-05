@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import com.ulyp.core.util.BitUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,7 +53,7 @@ public class RecorderTest {
 
     @Test
     public void testTemporaryRecordingDisableWithOngoingRecording() {
-        Recorder.idGenerator.set(0);
+        Recorder.recordingIdGenerator.set(0);
 
         X recorded = new X();
         int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});

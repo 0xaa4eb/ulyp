@@ -1,8 +1,13 @@
 package com.ulyp.agent.queue;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.LockSupport;
+
 import org.jetbrains.annotations.Nullable;
 
-import com.lmax.disruptor.BlockingWaitStrategy;
+import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.ulyp.agent.RecordDataWriter;
@@ -18,22 +23,28 @@ public class CallRecordQueue {
 
     private final TypeResolver typeResolver;
     private final Disruptor<CallRecordQueueItemHolder> disruptor;
+    private final CallRecordQueueProcessor queueProcessor;
 
     public CallRecordQueue(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
         this.typeResolver = typeResolver;
         this.disruptor = new Disruptor<>(
             CallRecordQueueItemHolder::new,
-            256 * 1024,
+            256 * 1024, // TODO configurable
             new CallRecordQueueProcessorThreadFactory(),
             ProducerType.MULTI,
-            new BlockingWaitStrategy()
+            new SleepingWaitStrategy()
         );
-        disruptor.handleEventsWith(new CallRecordQueueProcessor(typeResolver, recordDataWriter));
-        disruptor.start();
+        this.queueProcessor = new CallRecordQueueProcessor(typeResolver, recordDataWriter);
+        this.disruptor.handleEventsWith(queueProcessor);
+        this.disruptor.start();
     }
 
-    public void enqueueMethodEnter(RecordingMetadata recordingMetadata, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        disruptor.publishEvent((entry, seq) -> entry.item = new EnterRecordQueueItem(recordingMetadata, callId, methodId, convert(callee), convert(args), nanoTime));
+    public void enqueueRecordingMetadataUpdate(RecordingMetadata recordingMetadata) {
+        disruptor.publishEvent((entry, seq) -> entry.item = new UpdateRecordingMetadataQueueItem(recordingMetadata));
+    }
+
+    public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+        disruptor.publishEvent((entry, seq) -> entry.item = new EnterRecordQueueItem(recordingId, callId, methodId, convert(callee), convert(args), nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
@@ -64,5 +75,19 @@ public class CallRecordQueue {
         } else {
             throw new RuntimeException("not supported yet");
         }
+    }
+
+    public void sync(Duration duration) throws InterruptedException, TimeoutException {
+        long lastPublishedSeq = disruptor.getCursor();
+        long deadlineWaitTimeMs = System.currentTimeMillis() + duration.toMillis();
+        while (System.currentTimeMillis() < deadlineWaitTimeMs) {
+            if (queueProcessor.getLastProcessedSeq() >= lastPublishedSeq) {
+                return;
+            }
+            LockSupport.parkNanos(TimeUnit.MICROSECONDS.toNanos(10));
+        }
+        throw new TimeoutException("Timed out waiting cakk record queue flush. " +
+            "Waiting for seq " + lastPublishedSeq + " to be processed. Event handler prcoessed "
+            + queueProcessor.getLastProcessedSeq());
     }
 }
