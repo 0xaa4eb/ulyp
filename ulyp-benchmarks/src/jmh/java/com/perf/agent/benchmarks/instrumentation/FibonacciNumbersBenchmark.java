@@ -1,9 +1,12 @@
 package com.perf.agent.benchmarks.instrumentation;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5, time = 1)
@@ -50,5 +53,19 @@ public class FibonacciNumbersBenchmark {
     public int computeAndRecord() {
         // TODO direct mem limit reached with 31
         return compute(18);
+    }
+
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+    }, value = 2)
+    @Benchmark
+    public int computeAndRecordSync() throws InterruptedException, TimeoutException {
+        // TODO direct mem limit reached with 31
+        int result = compute(18);
+        AgentHelper.syncWriting();
+        return result;
     }
 }

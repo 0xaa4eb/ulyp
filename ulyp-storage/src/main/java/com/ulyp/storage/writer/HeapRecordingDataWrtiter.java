@@ -1,7 +1,9 @@
 package com.ulyp.storage.writer;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import lombok.Getter;
 import org.jetbrains.annotations.TestOnly;
@@ -26,6 +28,11 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
+
+    }
+
+    @Override
+    public void sync(Duration duration) {
 
     }
 

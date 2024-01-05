@@ -1,6 +1,10 @@
 package com.perf.agent.benchmarks.libs;
 
+import java.util.concurrent.TimeoutException;
+
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.openjdk.jmh.annotations.*;
@@ -62,10 +66,7 @@ public class ActiveMQBootstrapBenchmark {
     @Fork(value = 2)
     @Benchmark
     public void baseline() throws JMSException {
-        setup();
-        sendMessages();
-        receiveMessages();
-        teardown();
+        runTest();
     }
 
     @Fork(jvmArgs = {
@@ -76,20 +77,33 @@ public class ActiveMQBootstrapBenchmark {
     }, value = 2)
     @Benchmark
     public void instrumentOnly() throws JMSException {
-        setup();
-        sendMessages();
-        receiveMessages();
-        teardown();
+        runTest();
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.instrumentAndRecord",
+            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.runTest",
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
     public void instrumentAndRecord() throws JMSException {
+        runTest();
+    }
+
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.runTest",
+        "-Dulyp.constructors"
+    }, value = 2)
+    @Benchmark
+    public void instrumentAndRecordSync() throws JMSException, InterruptedException, TimeoutException {
+        runTest();
+        AgentHelper.syncWriting();
+    }
+
+    private void runTest() throws JMSException {
         setup();
         sendMessages();
         receiveMessages();

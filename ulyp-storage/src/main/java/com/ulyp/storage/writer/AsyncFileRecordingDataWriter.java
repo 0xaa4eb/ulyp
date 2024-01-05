@@ -10,16 +10,21 @@ import com.ulyp.core.util.NamedThreadFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
 
     private final RecordingDataWriter delegate;
     private final ExecutorService executorService;
+    private volatile Future<?> future;
 
     public AsyncFileRecordingDataWriter(RecordingDataWriter delegate) {
         this.delegate = delegate;
@@ -35,6 +40,18 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
         writeAsync(() -> delegate.reset(resetRequest));
+    }
+
+    @Override
+    public synchronized void sync(Duration duration) throws InterruptedException, TimeoutException {
+        if (future != null) {
+            try {
+                future.get(duration.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (ExecutionException e) {
+                throw new RuntimeException("Sync failed because there was error writing to disk", e);
+            }
+            future = null;
+        }
     }
 
     @Override
@@ -64,7 +81,7 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
 
     private void writeAsync(Runnable runnable) {
         try {
-            executorService.submit(runnable);
+            future = executorService.submit(runnable);
         } catch (RejectedExecutionException ex) {
             log.error("Write rejected, some data may be missing!");
         }

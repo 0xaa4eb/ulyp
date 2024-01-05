@@ -1,6 +1,8 @@
 package com.perf.agent.benchmarks.libs;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.openjdk.jmh.annotations.*;
 
 import java.sql.Connection;
@@ -60,6 +62,12 @@ public class H2DatabaseBenchmark {
         connection.close();
     }
 
+    @Fork(value = 2)
+    @Benchmark
+    public void insertNoAgent() throws Exception {
+        insertRow();
+    }
+
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
@@ -75,7 +83,7 @@ public class H2DatabaseBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRecord",
+            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
@@ -84,10 +92,17 @@ public class H2DatabaseBenchmark {
         insertRow();
     }
 
-    @Fork(value = 2)
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.constructors"
+    }, value = 2)
     @Benchmark
-    public void insertNoAgent() throws Exception {
+    public void insertRecordSync() throws Exception {
         insertRow();
+        AgentHelper.syncWriting();
     }
 
     private void insertRow() throws SQLException {
