@@ -8,6 +8,8 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.storage.StorageException;
 
 import java.io.File;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 public interface RecordingDataWriter extends AutoCloseable {
 
@@ -26,6 +28,11 @@ public interface RecordingDataWriter extends AutoCloseable {
     static RecordingDataWriter blackhole() {
         return new BlackholeRecordingDataWriter();
     }
+
+    /**
+     * Waits until all pending data is flushed to disk
+     */
+    void sync(Duration duration) throws InterruptedException, TimeoutException;
 
     void write(ProcessMetadata processMetadata) throws StorageException;
 

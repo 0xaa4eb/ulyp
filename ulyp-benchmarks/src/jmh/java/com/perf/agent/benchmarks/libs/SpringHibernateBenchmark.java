@@ -2,6 +2,7 @@ package com.perf.agent.benchmarks.libs;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
@@ -12,6 +13,7 @@ import com.perf.agent.benchmarks.libs.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.libs.util.Department;
 import com.perf.agent.benchmarks.libs.util.DepartmentService;
 import com.perf.agent.benchmarks.libs.util.Person;
+import com.ulyp.agent.util.AgentHelper;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -55,6 +57,12 @@ public class SpringHibernateBenchmark {
         departmentService.removeAll();
     }
 
+    @Fork(value = 2)
+    @Benchmark
+    public void shufflePeopleBaseline() {
+        departmentService.shufflePeople();
+    }
+
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
@@ -70,7 +78,7 @@ public class SpringHibernateBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.shufflePeopleRecord",
+            "-Dulyp.methods=**.DepartmentService.shufflePeople",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
@@ -79,9 +87,16 @@ public class SpringHibernateBenchmark {
         departmentService.shufflePeople();
     }
 
-    @Fork(value = 2)
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.DepartmentService.shufflePeople",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.constructors"
+    }, value = 2)
     @Benchmark
-    public void shufflePeopleBaseline() {
+    public void shufflePeopleRecordSync() throws InterruptedException, TimeoutException {
         departmentService.shufflePeople();
+        AgentHelper.syncWriting();
     }
 }

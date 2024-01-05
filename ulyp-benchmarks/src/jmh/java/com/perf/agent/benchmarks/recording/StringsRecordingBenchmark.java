@@ -1,10 +1,13 @@
 package com.perf.agent.benchmarks.recording;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)
@@ -24,7 +27,7 @@ public class StringsRecordingBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeBaseline() {
-        return compute();
+        return doCompute();
     }
 
     @Fork(jvmArgs = {
@@ -36,23 +39,38 @@ public class StringsRecordingBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeInstrumented() {
-        return compute();
+        return doCompute();
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.StringsRecordingBenchmark.computeRecord",
+            "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeRecord() {
-        return compute();
+        return doCompute();
     }
 
-    private String compute() {
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+    }, value = 2)
+    @BenchmarkMode(Mode.AverageTime)
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String computeRecordSync() throws InterruptedException, TimeoutException {
+        String result = doCompute();
+        AgentHelper.syncWriting();
+        return result;
+    }
+
+    private String doCompute() {
         String a = String.valueOf(ThreadLocalRandom.current().nextLong()) + "AJSHFGA^*U@";
         String b = String.valueOf(ThreadLocalRandom.current().nextLong()) + "MVJSGDHASDJ";
         String c = String.valueOf(ThreadLocalRandom.current().nextLong()) + "BKSJHDFJSDK";

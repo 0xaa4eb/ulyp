@@ -1,52 +1,60 @@
 package com.perf.agent.benchmarks.instrumentation.classes;
 // Automatically generated and only used for tests
+@SuppressWarnings("unused")
 public class X21 {
-	public String vgkdsdfg() {
+	public String m1(String a, String b, String c) {
 		System.out.println("1");
-		return "1";
+		return a + b + c;
 	}
-	public String gkfjdyfw() {
+	public String m2(String a, String b, String c) {
 		System.out.println("1");
-		return "1";
+		return a + b + c;
 	}
-	public String fdkjskjw() {
+	public String m3(String a, String b, String c) {
 		System.out.println("1");
-		return "1";
+		return a + b + c;
 	}
-	public String fdkjshfr() {
+	public String m4(String a, String b, String c) {
 		System.out.println("1");
-		return "1";
+		return a + b + c;
 	}
-	public String ffdjshfe() {
+	public String m5(String a, String b, String c) {
 		System.out.println("1");
-		return "1";
+		return a + b + c;
 	}
-	public String fdkjshdf() {
+	public String m8(Integer x, Long y, Long z) {
 		System.out.println("1");
-		return "1";
+		return String.valueOf(y + z);
 	}
-	public String mfjcvghs() {
+	public String m9(Integer x, Long y, Long z) {
 		System.out.println("1");
-		return "1";
+		return String.valueOf(y + z);
 	}
-	public String uioocxvf() {
+	public String m10(Integer x, Long y, Long z) {
 		System.out.println("1");
-		return "1";
+		return String.valueOf(y + z);
 	}
-	public String lkhgjhds() {
+	public String m11(Integer x, Long y, Long z) {
 		System.out.println("1");
-		return "1";
+		return String.valueOf(y + z);
 	}
-	public String vcmxnmdf() {
+	public String m12(Integer x, Long y, Long z) {
 		System.out.println("1");
-		return "1";
+		return String.valueOf(y + z);
 	}
-	public String mfdsjdhs() {
+	public void m13() {
 		System.out.println("1");
-		return "1";
 	}
-	public String go8udsuy() {
+	public void m14() {
 		System.out.println("1");
-		return "1";
+	}
+	public void m15() {
+		System.out.println("1");
+	}
+	public void m6() {
+		System.out.println("1");
+	}
+	public void m7() {
+		System.out.println("1");
 	}
 }

@@ -18,6 +18,8 @@ import org.agrona.MutableDirectBuffer;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -51,6 +53,11 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         write(resetRequest.getProcessMetadata());
         write(resetRequest.getTypes());
         write(resetRequest.getMethods());
+    }
+
+    @Override
+    public void sync(Duration duration) {
+
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.perf.agent.benchmarks.libs;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.openjdk.jmh.annotations.*;
@@ -8,6 +10,7 @@ import org.openjdk.jmh.annotations.*;
 import javax.jms.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -63,6 +66,18 @@ public class ActiveMQBenchmark {
     @Benchmark
     public void sendMsgRecord() throws JMSException {
         sendMsg();
+    }
+
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.sendMsg",
+        "-Dulyp.constructors"
+    }, value = 2)
+    @Benchmark
+    public void sendMsgRecordSync() throws JMSException, InterruptedException, TimeoutException {
+        sendMsg();
+        AgentHelper.syncWriting();
     }
 
     private void sendMsg() throws JMSException {

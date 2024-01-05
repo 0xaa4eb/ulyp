@@ -15,6 +15,7 @@ sourceSets {
 }
 
 dependencies {
+    jmhImplementation project(':ulyp-agent-core')
     jmhImplementation project(':ulyp-storage')
     jmhImplementation project(':ulyp-common')
 
@@ -52,7 +53,8 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
     dependsOn = [':ulyp-agent:shadowJar']
     // To enable the built-in stacktrace sampling profiler
-    args = ['-prof', 'gc', '.*StringsRecordingBenchmark.*']
+//    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*']
+    args = ['.*H2DatabaseBenchmark.*']
 }
 
 classes.finalizedBy(jmhClasses)

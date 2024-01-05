@@ -1,5 +1,8 @@
 package com.ulyp.storage.writer;
 
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
@@ -28,6 +31,11 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
         callStats.reset();
         callBufferStats.reset();
         delegate.reset(resetRequest);
+    }
+
+    @Override
+    public void sync(Duration duration) throws InterruptedException, TimeoutException {
+        delegate.sync(duration);
     }
 
     @Override

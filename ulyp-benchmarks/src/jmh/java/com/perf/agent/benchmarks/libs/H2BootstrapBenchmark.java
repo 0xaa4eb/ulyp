@@ -1,6 +1,8 @@
 package com.perf.agent.benchmarks.libs;
 
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.openjdk.jmh.annotations.*;
 
 import java.sql.*;
@@ -45,6 +47,12 @@ public class H2BootstrapBenchmark {
         connection.close();
     }
 
+    @Fork(value = 2)
+    @Benchmark
+    public void bootstrapBaseline() throws Exception {
+        run();
+    }
+
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
@@ -69,10 +77,17 @@ public class H2BootstrapBenchmark {
         run();
     }
 
-    @Fork(value = 2)
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.H2MemDatabaseBenchmark.run",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.constructors"
+    }, value = 2)
     @Benchmark
-    public void bootstrapBaseline() throws Exception {
+    public void bootstrapRecordSync() throws Exception {
         run();
+        AgentHelper.syncWriting();
     }
 
     private void run() throws Exception {

@@ -5,6 +5,8 @@ import com.perf.agent.benchmarks.libs.util.Department;
 import com.perf.agent.benchmarks.libs.util.DepartmentService;
 import com.perf.agent.benchmarks.libs.util.Person;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.ulyp.agent.util.AgentHelper;
+
 import org.openjdk.jmh.annotations.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -52,6 +54,12 @@ public class SpringHibernateBootstrapBenchmark {
         departmentService.removeAll();
     }
 
+    @Fork(value = 2)
+    @Benchmark
+    public void boostrapBaseline() throws Exception {
+        runTest();
+    }
+
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
@@ -61,28 +69,35 @@ public class SpringHibernateBootstrapBenchmark {
     }, value = 2)
     @Benchmark
     public void boostrapInstrumented() throws Exception {
-        setup();
-        departmentService.shufflePeople();
-        tearDown();
+        runTest();
     }
 
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.boostrapRecord",
+            "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
     public void boostrapRecord() throws Exception {
-        setup();
-        departmentService.shufflePeople();
-        tearDown();
+        runTest();
     }
 
-    @Fork(value = 2)
+    @Fork(jvmArgs = {
+        BenchmarkConstants.AGENT_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.constructors"
+    }, value = 2)
     @Benchmark
-    public void boostrapBaseline() throws Exception {
+    public void boostrapRecordSync() throws Exception {
+        runTest();
+        AgentHelper.syncWriting();
+    }
+
+    private void runTest() throws Exception {
         setup();
         departmentService.shufflePeople();
         tearDown();
