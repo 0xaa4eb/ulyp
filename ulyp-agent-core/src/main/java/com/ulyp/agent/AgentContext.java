@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.policy.*;
+import com.ulyp.agent.queue.CallRecordQueue;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
@@ -13,18 +14,22 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+
 public class AgentContext {
 
-    private static volatile AgentContext instance;
-
+    private static volatile AgentContext ctx;
     private static volatile boolean agentLoaded = false;
 
+    @Getter
     private final Settings settings;
     private final OverridableRecordingPolicy startRecordingPolicy;
     private final RecordingDataWriter recordingDataWriter;
     private final ProcessMetadata processMetadata;
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
+    private final CallRecordQueue callRecordQueue;
+    private final Recorder recorder;
     @Nullable
     private final AutoCloseable apiServer;
 
@@ -39,13 +44,9 @@ public class AgentContext {
                 .pid(System.currentTimeMillis())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
+        this.callRecordQueue = new CallRecordQueue(typeResolver, new RecordDataWriter(recordingDataWriter, methodRepository));
+        this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, callRecordQueue);
 
-        if (!settings.isAgentDisabled()) {
-            this.recordingDataWriter.write(processMetadata);
-
-            Thread shutdown = new Thread(recordingDataWriter::close);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-        }
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
                     startRecordingPolicy::setRecordingCanStart,
@@ -85,8 +86,22 @@ public class AgentContext {
     }
 
     public static void init() {
-        instance = new AgentContext();
+        ctx = new AgentContext();
+
+        if (ctx.getSettings().isAgentEnabled()) {
+            ctx.getStorageWriter().write(ctx.getProcessMetadata());
+
+            Thread shutdown = new Thread(new AgentShutdownHook());
+            Runtime.getRuntime().addShutdownHook(shutdown);
+
+            ctx.getCallRecordQueue().start();
+        }
+
         agentLoaded = true;
+    }
+
+    public CallRecordQueue getCallRecordQueue() {
+        return callRecordQueue;
     }
 
     public MethodRepository getMethodRepository() {
@@ -97,10 +112,6 @@ public class AgentContext {
         return processMetadata;
     }
 
-    public TypeResolver getTypeResolver() {
-        return typeResolver;
-    }
-
     public static boolean isLoaded() {
         return agentLoaded;
     }
@@ -109,8 +120,12 @@ public class AgentContext {
         return startRecordingPolicy;
     }
 
-    public static AgentContext getInstance() {
-        return instance;
+    public Recorder getRecorder() {
+        return recorder;
+    }
+
+    public static AgentContext getCtx() {
+        return ctx;
     }
 
     public RecordingDataWriter getStorageWriter() {

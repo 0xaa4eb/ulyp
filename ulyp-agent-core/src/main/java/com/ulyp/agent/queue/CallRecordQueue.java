@@ -35,6 +35,9 @@ public class CallRecordQueue {
             new SleepingWaitStrategy()
         );
         this.queueProcessor = new CallRecordQueueProcessor(typeResolver, recordDataWriter);
+    }
+
+    public void start() {
         this.disruptor.handleEventsWith(queueProcessor);
         this.disruptor.start();
     }

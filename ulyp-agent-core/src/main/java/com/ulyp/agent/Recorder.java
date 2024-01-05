@@ -41,12 +41,13 @@ public class Recorder {
     @Getter
     private final CallRecordQueue callRecordQueue;
 
-    public Recorder(TypeResolver typeResolver, MethodRepository methodRepository, StartRecordingPolicy startRecordingPolicy, RecordingDataWriter recordingDataWriter) {
+    public Recorder(
+        TypeResolver typeResolver,
+        MethodRepository methodRepository,
+        StartRecordingPolicy startRecordingPolicy,
+        CallRecordQueue callRecordQueue) {
         this.methodRepository = methodRepository;
-        this.callRecordQueue = new CallRecordQueue(
-            typeResolver,
-            new RecordDataWriter(recordingDataWriter, methodRepository)
-        );
+        this.callRecordQueue = callRecordQueue;
         this.startRecordingPolicy = startRecordingPolicy;
     }
 

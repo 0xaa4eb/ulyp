@@ -39,7 +39,7 @@ public class Agent {
     public static void start(String args, Instrumentation instrumentation) {
 
         Settings settings = Settings.fromSystemProperties();
-        if (settings.isAgentDisabled()) {
+        if (!settings.isAgentEnabled()) {
             System.out.println("ULYP agent disabled, no code will be instrumented");
             return;
         }
@@ -52,7 +52,7 @@ public class Agent {
         } else {
             AgentContext.init();
         }
-        AgentContext context = AgentContext.getInstance();
+        AgentContext context = AgentContext.getCtx();
 
         StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
 

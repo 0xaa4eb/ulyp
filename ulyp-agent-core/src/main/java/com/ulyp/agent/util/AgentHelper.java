@@ -14,7 +14,7 @@ public class AgentHelper {
     public static void syncWriting() throws InterruptedException, TimeoutException {
         CallRecordQueue callRecordQueue = RecorderInstance.instance.getCallRecordQueue();
         callRecordQueue.sync(Duration.ofSeconds(60));
-        RecordingDataWriter storageWriter = AgentContext.getInstance().getStorageWriter();
+        RecordingDataWriter storageWriter = AgentContext.getCtx().getStorageWriter();
         storageWriter.sync(Duration.ofSeconds(60));
     }
 }

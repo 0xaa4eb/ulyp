@@ -62,7 +62,7 @@ public class Settings {
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
-    private final boolean agentDisabled;
+    private final boolean agentEnabled;
     @Getter
     private final boolean timestampsEnabled;
 
@@ -80,7 +80,7 @@ public class Settings {
             String startRecordingPolicyPropertyValue,
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
-            boolean agentDisabled,
+            boolean agentEnabled,
             boolean timestampsEnabled) {
         this.recordingDataWriterSupplier = recordingDataWriterSupplier;
         this.instrumentatedPackages = instrumentedPackages;
@@ -95,7 +95,7 @@ public class Settings {
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
         this.bindNetworkAddress = bindNetworkAddress;
-        this.agentDisabled = agentDisabled;
+        this.agentEnabled = agentEnabled;
         this.timestampsEnabled = timestampsEnabled;
     }
 
@@ -172,7 +172,7 @@ public class Settings {
         }
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
 
-        boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
+        boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
 
         Set<TypeMatcher> typesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
@@ -194,7 +194,7 @@ public class Settings {
                 startRecordingPolicy,
                 excludeClassesFromInstrumentation,
                 bindNetworkAddress,
-                agentDisabled,
+                agentEnabled,
                 timestampsEnabled
         );
     }
@@ -254,8 +254,8 @@ public class Settings {
         return excludeFromInstrumentationClasses;
     }
 
-    public boolean isAgentDisabled() {
-        return agentDisabled;
+    public boolean isAgentEnabled() {
+        return agentEnabled;
     }
 
     @Override
