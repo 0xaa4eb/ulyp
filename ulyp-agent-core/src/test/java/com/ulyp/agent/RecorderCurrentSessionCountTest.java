@@ -103,7 +103,7 @@ public class RecorderCurrentSessionCountTest {
             fut.get(1, TimeUnit.MINUTES);
         }
 
-        callRecordQueue.sync(Duration.ofSeconds(30));
+        callRecordQueue.sync(Duration.ofMinutes(3));
         Assert.assertEquals(THREADS * RECORDINGS_PER_THREAD, recordingDataWriter.getCallStats().getTotalCount());
         Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }

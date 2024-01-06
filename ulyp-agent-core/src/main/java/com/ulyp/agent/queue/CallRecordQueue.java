@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.DaemonThreadFactory;
 import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
