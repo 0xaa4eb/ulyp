@@ -4,6 +4,7 @@ import java.util.concurrent.ThreadFactory;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.RecorderInstance;
 
 public class QueueEventHandlerThreadFactory implements ThreadFactory {
@@ -23,7 +24,9 @@ public class QueueEventHandlerThreadFactory implements ThreadFactory {
 
         @Override
         public void run() {
-            RecorderInstance.instance.disableRecording();
+            if (AgentContext.isLoaded()) {
+                RecorderInstance.instance.disableRecording();
+            }
 
             super.run();
         }
