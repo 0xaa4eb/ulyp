@@ -46,7 +46,7 @@ public class StringsRecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
     }, value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
@@ -59,7 +59,7 @@ public class StringsRecordingBenchmark {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
     }, value = 2)
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark

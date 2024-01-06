@@ -1,11 +1,9 @@
 package com.ulyp.agent.queue;
 
-import com.ulyp.core.RecordingMetadata;
-
 import lombok.Getter;
 
 @Getter
-class EnterRecordQueueItem {
+class EnterRecordQueueEvent {
 
     private final int recordingId;
     private final int callId;
@@ -14,7 +12,7 @@ class EnterRecordQueueItem {
     private final Object[] args;
     private final long nanoTime;
 
-    EnterRecordQueueItem(int recordingId, int callId, int methodId, Object callee, Object[] args, long nanoTime) {
+    EnterRecordQueueEvent(int recordingId, int callId, int methodId, Object callee, Object[] args, long nanoTime) {
         this.recordingId = recordingId;
         this.callId = callId;
         this.methodId = methodId;

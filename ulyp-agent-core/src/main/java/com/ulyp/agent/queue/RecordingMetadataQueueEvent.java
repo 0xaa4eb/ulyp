@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-class UpdateRecordingMetadataQueueItem {
+class RecordingMetadataQueueEvent {
 
     private final RecordingMetadata recordingMetadata;
 }

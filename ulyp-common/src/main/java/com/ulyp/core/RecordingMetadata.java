@@ -25,9 +25,9 @@ public class RecordingMetadata {
     private long threadId;
     private String threadName;
     private long recordingStartedEpochMillis;
-    private long logCreatedEpochMillis;
+    private long logCreatedEpochMillis; // TODO remove
     private long recordingCompletedEpochMillis;
-    @Builder.Default
+    @Builder.Default @ToString.Exclude
     private List<String> stackTraceElements = Collections.emptyList();
 
     public RecordingMetadata withCompleteTime(long recordingCompletedEpochMillis) {

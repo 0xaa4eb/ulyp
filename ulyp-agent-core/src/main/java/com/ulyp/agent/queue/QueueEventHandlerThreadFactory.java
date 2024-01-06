@@ -6,18 +6,18 @@ import org.jetbrains.annotations.NotNull;
 
 import com.ulyp.agent.RecorderInstance;
 
-public class CallRecordQueueProcessorThreadFactory implements ThreadFactory {
+public class QueueEventHandlerThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(@NotNull Runnable r) {
-        Thread t = new ProcessorThread(r);
+        Thread t = new HandlerThread(r);
         t.setDaemon(true);
         t.setName("ulyp-recording-queue-processor");
         return t;
     }
 
-    private static class ProcessorThread extends Thread {
-        public ProcessorThread(Runnable target) {
+    private static class HandlerThread extends Thread {
+        public HandlerThread(Runnable target) {
             super(target);
         }
 
