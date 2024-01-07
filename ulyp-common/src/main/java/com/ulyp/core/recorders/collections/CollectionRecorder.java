@@ -8,7 +8,6 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
@@ -67,22 +66,23 @@ public class CollectionRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
+        // TODO check if nested needed
+        try (BinaryOutput nestedOut = out.nest()) {
 
             if (active) {
-                appender.append(RECORDED_ITEMS_FLAG);
-                Checkpoint checkpoint = appender.checkpoint();
+                nestedOut.append(RECORDED_ITEMS_FLAG);
+                Checkpoint checkpoint = nestedOut.checkpoint();
                 try {
                     Collection<?> collection = (Collection<?>) object;
                     int length = collection.size();
-                    appender.append(length);
+                    nestedOut.append(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                    appender.append(itemsToRecord);
+                    nestedOut.append(itemsToRecord);
                     Iterator<?> iterator = collection.iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
-                        appender.append(iterator.next(), typeResolver);
+                        nestedOut.append(iterator.next(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
@@ -100,9 +100,9 @@ public class CollectionRecorder extends ObjectRecorder {
     }
 
     private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-            appender.append(RECORDED_IDENTITY_FLAG);
-            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
+        try (BinaryOutput nestedOut = out.nest()) {
+            nestedOut.append(RECORDED_IDENTITY_FLAG);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }
     }
 }

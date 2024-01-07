@@ -4,8 +4,9 @@ import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
-import com.ulyp.core.recorders.bytes.BinaryOutputForEnterRecordImpl;
-import com.ulyp.core.recorders.bytes.BinaryOutputForExitRecordImpl;
+import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.recorders.bytes.EnterRecordSBEOutput;
+import com.ulyp.core.recorders.bytes.ExitRecordSBEOutput;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.Preconditions;
 import com.ulyp.transport.*;
@@ -30,8 +31,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
     @Getter
     private final int recordingId;
-    private final BinaryOutputForEnterRecordImpl enterRecordBinaryOutput = new BinaryOutputForEnterRecordImpl();
-    private final BinaryOutputForExitRecordImpl exitRecordBinaryOutput = new BinaryOutputForExitRecordImpl();
+    private final EnterRecordSBEOutput enterRecordBinaryOutput = new EnterRecordSBEOutput();
+    private final ExitRecordSBEOutput exitRecordBinaryOutput = new ExitRecordSBEOutput();
     private final BinaryRecordedEnterMethodCallEncoder enterMethodCallEncoder = new BinaryRecordedEnterMethodCallEncoder();
     private final BinaryRecordedExitMethodCallEncoder exitMethodCallEncoder = new BinaryRecordedExitMethodCallEncoder();
     private final BinaryList bytes;
@@ -101,9 +102,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                             ObjectRecorderRegistry.NULL_RECORDER.getInstance();
 
                     exitMethodCallEncoder.returnValueRecorderId(recorder.getId());
-                    exitRecordBinaryOutput.wrap(exitMethodCallEncoder);
-                    try {
-                        recorder.write(returnValue, exitRecordBinaryOutput, typeResolver);
+                    try (BinaryOutput output = exitRecordBinaryOutput.wrap(exitMethodCallEncoder)) {
+                        recorder.write(returnValue, output, typeResolver);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -150,9 +150,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
                         argumentsEncoder = argumentsEncoder.next();
                         argumentsEncoder.typeId(argType.getId());
                         argumentsEncoder.recorderId(recorder.getId());
-                        enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
-                        try {
-                            recorder.write(argValue, enterRecordBinaryOutput, typeResolver);
+                        try (BinaryOutput output = enterRecordBinaryOutput.wrap(enterMethodCallEncoder)) {
+                            recorder.write(argValue, output, typeResolver);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -162,9 +161,8 @@ public class RecordedMethodCallList implements Iterable<RecordedMethodCall> {
 
                     enterMethodCallEncoder.calleeTypeId(typeResolver.get(callee).getId());
                     enterMethodCallEncoder.calleeRecorderId(recorder.getId());
-                    enterRecordBinaryOutput.wrap(enterMethodCallEncoder);
-                    try {
-                        recorder.write(callee, enterRecordBinaryOutput, typeResolver);
+                    try (BinaryOutput output = enterRecordBinaryOutput.wrap(enterMethodCallEncoder)) {
+                        recorder.write(callee, output, typeResolver);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

@@ -1,6 +1,7 @@
 package com.ulyp.core.recorders.bytes;
 
 import org.agrona.concurrent.UnsafeBuffer;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -10,84 +11,99 @@ public class BinaryInputOutputTest {
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
 
-    private final BinaryOutput binaryOutput = new AbstractBinaryOutput() {
-        @Override
-        public void write(UnsafeBuffer unsafeBuffer, int length) {
-            buffer.putBytes(0, unsafeBuffer, 0, length);
-        }
-    };
-
-    private final BinaryInput binaryInput = new BinaryInputImpl(buffer);
+    private final BinaryOutput out = new BufferBinaryOutput(buffer);
+    private final BinaryInput in = new BufferBinaryInput(buffer);
 
     @Test
-    public void testSimpleReadWriteString() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            appender.append("abc");
+    public void testReadWriteBytes() {
+        byte[] buf = new byte[] {5, 2, 127, -128, -120, 0, 5, 120, 54};
+        try (BinaryOutput nestedOut = out.nest()) {
+            nestedOut.append(buf);
         }
 
-        assertEquals("abc", binaryInput.readString());
+        BinaryInput binaryInputResult = in.readBytes();
+        for (int i = 0; i < buf.length; i++) {
+            Assert.assertEquals(buf[i], binaryInputResult.readByte());
+        }
     }
 
     @Test
+    public void testSimpleReadWriteString() {
+        out.append("abc");
+
+        assertEquals("abc", in.readString());
+    }
+
+    @Test
+    public void testNestedReadWriteString() {
+        try (BinaryOutput nested = out.nest()) {
+            nested.append("abc");
+        }
+
+        assertEquals("abc", in.readString());
+    }
+
+
+    @Test
     public void testRollingBack() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            Checkpoint checkpoint = appender.checkpoint();
-            appender.append("abc");
+        try (BinaryOutput nested1 = out.nest()) {
+            Checkpoint checkpoint = nested1.checkpoint();
+            nested1.append("abc");
             checkpoint.rollback();
 
-            try (BinaryOutputAppender nested = binaryOutput.appender()) {
-                nested.append("xyz");
+            try (BinaryOutput nested2 = out.nest()) {
+                nested2.append("xyz");
             }
         }
 
-        assertEquals("xyz", binaryInput.readString());
+        assertEquals("xyz", in.readString());
     }
 
     @Test
     public void testSimpleReadWriteUtf8String() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            appender.append("АБЦ");
+        try (BinaryOutput nested = out.nest()) {
+            nested.append("АБЦ");
         }
 
-        assertEquals("АБЦ", binaryInput.readString());
+        assertEquals("АБЦ", in.readString());
     }
 
     @Test
     public void testSimpleReadWriteUtf8StringChineese() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            appender.append("早上好");
+        try (BinaryOutput nested = out.nest()) {
+            nested.append("早上好");
         }
 
-        assertEquals("早上好", binaryInput.readString());
+        assertEquals("早上好", in.readString());
     }
 
     @Test
     public void testComplexReadWrite() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            appender.append(2L);
-            appender.append(null);
-            appender.append(6L);
+        try (BinaryOutput nested = out.nest()) {
+            nested.append(2L);
+            nested.append((String) null);
+            nested.append(6L);
         }
 
-        assertEquals(2, binaryInput.readLong());
-        assertNull(binaryInput.readString());
-        assertEquals(6, binaryInput.readLong());
+        assertEquals(2, in.readLong());
+        assertNull(in.readString());
+        assertEquals(6, in.readLong());
     }
 
     @Test
     public void testNestedAppender() {
-        try (BinaryOutputAppender appender = binaryOutput.appender()) {
-            appender.append(2L);
-            try (BinaryOutputAppender appender2 = appender.appender()) {
-                appender2.append("你吃了吗?");
+        try (BinaryOutput nested1 = out.nest()) {
+            nested1.append(2L);
+            try (BinaryOutput nested2 = nested1.nest()) {
+                nested2.append("你吃了吗?");
             }
-            appender.append(6L);
-            appender.append(null);
+            nested1.append(6L);
+            nested1.append((String) null);
         }
 
-        assertEquals(2, binaryInput.readLong());
-        assertEquals("你吃了吗?", binaryInput.readString());
-        assertEquals(6, binaryInput.readLong());
-        assertNull(binaryInput.readString());
+        assertEquals(2, in.readLong());
+        assertEquals("你吃了吗?", in.readString());
+        assertEquals(6, in.readLong());
+        assertNull(in.readString());
     }
 }

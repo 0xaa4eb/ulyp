@@ -8,7 +8,6 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,24 +62,24 @@ public class MapRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
+        try (BinaryOutput nestedOut = out.nest()) {
 
             if (active) {
-                appender.append(RECORDED_ITEMS);
-                Checkpoint checkpoint = appender.checkpoint();
+                nestedOut.append(RECORDED_ITEMS);
+                Checkpoint checkpoint = nestedOut.checkpoint();
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
-                    appender.append(length);
+                    nestedOut.append(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                    appender.append(itemsToRecord);
+                    nestedOut.append(itemsToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        appender.append(entry.getKey(), typeResolver);
-                        appender.append(entry.getValue(), typeResolver);
+                        nestedOut.append(entry.getKey(), typeResolver);
+                        nestedOut.append(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
@@ -95,9 +94,9 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-            appender.append(RECORDED_IDENTITY_ONLY);
-            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
+        try (BinaryOutput nestedOut = out.nest()) {
+            nestedOut.append(RECORDED_IDENTITY_ONLY);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }
     }
 }

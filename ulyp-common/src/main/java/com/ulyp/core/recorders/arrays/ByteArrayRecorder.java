@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.IdentityRecorder;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class ByteArrayRecorder extends IdentityRecorder {
@@ -29,10 +29,10 @@ public class ByteArrayRecorder extends IdentityRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-            super.write(object, appender, typeResolver);
+        try (BinaryOutput nestedOut = out.nest()) {
+            super.write(object, nestedOut, typeResolver);
             byte[] array = (byte[]) object;
-            appender.append(array.length);
+            nestedOut.append(array.length);
         }
     }
 }

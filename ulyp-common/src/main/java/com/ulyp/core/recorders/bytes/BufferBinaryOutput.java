@@ -5,28 +5,27 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
-import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
 
-public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
+import org.agrona.MutableDirectBuffer;
 
-    private static final int MAXIMUM_RECURSION_DEPTH = 3;
-    private static final int MAX_STRING_LENGTH = 200;
+// writes to provided buffer
+public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
 
-    private final byte[] tmp = new byte[32 * 1024];
-    private final UnsafeBuffer tmpBuffer = new UnsafeBuffer(tmp);
+    private static final int MAXIMUM_RECURSION_DEPTH = 3; // TODO configurable
+    private static final int MAX_STRING_LENGTH = 200; // TODO configurable
 
-    private final AbstractBinaryOutput binaryOutput;
-    private int bytePos = 0;
+    protected final MutableDirectBuffer buffer;
+    protected int pos = 0;
     private int recursionDepth = 0;
 
-    public BinaryOutputAppender(AbstractBinaryOutput binaryOutput) {
-        this.binaryOutput = binaryOutput;
+    public BufferBinaryOutput(MutableDirectBuffer buffer) {
+        this.buffer = buffer;
     }
 
     public void reset() {
-        bytePos = 0;
+        pos = 0;
         recursionDepth = 1;
     }
 
@@ -34,24 +33,25 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
         append(value ? 1 : 0);
     }
 
-    public void append(char value) {
-        tmpBuffer.putChar(bytePos, value);
-        bytePos += Character.BYTES;
-    }
-
     public void append(int value) {
-        tmpBuffer.putInt(bytePos, value);
-        bytePos += Integer.BYTES;
+        buffer.putInt(pos, value);
+        pos += Integer.BYTES;
     }
 
     public void append(long value) {
-        tmpBuffer.putLong(bytePos, value);
-        bytePos += Long.BYTES;
+        buffer.putLong(pos, value);
+        pos += Long.BYTES;
     }
 
     public void append(byte c) {
-        tmpBuffer.putByte(bytePos, c);
-        bytePos += Byte.BYTES;
+        buffer.putByte(pos, c);
+        pos += Byte.BYTES;
+    }
+
+    public void append(byte[] bytes) {
+        append(bytes.length);
+        buffer.putBytes(pos, bytes);
+        pos += bytes.length;
     }
 
     public void append(String value) {
@@ -90,9 +90,6 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     @Override
     public void close() {
         recursionDepth--;
-        if (recursionDepth == 0) {
-            binaryOutput.write(tmpBuffer, bytePos);
-        }
     }
 
     public int recursionDepth() {
@@ -100,15 +97,15 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     }
 
     @Override
-    public BinaryOutputAppender appender() {
+    public BufferBinaryOutput nest() {
         recursionDepth++;
         return this;
     }
 
     @Override
     public Checkpoint checkpoint() {
-        final int currentPos = this.bytePos;
-        return () -> this.bytePos = currentPos;
+        final int currentPos = this.pos;
+        return () -> this.pos = currentPos;
     }
 
     @Override
@@ -134,5 +131,10 @@ public final class BinaryOutputAppender implements AutoCloseable, BinaryOutput {
     @Override
     public void writeString(String value) {
         append(value);
+    }
+
+    @Override
+    public void writeBytes(byte[] bytes) {
+        append(bytes);
     }
 }
