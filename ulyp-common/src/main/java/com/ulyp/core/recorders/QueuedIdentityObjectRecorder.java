@@ -8,15 +8,15 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 
-public class CallRecordQueueIdentityObjectRecorder extends ObjectRecorder {
+public class QueuedIdentityObjectRecorder extends ObjectRecorder {
 
-    protected CallRecordQueueIdentityObjectRecorder(byte id) {
+    protected QueuedIdentityObjectRecorder(byte id) {
         super(id);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        return type == CallRecordQueueIdentityObject.class;
+        return type == QueuedIdentityObject.class;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CallRecordQueueIdentityObjectRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        CallRecordQueueIdentityObject identityObject = (CallRecordQueueIdentityObject) object;
+        QueuedIdentityObject identityObject = (QueuedIdentityObject) object;
         out.writeInt(identityObject.getType().getId());
         out.writeInt(identityObject.getIdentityHashCode());
     }

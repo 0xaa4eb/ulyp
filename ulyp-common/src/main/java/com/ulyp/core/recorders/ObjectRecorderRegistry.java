@@ -26,7 +26,7 @@ public enum ObjectRecorderRegistry {
     ENUM_RECORDER(new EnumRecorder((byte) 6), 5),
     INTEGRAL_RECORDER(new IntegralRecorder((byte) 12), 0),
     BOOLEAN_RECORDER(new BooleanRecorder((byte) 100), 1),
-    QUEUE_IDENTITY_RECORDER(new CallRecordQueueIdentityObjectRecorder((byte) 101), 95),
+    QUEUE_IDENTITY_RECORDER(new QueuedIdentityObjectRecorder((byte) 101), 95),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
     BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),

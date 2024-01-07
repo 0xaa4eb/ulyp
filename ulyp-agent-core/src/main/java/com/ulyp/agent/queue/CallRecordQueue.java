@@ -16,7 +16,7 @@ import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.CallRecordQueueIdentityObject;
+import com.ulyp.core.recorders.QueuedIdentityObject;
 import com.ulyp.core.recorders.IdentityRecorder;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.RecorderChooser;
@@ -83,7 +83,7 @@ public class CallRecordQueue implements AutoCloseable {
         }
         if (value == null || recorder.supportsAsyncRecording()) {
             if (value != null && recorder instanceof IdentityRecorder) {
-                return new CallRecordQueueIdentityObject(type, value);
+                return new QueuedIdentityObject(type, value);
             } else {
                 return value;
             }
