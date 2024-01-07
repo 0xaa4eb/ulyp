@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    public static final int MAX_ITEMS_TO_RECORD = 3;
+    public static final int MAX_ITEMS_TO_RECORD = 3; // TODO configurable
     private static final int RECORDED_ITEMS = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
     private CollectionsRecordingMode mode;
@@ -38,7 +38,7 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {
@@ -50,13 +50,9 @@ public class MapRecorder extends ObjectRecorder {
                 ObjectRecord value = input.readObject(typeResolver);
                 entries.add(new MapEntryRecord(Type.unknown(), key, value));
             }
-            return new MapRecord(
-                    classDescription,
-                    collectionSize,
-                    entries
-            );
+            return new MapRecord(type, collectionSize, entries);
         } else {
-            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
+            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
         }
     }
 

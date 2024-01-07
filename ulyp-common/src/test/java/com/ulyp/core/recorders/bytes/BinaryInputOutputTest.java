@@ -10,7 +10,6 @@ import static org.junit.Assert.assertNull;
 public class BinaryInputOutputTest {
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
-
     private final BinaryOutput out = new BufferBinaryOutput(buffer);
     private final BinaryInput in = new BufferBinaryInput(buffer);
 
@@ -51,9 +50,7 @@ public class BinaryInputOutputTest {
             nested1.append("abc");
             checkpoint.rollback();
 
-            try (BinaryOutput nested2 = out.nest()) {
-                nested2.append("xyz");
-            }
+            nested1.append("xyz");
         }
 
         assertEquals("xyz", in.readString());

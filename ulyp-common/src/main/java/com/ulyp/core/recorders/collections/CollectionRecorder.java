@@ -66,7 +66,6 @@ public class CollectionRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        // TODO check if nested needed
         try (BinaryOutput nestedOut = out.nest()) {
 
             if (active) {

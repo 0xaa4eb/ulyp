@@ -27,8 +27,8 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readInt();
-        List<ObjectRecord> items = new ArrayList<>();
         int recordedItemsCount = input.readInt();
+        List<ObjectRecord> items = new ArrayList<>(recordedItemsCount);
         for (int i = 0; i < recordedItemsCount; i++) {
             items.add(input.readObject(typeResolver));
         }

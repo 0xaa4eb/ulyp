@@ -29,10 +29,8 @@ public class ByteArrayRecorder extends IdentityRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutput nestedOut = out.nest()) {
-            super.write(object, nestedOut, typeResolver);
-            byte[] array = (byte[]) object;
-            nestedOut.append(array.length);
-        }
+        super.write(object, out, typeResolver);
+        byte[] array = (byte[]) object;
+        out.append(array.length);
     }
 }
