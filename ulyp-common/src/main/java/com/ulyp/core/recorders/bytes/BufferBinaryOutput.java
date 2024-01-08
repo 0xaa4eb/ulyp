@@ -29,32 +29,38 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
         recursionDepth = 1;
     }
 
-    public void append(boolean value) {
-        append(value ? 1 : 0);
+    public void write(boolean value) {
+        write(value ? 1 : 0);
     }
 
-    public void append(int value) {
+    public void write(int value) {
         buffer.putInt(pos, value);
         pos += Integer.BYTES;
     }
 
-    public void append(long value) {
+    public void write(long value) {
         buffer.putLong(pos, value);
         pos += Long.BYTES;
     }
 
-    public void append(byte c) {
+    public void write(byte c) {
         buffer.putByte(pos, c);
         pos += Byte.BYTES;
     }
 
-    public void append(byte[] bytes) {
-        append(bytes.length);
+    @Override
+    public void write(char val) {
+        buffer.putChar(pos, val);
+        pos += Character.BYTES;
+    }
+
+    public void write(byte[] bytes) {
+        write(bytes.length);
         buffer.putBytes(pos, bytes);
         pos += bytes.length;
     }
 
-    public void append(String value) {
+    public void write(String value) {
         if (value != null) {
             String toPrint;
             if (value.length() > MAX_STRING_LENGTH) {
@@ -64,19 +70,19 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
             }
 
             byte[] bytes = toPrint.getBytes(StandardCharsets.UTF_8);
-            append(bytes.length);
+            write(bytes.length);
             for (byte b : bytes) {
-                append(b);
+                write(b);
             }
         } else {
-            append(-1);
+            write(-1);
         }
     }
 
-    public void append(Object object, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, TypeResolver typeResolver) throws Exception {
         try (BinaryOutput nestedOut = nest()) {
             Type itemType = typeResolver.get(object);
-            append(itemType.getId());
+            write(itemType.getId());
             ObjectRecorder recorder;
             if (object != null) {
                 // Simply stop recursively write objects if it's too deep
@@ -84,7 +90,7 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
             } else {
                 recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
             }
-            append(recorder.getId());
+            write(recorder.getId());
             recorder.write(object, nestedOut, typeResolver);
         }
     }
@@ -108,35 +114,5 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
     public Checkpoint checkpoint() {
         final int currentPos = this.pos;
         return () -> this.pos = currentPos;
-    }
-
-    @Override
-    public void writeBool(boolean val) {
-        append(val);
-    }
-
-    @Override
-    public void writeChar(char val) {
-        append(val);
-    }
-
-    @Override
-    public void writeInt(int val) {
-        append(val);
-    }
-
-    @Override
-    public void writeLong(long val) {
-        append(val);
-    }
-
-    @Override
-    public void writeString(String value) {
-        append(value);
-    }
-
-    @Override
-    public void writeBytes(byte[] bytes) {
-        append(bytes);
     }
 }

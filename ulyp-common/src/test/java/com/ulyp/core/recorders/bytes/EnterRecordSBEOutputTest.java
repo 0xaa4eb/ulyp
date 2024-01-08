@@ -9,8 +9,6 @@ import org.junit.Test;
 import com.ulyp.transport.BinaryRecordedExitMethodCallDecoder;
 import com.ulyp.transport.BinaryRecordedExitMethodCallEncoder;
 
-import static org.junit.Assert.*;
-
 public class EnterRecordSBEOutputTest {
 
     private final byte[] buf = new byte[16 * 1024];
@@ -27,9 +25,9 @@ public class EnterRecordSBEOutputTest {
         ExitRecordSBEOutput sbeOutput = new ExitRecordSBEOutput();
         try (BinaryOutput output = sbeOutput.wrap(encoder)) {
             Checkpoint checkpoint = output.checkpoint();
-            output.append("ABC");
+            output.write("ABC");
             checkpoint.rollback();
-            output.append("CDE");
+            output.write("CDE");
         }
 
         UnsafeBuffer buffer = new UnsafeBuffer(new byte[10]);

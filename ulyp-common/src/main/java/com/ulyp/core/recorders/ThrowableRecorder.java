@@ -5,7 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ThrowableRecorder extends ObjectRecorder {
@@ -27,6 +27,6 @@ public class ThrowableRecorder extends ObjectRecorder {
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Throwable t = (Throwable) object;
-        out.append(t.getMessage(), typeResolver);
+        out.write(t.getMessage(), typeResolver);
     }
 }

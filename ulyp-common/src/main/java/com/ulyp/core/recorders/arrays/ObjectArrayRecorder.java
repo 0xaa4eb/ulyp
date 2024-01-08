@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,12 +39,12 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Object[] array = (Object[]) object;
         int length = array.length;
-        out.append(length);
+        out.write(length);
         int itemsToRecord = Math.min(3, length);
-        out.append(itemsToRecord);
+        out.write(itemsToRecord);
 
         for (int i = 0; i < itemsToRecord; i++) {
-            out.append(array[i], typeResolver);
+            out.write(array[i], typeResolver);
         }
     }
 }

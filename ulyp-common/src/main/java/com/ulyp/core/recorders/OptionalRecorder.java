@@ -5,7 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,10 +38,10 @@ public class OptionalRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Optional<?> optional = (Optional<?>) object;
         boolean hasSomething = optional.isPresent();
-        out.writeBool(hasSomething);
+        out.write(hasSomething);
         if (hasSomething) {
             Object value = optional.get();
-            out.append(value, typeResolver);
+            out.write(value, typeResolver);
         }
     }
 }

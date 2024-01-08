@@ -68,18 +68,18 @@ public class CollectionRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         if (active) {
             Checkpoint checkpoint = out.checkpoint();
-            out.append(RECORDED_ITEMS_FLAG);
+            out.write(RECORDED_ITEMS_FLAG);
             try {
                 Collection<?> collection = (Collection<?>) object;
                 int length = collection.size();
-                out.append(length);
+                out.write(length);
                 int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                out.append(itemsToRecord);
+                out.write(itemsToRecord);
                 Iterator<?> iterator = collection.iterator();
                 int recorded = 0;
 
                 while (recorded < itemsToRecord && iterator.hasNext()) {
-                    out.append(iterator.next(), typeResolver);
+                    out.write(iterator.next(), typeResolver);
                     recorded++;
                 }
             } catch (Throwable throwable) {
@@ -97,7 +97,7 @@ public class CollectionRecorder extends ObjectRecorder {
 
     private void writeIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutput nestedOut = out.nest()) {
-            nestedOut.append(RECORDED_IDENTITY_FLAG);
+            nestedOut.write(RECORDED_IDENTITY_FLAG);
             ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }
     }

@@ -61,20 +61,20 @@ public class MapRecorder extends ObjectRecorder {
         try (BinaryOutput out = nout.nest()) {
             if (active) {
                 Checkpoint checkpoint = out.checkpoint();
-                out.append(RECORDED_ITEMS);
+                out.write(RECORDED_ITEMS);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
-                    out.append(length);
+                    out.write(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                    out.append(itemsToRecord);
+                    out.write(itemsToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        out.append(entry.getKey(), typeResolver);
-                        out.append(entry.getValue(), typeResolver);
+                        out.write(entry.getKey(), typeResolver);
+                        out.write(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
@@ -91,7 +91,7 @@ public class MapRecorder extends ObjectRecorder {
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
         try (BinaryOutput nestedOut = out.nest()) {
-            nestedOut.append(RECORDED_IDENTITY_ONLY);
+            nestedOut.write(RECORDED_IDENTITY_ONLY);
             ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }
     }

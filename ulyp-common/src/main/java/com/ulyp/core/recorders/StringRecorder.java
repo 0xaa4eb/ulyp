@@ -25,6 +25,6 @@ public class StringRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString((String) object);
+        out.write((String) object);
     }
 }

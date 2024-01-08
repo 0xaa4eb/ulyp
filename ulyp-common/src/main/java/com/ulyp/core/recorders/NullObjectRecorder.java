@@ -27,6 +27,6 @@ public class NullObjectRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeBool(false);
+        out.write(false);
     }
 }
