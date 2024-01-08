@@ -74,17 +74,19 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
     }
 
     public void append(Object object, TypeResolver typeResolver) throws Exception {
-        Type itemType = typeResolver.get(object);
-        append(itemType.getId());
-        ObjectRecorder recorder;
-        if (object != null) {
-            // Simply stop recursively write objects if it's too deep
-            recorder = recursionDepth() < MAXIMUM_RECURSION_DEPTH ? (itemType.getRecorderHint() != null ? itemType.getRecorderHint() : RecorderChooser.getInstance().chooseForType(object.getClass())) : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
-        } else {
-            recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+        try (BinaryOutput nestedOut = nest()) {
+            Type itemType = typeResolver.get(object);
+            append(itemType.getId());
+            ObjectRecorder recorder;
+            if (object != null) {
+                // Simply stop recursively write objects if it's too deep
+                recorder = recursionDepth() <= MAXIMUM_RECURSION_DEPTH ? (itemType.getRecorderHint() != null ? itemType.getRecorderHint() : RecorderChooser.getInstance().chooseForType(object.getClass())) : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+            } else {
+                recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+            }
+            append(recorder.getId());
+            recorder.write(object, nestedOut, typeResolver);
         }
-        append(recorder.getId());
-        recorder.write(object, this, typeResolver);
     }
 
     @Override

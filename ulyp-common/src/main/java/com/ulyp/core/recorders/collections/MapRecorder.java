@@ -57,36 +57,36 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutput nestedOut = out.nest()) {
-
+    public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
+        try (BinaryOutput out = nout.nest()) {
             if (active) {
-                nestedOut.append(RECORDED_ITEMS);
-                Checkpoint checkpoint = nestedOut.checkpoint();
+                Checkpoint checkpoint = out.checkpoint();
+                out.append(RECORDED_ITEMS);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
-                    nestedOut.append(length);
+                    out.append(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                    nestedOut.append(itemsToRecord);
+                    out.append(itemsToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        nestedOut.append(entry.getKey(), typeResolver);
-                        nestedOut.append(entry.getValue(), typeResolver);
+                        out.append(entry.getKey(), typeResolver);
+                        out.append(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
                     checkpoint.rollback();
-                    active = false;
+                    active = false; // TODO ban by id
                     writeMapIdentity(object, out, typeResolver);
                 }
             } else {
                 writeMapIdentity(object, out, typeResolver);
             }
         }
+
     }
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {

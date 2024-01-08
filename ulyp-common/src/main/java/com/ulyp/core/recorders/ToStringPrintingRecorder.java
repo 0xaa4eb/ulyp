@@ -52,16 +52,12 @@ public class ToStringPrintingRecorder extends ObjectRecorder {
         try {
             String printed = object.toString();
 
-            try (BinaryOutput nested = out.nest()) {
-                nested.append(TO_STRING_CALL_SUCCESS);
-                nested.append(System.identityHashCode(object));
-                nested.append(printed);
-            }
+            out.append(TO_STRING_CALL_SUCCESS);
+            out.append(System.identityHashCode(object));
+            out.append(printed);
         } catch (Throwable e) {
-            try (BinaryOutput nested = out.nest()) {
-                nested.append(TO_STRING_CALL_FAIL);
-                ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nested, typeResolver);
-            }
+            out.append(TO_STRING_CALL_FAIL);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, out, typeResolver);
         }
     }
 }

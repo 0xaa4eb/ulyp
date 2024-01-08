@@ -37,16 +37,14 @@ public class ObjectArrayRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutput nestedOut = out.nest()) {
-            Object[] array = (Object[]) object;
-            int length = array.length;
-            nestedOut.append(length);
-            int itemsToRecord = Math.min(3, length);
-            nestedOut.append(itemsToRecord);
+        Object[] array = (Object[]) object;
+        int length = array.length;
+        out.append(length);
+        int itemsToRecord = Math.min(3, length);
+        out.append(itemsToRecord);
 
-            for (int i = 0; i < itemsToRecord; i++) {
-                nestedOut.append(array[i], typeResolver);
-            }
+        for (int i = 0; i < itemsToRecord; i++) {
+            out.append(array[i], typeResolver);
         }
     }
 }

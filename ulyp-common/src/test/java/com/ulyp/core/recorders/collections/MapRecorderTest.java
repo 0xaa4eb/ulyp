@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Test;
@@ -54,5 +55,24 @@ public class MapRecorderTest {
         List<MapEntryRecord> entries = mapRecord.getEntries();
         MapEntryRecord mapEntryRecord = entries.get(0);
         assertTrue(mapEntryRecord.getValue() instanceof IdentityObjectRecord);
+    }
+
+    @Test
+    public void test2() throws Exception {
+        Map<String, XYZ> map = new HashMap<String, XYZ>() {
+            @Override
+            public Set<Entry<String, XYZ>> entrySet() {
+                throw new RuntimeException("unsupported");
+            }
+        };
+        map.put("ABC", new XYZ());
+        map.put("ZXC", new XYZ());
+
+        mapRecorder.setMode(CollectionsRecordingMode.ALL);
+        mapRecorder.write(map, out, typeResolver);
+
+        IdentityObjectRecord mapRecord = (IdentityObjectRecord) mapRecorder.read(typeResolver.get(map), in, typeResolver::get);
+
+        System.out.println(mapRecord);
     }
 }

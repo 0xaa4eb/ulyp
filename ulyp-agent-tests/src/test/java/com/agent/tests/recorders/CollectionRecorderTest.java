@@ -93,7 +93,6 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    @Ignore
     public void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runSubprocessAndReadFile(

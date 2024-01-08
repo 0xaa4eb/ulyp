@@ -17,11 +17,7 @@ public class AbstractInstrumentationTest {
 
     @NotNull
     protected CallRecord runSubprocessAndReadFile(ForkProcessBuilder settings) {
-        try {
-            return new RecordingResult(runProcess(settings)).getSingleRoot();
-        } catch (Exception e) {
-            throw new AssertionFailedError(e.getMessage());
-        }
+        return new RecordingResult(runProcess(settings)).getSingleRoot();
     }
 
     @NotNull
@@ -42,8 +38,8 @@ public class AbstractInstrumentationTest {
                 tree.getCompleteFuture().get(200, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Assert.fail("Thread is interrupted");
-            } catch (ExecutionException ignored) {
-                // Should not happen
+            } catch (ExecutionException ee) {
+                throw new RuntimeException("Failed", ee);
             } catch (TimeoutException e) {
                 Assert.fail("Timed out waiting for process to finish");
             }
