@@ -28,7 +28,7 @@ public abstract class SBEOutput {
         public void close() {
             super.close();
             if (recursionDepth() == 0) {
-                write(buffer, pos);
+                SBEOutput.this.write(buffer, pos);
             }
         }
     }
