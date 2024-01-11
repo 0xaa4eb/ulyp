@@ -95,7 +95,6 @@ public class CallRecordQueue implements AutoCloseable {
                 UnsafeBuffer recordedBytes = new UnsafeBuffer();
                 recordedBytes.wrap(buf, 0, output.size());
                 return new QueuedRecordedObject(type, recorder.getId(), recordedBytes);
-                //return new QueuedRecordedObject(type, recorder.getId(), );
             } catch (Exception e) {
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Error while recording object", e);
