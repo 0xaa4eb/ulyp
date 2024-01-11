@@ -3,7 +3,7 @@ package com.ulyp.core;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.bytes.BinaryInputImpl;
+import com.ulyp.core.recorders.bytes.BufferBinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class RecordedObject {
         ObjectRecorder objectRecorder = ObjectRecorderRegistry.recorderForId(recorderId);
         return objectRecorder.read(
                 type,
-                new BinaryInputImpl(value),
+                new BufferBinaryInput(value),
                 id -> Optional.ofNullable(typeResolver.get(id)).orElse(Type.unknown())
         );
     }

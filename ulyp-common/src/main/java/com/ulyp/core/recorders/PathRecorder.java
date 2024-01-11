@@ -31,6 +31,6 @@ public class PathRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(((Path) object).toString());
+        out.write(((Path) object).toString());
     }
 }

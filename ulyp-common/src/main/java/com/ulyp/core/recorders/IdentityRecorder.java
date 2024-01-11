@@ -26,6 +26,6 @@ public class IdentityRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeInt(System.identityHashCode(object));
+        out.write(System.identityHashCode(object));
     }
 }

@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,30 +27,24 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readInt();
-        List<ObjectRecord> items = new ArrayList<>();
         int recordedItemsCount = input.readInt();
+        List<ObjectRecord> items = new ArrayList<>(recordedItemsCount);
         for (int i = 0; i < recordedItemsCount; i++) {
             items.add(input.readObject(typeResolver));
         }
-        return new ObjectArrayRecord(
-                type,
-                arrayLength,
-                items
-        );
+        return new ObjectArrayRecord(type, arrayLength, items);
     }
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-            Object[] array = (Object[]) object;
-            int length = array.length;
-            appender.append(length);
-            int itemsToRecord = Math.min(3, length);
-            appender.append(itemsToRecord);
+        Object[] array = (Object[]) object;
+        int length = array.length;
+        out.write(length);
+        int itemsToRecord = Math.min(3, length);
+        out.write(itemsToRecord);
 
-            for (int i = 0; i < itemsToRecord; i++) {
-                appender.append(array[i], typeResolver);
-            }
+        for (int i = 0; i < itemsToRecord; i++) {
+            out.write(array[i], typeResolver);
         }
     }
 }
