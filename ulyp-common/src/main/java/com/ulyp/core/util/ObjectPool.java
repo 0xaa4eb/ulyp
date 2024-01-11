@@ -1,6 +1,6 @@
 package com.ulyp.core.util;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 public class ObjectPool<T> {
@@ -10,7 +10,7 @@ public class ObjectPool<T> {
     private final Supplier<T> supplier;
     private final int indexMask;
     private final ObjectPoolClaim<T>[] objectArray; // object array is read only and not padded
-    private final AtomicIntegerArray usedArray;
+    private final PaddedAtomicIntegerArray used;
 
     public ObjectPool(int expectedThreads, Supplier<T> supplier) {
         if (Integer.bitCount(expectedThreads) != 1) {
@@ -22,16 +22,22 @@ public class ObjectPool<T> {
         //noinspection unchecked
         this.objectArray = (ObjectPoolClaim<T>[]) new ObjectPoolClaim[entriesCount];
         for (int i = 0; i < entriesCount; i++) {
-            this.objectArray[i] = new ObjectPoolClaim(i, supplier.get());
+            //noinspection resource
+            this.objectArray[i] = new ObjectPoolClaim<>(this, i, supplier.get());
         }
 
-        this.usedArray = new AtomicIntegerArray(entriesCount * Constants.CACHE_LINE_INTS_COUNT);
+        this.used = new PaddedAtomicIntegerArray(entriesCount);
     }
 
-    ObjectPoolClaim<T> claim(int index, int tries) {
-        int used = usedArray.get(index);
+    public ObjectPoolClaim<T> claim() {
+        int id = ThreadLocalRandom.current().nextInt();
+        return claim(id & indexMask, 0);
+    }
+
+    private ObjectPoolClaim<T> claim(int index, int tries) {
+        int used = this.used.get(index);
         if (used == 0) {
-            if (usedArray.compareAndSet(index, 0, 1)) {
+            if (this.used.compareAndSet(index, 0, 1)) {
                 return objectArray[index];
             }
         }
@@ -41,35 +47,33 @@ public class ObjectPool<T> {
             return claim((index + 1) & indexMask, tries + 1);
         } else {
             // TODO maybe have some metrics
-            return new ObjectPoolClaim<>(-1, supplier.get());
+            return new ObjectPoolClaim<>(this, -1, supplier.get());
         }
     }
 
     private void release(int index) {
-        usedArray.set(index, 0);
+        used.set(index, 0);
     }
 
-    private int usedArrayIndex(int entryIndex) {
-        return entryIndex * Constants.CACHE_LINE_INTS_COUNT;
-    }
-
-    public class ObjectPoolClaim<T> implements AutoCloseable {
+    public static class ObjectPoolClaim<T> implements AutoCloseable {
+        private final ObjectPool<T> pool;
         private final int index;
         private final T object;
 
-        public ObjectPoolClaim(int index, T object) {
+        public ObjectPoolClaim(ObjectPool<T> pool, int index, T object) {
+            this.pool = pool;
             this.index = index;
             this.object = object;
         }
 
-        public T getObject() {
+        public T get() {
             return object;
         }
 
         @Override
-        public void close() throws Exception {
+        public void close() throws RuntimeException {
             if (index >= 0) {
-                release(index);
+                pool.release(index);
             }
         }
     }

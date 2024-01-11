@@ -10,6 +10,7 @@ import java.util.concurrent.locks.LockSupport;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.core.util.ObjectPool;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CallRecordQueue implements AutoCloseable {
 
+    private final ObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final Disruptor<EventHolder> disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -34,6 +36,7 @@ public class CallRecordQueue implements AutoCloseable {
 
     public CallRecordQueue(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
         this.typeResolver = typeResolver;
+        this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
         this.disruptor = new Disruptor<>(
             EventHolder::new,
             1024 * 1024, // TODO configurable
@@ -88,18 +91,21 @@ public class CallRecordQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            byte[] buf = new byte[16 * 1024];
-            BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buf));
-            try {
-                recorder.write(value, output, typeResolver);
-                UnsafeBuffer recordedBytes = new UnsafeBuffer();
-                recordedBytes.wrap(buf, 0, output.size());
-                return new QueuedRecordedObject(type, recorder.getId(), recordedBytes);
-            } catch (Exception e) {
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Error while recording object", e);
+            try (ObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
+                BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
+                try {
+                    recorder.write(value, output, typeResolver);
+                    UnsafeBuffer recordedBytes = new UnsafeBuffer();
+                    recordedBytes.wrap(buffer.get(), 0, output.size());
+                    byte[] recordedByteArray = new byte[output.size()];
+                    recordedBytes.getBytes(0, recordedByteArray, 0, recordedByteArray.length);
+                    return new QueuedRecordedObject(type, recorder.getId(), recordedBytes);
+                } catch (Exception e) {
+                    if (LoggingSettings.DEBUG_ENABLED) {
+                        log.debug("Error while recording object", e);
+                    }
+                    return new QueuedIdentityObject(type, value);
                 }
-                return new QueuedIdentityObject(type, value);
             }
         }
     }
