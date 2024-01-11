@@ -36,7 +36,7 @@ public class ClassObjectRecorder extends ObjectRecorder {
         Class<?> clazz = (Class<?>) object;
 
         int typeId = typeResolver.get(clazz).getId();
-        out.writeInt(typeId);
+        out.write(typeId);
 
         if (LoggingSettings.TRACE_ENABLED) {
             log.trace("Writing typeId={} for {}", typeId, object);

@@ -32,6 +32,6 @@ public class DateRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(object.toString());
+        out.write(object.toString());
     }
 }

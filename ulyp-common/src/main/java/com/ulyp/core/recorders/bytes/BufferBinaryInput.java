@@ -10,16 +10,16 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
 
-public class BinaryInputImpl implements BinaryInput {
+public class BufferBinaryInput implements BinaryInput {
 
     private final DirectBuffer buffer;
-    private int bytePos = 0;
+    private int pos = 0;
 
-    public BinaryInputImpl(DirectBuffer buffer) {
+    public BufferBinaryInput(DirectBuffer buffer) {
         this.buffer = buffer;
     }
 
-    public BinaryInputImpl(byte[] value) {
+    public BufferBinaryInput(byte[] value) {
         this.buffer = new UnsafeBuffer(value);
     }
 
@@ -31,30 +31,38 @@ public class BinaryInputImpl implements BinaryInput {
 
     @Override
     public byte readByte() {
-        byte val = buffer.getByte(bytePos);
-        bytePos += Byte.BYTES;
+        byte val = buffer.getByte(pos);
+        pos += Byte.BYTES;
         return val;
     }
 
     @Override
     public int readInt() {
-        int val = buffer.getInt(bytePos);
-        bytePos += Integer.BYTES;
+        int val = buffer.getInt(pos);
+        pos += Integer.BYTES;
         return val;
     }
 
     @Override
     public char readChar() {
-        char val = buffer.getChar(bytePos);
-        bytePos += Character.BYTES;
+        char val = buffer.getChar(pos);
+        pos += Character.BYTES;
         return val;
     }
 
     @Override
     public long readLong() {
-        long val = buffer.getLong(bytePos);
-        bytePos += Long.BYTES;
+        long val = buffer.getLong(pos);
+        pos += Long.BYTES;
         return val;
+    }
+
+    @Override
+    public BinaryInput readBytes() {
+        int length = readInt();
+        UnsafeBuffer newBuf = new UnsafeBuffer();
+        newBuf.wrap(buffer, pos, length);
+        return new BufferBinaryInput(newBuf);
     }
 
     @Override
@@ -69,8 +77,8 @@ public class BinaryInputImpl implements BinaryInput {
         int length = readInt();
         if (length >= 0) {
             byte[] buf = new byte[length];
-            this.buffer.getBytes(bytePos, buf);
-            bytePos += length;
+            this.buffer.getBytes(pos, buf);
+            pos += length;
             return new String(buf, StandardCharsets.UTF_8);
         } else {
             return null;

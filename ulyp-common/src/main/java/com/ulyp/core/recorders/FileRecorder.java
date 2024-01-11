@@ -35,6 +35,6 @@ public class FileRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(((File) object).getPath());
+        out.write(((File) object).getPath());
     }
 }

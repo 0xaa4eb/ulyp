@@ -34,6 +34,6 @@ public class IntegralRecorder extends ObjectRecorder {
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Number number = (Number) object;
-        out.writeLong(number.longValue());
+        out.write(number.longValue());
     }
 }

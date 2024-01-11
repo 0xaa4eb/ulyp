@@ -34,7 +34,7 @@ public class BooleanRecorder extends ObjectRecorder {
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         Boolean value = (Boolean) object;
-        out.writeBool(value);
+        out.write((boolean) value);
         if (LoggingSettings.TRACE_ENABLED) {
             log.trace("Writing {}", object);
         }

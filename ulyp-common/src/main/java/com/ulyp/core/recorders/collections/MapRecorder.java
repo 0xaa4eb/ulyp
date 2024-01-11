@@ -8,7 +8,6 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.recorders.bytes.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    public static final int MAX_ITEMS_TO_RECORD = 3;
+    public static final int MAX_ITEMS_TO_RECORD = 3; // TODO configurable
     private static final int RECORDED_ITEMS = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
     private CollectionsRecordingMode mode;
@@ -44,7 +43,7 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type classDescription, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS) {
@@ -56,41 +55,36 @@ public class MapRecorder extends ObjectRecorder {
                 ObjectRecord value = input.readObject(typeResolver);
                 entries.add(new MapEntryRecord(Type.unknown(), key, value));
             }
-            return new MapRecord(
-                    classDescription,
-                    collectionSize,
-                    entries
-            );
+            return new MapRecord(type, collectionSize, entries);
         } else {
-            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(classDescription, input, typeResolver);
+            return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
         }
     }
 
     @Override
-    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-
+    public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
+        try (BinaryOutput out = nout.nest()) {
             if (active) {
-                appender.append(RECORDED_ITEMS);
-                Checkpoint checkpoint = appender.checkpoint();
+                Checkpoint checkpoint = out.checkpoint();
+                out.write(RECORDED_ITEMS);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
-                    appender.append(length);
+                    out.write(length);
                     int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
-                    appender.append(itemsToRecord);
+                    out.write(itemsToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
                     while (recorded < itemsToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
-                        appender.append(entry.getKey(), typeResolver);
-                        appender.append(entry.getValue(), typeResolver);
+                        out.write(entry.getKey(), typeResolver);
+                        out.write(entry.getValue(), typeResolver);
                         recorded++;
                     }
                 } catch (Throwable throwable) {
                     checkpoint.rollback();
-                    active = false;
+                    active = false; // TODO ban by id
                     writeMapIdentity(object, out, typeResolver);
                 }
             } else {
@@ -100,9 +94,9 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
-        try (BinaryOutputAppender appender = out.appender()) {
-            appender.append(RECORDED_IDENTITY_ONLY);
-            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, runtime);
+        try (BinaryOutput nestedOut = out.nest()) {
+            nestedOut.write(RECORDED_IDENTITY_ONLY);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }
     }
 }

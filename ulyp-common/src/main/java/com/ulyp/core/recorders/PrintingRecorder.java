@@ -5,7 +5,6 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BinaryOutputAppender;
 import com.ulyp.core.util.TypeMatcher;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,16 +52,12 @@ public class PrintingRecorder extends ObjectRecorder {
         try {
             String printed = object.toString();
 
-            try (BinaryOutputAppender appender = out.appender()) {
-                appender.append(TO_STRING_CALL_SUCCESS);
-                appender.append(System.identityHashCode(object));
-                appender.append(printed);
-            }
+            out.write(TO_STRING_CALL_SUCCESS);
+            out.write(System.identityHashCode(object));
+            out.write(printed);
         } catch (Throwable e) {
-            try (BinaryOutputAppender appender = out.appender()) {
-                appender.append(TO_STRING_CALL_FAIL);
-                ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, appender, typeResolver);
-            }
+            out.write(TO_STRING_CALL_FAIL);
+            ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, out, typeResolver);
         }
     }
 }

@@ -81,7 +81,7 @@ public class PrintingRecorderTest extends AbstractInstrumentationTest {
     static class ToStringThrowingClass {
         @Override
         public String toString() {
-            throw new RuntimeException("ToString() failed...");
+            throw new RuntimeException("not supported");
         }
     }
 
