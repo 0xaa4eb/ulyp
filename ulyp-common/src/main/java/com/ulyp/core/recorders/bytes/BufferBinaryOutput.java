@@ -8,6 +8,7 @@ import com.ulyp.core.recorders.RecorderChooser;
 
 import java.nio.charset.StandardCharsets;
 
+import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
 // writes to provided buffer
@@ -52,6 +53,13 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
     public void write(char val) {
         buffer.putChar(pos, val);
         pos += Character.BYTES;
+    }
+
+    @Override
+    public void write(DirectBuffer buffer) {
+        write(buffer.capacity());
+        this.buffer.putBytes(pos, buffer, 0, buffer.capacity());
+        pos += buffer.capacity();
     }
 
     public void write(byte[] bytes) {
@@ -102,6 +110,11 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
 
     public int recursionDepth() {
         return recursionDepth;
+    }
+
+    @Override
+    public int size() {
+        return pos;
     }
 
     @Override

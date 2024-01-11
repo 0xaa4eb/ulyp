@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.ToStringPrintingRecorder;
+import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BufferBinaryInput;
@@ -37,7 +37,7 @@ public class MapRecorderTest {
     private final BinaryInput in = new BufferBinaryInput(buffer);
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final MapRecorder mapRecorder = new MapRecorder((byte) 1);
-    private final ToStringPrintingRecorder printingRecorder = (ToStringPrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
+    private final PrintingRecorder printingRecorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
 
     @Test
     public void test() throws Exception {

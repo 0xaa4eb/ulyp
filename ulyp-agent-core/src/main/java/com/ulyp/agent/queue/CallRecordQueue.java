@@ -7,6 +7,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
+import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.util.LoggingSettings;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
 import com.lmax.disruptor.SleepingWaitStrategy;
@@ -16,10 +20,6 @@ import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.QueuedIdentityObject;
-import com.ulyp.core.recorders.IdentityRecorder;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.util.NamedThreadFactory;
 
 import lombok.extern.slf4j.Slf4j;
@@ -88,7 +88,20 @@ public class CallRecordQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            throw new RuntimeException("not supported yet");
+            byte[] buf = new byte[16 * 1024];
+            BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buf));
+            try {
+                recorder.write(value, output, typeResolver);
+                UnsafeBuffer recordedBytes = new UnsafeBuffer();
+                recordedBytes.wrap(buf, 0, output.size());
+                return new QueuedRecordedObject(type, recorder.getId(), recordedBytes);
+                //return new QueuedRecordedObject(type, recorder.getId(), );
+            } catch (Exception e) {
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Error while recording object", e);
+                }
+                return new QueuedIdentityObject(type, value);
+            }
         }
     }
 

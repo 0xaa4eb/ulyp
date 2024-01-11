@@ -1,10 +1,13 @@
 package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.TypeResolver;
+import org.agrona.DirectBuffer;
 
 public interface BinaryOutput extends AutoCloseable {
 
     int recursionDepth();
+
+    int size();
 
     BinaryOutput nest();
 
@@ -17,6 +20,8 @@ public interface BinaryOutput extends AutoCloseable {
     void write(long value);
 
     void write(byte c);
+
+    void write(DirectBuffer buffer);
 
     void write(byte[] bytes);
 

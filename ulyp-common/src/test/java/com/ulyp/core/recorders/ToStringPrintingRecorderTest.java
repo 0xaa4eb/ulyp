@@ -31,7 +31,7 @@ public class ToStringPrintingRecorderTest {
 
     @Test
     public void test() throws Exception {
-        ToStringPrintingRecorder recorder = (ToStringPrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
+        PrintingRecorder recorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
         recorder.addClassesToPrint(new HashSet<>(Arrays.asList(TypeMatcher.parse("**.X"))));
 
         recorder.write(new X(), out, typeResolver);
