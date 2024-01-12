@@ -1,6 +1,5 @@
 package com.ulyp.agent.queue;
 
-import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.MethodRepository;
@@ -21,7 +20,7 @@ public class RecordingEventHandler {
     public RecordingEventHandler(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
         this.typeResolver = typeResolver;
         this.recordDataWriter = recordDataWriter;
-        this.methodRepository = AgentContext.getCtx().getMethodRepository();
+        this.methodRepository = recordDataWriter.getMethodRepository();
     }
 
     void onRecordingMetadataUpdate(RecordingMetadataQueueEvent update) {

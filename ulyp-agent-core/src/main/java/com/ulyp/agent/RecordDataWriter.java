@@ -13,12 +13,14 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RecordDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
+    @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
