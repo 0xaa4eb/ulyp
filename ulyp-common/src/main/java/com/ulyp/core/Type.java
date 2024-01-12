@@ -65,4 +65,12 @@ public class Type {
     public Set<String> getSuperTypeNames() {
         return superTypeNames;
     }
+
+    @Override
+    public String toString() {
+        return "Type{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

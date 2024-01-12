@@ -16,4 +16,13 @@ public class QueuedRecordedObject {
         this.recorderId = recorderId;
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "QueuedRecordedObject{" +
+                "type=" + type +
+                ", recorderId=" + recorderId +
+                ", data size=" + data.capacity() +
+                '}';
+    }
 }

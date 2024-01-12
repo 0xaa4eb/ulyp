@@ -1,7 +1,9 @@
 package com.ulyp.agent.queue;
 
+import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.CallRecordBuffer;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
@@ -12,12 +14,14 @@ public class RecordingEventHandler {
 
     private final TypeResolver typeResolver;
     private final RecordDataWriter recordDataWriter;
+    private final MethodRepository methodRepository;
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
 
     public RecordingEventHandler(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
         this.typeResolver = typeResolver;
         this.recordDataWriter = recordDataWriter;
+        this.methodRepository = AgentContext.getCtx().getMethodRepository();
     }
 
     void onRecordingMetadataUpdate(RecordingMetadataQueueEvent update) {
@@ -29,7 +33,7 @@ public class RecordingEventHandler {
             buffer = new CallRecordBuffer(enterRecord.getRecordingId());
         }
 
-        buffer.recordMethodEnter(typeResolver, enterRecord.getMethodId(), enterRecord.getCallee(), enterRecord.getArgs());
+        buffer.recordMethodEnter(typeResolver, /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(), enterRecord.getCallee(), enterRecord.getArgs());
     }
 
     void onExitCallRecord(ExitRecordQueueEvent exitRecord) {

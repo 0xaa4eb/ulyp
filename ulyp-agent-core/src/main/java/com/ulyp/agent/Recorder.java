@@ -95,7 +95,7 @@ public class Recorder {
 
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId).toShortString());
+                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId));
                 }
                 recordingState.setEnabled(true);
                 callRecordQueue.enqueueRecordingMetadataUpdate(recordingMetadata);
@@ -119,7 +119,7 @@ public class Recorder {
 
                 currentRecordingSessionCount.incrementAndGet();
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId).toShortString());
+                    log.info("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId));
                 }
                 recordingState.setEnabled(true);
                 callRecordQueue.enqueueRecordingMetadataUpdate(recordingMetadata);

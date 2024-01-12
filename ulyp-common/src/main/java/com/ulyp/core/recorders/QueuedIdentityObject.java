@@ -14,4 +14,12 @@ public class QueuedIdentityObject {
         this.type = type;
         this.identityHashCode = System.identityHashCode(value);
     }
+
+    @Override
+    public String toString() {
+        return "QueuedIdentityObject{" +
+                "type=" + type +
+                ", identityHashCode=" + identityHashCode +
+                '}';
+    }
 }

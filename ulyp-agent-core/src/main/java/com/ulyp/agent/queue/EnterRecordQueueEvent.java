@@ -2,6 +2,8 @@ package com.ulyp.agent.queue;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 class EnterRecordQueueEvent {
 
@@ -19,5 +21,17 @@ class EnterRecordQueueEvent {
         this.callee = callee;
         this.args = args;
         this.nanoTime = nanoTime;
+    }
+
+    @Override
+    public String toString() {
+        return "EnterRecordQueueEvent{" +
+                "recordingId=" + recordingId +
+                ", callId=" + callId +
+                ", methodId=" + methodId +
+                ", callee=" + callee +
+                ", args=" + Arrays.toString(args) +
+                ", nanoTime=" + nanoTime +
+                '}';
     }
 }

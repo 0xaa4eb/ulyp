@@ -18,4 +18,15 @@ class ExitRecordQueueEvent {
         this.thrown = thrown;
         this.nanoTime = nanoTime;
     }
+
+    @Override
+    public String toString() {
+        return "ExitRecordQueueEvent{" +
+                "recordingId=" + recordingId +
+                ", callId=" + callId +
+                ", returnValue=" + returnValue +
+                ", thrown=" + thrown +
+                ", nanoTime=" + nanoTime +
+                '}';
+    }
 }
