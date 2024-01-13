@@ -5,16 +5,16 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.vontikov:sbe-generator-plugin:0.0.3"
+        classpath "com.github.vontikov:sbe-generator-plugin:0.0.8"
     }
 }
 
 plugins {
     id 'java'
-    id "io.freefair.lombok" version "6.0.0-m2"
+    id "io.freefair.lombok" version "8.4"
 }
 
-apply plugin: "vontikov.sbe-generator-plugin"
+apply plugin: "com.github.vontikov.sbe-generator-plugin"
 
 sbeGenerator {
     src {
@@ -37,11 +37,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-    compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
-    compileOnly group: 'org.agrona', name: 'agrona', version: '1.4.0'
-    compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
+    implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     testImplementation group: 'org.agrona', name: 'agrona', version: '1.4.0'

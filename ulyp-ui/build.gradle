@@ -1,18 +1,10 @@
-buildscript {
-    repositories {
-        flatDir {
-            dirs 'ulyp-ui/fernflower.jar'
-        }
-    }
-}
-
 plugins {
     id 'java'
     id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
-    id 'io.freefair.lombok' version '5.3.0'
+    id 'io.freefair.lombok' version '8.4'
     id 'org.openjfx.javafxplugin' version '0.0.14' apply(false)
 }
 
@@ -42,8 +34,8 @@ dependencies {
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 
     implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.3'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
@@ -79,7 +71,7 @@ task fatJar(type: Jar) {
     }
 
     group = 'build'
-    archiveName = "ulyp-ui-${rootProject.version}.jar"
+    archiveFileName = "ulyp-ui-${rootProject.version}.jar"
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     filesMatching([
             '**/fastutil/booleans/*.class',

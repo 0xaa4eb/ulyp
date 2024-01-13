@@ -5,16 +5,16 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.vontikov:sbe-generator-plugin:0.0.1"
+        classpath "com.github.vontikov:sbe-generator-plugin:0.0.8"
     }
 }
 
 plugins {
     id 'java'
-    id "io.freefair.lombok" version "6.0.0-m2"
+    id "io.freefair.lombok" version "8.4"
 }
 
-apply plugin: "vontikov.sbe-generator-plugin"
+apply plugin: "com.github.vontikov.sbe-generator-plugin"
 
 sbeGenerator {
     src {
@@ -38,13 +38,13 @@ repositories {
 dependencies {
     implementation project(':ulyp-common')
 
-    compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
-    compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
+    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
