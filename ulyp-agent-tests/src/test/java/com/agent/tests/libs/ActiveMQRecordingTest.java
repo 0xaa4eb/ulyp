@@ -48,38 +48,34 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
     public static class ActiveMQTestCase {
 
         public static void main(String[] args) throws Exception {
-            try {
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-                Connection connection = connectionFactory.createConnection();
-                connection.start();
-                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue queue = session.createQueue("TEST_QUEUE");
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+            Connection connection = connectionFactory.createConnection();
+            connection.start();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue("TEST_QUEUE");
 
-                MessageProducer producer = session.createProducer(queue);
-                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                for (int i = 0; i < 10; i++) {
-                    ActiveMQTextMessage msg = new ActiveMQTextMessage();
-                    msg.setText("Text message 123");
-                    producer.send(msg);
-                }
-                producer.close();
-
-                MessageConsumer consumer = session.createConsumer(queue);
-                for (int i = 0; i < 10; i++) {
-                    Message message = consumer.receive(5000);
-                    if (message == null) {
-                        throw new IllegalStateException("There must be a message in the queue! Something is wrong");
-                    }
-                    String text = ((ActiveMQTextMessage) message).getText();
-                    if (!text.equals("Text message 123")) {
-                        throw new IllegalStateException("Message has wrong content");
-                    }
-                }
-                session.close();
-                connection.close();
-            } finally {
-                System.exit(0);
+            MessageProducer producer = session.createProducer(queue);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            for (int i = 0; i < 10; i++) {
+                ActiveMQTextMessage msg = new ActiveMQTextMessage();
+                msg.setText("Text message 123");
+                producer.send(msg);
             }
+            producer.close();
+
+            MessageConsumer consumer = session.createConsumer(queue);
+            for (int i = 0; i < 10; i++) {
+                Message message = consumer.receive(5000);
+                if (message == null) {
+                    throw new IllegalStateException("There must be a message in the queue! Something is wrong");
+                }
+                String text = ((ActiveMQTextMessage) message).getText();
+                if (!text.equals("Text message 123")) {
+                    throw new IllegalStateException("Message has wrong content");
+                }
+            }
+            session.close();
+            connection.close();
         }
     }
 }

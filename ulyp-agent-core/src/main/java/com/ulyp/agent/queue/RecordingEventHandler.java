@@ -32,7 +32,13 @@ public class RecordingEventHandler {
             buffer = new CallRecordBuffer(enterRecord.getRecordingId());
         }
 
-        buffer.recordMethodEnter(typeResolver, /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(), enterRecord.getCallee(), enterRecord.getArgs());
+        buffer.recordMethodEnter(
+                typeResolver,
+                /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
+                enterRecord.getCallee(),
+                enterRecord.getArgs(),
+                enterRecord.getNanoTime()
+        );
     }
 
     void onExitCallRecord(ExitRecordQueueEvent exitRecord) {
@@ -43,9 +49,9 @@ public class RecordingEventHandler {
             return;
         }
         if (exitRecord.isThrown()) {
-            buffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId());
+            buffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), exitRecord.getNanoTime());
         } else {
-            buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId());
+            buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), exitRecord.getNanoTime());
         }
 
         if (buffer.isComplete() ||
