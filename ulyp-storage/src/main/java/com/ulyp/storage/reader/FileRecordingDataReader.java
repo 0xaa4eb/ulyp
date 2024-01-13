@@ -7,21 +7,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.ulyp.core.*;
+import com.ulyp.core.mem.*;
+import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.core.serializers.ProcessMetadataSerializer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.RecordedEnterMethodCall;
-import com.ulyp.core.RecordedExitMethodCall;
-import com.ulyp.core.RecordingCompleteMark;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.BinaryListFileReader;
-import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 
 import lombok.SneakyThrows;
@@ -55,13 +49,13 @@ public class FileRecordingDataReader implements RecordingDataReader {
     }
 
     @Override
-    public RecordedEnterMethodCall readEnterMethodCall(long address) {
-        return recordedMethodCallDataReader.readEnterMethodCall(address);
+    public RecordedEnterMethodCall readEnterMethodCall(long address, ReadableRepository<Integer, Type> typeRepository) {
+        return recordedMethodCallDataReader.readEnterMethodCall(address, typeRepository);
     }
 
     @Override
-    public RecordedExitMethodCall readExitMethodCall(long address) {
-        return recordedMethodCallDataReader.readExitMethodCall(address);
+    public RecordedExitMethodCall readExitMethodCall(long address, ReadableRepository<Integer, Type> typeRepository) {
+        return recordedMethodCallDataReader.readExitMethodCall(address, typeRepository);
     }
 
     @Override
@@ -71,7 +65,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (binaryListWithAddress == null) {
                 return null;
             }
-            BinaryList bytes = binaryListWithAddress.getBytes();
+            ReadBinaryList bytes = binaryListWithAddress.getBytes();
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
@@ -154,11 +148,11 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(BinaryList data) {
+        private void onProcessMetadata(ReadBinaryList data) {
             job.onProcessMetadata(FileRecordingDataReader.deserializeProcessMetadata(data));
         }
 
-        protected void onRecordingMetadata(BinaryList data) {
+        protected void onRecordingMetadata(ReadBinaryList data) {
             UnsafeBuffer buffer = new UnsafeBuffer();
             data.iterator().next().wrapValue(buffer);
             BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
@@ -167,11 +161,11 @@ public class FileRecordingDataReader implements RecordingDataReader {
             job.onRecordingMetadata(metadata);
         }
 
-        private void onTypes(BinaryList data) {
+        private void onTypes(ReadBinaryList data) {
             job.onTypes(new TypeList(data));
         }
 
-        private void onMethods(BinaryList data) {
+        private void onMethods(ReadBinaryList data) {
             job.onMethods(new MethodList(data));
         }
 
@@ -181,11 +175,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
         }
     }
 
-    private static ProcessMetadata deserializeProcessMetadata(BinaryList data) {
-        UnsafeBuffer buffer = new UnsafeBuffer();
-        data.iterator().next().wrapValue(buffer);
-        BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
-        decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
-        return ProcessMetadata.deserialize(decoder);
+    private static ProcessMetadata deserializeProcessMetadata(ReadBinaryList readBinaryList) {
+        return ProcessMetadataSerializer.instance.deserialize(readBinaryList.iterator().next());
     }
 }

@@ -1,5 +1,6 @@
 package com.ulyp.core;
 
+import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.transport.BinaryProcessMetadataDecoder;
 import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import lombok.Builder;
@@ -19,17 +20,6 @@ public class ProcessMetadata {
     private final String mainClassName;
     private final List<String> classPathFiles;
     private final long pid;
-
-    public static ProcessMetadata deserialize(BinaryProcessMetadataDecoder decoder) {
-        List<String> classPathFiles = new ArrayList<>();
-        decoder.classPathFiles().forEachRemaining(val -> classPathFiles.add(val.value()));
-
-        return ProcessMetadata.builder()
-                .mainClassName(decoder.mainClassName())
-                .classPathFiles(classPathFiles)
-                .pid(decoder.pid())
-                .build();
-    }
 
     public static String getMainClassNameFromProp() {
         String mainFromProp = System.getProperty("sun.java.command");

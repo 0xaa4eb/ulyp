@@ -39,7 +39,7 @@ public class RecordingState {
     }
 
     synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
-        AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
+        AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator(typeRepository);
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
@@ -112,21 +112,19 @@ public class RecordingState {
         }
 
         CallRecordIndexState callState = getState(callId);
-        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr());
+        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr(), typeRepository);
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()
                 .callId(callState.getId())
                 .subtreeSize(callState.getSubtreeSize())
                 .childrenCallIds(callState.getChildrenCallIds())
                 .method(methodRepository.get(enterMethodCall.getMethodId()))
-                .callee(enterMethodCall.getCallee().toRecord(typeRepository))
-                .args(new ArrayList<>(enterMethodCall.getArguments().stream()
-                        .map(recorded -> recorded.toRecord(typeRepository))
-                        .collect(Collectors.toList())))
+                .callee(enterMethodCall.getCallee())
+                .args(enterMethodCall.getArguments())
                 .recordingState(this);
 
         if (callState.getExitMethodCallAddr() > 0) {
-            RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr());
+            RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr(), typeRepository);
 
             if (exitMethodCall.getNanoTime() > 0) {
                 long nanosDuration = exitMethodCall.getNanoTime() - enterMethodCall.getNanoTime();
@@ -135,7 +133,7 @@ public class RecordingState {
 
             builder = builder
                     .thrown(exitMethodCall.isThrown())
-                    .returnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
+                    .returnValue(exitMethodCall.getReturnValue());
         }
 
         return builder.build();

@@ -1,6 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
+import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.transport.BinaryDataDecoder;
 import com.ulyp.transport.BinaryDataEncoder;
 import org.agrona.ExpandableDirectByteBuffer;
@@ -62,6 +63,10 @@ public class BinaryList implements Iterable<BinaryDataDecoder> {
 
     public void add(byte[] data) {
         add(encoder -> encoder.putValue(data, 0, data.length));
+    }
+
+    public void addInput(Consumer<BinaryInput> writeCallback) {
+
     }
 
     public void add(Consumer<BinaryDataEncoder> writer) {

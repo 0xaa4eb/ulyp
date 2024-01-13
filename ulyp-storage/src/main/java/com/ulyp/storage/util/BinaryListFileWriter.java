@@ -1,6 +1,6 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.mem.WriteBinaryList;
 import com.ulyp.storage.StorageException;
 
 import java.io.*;
@@ -31,12 +31,11 @@ public class BinaryListFileWriter implements AutoCloseable {
         }
     }
 
-    public void append(BinaryList values) throws StorageException {
+    public void append(WriteBinaryList values) throws StorageException {
         try {
             long lastAddr = address;
             outputStream.write(0);
-            values.writeTo(this.outputStream);
-            address += (values.byteLength() + 1);
+            address += (values.writeTo(this.outputStream) + 1);
             outputStream.flush();
             byAddressFileWriter.writeAt(lastAddr, (byte) 1);
         } catch (IOException ioe) {

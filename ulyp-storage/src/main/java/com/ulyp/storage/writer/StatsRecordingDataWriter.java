@@ -60,7 +60,8 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
         delegate.write(callRecords);
         // Every call is recorded twice: as enter method call and exit method calls, therefore the value needs to be adjusted
         callStats.addToCount(callRecords.size() / 2);
-        callStats.addBytes(callRecords.byteLength());
+//        callStats.addBytes(callRecords.byteLength());
+        // TODO
         callBufferStats.addToCount(1);
     }
 
