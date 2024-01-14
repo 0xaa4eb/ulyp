@@ -48,7 +48,7 @@ public class RecordingState {
                 }
                 CallRecordIndexState callState = CallRecordIndexState.builder()
                     .id(uniqueId)
-                    .enterMethodCallAddr(fileAddr + relativeAddress)
+                    .enterMethodCallAddress(fileAddr + relativeAddress)
                     .build();
                 memCallStack.push(callState);
             } else {
@@ -110,7 +110,7 @@ public class RecordingState {
         }
 
         CallRecordIndexState callState = getState(callId);
-        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr(), typeRepository);
+        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddress(), typeRepository);
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()
                 .callId(callState.getId())

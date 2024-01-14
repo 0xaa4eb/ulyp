@@ -31,7 +31,7 @@ public class BinaryListTest {
             out.write(1233434734L);
         });
 
-        BinaryList.In bytesIn = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buffer)));
+        BinaryList.In bytesIn = new BinaryList.In(new BufferBinaryInput(buffer));
 
         AddressableItemIterator<BinaryInput> it = bytesIn.iterator();
 
