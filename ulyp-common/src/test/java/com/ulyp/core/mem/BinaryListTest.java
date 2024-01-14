@@ -76,20 +76,20 @@ public class BinaryListTest {
         assertEquals(2, next.available());
         assertEquals('A', next.readChar());
 
-        assertEquals(BinaryList.In.HEADER_LENGTH + 4, iterator.address());
+        assertEquals(BinaryList.HEADER_LENGTH + 4, iterator.address());
 
         next = iterator.next();
         assertEquals(4, next.available());
         assertEquals('B', next.readChar());
         assertEquals('C', next.readChar());
 
-        assertEquals(BinaryList.In.HEADER_LENGTH + 10, iterator.address());
+        assertEquals(BinaryList.HEADER_LENGTH + 10, iterator.address());
 
         next = iterator.next();
         assertEquals(2, next.available());
         assertEquals('D', next.readChar());
 
-        assertEquals(BinaryList.In.HEADER_LENGTH + 18, iterator.address());
+        assertEquals(BinaryList.HEADER_LENGTH + 18, iterator.address());
 
         assertFalse(iterator.hasNext());
     }

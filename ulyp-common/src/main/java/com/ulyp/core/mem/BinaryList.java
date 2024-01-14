@@ -3,8 +3,6 @@ package com.ulyp.core.mem;
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import org.agrona.ExpandableDirectByteBuffer;
-import org.agrona.MutableDirectBuffer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,68 +18,11 @@ public class BinaryList {
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int MAGIC_OFFSET = 0;
     private static final int SIZE_OFFSET = Integer.BYTES;
-    private static final int BYTES_LENGTH_OFFSET = SIZE_OFFSET + Integer.BYTES;
-    private static final int ID_OFFSET = BYTES_LENGTH_OFFSET + Integer.BYTES;
-
+    private static final int ID_OFFSET = SIZE_OFFSET + Integer.BYTES;
     public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
-    protected final MutableDirectBuffer buffer;
-
-    public BinaryList(int id) {
-        buffer = new ExpandableDirectByteBuffer(64 * 1024);
-        setMagic(MAGIC);
-        setSize(0);
-        setId(id);
-        setByteLength(HEADER_LENGTH);
-    }
-
-    public MutableDirectBuffer getBuffer() {
-        return buffer;
-    }
-
-    public int size() {
-        return buffer.getInt(4);
-    }
-
-    private void setMagic(int value) {
-        buffer.putInt(MAGIC_OFFSET, value);
-    }
-
-    public int id() {
-        return buffer.getInt(ID_OFFSET);
-    }
-
-    private void setId(int value) {
-        buffer.putInt(ID_OFFSET, value);
-    }
-
-    private void setSize(int value) {
-        buffer.putInt(4, value);
-    }
-
-    public int byteLength() {
-        return buffer.getInt(BYTES_LENGTH_OFFSET);
-    }
-
-    private void setByteLength(int value) {
-        buffer.putInt(BYTES_LENGTH_OFFSET, value);
-    }
-
-    private void addToLength(int delta) {
-        setByteLength(byteLength() + delta);
-    }
-
-    public boolean isEmpty() {
-        return size() == 0;
-    }
+    private static final int RECORD_HEADER_LENGTH = Integer.BYTES;
 
     public static class In implements Iterable<BinaryInput> {
-
-        private static final int MAGIC = Integer.MAX_VALUE / 3;
-        private static final int MAGIC_OFFSET = 0;
-        private static final int SIZE_OFFSET = Integer.BYTES;
-        private static final int ID_OFFSET = SIZE_OFFSET + Integer.BYTES;
-        public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
-        private static final int RECORD_HEADER_LENGTH = Integer.BYTES;
 
         private final BinaryInput binaryInput;
 
@@ -149,11 +90,6 @@ public class BinaryList {
     }
 
     public static class Out {
-
-        private static final int MAGIC = Integer.MAX_VALUE / 3;
-        private static final int MAGIC_OFFSET = 0;
-        private static final int SIZE_OFFSET = Integer.BYTES;
-        private static final int ID_OFFSET = SIZE_OFFSET + Integer.BYTES;
 
         private final BinaryOutput binaryOutput;
         private int size = 0;

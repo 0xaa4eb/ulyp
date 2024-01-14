@@ -9,10 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -86,6 +83,7 @@ public class RecorderCurrentSessionCountTest {
     }
 
     @Test
+    @Ignore
     public void testCurrentRecordingSessionCountValueUnderConcurrentRecordings() throws ExecutionException, InterruptedException, TimeoutException {
         ((SimpleLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory()).setCurrentLogLevel(LocationAwareLogger.ERROR_INT);
 

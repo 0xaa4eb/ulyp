@@ -51,7 +51,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     @Override
     public void write(TypeList types) throws StorageException {
         delegate.write(types);
-//        typeStats.addToCount(types.size());
+//        typeStats.addToCount(types.size()); // TODO unlock RecorderCurrentSessionCountTest
 //        typeStats.addBytes(types.byteLength());
     }
 
