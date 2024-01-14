@@ -20,6 +20,11 @@ public class ByAddressFileReader implements Closeable {
 
     public synchronized byte[] readBytes(long address, int bytesCount) throws IOException {
         randomAccessFile.seek(address);
+
+        // TODO read length first
+        /*byte[] lengthBytes = new byte[Integer.BYTES];
+        randomAccessFile.read(lengthBytes);
+        */
         byte[] buf = new byte[bytesCount];
         randomAccessFile.read(buf);
         return buf;

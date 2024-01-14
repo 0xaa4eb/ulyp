@@ -67,7 +67,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (binaryListWithAddress == null) {
                 return null;
             }
-            ReadBinaryList bytes = binaryListWithAddress.getBytes();
+            BinaryList.In bytes = binaryListWithAddress.getBytes();
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
@@ -150,21 +150,21 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(ReadBinaryList data) {
+        private void onProcessMetadata(BinaryList.In data) {
             job.onProcessMetadata(FileRecordingDataReader.deserializeProcessMetadata(data));
         }
 
-        protected void onRecordingMetadata(ReadBinaryList readBinaryList) {
-            job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(readBinaryList.iterator().next()));
+        protected void onRecordingMetadata(BinaryList.In in) {
+            job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        private void onTypes(ReadBinaryList typesList) {
+        private void onTypes(BinaryList.In typesList) {
             for (BinaryInput input : typesList) {
                 job.onType(TypeSerializer.instance.deserialize(input));
             }
         }
 
-        private void onMethods(ReadBinaryList methodList) {
+        private void onMethods(BinaryList.In methodList) {
             for (BinaryInput input : methodList) {
                 job.onMethod(MethodSerializer.instance.deserialize(input));
             }
@@ -176,7 +176,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
         }
     }
 
-    private static ProcessMetadata deserializeProcessMetadata(ReadBinaryList readBinaryList) {
-        return ProcessMetadataSerializer.instance.deserialize(readBinaryList.iterator().next());
+    private static ProcessMetadata deserializeProcessMetadata(BinaryList.In in) {
+        return ProcessMetadataSerializer.instance.deserialize(in.iterator().next());
     }
 }

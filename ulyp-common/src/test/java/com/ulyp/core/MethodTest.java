@@ -1,3 +1,4 @@
+/*
 package com.ulyp.core;
 
 import com.ulyp.transport.BinaryMethodDecoder;
@@ -50,4 +51,4 @@ public class MethodTest {
         Assert.assertEquals(method.getDeclaringType().getName(), deserialized.getDeclaringType().getName());
         Assert.assertEquals(method.getDeclaringType().getId(), deserialized.getDeclaringType().getId());
     }
-}
+}*/

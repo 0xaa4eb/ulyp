@@ -1,13 +1,9 @@
 package com.ulyp.core;
 
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.transport.BinaryProcessMetadataDecoder;
-import com.ulyp.transport.BinaryProcessMetadataEncoder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -33,14 +29,5 @@ public class ProcessMetadata {
         } else {
             return "Unknown";
         }
-    }
-
-    public void serialize(BinaryProcessMetadataEncoder encoder) {
-        encoder.pid(pid);
-        BinaryProcessMetadataEncoder.ClassPathFilesEncoder classPathFilesEncoder = encoder.classPathFilesCount(classPathFiles.size());
-        for (String val : classPathFiles) {
-            classPathFilesEncoder.next().value(val);
-        }
-        encoder.mainClassName(mainClassName);
     }
 }

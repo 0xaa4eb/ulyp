@@ -25,28 +25,28 @@ public class RecordedMethodCallList {
 
     @Getter
     private final int recordingId;
-    private WriteBinaryList writeBinaryList;
-    private ReadBinaryList readBinaryList;
+    private BinaryList.Out out;
+    private BinaryList.In in;
 
-    public RecordedMethodCallList(int recordingId, WriteBinaryList writeBinaryList) {
-        this.writeBinaryList = writeBinaryList;
+    public RecordedMethodCallList(int recordingId, BinaryList.Out writeBinaryList) {
+        this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
         this.recordingId = recordingId;
     }
 
     public RecordedMethodCallList(int recordingId) {
-        this.writeBinaryList = new WriteBinaryList(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        this.out = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
 
-        writeBinaryList.add(out -> out.write(recordingId));
+        out.add(out -> out.write(recordingId));
         this.recordingId = recordingId;
     }
 
-    public RecordedMethodCallList(ReadBinaryList readBinaryList) {
-        this.readBinaryList = readBinaryList;
-        Preconditions.checkArgument(readBinaryList.id() == WIRE_ID, "Invalid binary list passed");
+    public RecordedMethodCallList(BinaryList.In in) {
+        this.in = in;
+        Preconditions.checkArgument(in.id() == WIRE_ID, "Invalid binary list passed");
 
-        BinaryInput next = readBinaryList.iterator().next();
+        BinaryInput next = in.iterator().next();
         this.recordingId = next.readInt();
     }
 
@@ -67,7 +67,7 @@ public class RecordedMethodCallList {
     }
 
     private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
-        writeBinaryList.add(out -> {
+        out.add(out -> {
             out.write(EXIT_METHOD_CALL_ID);
             out.write(callId);
             out.write(thrown);
@@ -101,7 +101,7 @@ public class RecordedMethodCallList {
     }
 
     public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
-        writeBinaryList.add(out -> {
+        out.add(out -> {
             out.write(ENTER_METHOD_CALL_ID);
 
             out.write(callId);
@@ -147,12 +147,12 @@ public class RecordedMethodCallList {
 
     public int size() {
         // one entry is always present for recordingId stored
-        return readBinaryList.size() - 1;
+        return in.size() - 1;
     }
 
     @NotNull
     public AddressableItemIterator<RecordedMethodCall> iterator(ReadableRepository<Integer, Type> typeResolver) {
-        AddressableItemIterator<BinaryInput> iterator = readBinaryList.iterator();
+        AddressableItemIterator<BinaryInput> iterator = in.iterator();
         iterator.next();
 
         return new AddressableItemIterator<RecordedMethodCall>() {
@@ -176,5 +176,9 @@ public class RecordedMethodCallList {
                 }
             }
         };
+    }
+
+    public BinaryList.Out getRawBytes() {
+        return out;
     }
 }

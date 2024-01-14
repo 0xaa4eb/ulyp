@@ -52,7 +52,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     public void write(TypeList types) throws StorageException {
         delegate.write(types);
         typeStats.addToCount(types.size());
-        typeStats.addBytes(types.byteLength());
+//        typeStats.addBytes(types.byteLength());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     public void write(MethodList methods) throws StorageException {
         delegate.write(methods);
         methodStats.addToCount(methods.size());
-        methodStats.addBytes(methods.byteLength());
+//        methodStats.addBytes(methods.byteLength());
     }
 
     public PerTypeStats getCallStats() {

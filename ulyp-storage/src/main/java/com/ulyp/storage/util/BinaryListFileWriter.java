@@ -1,6 +1,6 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.mem.WriteBinaryList;
+import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.storage.StorageException;
 
@@ -32,23 +32,25 @@ public class BinaryListFileWriter implements AutoCloseable {
         }
     }
 
-    public void append(WriteBinaryList values) throws StorageException {
+    public void write(BinaryList.Out values) throws StorageException {
         try {
-            long lastAddr = address;
+            long startAddr = address;
             outputStream.write(0);
-            outputStream.write(1);
-            outputStream.write(1);
-            outputStream.write(1);
-            outputStream.write(1);
+            for (int i = 0; i < Integer.BYTES; i++) {
+                outputStream.write(1);
+            }
 
             int bytesWritten = values.writeTo(this.outputStream);
-            address += (bytesWritten + Byte.SIZE + Integer.SIZE);
+            address += (bytesWritten + Byte.BYTES + Integer.BYTES);
             outputStream.flush();
 
-            byAddressFileWriter.writeAt(lastAddr, (byte) 1);
+            byte[] bytesWrittenBytes = new byte[Integer.BYTES];
+            BitUtil.intToBytes(bytesWritten, bytesWrittenBytes, 0);
+            for (int i = 0; i < bytesWrittenBytes.length; i++) {
+                byAddressFileWriter.writeAt(startAddr + Byte.BYTES + i, bytesWrittenBytes[i]);
+            }
 
-            byAddressFileWriter.writeAt(lastAddr + 1, (byte) 1);
-
+            byAddressFileWriter.writeAt(startAddr, (byte) 1);
         } catch (IOException ioe) {
             throw new StorageException("Error while writing data", ioe);
         }

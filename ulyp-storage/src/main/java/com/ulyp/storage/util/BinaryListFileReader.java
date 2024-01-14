@@ -1,13 +1,18 @@
 package com.ulyp.storage.util;
 
 import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.recorders.bytes.BufferBinaryInput;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.reader.BinaryListWithAddress;
+import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.*;
 
 
 public class BinaryListFileReader implements AutoCloseable {
+
+    public static final int HEADER_SIZE = Byte.BYTES + Integer.BYTES;
 
     private final RandomAccessFile randomAccessFile;
     private long address = 0;
@@ -17,12 +22,12 @@ public class BinaryListFileReader implements AutoCloseable {
     }
 
     public BinaryListWithAddress readWithAddress() throws IOException {
-        long desired = address + 1 + BinaryList.HEADER_LENGTH;
+        long desired = address + HEADER_SIZE;
         if (randomAccessFile.length() < desired) {
             return null;
         }
 
-        byte[] buf = new byte[1 + BinaryList.HEADER_LENGTH];
+        byte[] buf = new byte[HEADER_SIZE];
 
         randomAccessFile.seek(address);
         randomAccessFile.read(buf);
@@ -31,26 +36,27 @@ public class BinaryListFileReader implements AutoCloseable {
             return null;
         }
 
-        BinaryList binaryList = new BinaryList(buf, 1);
-        long length = binaryList.byteLength();
-        int bytesToRead = (int) (length + 1);
-        long binaryListAddress = address;
-        randomAccessFile.seek(binaryListAddress);
+        long length = BitUtil.bytesToInt(buf, 1);
+        int bytesToRead = (int) (length + HEADER_SIZE);
+        long address = this.address;
+        randomAccessFile.seek(address);
         byte[] data = new byte[bytesToRead];
         int bytesRead = randomAccessFile.read(data);
         Preconditions.checkState(
                 bytesRead == bytesToRead,
                 "Binary list marked as fully written, but reader was not able to read " + bytesToRead +
                         " bytes. Read " + bytesRead + " bytes");
-        BinaryList result = new BinaryList(data, 1);
-        address += bytesRead;
+        UnsafeBuffer buffer = new UnsafeBuffer();
+        buffer.wrap(data, HEADER_SIZE, bytesToRead - HEADER_SIZE);
+        BinaryList.In in = new BinaryList.In(new BufferBinaryInput(buffer));
+        this.address += bytesRead;
         return BinaryListWithAddress.builder()
-                .address(binaryListAddress + 1)
-                .bytes(result)
+                .address(address + HEADER_SIZE)
+                .bytes(in)
                 .build();
     }
 
-    public BinaryList read() throws IOException {
+    public BinaryList.In read() throws IOException {
         BinaryListWithAddress data = readWithAddress();
         return data != null ? data.getBytes() : null;
     }

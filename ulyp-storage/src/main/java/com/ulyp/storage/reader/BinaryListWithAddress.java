@@ -1,6 +1,6 @@
 package com.ulyp.storage.reader;
 
-import com.ulyp.core.mem.ReadBinaryList;
+import com.ulyp.core.mem.BinaryList;
 import lombok.Builder;
 import lombok.Value;
 
@@ -9,5 +9,5 @@ import lombok.Value;
 public class BinaryListWithAddress {
 
     long address;
-    ReadBinaryList bytes;
+    BinaryList.In bytes;
 }

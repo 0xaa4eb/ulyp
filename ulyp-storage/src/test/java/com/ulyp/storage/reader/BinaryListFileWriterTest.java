@@ -2,12 +2,13 @@ package com.ulyp.storage.reader;
 
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.recorders.bytes.BufferBinaryInput;
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import com.ulyp.storage.util.BinaryListFileReader;
 import com.ulyp.storage.util.BinaryListFileWriter;
 import com.ulyp.storage.util.ByAddressFileReader;
-import com.ulyp.transport.BinaryDataDecoder;
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static org.junit.Assert.*;
+
 public class BinaryListFileWriterTest {
+
+    private final byte[] buffer = new byte[16 * 1024];
 
     private BinaryListFileWriter writer;
     private BinaryListFileReader reader;
@@ -29,92 +34,87 @@ public class BinaryListFileWriterTest {
         this.byAddressFileReader = new ByAddressFileReader(file);
     }
 
-    @Test
-    public void shouldReturnNullWhenNoListIsWritten() throws IOException {
-        Assert.assertNull(reader.read());
-
+    public void tearDown() throws IOException {
+        writer.close();
+        reader.close();
+        byAddressFileReader.close();
     }
 
     @Test
     public void shouldReadSingleList() throws IOException {
-        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
+        assertNull(reader.read());
 
-        writer.append(list1);
+        BinaryList.Out bytesOut = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
 
-        BinaryList binaryList = reader.read();
+        bytesOut.add(out -> out.write(1));
+        bytesOut.add(out -> out.write(2));
+        bytesOut.add(out -> out.write(3));
 
-        Assert.assertEquals(list1, binaryList);
-        Assert.assertNull(reader.read());
+        writer.write(bytesOut);
+
+        BinaryList.In bytesIn = reader.read();
+
+        assertEquals(3, bytesIn.size());
+
+        AddressableItemIterator<BinaryInput> iterator = bytesIn.iterator();
+
+        assertTrue(iterator.hasNext());
+        BinaryInput next = iterator.next();
+        assertEquals(1, next.readInt());
     }
 
     @Test
     public void shouldReadMultipleLists() throws IOException {
-        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
-        BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
+        BinaryList.Out bytesOut1 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        bytesOut1.add(out -> out.write(1));
+        bytesOut1.add(out -> out.write(2));
+        writer.write(bytesOut1);
 
-        writer.append(list1);
-        writer.append(list2);
+        BinaryList.Out bytesOut2 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        bytesOut2.add(out -> out.write(2));
+        bytesOut2.add(out -> out.write(3));
+        bytesOut2.add(out -> out.write(4));
+        writer.write(bytesOut2);
 
-        Assert.assertEquals(list1, reader.read());
-        Assert.assertEquals(list2, reader.read());
-        Assert.assertNull(reader.read());
-    }
+        BinaryList.In bytesIn = reader.read();
+        assertEquals(2, bytesIn.size());
 
-    @Test
-    public void shouldReadMultipleListsOneAfterAnother() throws IOException {
-        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
-        writer.append(list1);
-
-        Assert.assertEquals(list1, reader.read());
-
-        BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
-        writer.append(list2);
-
-        Assert.assertEquals(list2, reader.read());
-
-        Assert.assertNull(reader.read());
+        bytesIn = reader.read();
+        assertEquals(3, bytesIn.size());
     }
 
     @Test
     public void shouldAllowToNavigateToArbitraryListInFile() throws IOException {
-        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
-        writer.append(list1);
+        BinaryList.Out bytesOut1 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        bytesOut1.add(out -> out.write(4356274L));
+        bytesOut1.add(out -> out.write(7643565L));
+        bytesOut1.add(out -> out.write(9874534L));
+        writer.write(bytesOut1);
 
-        BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
-        writer.append(list2);
+        BinaryList.Out bytesOut2 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        bytesOut2.add(out -> out.write(5489234L));
+        bytesOut2.add(out -> out.write(6903234L));
+        bytesOut2.add(out -> out.write(8983434L));
+        writer.write(bytesOut2);
 
-        BinaryListWithAddress data1 = reader.readWithAddress();
-        byte[] list1Raw = byAddressFileReader.readBytes(data1.getAddress(), 8 * 1024);
+        BinaryListWithAddress list1 = reader.readWithAddress();
 
-        Assert.assertEquals(list1, new BinaryList(list1Raw));
+        AddressableItemIterator<BinaryInput> it = list1.getBytes().iterator();
+        it.next();
+        it.next();
+        long addr = list1.getAddress() + it.address();
+        byte[] bytes = byAddressFileReader.readBytes(addr, 1024);
+        BufferBinaryInput input = new BufferBinaryInput(new UnsafeBuffer(bytes));
+        assertEquals(7643565L, input.readLong());
 
-        BinaryListWithAddress data2 = reader.readWithAddress();
-        byte[] list2Raw = byAddressFileReader.readBytes(data2.getAddress(), 8 * 1024);
-
-        Assert.assertEquals(list2, new BinaryList(list2Raw));
-    }
-
-    @Test
-    public void shouldAllowToNavigateToAnyItemInAnyListInFile() throws IOException {
-        BinaryList list1 = BinaryList.of(42, "ABC".getBytes(), "DEFG".getBytes());
-        writer.append(list1);
-
-        BinaryList list2 = BinaryList.of(777, "ZFD".getBytes());
-        writer.append(list2);
-
-        BinaryListWithAddress data1 = reader.readWithAddress();
-        AddressableItemIterator<BinaryDataDecoder> iterator1 = data1.getBytes().iterator();
-        iterator1.next();
-        long addressOfItem1 = iterator1.address(); // within the list address
-        System.out.println(addressOfItem1);
-        BinaryDataDecoder decoder = new BinaryDataDecoder();
-        decoder.wrap(
-                new UnsafeBuffer(byAddressFileReader.readBytes(data1.getAddress() + addressOfItem1, 8 * 1024)),
-                0,
-                BinaryDataDecoder.BLOCK_LENGTH,
-                0
-        );
-
-        System.out.println(decoder.valueLength());
+        BinaryListWithAddress list2 = reader.readWithAddress();
+        BinaryList.In bytes2 = list2.getBytes();
+        it = bytes2.iterator();
+        it.next();
+        it.next();
+        addr = list2.getAddress() + it.address();
+        bytes = byAddressFileReader.readBytes(addr, 1024);
+        input = new BufferBinaryInput(new UnsafeBuffer(bytes));
+        assertEquals(6903234L, input.readLong());
     }
 }

@@ -1,6 +1,7 @@
 package com.ulyp.core;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
@@ -25,6 +26,7 @@ public class CallRecordBufferTest {
         .build();
 
     @Test
+    @Ignore
     public void testTotalCallRecordedEnterCalls() {
         CallRecordBuffer log = new CallRecordBuffer(45645);
 

@@ -23,7 +23,7 @@ public class RecordedMethodCallListTest {
 
     @Test
     public void testAddAndIterate() {
-        WriteBinaryList write = new WriteBinaryList(RecordedMethodCallList.WIRE_ID, new BufferBinaryOutput(new UnsafeBuffer(buf)));
+        BinaryList.Out write = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new BufferBinaryOutput(new UnsafeBuffer(buf)));
         RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, write);
 
         Type type = typeResolver.get(A.class);
@@ -33,7 +33,7 @@ public class RecordedMethodCallListTest {
         recordedMethodCallList.addEnterMethodCall(134, method, typeResolver, new A(), new Object[]{5});
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
-        ReadBinaryList read = new ReadBinaryList(new BufferBinaryInput(new UnsafeBuffer(buf)));
+        BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buf)));
         RecordedMethodCallList list = new RecordedMethodCallList(read);
 
         AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());
