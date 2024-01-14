@@ -3,15 +3,12 @@ package com.ulyp.storage.reader;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
-import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.recorders.bytes.BufferBinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
-import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.ByAddressFileReader;
-import com.ulyp.transport.*;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.Closeable;
@@ -30,6 +27,7 @@ class RecordedMethodCallDataReader implements Closeable {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
             BufferBinaryInput input = new BufferBinaryInput(new UnsafeBuffer(bytes));
+            input.readByte();
             return RecordedEnterMethodCallSerializer.deserialize(input, typeRepository);
         } catch (IOException e) {
             throw new StorageException(
@@ -44,7 +42,7 @@ class RecordedMethodCallDataReader implements Closeable {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
             BufferBinaryInput input = new BufferBinaryInput(new UnsafeBuffer(bytes));
-
+            input.readByte(); // TODO this is ugly
             return RecordedExitMethodCallSerializer.deserialize(input, typeRepository);
         } catch (IOException e) {
             throw new StorageException(

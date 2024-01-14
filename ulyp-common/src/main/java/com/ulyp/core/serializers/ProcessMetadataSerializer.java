@@ -11,7 +11,7 @@ public class ProcessMetadataSerializer implements Serializer<ProcessMetadata> {
     @Override
     public ProcessMetadata deserialize(BinaryInput input) {
         return ProcessMetadata.builder()
-                .pid(input.readInt())
+                .pid(input.readLong())
                 .mainClassName(input.readString())
                 .build();
     }

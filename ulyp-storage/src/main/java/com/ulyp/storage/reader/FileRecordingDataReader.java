@@ -71,7 +71,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
-            return deserializeProcessMetadata(bytes);
+            return ProcessMetadataSerializer.instance.deserialize(bytes.iterator().next());
         } catch (IOException e) {
             throw new StorageException(e);
         }
@@ -150,8 +150,8 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(BinaryList.In data) {
-            job.onProcessMetadata(FileRecordingDataReader.deserializeProcessMetadata(data));
+        private void onProcessMetadata(BinaryList.In in) {
+            job.onProcessMetadata(ProcessMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
         protected void onRecordingMetadata(BinaryList.In in) {
@@ -174,9 +174,5 @@ public class FileRecordingDataReader implements RecordingDataReader {
             RecordedMethodCallList calls = new RecordedMethodCallList(data.getBytes());
             job.onRecordedCalls(data.getAddress(), calls);
         }
-    }
-
-    private static ProcessMetadata deserializeProcessMetadata(BinaryList.In in) {
-        return ProcessMetadataSerializer.instance.deserialize(in.iterator().next());
     }
 }

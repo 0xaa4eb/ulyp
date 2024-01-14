@@ -79,7 +79,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void write(RecordingMetadata recordingMetadata) {
         write(writer -> {
-            BinaryList.Out bytesOut = new BinaryList.Out(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            BinaryList.Out bytesOut = new BinaryList.Out(RecordingMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
             bytesOut.add(out -> RecordingMetadataSerializer.instance.serialize(out, recordingMetadata));
             writer.write(bytesOut);
             if (LoggingSettings.DEBUG_ENABLED) {

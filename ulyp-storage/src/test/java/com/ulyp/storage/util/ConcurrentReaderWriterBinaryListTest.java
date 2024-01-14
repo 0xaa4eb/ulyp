@@ -1,10 +1,11 @@
-/*
 package com.ulyp.storage.util;
 
 import com.ulyp.core.mem.BinaryList;
 
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import lombok.Builder;
 import lombok.Value;
+import org.agrona.ExpandableDirectByteBuffer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -106,13 +107,13 @@ public class ConcurrentReaderWriterBinaryListTest {
             int itemsWritten = 0;
 
             for (int i = 0; i < listsToWrite; i++) {
-                BinaryList list = new BinaryList(0);
+                BinaryList.Out list = new BinaryList.Out(0, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
 
                 for (int k = 0; k < ThreadLocalRandom.current().nextInt(10); k++) {
-                    list.add("ABC".getBytes());
+                    list.add(out -> out.write("ABC"));
                     itemsWritten++;
                 }
-                writer.append(list);
+                writer.write(list);
 
                 if (!maxSleep.isZero()) {
                     Thread.sleep(ThreadLocalRandom.current().nextLong(maxSleep.toMillis()));
@@ -122,4 +123,4 @@ public class ConcurrentReaderWriterBinaryListTest {
             return WriteResult.builder().itemsWritten(itemsWritten).build();
         }
     }
-}*/
+}

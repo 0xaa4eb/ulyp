@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * Sadly, moving that logic to storage level is not feasible right now
  */
 @Slf4j
-public class RecordDataWriter {
+public class AgentDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
     private final MethodRepository methodRepository;
@@ -29,7 +29,7 @@ public class RecordDataWriter {
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
-    public RecordDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
+    public AgentDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
         this.recordingDataWriter = recordingDataWriter;
         this.methodRepository = methodRepository;
     }
