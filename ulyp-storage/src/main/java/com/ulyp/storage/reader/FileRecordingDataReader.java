@@ -9,14 +9,16 @@ import java.util.concurrent.TimeUnit;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
+import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.core.serializers.MethodSerializer;
 import com.ulyp.core.serializers.ProcessMetadataSerializer;
-import org.agrona.concurrent.UnsafeBuffer;
+import com.ulyp.core.serializers.RecordingMetadataSerializer;
 
+import com.ulyp.core.serializers.TypeSerializer;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.BinaryListFileReader;
-import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 
 import lombok.SneakyThrows;
 
@@ -152,21 +154,20 @@ public class FileRecordingDataReader implements RecordingDataReader {
             job.onProcessMetadata(FileRecordingDataReader.deserializeProcessMetadata(data));
         }
 
-        protected void onRecordingMetadata(ReadBinaryList data) {
-            UnsafeBuffer buffer = new UnsafeBuffer();
-            data.iterator().next().wrapValue(buffer);
-            BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
-            decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
-            RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
-            job.onRecordingMetadata(metadata);
+        protected void onRecordingMetadata(ReadBinaryList readBinaryList) {
+            job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(readBinaryList.iterator().next()));
         }
 
-        private void onTypes(ReadBinaryList data) {
-            job.onTypes(new TypeList(data));
+        private void onTypes(ReadBinaryList typesList) {
+            for (BinaryInput input : typesList) {
+                job.onType(TypeSerializer.instance.deserialize(input));
+            }
         }
 
-        private void onMethods(ReadBinaryList data) {
-            job.onMethods(new MethodList(data));
+        private void onMethods(ReadBinaryList methodList) {
+            for (BinaryInput input : methodList) {
+                job.onMethod(MethodSerializer.instance.deserialize(input));
+            }
         }
 
         private void onRecordedCalls(BinaryListWithAddress data) {

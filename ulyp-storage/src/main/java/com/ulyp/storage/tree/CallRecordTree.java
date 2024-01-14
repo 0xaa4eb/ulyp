@@ -111,13 +111,13 @@ public class CallRecordTree implements AutoCloseable {
         }
 
         @Override
-        public void onTypes(TypeList newTypes) {
-            newTypes.forEach(type -> types.store(type.getId(), type));
+        public void onType(Type type) {
+            types.store(type.getId(), type);
         }
 
         @Override
-        public void onMethods(MethodList newMethods) {
-            newMethods.forEach(type -> methods.store(type.getId(), type));
+        public void onMethod(Method method) {
+            methods.store(method.getId(), method);
         }
 
         @Override
