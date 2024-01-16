@@ -70,7 +70,6 @@ public class NumbersRecordingBenchmark {
         return result;
     }
 
-
     private long doCompute() {
         long res = 0;
         for (int i = 0; i < callCount; i++) {
