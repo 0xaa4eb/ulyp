@@ -29,6 +29,7 @@ dependencies {
     jmhImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
     jmhImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
+    jmhImplementation group: 'com.hazelcast', name: 'hazelcast', version: '5.3.6'
     jmhImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
     jmhImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
     jmhImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
@@ -54,7 +55,7 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     dependsOn = [':ulyp-agent:shadowJar']
     // To enable the built-in stacktrace sampling profiler
 //    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*']
-    args = ['.*InstrumentationBenchmark.*']
+    args = ['.*HazelcastBenchmark.*']
 }
 
 classes.finalizedBy(jmhClasses)

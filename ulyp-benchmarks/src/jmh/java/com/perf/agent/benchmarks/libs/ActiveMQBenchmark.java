@@ -61,7 +61,8 @@ public class ActiveMQBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.sendMsg",
-            "-Dulyp.constructors"
+            "-Dulyp.constructors",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 2)
     @Benchmark
     public void sendMsgRecord() throws JMSException {
@@ -72,7 +73,8 @@ public class ActiveMQBenchmark {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.sendMsg",
-        "-Dulyp.constructors"
+        "-Dulyp.constructors",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 2)
     @Benchmark
     public void sendMsgRecordSync() throws JMSException, InterruptedException, TimeoutException {
