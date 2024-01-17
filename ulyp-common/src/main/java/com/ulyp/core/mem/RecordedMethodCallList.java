@@ -131,6 +131,10 @@ public class RecordedMethodCallList {
         return out.size() - 1;
     }
 
+    public int bytesWritten() {
+        return out.bytesWritten();
+    }
+
     public BinaryList.Out toBytes() {
         return out;
     }

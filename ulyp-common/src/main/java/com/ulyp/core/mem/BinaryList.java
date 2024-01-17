@@ -123,6 +123,10 @@ public class BinaryList {
             binaryOutput.writeAt(SIZE_OFFSET, value);
         }
 
+        public int bytesWritten() {
+            return binaryOutput.currentOffset();
+        }
+
         public boolean isEmpty() {
             return size == 0;
         }
