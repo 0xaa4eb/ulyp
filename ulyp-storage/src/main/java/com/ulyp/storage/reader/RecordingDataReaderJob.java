@@ -18,7 +18,7 @@ public interface RecordingDataReaderJob {
 
     void onMethod(Method method);
 
-    void onRecordedCalls(long address, RecordedMethodCallList recordedMethodCalls);
+    void onRecordedCalls(long address, RecordedMethodCalls recordedMethodCalls);
 
     boolean continueOnNoData();
 }

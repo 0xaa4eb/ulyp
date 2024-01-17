@@ -11,6 +11,7 @@ import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.storage.reader.RecordedMethodCalls;
 import com.ulyp.storage.reader.RecordingDataReaderJob;
 
 import lombok.Getter;
@@ -49,7 +50,7 @@ public class StubRecordingDataReaderJob implements RecordingDataReaderJob {
     }
 
     @Override
-    public void onRecordedCalls(long address, RecordedMethodCallList recordedMethodCalls) {
+    public void onRecordedCalls(long address, RecordedMethodCalls recordedMethodCalls) {
         int recordingId = recordedMethodCalls.getRecordingId();
         List<RecordedMethodCall> calls = recordedCalls.computeIfAbsent(recordingId, recId -> new ArrayList<>());
         AddressableItemIterator<RecordedMethodCall> iterator = recordedMethodCalls.iterator(types);

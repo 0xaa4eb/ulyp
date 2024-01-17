@@ -4,15 +4,9 @@ import com.ulyp.core.*;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
-import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
-import com.ulyp.core.repository.ReadableRepository;
-import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
-import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
-import com.ulyp.core.util.Preconditions;
-import lombok.Getter;
 import org.agrona.ExpandableDirectByteBuffer;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 
 /**
  * A list of serialized {@link RecordedMethodCall} instances
@@ -23,31 +17,19 @@ public class RecordedMethodCallList {
     public static final byte EXIT_METHOD_CALL_ID = 2;
     public static final int WIRE_ID = 2;
 
-    @Getter
-    private final int recordingId;
-    private BinaryList.Out out;
-    private BinaryList.In in;
+    private final BinaryList.Out out;
 
+    @TestOnly
     public RecordedMethodCallList(int recordingId, BinaryList.Out writeBinaryList) {
         this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
-        this.recordingId = recordingId;
     }
 
     public RecordedMethodCallList(int recordingId) {
         this.out = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
 
         out.add(out -> out.write(recordingId));
-        this.recordingId = recordingId;
-    }
-
-    public RecordedMethodCallList(BinaryList.In in) {
-        this.in = in;
-        Preconditions.checkArgument(in.id() == WIRE_ID, "Invalid binary list passed");
-
-        BinaryInput next = in.iterator().next();
-        this.recordingId = next.readInt();
     }
 
     public void addExitMethodCall(int callId, TypeResolver typeResolver, Object returnValue) {
@@ -146,39 +128,10 @@ public class RecordedMethodCallList {
     }
 
     public int size() {
-        // one entry is always present for recordingId stored
-        return in.size() - 1;
+        return out.size() - 1;
     }
 
-    @NotNull
-    public AddressableItemIterator<RecordedMethodCall> iterator(ReadableRepository<Integer, Type> typeResolver) {
-        AddressableItemIterator<BinaryInput> iterator = in.iterator();
-        iterator.next();
-
-        return new AddressableItemIterator<RecordedMethodCall>() {
-            @Override
-            public long address() {
-                return iterator.address();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public RecordedMethodCall next() {
-                BinaryInput in = iterator.next();
-                if (in.readByte() == ENTER_METHOD_CALL_ID) {
-                    return RecordedEnterMethodCallSerializer.deserialize(in, typeResolver);
-                } else {
-                    return RecordedExitMethodCallSerializer.deserialize(in, typeResolver);
-                }
-            }
-        };
-    }
-
-    public BinaryList.Out getRawBytes() {
+    public BinaryList.Out toBytes() {
         return out;
     }
 }

@@ -1,6 +1,8 @@
-package com.ulyp.core.mem;
+package com.ulyp.storage.reader;
 
 import com.ulyp.core.*;
+import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.bytes.BufferBinaryInput;
@@ -34,7 +36,7 @@ public class RecordedMethodCallListTest {
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
         BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buf)));
-        RecordedMethodCallList list = new RecordedMethodCallList(read);
+        RecordedMethodCalls list = new RecordedMethodCalls(read);
 
         AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());
 
@@ -51,15 +53,6 @@ public class RecordedMethodCallListTest {
 
         assertEquals(134, exitCall.getCallId());
     }
-/*
-    @Test
-    public void testSerialization() {
-        BinaryList rawBytes = list.getRawBytes();
-
-        RecordedMethodCallList recordedMethodCalls = new RecordedMethodCallList(rawBytes);
-
-        Assert.assertEquals(432, recordedMethodCalls.getRecordingId());
-    }*/
 
     public static class A {
         public String convert(int x) {

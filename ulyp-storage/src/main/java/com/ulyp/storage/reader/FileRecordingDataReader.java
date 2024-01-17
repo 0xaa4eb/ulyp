@@ -171,7 +171,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
         }
 
         private void onRecordedCalls(BinaryListWithAddress data) {
-            RecordedMethodCallList calls = new RecordedMethodCallList(data.getBytes());
+            RecordedMethodCalls calls = new RecordedMethodCalls(data.getBytes());
             job.onRecordedCalls(data.getAddress(), calls);
         }
     }

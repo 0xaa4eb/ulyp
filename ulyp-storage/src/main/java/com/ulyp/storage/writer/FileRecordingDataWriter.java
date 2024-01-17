@@ -98,7 +98,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public synchronized void write(RecordedMethodCallList callRecords) {
-        BinaryList.Out bytesOut = callRecords.getRawBytes();
+        BinaryList.Out bytesOut = callRecords.toBytes();
         if (bytesOut.isEmpty()) {
             return;
         }
