@@ -1,9 +1,6 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
