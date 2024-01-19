@@ -3,6 +3,9 @@ package com.ulyp.core.recorders.bytes;
 import com.ulyp.core.TypeResolver;
 import org.agrona.DirectBuffer;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 public interface BinaryOutput extends AutoCloseable {
 
     int recursionDepth();
@@ -12,6 +15,10 @@ public interface BinaryOutput extends AutoCloseable {
     BinaryOutput nest();
 
     Checkpoint checkpoint();
+
+    int currentOffset();
+
+    void writeAt(int offset, int value);
 
     void write(boolean value);
 
@@ -32,4 +39,6 @@ public interface BinaryOutput extends AutoCloseable {
     void write(char val);
 
     void close() throws RuntimeException;
+
+    int writeTo(OutputStream outputStream) throws IOException;
 }

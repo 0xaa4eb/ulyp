@@ -21,8 +21,8 @@ public class PlainTextSearchQuery implements SearchQuery {
             RecordedEnterMethodCall recordedEnterMethodCall,
             ReadableRepository<Integer, Type> types,
             ReadableRepository<Integer, Method> methods) {
-        return StringUtils.containsIgnoreCase(recordedEnterMethodCall.getCallee().toRecord(types).toString(), searchQuery)
-                || recordedEnterMethodCall.getArguments().stream().anyMatch(arg -> StringUtils.containsIgnoreCase(arg.toRecord(types).toString(), searchQuery))
+        return StringUtils.containsIgnoreCase(recordedEnterMethodCall.getCallee().toString(), searchQuery)
+                || recordedEnterMethodCall.getArguments().stream().anyMatch(arg -> StringUtils.containsIgnoreCase(arg.toString(), searchQuery))
                 || StringUtils.containsIgnoreCase(methods.get(recordedEnterMethodCall.getMethodId()).getName(), searchQuery);
     }
 
@@ -31,6 +31,6 @@ public class PlainTextSearchQuery implements SearchQuery {
             RecordedExitMethodCall recordedExitMethodCall,
             ReadableRepository<Integer, Type> typeResolver,
             ReadableRepository<Integer, Method> methods) {
-        return StringUtils.containsIgnoreCase(recordedExitMethodCall.getReturnValue().toRecord(typeResolver).toString(), searchQuery);
+        return StringUtils.containsIgnoreCase(recordedExitMethodCall.getReturnValue().toString(), searchQuery);
     }
 }

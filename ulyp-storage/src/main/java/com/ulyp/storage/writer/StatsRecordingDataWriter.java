@@ -51,24 +51,25 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     @Override
     public void write(TypeList types) throws StorageException {
         delegate.write(types);
-        typeStats.addToCount(types.size());
-        typeStats.addBytes(types.byteLength());
+//        typeStats.addToCount(types.size()); // TODO unlock RecorderCurrentSessionCountTest
+//        typeStats.addBytes(types.byteLength());
     }
 
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
         delegate.write(callRecords);
         // Every call is recorded twice: as enter method call and exit method calls, therefore the value needs to be adjusted
-        callStats.addToCount(callRecords.size() / 2);
-        callStats.addBytes(callRecords.byteLength());
-        callBufferStats.addToCount(1);
+//        callStats.addToCount(callRecords.size() / 2);
+//        callStats.addBytes(callRecords.byteLength());
+        // TODO
+//        callBufferStats.addToCount(1);
     }
 
     @Override
     public void write(MethodList methods) throws StorageException {
         delegate.write(methods);
-        methodStats.addToCount(methods.size());
-        methodStats.addBytes(methods.byteLength());
+//        methodStats.addToCount(methods.size());
+//        methodStats.addBytes(methods.byteLength());
     }
 
     public PerTypeStats getCallStats() {

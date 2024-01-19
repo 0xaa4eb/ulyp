@@ -6,6 +6,8 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.agrona.DirectBuffer;
@@ -108,6 +110,14 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
         recursionDepth--;
     }
 
+    @Override
+    public int writeTo(OutputStream outputStream) throws IOException {
+        for (int i = 0; i < pos; i++) {
+            outputStream.write(buffer.getByte(i));
+        }
+        return pos;
+    }
+
     public int recursionDepth() {
         return recursionDepth;
     }
@@ -127,5 +137,15 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
     public Checkpoint checkpoint() {
         final int currentPos = this.pos;
         return () -> this.pos = currentPos;
+    }
+
+    @Override
+    public int currentOffset() {
+        return this.pos;
+    }
+
+    @Override
+    public void writeAt(int offset, int value) {
+        buffer.putInt(offset, value);
     }
 }

@@ -12,6 +12,13 @@ public class BitUtil {
         return (int) (Math.log(value) / Math.log(2));
     }
 
+    public static void intToBytes(long value, byte[] dst, int offset) {
+        for (int i = Integer.BYTES - 1; i >= 0; i--) {
+            dst[offset + i] = (byte) (value & 0xFF);
+            value >>= Byte.SIZE;
+        }
+    }
+
     public static void longToBytes(long value, byte[] dst, int offset) {
         for (int i = Long.BYTES - 1; i >= 0; i--) {
             dst[offset + i] = (byte) (value & 0xFF);
@@ -35,6 +42,16 @@ public class BitUtil {
         }
         return result;
     }
+
+    public static int bytesToInt(final byte[] bytes, int offset) {
+        int result = 0;
+        for (int i = 0; i < Integer.BYTES; i++) {
+            result <<= Byte.SIZE;
+            result |= (bytes[offset + i] & 0xFF);
+        }
+        return result;
+    }
+
 
     public static LongList bytesToLongs(final byte[] bytes) {
         int size = bytes.length / Long.BYTES;

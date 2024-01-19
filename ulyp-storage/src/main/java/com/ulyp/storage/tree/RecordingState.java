@@ -4,13 +4,12 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.util.BitUtil;
+import com.ulyp.storage.reader.RecordedMethodCalls;
 import com.ulyp.storage.reader.RecordingDataReader;
 
 import lombok.Getter;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class RecordingState {
 
@@ -38,8 +37,8 @@ public class RecordingState {
         this.typeRepository = typeRepository;
     }
 
-    synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCallList calls) {
-        AddressableItemIterator<RecordedMethodCall> iterator = calls.iterator();
+    synchronized void onNewRecordedCalls(long fileAddr, RecordedMethodCalls recordedMethodCalls) {
+        AddressableItemIterator<RecordedMethodCall> iterator = recordedMethodCalls.iterator(typeRepository);
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
@@ -50,7 +49,7 @@ public class RecordingState {
                 }
                 CallRecordIndexState callState = CallRecordIndexState.builder()
                     .id(uniqueId)
-                    .enterMethodCallAddr(fileAddr + relativeAddress)
+                    .enterMethodCallAddress(fileAddr + relativeAddress)
                     .build();
                 memCallStack.push(callState);
             } else {
@@ -112,21 +111,19 @@ public class RecordingState {
         }
 
         CallRecordIndexState callState = getState(callId);
-        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddr());
+        RecordedEnterMethodCall enterMethodCall = recordingDataReader.readEnterMethodCall(callState.getEnterMethodCallAddress(), typeRepository);
 
         CallRecord.CallRecordBuilder builder = CallRecord.builder()
                 .callId(callState.getId())
                 .subtreeSize(callState.getSubtreeSize())
                 .childrenCallIds(callState.getChildrenCallIds())
                 .method(methodRepository.get(enterMethodCall.getMethodId()))
-                .callee(enterMethodCall.getCallee().toRecord(typeRepository))
-                .args(new ArrayList<>(enterMethodCall.getArguments().stream()
-                        .map(recorded -> recorded.toRecord(typeRepository))
-                        .collect(Collectors.toList())))
+                .callee(enterMethodCall.getCallee())
+                .args(enterMethodCall.getArguments())
                 .recordingState(this);
 
         if (callState.getExitMethodCallAddr() > 0) {
-            RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr());
+            RecordedExitMethodCall exitMethodCall = recordingDataReader.readExitMethodCall(callState.getExitMethodCallAddr(), typeRepository);
 
             if (exitMethodCall.getNanoTime() > 0) {
                 long nanosDuration = exitMethodCall.getNanoTime() - enterMethodCall.getNanoTime();
@@ -135,7 +132,7 @@ public class RecordingState {
 
             builder = builder
                     .thrown(exitMethodCall.isThrown())
-                    .returnValue(exitMethodCall.getReturnValue().toRecord(typeRepository));
+                    .returnValue(exitMethodCall.getReturnValue());
         }
 
         return builder.build();

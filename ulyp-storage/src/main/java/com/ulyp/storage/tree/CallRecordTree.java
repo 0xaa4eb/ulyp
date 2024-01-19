@@ -19,6 +19,7 @@ import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.repository.Repository;
 import com.ulyp.core.util.Backoff;
 import com.ulyp.core.util.FixedDelayBackoff;
+import com.ulyp.storage.reader.RecordedMethodCalls;
 import com.ulyp.storage.reader.RecordingDataReader;
 import com.ulyp.storage.reader.RecordingDataReaderJob;
 import com.ulyp.storage.StorageException;
@@ -111,17 +112,17 @@ public class CallRecordTree implements AutoCloseable {
         }
 
         @Override
-        public void onTypes(TypeList newTypes) {
-            newTypes.forEach(type -> types.store(type.getId(), type));
+        public void onType(Type type) {
+            types.store(type.getId(), type);
         }
 
         @Override
-        public void onMethods(MethodList newMethods) {
-            newMethods.forEach(type -> methods.store(type.getId(), type));
+        public void onMethod(Method method) {
+            methods.store(method.getId(), method);
         }
 
         @Override
-        public void onRecordedCalls(long address, RecordedMethodCallList recordedMethodCalls) {
+        public void onRecordedCalls(long address, RecordedMethodCalls recordedMethodCalls) {
             if (recordedMethodCalls.isEmpty()) {
                 return;
             }

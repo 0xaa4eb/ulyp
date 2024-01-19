@@ -1,18 +1,17 @@
+/*
 package com.ulyp.storage.writer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
+import com.ulyp.core.*;
+import com.ulyp.core.repository.InMemoryRepository;
 import lombok.Getter;
 import org.jetbrains.annotations.TestOnly;
 
-import com.ulyp.core.Method;
-import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.RecordedMethodCall;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.Type;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
@@ -21,7 +20,7 @@ import com.ulyp.storage.StorageException;
 @TestOnly
 public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
-    private final List<Type> types = new ArrayList<>();
+    private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
     private final List<Method> methods = new ArrayList<>();
     @Getter
     private final List<RecordedMethodCall> callRecords = new ArrayList<>();
@@ -48,7 +47,7 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     @Override
     public void write(TypeList types) throws StorageException {
-        types.forEach(this.types::add);
+        types.forEach(type -> this.types.store(type.getId(), type));
     }
 
     @Override
@@ -58,6 +57,10 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
+        AddressableItemIterator<RecordedMethodCall> it = callRecords.iterator(types);
+        while (it.hasNext()) {
+            callRecords.add
+        }
         callRecords.forEach(this.callRecords::add);
     }
 
@@ -65,4 +68,4 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
     public void close() throws StorageException {
         // NOP
     }
-}
+}*/

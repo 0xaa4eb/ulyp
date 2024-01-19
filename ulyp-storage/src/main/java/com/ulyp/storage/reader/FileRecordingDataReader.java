@@ -7,22 +7,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.agrona.concurrent.UnsafeBuffer;
+import com.ulyp.core.*;
+import com.ulyp.core.mem.*;
+import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.repository.ReadableRepository;
+import com.ulyp.core.serializers.MethodSerializer;
+import com.ulyp.core.serializers.ProcessMetadataSerializer;
+import com.ulyp.core.serializers.RecordingMetadataSerializer;
 
-import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.RecordedEnterMethodCall;
-import com.ulyp.core.RecordedExitMethodCall;
-import com.ulyp.core.RecordingCompleteMark;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.serializers.TypeSerializer;
 import com.ulyp.core.util.NamedThreadFactory;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.BinaryListFileReader;
-import com.ulyp.transport.BinaryProcessMetadataDecoder;
-import com.ulyp.transport.BinaryRecordingMetadataDecoder;
 
 import lombok.SneakyThrows;
 
@@ -55,13 +51,13 @@ public class FileRecordingDataReader implements RecordingDataReader {
     }
 
     @Override
-    public RecordedEnterMethodCall readEnterMethodCall(long address) {
-        return recordedMethodCallDataReader.readEnterMethodCall(address);
+    public RecordedEnterMethodCall readEnterMethodCall(long address, ReadableRepository<Integer, Type> typeRepository) {
+        return recordedMethodCallDataReader.readEnterMethodCall(address, typeRepository);
     }
 
     @Override
-    public RecordedExitMethodCall readExitMethodCall(long address) {
-        return recordedMethodCallDataReader.readExitMethodCall(address);
+    public RecordedExitMethodCall readExitMethodCall(long address, ReadableRepository<Integer, Type> typeRepository) {
+        return recordedMethodCallDataReader.readExitMethodCall(address, typeRepository);
     }
 
     @Override
@@ -71,11 +67,11 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (binaryListWithAddress == null) {
                 return null;
             }
-            BinaryList bytes = binaryListWithAddress.getBytes();
+            BinaryList.In bytes = binaryListWithAddress.getBytes();
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
-            return deserializeProcessMetadata(bytes);
+            return ProcessMetadataSerializer.instance.deserialize(bytes.iterator().next());
         } catch (IOException e) {
             throw new StorageException(e);
         }
@@ -154,38 +150,29 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(BinaryList data) {
-            job.onProcessMetadata(FileRecordingDataReader.deserializeProcessMetadata(data));
+        private void onProcessMetadata(BinaryList.In in) {
+            job.onProcessMetadata(ProcessMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        protected void onRecordingMetadata(BinaryList data) {
-            UnsafeBuffer buffer = new UnsafeBuffer();
-            data.iterator().next().wrapValue(buffer);
-            BinaryRecordingMetadataDecoder decoder = new BinaryRecordingMetadataDecoder();
-            decoder.wrap(buffer, 0, BinaryRecordingMetadataDecoder.BLOCK_LENGTH, 0);
-            RecordingMetadata metadata = RecordingMetadata.deserialize(decoder);
-            job.onRecordingMetadata(metadata);
+        protected void onRecordingMetadata(BinaryList.In in) {
+            job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        private void onTypes(BinaryList data) {
-            job.onTypes(new TypeList(data));
+        private void onTypes(BinaryList.In typesList) {
+            for (BinaryInput input : typesList) {
+                job.onType(TypeSerializer.instance.deserialize(input));
+            }
         }
 
-        private void onMethods(BinaryList data) {
-            job.onMethods(new MethodList(data));
+        private void onMethods(BinaryList.In methodList) {
+            for (BinaryInput input : methodList) {
+                job.onMethod(MethodSerializer.instance.deserialize(input));
+            }
         }
 
         private void onRecordedCalls(BinaryListWithAddress data) {
-            RecordedMethodCallList calls = new RecordedMethodCallList(data.getBytes());
+            RecordedMethodCalls calls = new RecordedMethodCalls(data.getBytes());
             job.onRecordedCalls(data.getAddress(), calls);
         }
-    }
-
-    private static ProcessMetadata deserializeProcessMetadata(BinaryList data) {
-        UnsafeBuffer buffer = new UnsafeBuffer();
-        data.iterator().next().wrapValue(buffer);
-        BinaryProcessMetadataDecoder decoder = new BinaryProcessMetadataDecoder();
-        decoder.wrap(buffer, 0, BinaryProcessMetadataDecoder.BLOCK_LENGTH, 0);
-        return ProcessMetadata.deserialize(decoder);
     }
 }
