@@ -1,7 +1,6 @@
 package com.ulyp.core.recorders.bytes;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -12,19 +11,6 @@ public class BinaryInputOutputTest {
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
     private final BinaryOutput out = new BufferBinaryOutput(buffer);
     private final BinaryInput in = new BufferBinaryInput(buffer);
-
-    @Test
-    public void testReadWriteBytes() {
-        byte[] buf = new byte[] {5, 2, 127, -128, -120, 0, 5, 120, 54};
-        try (BinaryOutput nestedOut = out.nest()) {
-            nestedOut.write(buf);
-        }
-
-        BinaryInput binaryInputResult = in.readBytes();
-        for (int i = 0; i < buf.length; i++) {
-            Assert.assertEquals(buf[i], binaryInputResult.readByte());
-        }
-    }
 
     @Test
     public void testSimpleReadWriteString() {

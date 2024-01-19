@@ -41,7 +41,7 @@ public class CallRecordBuffer {
     }
 
     public long estimateBytesSize() {
-        return recordedCalls.getRawBytes().byteLength();
+        return recordedCalls.bytesWritten();
     }
 
     public int recordMethodEnter(TypeResolver typeResolver, Method method, @Nullable Object callee, Object[] args) {

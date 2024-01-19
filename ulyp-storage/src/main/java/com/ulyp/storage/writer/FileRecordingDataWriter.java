@@ -8,18 +8,18 @@ import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.serializers.ProcessMetadataSerializer;
+import com.ulyp.core.serializers.RecordingMetadataSerializer;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.StorageException;
 import com.ulyp.storage.util.BinaryListFileWriter;
-import com.ulyp.transport.BinaryProcessMetadataEncoder;
-import com.ulyp.transport.BinaryRecordingMetadataEncoder;
 import lombok.extern.slf4j.Slf4j;
-import org.agrona.MutableDirectBuffer;
+import org.agrona.ExpandableDirectByteBuffer;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -67,21 +67,9 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
             return;
         }
         write(writer -> {
-            BinaryList binaryList = new BinaryList(ProcessMetadata.WIRE_ID);
-            binaryList.add(
-                    encoder -> {
-                        MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                        int headerLength = 4;
-                        int limit = encoder.limit();
-                        BinaryProcessMetadataEncoder binaryMetadataEncoder = new BinaryProcessMetadataEncoder();
-                        binaryMetadataEncoder.wrap(wrappedBuffer, limit + headerLength);
-                        processMetadata.serialize(binaryMetadataEncoder);
-                        int typeSerializedLength = binaryMetadataEncoder.encodedLength();
-                        encoder.limit(limit + headerLength + typeSerializedLength);
-                        wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
-                    }
-            );
-            writer.append(binaryList);
+            BinaryList.Out bytesOut = new BinaryList.Out(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            bytesOut.add(out -> ProcessMetadataSerializer.instance.serialize(out, processMetadata));
+            writer.write(bytesOut);
             if (LoggingSettings.DEBUG_ENABLED) {
                 log.debug("Has written {} to storage", processMetadata);
             }
@@ -91,55 +79,43 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void write(RecordingMetadata recordingMetadata) {
         write(writer -> {
-            BinaryList binaryList = new BinaryList(RecordingMetadata.WIRE_ID);
-            binaryList.add(
-                    encoder -> {
-                        MutableDirectBuffer wrappedBuffer = encoder.buffer();
-                        int headerLength = 4;
-                        int limit = encoder.limit();
-                        BinaryRecordingMetadataEncoder binaryMetadataEncoder = new BinaryRecordingMetadataEncoder();
-                        binaryMetadataEncoder.wrap(wrappedBuffer, limit + headerLength);
-                        recordingMetadata.serialize(binaryMetadataEncoder);
-                        int typeSerializedLength = binaryMetadataEncoder.encodedLength();
-                        encoder.limit(limit + headerLength + typeSerializedLength);
-                        wrappedBuffer.putInt(limit, typeSerializedLength, java.nio.ByteOrder.LITTLE_ENDIAN);
-                    }
-            );
-            writer.append(binaryList);
+            BinaryList.Out bytesOut = new BinaryList.Out(RecordingMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            bytesOut.add(out -> RecordingMetadataSerializer.instance.serialize(out, recordingMetadata));
+            writer.write(bytesOut);
             if (LoggingSettings.DEBUG_ENABLED) {
-                log.debug("Has written {} to storage", recordingMetadata);
+                log.debug("Has written {} to storage", processMetadata);
             }
         });
     }
 
     @Override
     public synchronized void write(TypeList types) {
-        if (types.getRawBytes().isEmpty()) {
+        if (types.size() == 0) {
             return;
         }
-        write(writer -> writer.append(types.getRawBytes()));
+        write(writer -> writer.write(types.getRawBytes()));
     }
 
     @Override
     public synchronized void write(RecordedMethodCallList callRecords) {
-        BinaryList callsBytes = callRecords.getRawBytes();
-        if (callsBytes.isEmpty()) {
+        BinaryList.Out bytesOut = callRecords.toBytes();
+        if (bytesOut.isEmpty()) {
             return;
         }
         write(writer -> {
-            writer.append(callsBytes);
-            if (LoggingSettings.DEBUG_ENABLED) {
+            writer.write(bytesOut);
+            /*if (LoggingSettings.DEBUG_ENABLED) {
                 log.debug("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
-            }
+            }*/
         });
     }
 
     @Override
     public synchronized void write(MethodList methods) {
-        if (methods.getRawBytes().isEmpty()) {
+        if (methods.size() == 0) {
             return;
         }
-        write(writer -> writer.append(methods.getRawBytes()));
+        write(writer -> writer.write(methods.getRawBytes()));
     }
 
     @Override
@@ -150,7 +126,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void close() {
         if (fileWriter != null) {
-            fileWriter.append(new BinaryList(RecordingCompleteMark.WIRE_ID));
+            fileWriter.write(new BinaryList.Out(RecordingCompleteMark.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer())));
             fileWriter.close();
             fileWriter = null;
         }

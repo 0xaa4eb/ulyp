@@ -1,133 +1,96 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.transport.BinaryDataDecoder;
-import com.ulyp.transport.BinaryDataEncoder;
-import org.agrona.MutableDirectBuffer;
+import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.recorders.bytes.BufferBinaryInput;
+import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Test;
-
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.*;
 
 public class BinaryListTest {
 
-    private final BinaryList binaryList = new BinaryList(777);
-    private final MutableDirectBuffer underlyingBuffer = binaryList.getBuffer();
-    private final byte[] buf = new byte[1024];
-
+    private final byte[] buffer = new byte[8 * 1024];
 
     @Test
-    public void testListAddAndIterate() {
-        assertEquals(0, binaryList.size());
-        assertEquals(777, binaryList.id());
+    public void testByAddressAccess() {
 
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 4);
-                    encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
+        BinaryList.Out bytesOut = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
 
-        assertEquals(1, binaryList.size());
+        bytesOut.add(out -> {
+            out.write(true);
+            out.write(5454534534L);
+        });
+        bytesOut.add(out -> {
+            out.write(false);
+            out.write(9873434443L);
+        });
+        bytesOut.add(out -> {
+            out.write(true);
+            out.write(1233434734L);
+        });
 
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 5);
-                    encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
+        BinaryList.In bytesIn = new BinaryList.In(new BufferBinaryInput(buffer));
 
-        assertEquals(2, binaryList.size());
+        AddressableItemIterator<BinaryInput> it = bytesIn.iterator();
+
+        BinaryInput next = it.next();
+        long address1 = it.address();
+        System.out.println(address1);
+
+        BinaryInput next1 = it.next();
+        long address2 = it.address();
+
+        UnsafeBuffer unsafeBuffer = new UnsafeBuffer(buffer, (int) address2, 12);
+        BufferBinaryInput in = new BufferBinaryInput(unsafeBuffer);
+
+        assertFalse(in.readBoolean());
+        assertEquals(9873434443L, in.readLong());
     }
 
     @Test
-    public void testWriteAndReadByWire() {
+    public void testSimpleReadWrite() {
+        BinaryList.Out write = new BinaryList.Out(5435, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
 
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 1);
-                    encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
+        write.add(out -> {
+            out.write('A');
+        });
+        write.add(out -> {
+            out.write('B');
+            out.write('C');
+        });
+        write.add(out -> {
+            out.write('D');
+        });
 
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 3);
-                    encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
+        BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buffer)));
 
-        BinaryList output = new BinaryList(binaryList.toByteArray());
+        assertEquals(3, read.size());
 
-        assertEquals(2, output.size());
-        assertEquals(777, output.id());
-
-        AddressableItemIterator<BinaryDataDecoder> iterator = output.iterator();
+        AddressableItemIterator<BinaryInput> iterator = read.iterator();
 
         assertTrue(iterator.hasNext());
-        iterator.next();
 
-        assertTrue(iterator.hasNext());
-        iterator.next();
-    }
+        BinaryInput next = iterator.next();
+        assertEquals(2, next.available());
+        assertEquals('A', next.readChar());
 
-    @Test
-    public void testEquality() {
-        BinaryList leftSide = new BinaryList(55);
-        BinaryList rightSide = new BinaryList(55);
+        assertEquals(BinaryList.HEADER_LENGTH + 4, iterator.address());
 
-        assertEquals(leftSide, rightSide);
+        next = iterator.next();
+        assertEquals(4, next.available());
+        assertEquals('B', next.readChar());
+        assertEquals('C', next.readChar());
 
-        leftSide.add("ABC".getBytes(StandardCharsets.UTF_8));
+        assertEquals(BinaryList.HEADER_LENGTH + 10, iterator.address());
 
-        assertNotEquals(leftSide, rightSide);
+        next = iterator.next();
+        assertEquals(2, next.available());
+        assertEquals('D', next.readChar());
 
-        rightSide.add("ABC".getBytes(StandardCharsets.UTF_8));
+        assertEquals(BinaryList.HEADER_LENGTH + 18, iterator.address());
 
-        assertEquals(leftSide, rightSide);
-
-        leftSide.add("DEF".getBytes(StandardCharsets.UTF_8));
-        rightSide.add("ABC".getBytes(StandardCharsets.UTF_8));
-
-        assertNotEquals(leftSide, rightSide);
-    }
-
-    @Test
-    public void testAddressAccess() {
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 6);
-                    encoder.putValue("ABC".getBytes(StandardCharsets.UTF_8), 0, "ABC".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
-
-        binaryList.add(
-                encoder -> {
-                    encoder.id((byte) 111);
-                    encoder.putValue("CDEF".getBytes(StandardCharsets.UTF_8), 0, "CDEF".getBytes(StandardCharsets.UTF_8).length);
-                }
-        );
-
-        AddressableItemIterator<BinaryDataDecoder> iterator = binaryList.iterator();
-        assertTrue(iterator.hasNext());
-        iterator.next();
-
-        BinaryDataDecoder decoder = new BinaryDataDecoder();
-        decoder.wrap(underlyingBuffer, (int) iterator.address(), BinaryDataEncoder.BLOCK_LENGTH, 0);
-        assertEquals(3, decoder.valueLength());
-        assertEquals((byte) 6, decoder.id());
-        int valLength = decoder.getValue(buf, 0, buf.length);
-        assertEquals("ABC", new String(buf, 0, valLength, StandardCharsets.UTF_8));
-
-        assertTrue(iterator.hasNext());
-        iterator.next();
-
-        decoder = new BinaryDataDecoder();
-        decoder.wrap(underlyingBuffer, (int) iterator.address(), BinaryDataEncoder.BLOCK_LENGTH, 0);
-        assertEquals(4, decoder.valueLength());
-        assertEquals((byte) 111, decoder.id());
-        valLength = decoder.getValue(buf, 0, buf.length);
-        assertEquals("CDEF", new String(buf, 0, valLength, StandardCharsets.UTF_8));
+        assertFalse(iterator.hasNext());
     }
 }

@@ -2,7 +2,6 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.Assert;
@@ -29,7 +28,7 @@ public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
         ObjectArrayRecord itemOfItem = (ObjectArrayRecord) item.getRecordedItems().get(0);
 
-        IdentityObjectRecord itemOfItemOfItem = (IdentityObjectRecord) itemOfItem.getRecordedItems().get(0);
+        ObjectArrayRecord itemOfItemOfItem = (ObjectArrayRecord) itemOfItem.getRecordedItems().get(0);
     }
 
     static class TestCase {

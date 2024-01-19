@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-@TestOnly
 public class ReflectionBasedTypeResolver implements TypeResolver {
 
     private static final ReflectionBasedTypeResolver INSTANCE = new ReflectionBasedTypeResolver();

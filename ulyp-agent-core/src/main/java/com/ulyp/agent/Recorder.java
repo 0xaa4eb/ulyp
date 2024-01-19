@@ -38,12 +38,12 @@ public class Recorder {
     private final TypeResolver typeResolver;
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
     private final StartRecordingPolicy startRecordingPolicy;
-    private final RecordDataWriter recordDataWriter;
+    private final AgentDataWriter agentDataWriter;
 
     public Recorder(TypeResolver typeResolver, MethodRepository methodRepository, StartRecordingPolicy startRecordingPolicy, RecordingDataWriter recordingDataWriter) {
         this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
-        this.recordDataWriter = new RecordDataWriter(recordingDataWriter, methodRepository);
+        this.agentDataWriter = new AgentDataWriter(recordingDataWriter, methodRepository);
         this.startRecordingPolicy = startRecordingPolicy;
     }
 
@@ -217,7 +217,7 @@ public class Recorder {
                         }
                     }
 
-                    recordDataWriter.write(typeResolver, recordingMetadata, callRecordBuf);
+                    agentDataWriter.write(typeResolver, recordingMetadata, callRecordBuf);
                 }
             } finally {
                 recordingState.setEnabled(true);

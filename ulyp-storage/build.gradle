@@ -4,29 +4,11 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
-    dependencies {
-        classpath "gradle.plugin.vontikov:sbe-generator-plugin:0.0.1"
-    }
 }
 
 plugins {
     id 'java'
     id "io.freefair.lombok" version "6.0.0-m2"
-}
-
-apply plugin: "vontikov.sbe-generator-plugin"
-
-sbeGenerator {
-    src {
-        dir = 'src/main/resources'
-        includes = ['schema.xml']
-        excludes = []
-    }
-
-    javaCodecsDir = 'build/generated/source/sbe/main/java'
-    javaClassesDir = 'build/generated/source/sbe/main/java'
-
-    archivesDir = 'build/archives'
 }
 
 sourceCompatibility = 1.8
@@ -53,16 +35,4 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.7'
-}
-
-compileJava {
-    dependsOn 'sbeGenerateJavaCodecs'
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs 'build/generated/source/sbe/main/java'
-        }
-    }
 }

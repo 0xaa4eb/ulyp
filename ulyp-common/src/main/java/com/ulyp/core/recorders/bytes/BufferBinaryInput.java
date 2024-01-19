@@ -24,6 +24,11 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
+    public int available() {
+        return buffer.capacity();
+    }
+
+    @Override
     public boolean readBoolean() {
         long val = readInt();
         return val == 1;
@@ -44,6 +49,11 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
+    public int readInt(int offset) {
+        return buffer.getInt(offset);
+    }
+
+    @Override
     public char readChar() {
         char val = buffer.getChar(pos);
         pos += Character.BYTES;
@@ -58,10 +68,9 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
-    public BinaryInput readBytes() {
-        int length = readInt();
+    public BinaryInput readBytes(int offset, int length) {
         UnsafeBuffer newBuf = new UnsafeBuffer();
-        newBuf.wrap(buffer, pos, length);
+        newBuf.wrap(buffer, offset, length);
         return new BufferBinaryInput(newBuf);
     }
 
@@ -70,6 +79,26 @@ public class BufferBinaryInput implements BinaryInput {
         Type itemClassType = typeResolver.getType(readInt());
         ObjectRecorder recorder = ObjectRecorderRegistry.recorderForId(readByte());
         return recorder.read(itemClassType, this, typeResolver);
+    }
+
+    @Override
+    public int getPosition() {
+        return pos;
+    }
+
+    @Override
+    public void moveTo(int position) {
+        this.pos = position;
+    }
+
+    @Override
+    public int readIntAt(int offset) {
+        return buffer.getInt(offset);
+    }
+
+    @Override
+    public void copyBytes(int bytesLength) {
+
     }
 
     @Override
