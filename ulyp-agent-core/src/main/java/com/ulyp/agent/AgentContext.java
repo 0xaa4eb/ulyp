@@ -4,7 +4,6 @@ import com.ulyp.agent.policy.*;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.util.Classpath;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +33,6 @@ public class AgentContext {
         this.recordingDataWriter = settings.buildStorageWriter();
         this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
-                .classPathFiles(new Classpath().toList())
                 .mainClassName(ProcessMetadata.getMainClassNameFromProp())
                 .pid(System.currentTimeMillis())
                 .build();
@@ -91,10 +89,6 @@ public class AgentContext {
 
     public MethodRepository getMethodRepository() {
         return methodRepository;
-    }
-
-    public ProcessMetadata getProcessMetadata() {
-        return processMetadata;
     }
 
     public TypeResolver getTypeResolver() {

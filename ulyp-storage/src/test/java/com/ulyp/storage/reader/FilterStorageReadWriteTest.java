@@ -102,8 +102,7 @@ public class FilterStorageReadWriteTest {
 
         Assert.assertEquals(1, job.getMethods().size());
         Method methodDeserialized = job.getMethods().get(method.getId());
-// TODO declaring type is not passed
-//        Assert.assertEquals(methodDeserialized, method);
+        Assert.assertEquals(methodDeserialized, method);
 
         Map<Integer, List<RecordedMethodCall>> recordedCalls = job.getRecordedCalls();
         List<RecordedMethodCall> calls = recordedCalls.get(1);

@@ -53,7 +53,6 @@ public class AsyncRecordingDataWriterTest {
         writer.write(
             ProcessMetadata.builder()
                 .pid(5435L)
-                .classPathFiles(Arrays.asList("a.b.A", "a.b.B", "a.b.C"))
                 .mainClassName("a.b.c.D")
                 .build()
         );
@@ -66,7 +65,6 @@ public class AsyncRecordingDataWriterTest {
         writer.write(
             ProcessMetadata.builder()
                 .pid(5435L)
-                .classPathFiles(Arrays.asList("a.b.A", "a.b.B", "a.b.C"))
                 .mainClassName("a.b.c.D")
                 .build()
         );
@@ -77,8 +75,6 @@ public class AsyncRecordingDataWriterTest {
 
         ProcessMetadata processMetadata = reader.getProcessMetadata();
 
-// TODO fix serialization
-//        Assert.assertEquals(Arrays.asList("a.b.A", "a.b.B", "a.b.C"), processMetadata.getClassPathFiles());
         Assert.assertEquals("a.b.c.D", processMetadata.getMainClassName());
         Assert.assertEquals(5435L, processMetadata.getPid());
     }

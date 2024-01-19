@@ -14,7 +14,6 @@ public class ProcessMetadata {
     public static final int WIRE_ID = 20;
 
     private final String mainClassName;
-    private final List<String> classPathFiles;
     private final long pid;
 
     public static String getMainClassNameFromProp() {
