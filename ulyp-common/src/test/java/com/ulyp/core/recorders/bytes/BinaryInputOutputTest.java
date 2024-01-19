@@ -1,7 +1,6 @@
 package com.ulyp.core.recorders.bytes;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

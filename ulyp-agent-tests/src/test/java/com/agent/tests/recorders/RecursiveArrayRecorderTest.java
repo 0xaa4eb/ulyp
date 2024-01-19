@@ -2,7 +2,6 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.Assert;

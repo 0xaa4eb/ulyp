@@ -84,7 +84,7 @@ public class BinaryList {
 
             @Override
             public long address() {
-                return currentRecordAddress + RECORD_HEADER_LENGTH;
+                return (long) currentRecordAddress + RECORD_HEADER_LENGTH;
             }
         }
     }
