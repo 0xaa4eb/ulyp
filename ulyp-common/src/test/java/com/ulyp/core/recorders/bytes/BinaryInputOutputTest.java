@@ -17,7 +17,7 @@ public class BinaryInputOutputTest {
     public void testReadWriteBytes() {
         byte[] buf = new byte[] {5, 2, 127, -128, -120, 0, 5, 120, 54};
         try (BinaryOutput nestedOut = out.nest()) {
-            nestedOut.write(buf);
+            nestedOut.write(new UnsafeBuffer(buf));
         }
 
         BinaryInput binaryInputResult = in.readBytes();

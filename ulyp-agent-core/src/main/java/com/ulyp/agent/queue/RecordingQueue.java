@@ -26,7 +26,7 @@ import com.ulyp.core.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CallRecordQueue implements AutoCloseable {
+public class RecordingQueue implements AutoCloseable {
 
     private final ObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
@@ -34,7 +34,7 @@ public class CallRecordQueue implements AutoCloseable {
     private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
-    public CallRecordQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
+    public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
         this.disruptor = new Disruptor<>(
@@ -95,11 +95,7 @@ public class CallRecordQueue implements AutoCloseable {
                 BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);
-                    UnsafeBuffer recordedBytes = new UnsafeBuffer();
-                    recordedBytes.wrap(buffer.get(), 0, output.size());
-                    byte[] recordedByteArray = new byte[output.size()];
-                    recordedBytes.getBytes(0, recordedByteArray, 0, recordedByteArray.length);
-                    return new QueuedRecordedObject(type, recorder.getId(), recordedBytes);
+                    return new QueuedRecordedObject(type, recorder.getId(), output.copy());
                 } catch (Exception e) {
                     if (LoggingSettings.DEBUG_ENABLED) {
                         log.debug("Error while recording object", e);

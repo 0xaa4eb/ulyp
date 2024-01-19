@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
+import org.agrona.concurrent.UnsafeBuffer;
 
 // writes to provided buffer
 public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
@@ -55,6 +56,13 @@ public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
     public void write(char val) {
         buffer.putChar(pos, val);
         pos += Character.BYTES;
+    }
+
+    @Override
+    public DirectBuffer copy() {
+        byte[] byteArray = new byte[pos];
+        this.buffer.getBytes(0, byteArray);
+        return new UnsafeBuffer(byteArray);
     }
 
     @Override

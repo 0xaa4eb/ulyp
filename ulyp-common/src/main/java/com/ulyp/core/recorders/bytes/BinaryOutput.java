@@ -38,6 +38,8 @@ public interface BinaryOutput extends AutoCloseable {
 
     void write(char val);
 
+    DirectBuffer copy();
+
     void close() throws RuntimeException;
 
     int writeTo(OutputStream outputStream) throws IOException;

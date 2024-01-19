@@ -3,7 +3,7 @@ package com.ulyp.agent;
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
-import com.ulyp.agent.queue.CallRecordQueue;
+import com.ulyp.agent.queue.RecordingQueue;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +18,9 @@ public class AgentShutdownHook implements Runnable {
             return;
         }
 
-        CallRecordQueue callRecordQueue = ctx.getCallRecordQueue();
+        RecordingQueue recordingQueue = ctx.getRecordingQueue();
         try {
-            callRecordQueue.sync(Duration.ofSeconds(30));
+            recordingQueue.sync(Duration.ofSeconds(30));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (TimeoutException e) {
