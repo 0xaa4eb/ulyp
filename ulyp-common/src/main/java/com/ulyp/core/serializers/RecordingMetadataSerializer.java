@@ -20,11 +20,11 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
         long recordingCompletedEpochMillis = input.readLong();
         String threadName = input.readString();
 
-/*        int stackTraceElementsCount = input.readInt();
+        int stackTraceElementsCount = input.readInt();
         List<String> stackTraceElements = new ArrayList<>(stackTraceElementsCount);
         for (int i = 0; i < stackTraceElementsCount; i++) {
             stackTraceElements.add(input.readString());
-        }*/
+        }
 
         return RecordingMetadata.builder()
                 .recordingStartedEpochMillis(recordingStartedEpochMillis)
@@ -32,7 +32,7 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
                 .recordingCompletedEpochMillis(recordingCompletedEpochMillis)
                 .id(recordingId)
                 .threadId(threadId)
-/*                .stackTraceElements(stackTraceElements)*/
+                .stackTraceElements(stackTraceElements)
                 .threadName(threadName)
                 .build();
     }
@@ -45,9 +45,9 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
         out.write(recordingMetadata.getLogCreatedEpochMillis());
         out.write(recordingMetadata.getRecordingCompletedEpochMillis());
         out.write(recordingMetadata.getThreadName());
-/*        out.write(recordingMetadata.getStackTraceElements().size());
+        out.write(recordingMetadata.getStackTraceElements().size());
         for (String stackTraceElement: recordingMetadata.getStackTraceElements()) {
             out.write(stackTraceElement);
-        }*/
+        }
     }
 }

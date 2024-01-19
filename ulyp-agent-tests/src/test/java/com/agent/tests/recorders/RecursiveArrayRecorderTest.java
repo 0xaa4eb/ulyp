@@ -29,7 +29,7 @@ public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
         ObjectArrayRecord itemOfItem = (ObjectArrayRecord) item.getRecordedItems().get(0);
 
-        IdentityObjectRecord itemOfItemOfItem = (IdentityObjectRecord) itemOfItem.getRecordedItems().get(0);
+        ObjectArrayRecord itemOfItemOfItem = (ObjectArrayRecord) itemOfItem.getRecordedItems().get(0);
     }
 
     static class TestCase {
