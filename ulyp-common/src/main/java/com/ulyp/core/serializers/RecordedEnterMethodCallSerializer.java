@@ -1,11 +1,15 @@
 package com.ulyp.core.serializers;
 
+import com.ulyp.core.Method;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.Type;
+import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
+import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.repository.ReadableRepository;
 
 import java.util.ArrayList;
@@ -15,6 +19,47 @@ import java.util.Optional;
 public class RecordedEnterMethodCallSerializer {
 
     public static final RecordedEnterMethodCallSerializer instance = new RecordedEnterMethodCallSerializer();
+
+    public static final byte ENTER_METHOD_CALL_ID = 1;
+
+    public void serializeEnterMethodCall(BinaryOutput out, int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+        out.write(ENTER_METHOD_CALL_ID);
+
+        out.write(callId);
+        out.write(method.getId());
+        out.write(nanoTime);
+        out.write(args.length);
+
+        for (int i = 0; i < args.length; i++) {
+            Object argValue = args[i];
+            Type argType = typeResolver.get(argValue);
+            ObjectRecorder recorderHint = argType.getRecorderHint();
+            if (argValue != null && recorderHint == null) {
+                recorderHint = RecorderChooser.getInstance().chooseForType(argValue.getClass());
+                argType.setRecorderHint(recorderHint);
+            }
+
+            ObjectRecorder recorder = argValue != null ? recorderHint : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+
+            out.write(argType.getId());
+            out.write(recorder.getId());
+            try {
+                recorder.write(argValue, out, typeResolver);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        ObjectRecorder recorder = callee != null ? ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+
+        out.write(typeResolver.get(callee).getId());
+        out.write(recorder.getId());
+        try {
+            recorder.write(callee, out, typeResolver);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static ObjectRecord deserializeObject(BinaryInput input, ReadableRepository<Integer, Type> typeResolver) {
         int typeId = input.readInt();
