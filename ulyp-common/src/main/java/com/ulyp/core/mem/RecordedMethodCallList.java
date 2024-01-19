@@ -50,12 +50,12 @@ public class RecordedMethodCallList {
         out.add(out -> RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(out, callId, typeResolver, thrown, returnValue, nanoTime));
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args) {
-        addEnterMethodCall(callId, method, typeResolver, callee, args, -1L);
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
+        addEnterMethodCall(callId, methodId, typeResolver, callee, args, -1L);
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
-        out.add(out -> RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(out, callId, method, typeResolver, callee, args, nanoTime));
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+        out.add(out -> RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(out, callId, methodId, typeResolver, callee, args, nanoTime));
     }
 
     public boolean isEmpty() {

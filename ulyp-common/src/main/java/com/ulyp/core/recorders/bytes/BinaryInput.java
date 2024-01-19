@@ -23,6 +23,8 @@ public interface BinaryInput {
 
     void moveTo(int position);
 
+    BinaryInput readBytes();
+
     BinaryInput readBytes(int offset, int length);
 
     ObjectRecord readObject(ByIdTypeResolver typeResolver);
@@ -30,6 +32,4 @@ public interface BinaryInput {
     String readString();
 
     int readIntAt(int offset);
-
-    void copyBytes(int bytesLength);
 }

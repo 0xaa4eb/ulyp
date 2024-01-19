@@ -32,7 +32,7 @@ public class RecordedMethodCallListTest {
 
         Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
-        recordedMethodCallList.addEnterMethodCall(134, method, typeResolver, new A(), new Object[]{5});
+        recordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
         BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buf)));

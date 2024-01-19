@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
+import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import com.ulyp.agent.RecordDataWriter;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
@@ -34,7 +34,7 @@ public class CallRecordQueue implements AutoCloseable {
     private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
-    public CallRecordQueue(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
+    public CallRecordQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
         this.disruptor = new Disruptor<>(
@@ -44,7 +44,7 @@ public class CallRecordQueue implements AutoCloseable {
             ProducerType.MULTI,
             new SleepingWaitStrategy()
         );
-        this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, recordDataWriter);
+        this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
         this.scheduledExecutorService = Executors.newScheduledThreadPool(
             1,
             NamedThreadFactory.builder().name("ulyp-recorder-queue-stats-reporter").daemon(true).build()

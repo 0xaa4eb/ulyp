@@ -68,6 +68,14 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
+    public BinaryInput readBytes() {
+        int length = readInt();
+        UnsafeBuffer newBuf = new UnsafeBuffer();
+        newBuf.wrap(buffer, pos, length);
+        return new BufferBinaryInput(newBuf);
+    }
+
+    @Override
     public BinaryInput readBytes(int offset, int length) {
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, offset, length);
@@ -94,11 +102,6 @@ public class BufferBinaryInput implements BinaryInput {
     @Override
     public int readIntAt(int offset) {
         return buffer.getInt(offset);
-    }
-
-    @Override
-    public void copyBytes(int bytesLength) {
-
     }
 
     @Override

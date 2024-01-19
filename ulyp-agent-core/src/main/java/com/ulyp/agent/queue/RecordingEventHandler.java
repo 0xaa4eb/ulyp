@@ -1,6 +1,6 @@
 package com.ulyp.agent.queue;
 
-import com.ulyp.agent.RecordDataWriter;
+import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
@@ -12,15 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 public class RecordingEventHandler {
 
     private final TypeResolver typeResolver;
-    private final RecordDataWriter recordDataWriter;
+    private final AgentDataWriter agentDataWriter;
     private final MethodRepository methodRepository;
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
 
-    public RecordingEventHandler(TypeResolver typeResolver, RecordDataWriter recordDataWriter) {
+    public RecordingEventHandler(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
-        this.recordDataWriter = recordDataWriter;
-        this.methodRepository = recordDataWriter.getMethodRepository();
+        this.agentDataWriter = agentDataWriter;
+        this.methodRepository = agentDataWriter.getMethodRepository();
     }
 
     void onRecordingMetadataUpdate(RecordingMetadataQueueEvent update) {
@@ -61,7 +61,7 @@ public class RecordingEventHandler {
                 this.buffer = buffer.cloneWithoutData();
             }
 
-            recordDataWriter.write(typeResolver, recordingMetadata, buffer);
+            agentDataWriter.write(typeResolver, recordingMetadata, buffer);
 
             if (buffer.isComplete()) {
                 this.buffer = null;

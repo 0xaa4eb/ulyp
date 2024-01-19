@@ -10,7 +10,7 @@ import com.lmax.disruptor.EventProcessor;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.Sequencer;
-import com.ulyp.agent.RecordDataWriter;
+import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.LoggingSettings;
 
@@ -23,7 +23,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private static final int RUNNING = HALTED + 1;
 
     private final TypeResolver typeResolver;
-    private final RecordDataWriter recordDataWriter;
+    private final AgentDataWriter agentDataWriter;
     private final Map<Integer, RecordingEventHandler> recordingQueueProcessors = new HashMap<>();
     private final AtomicInteger running = new AtomicInteger(IDLE);
     private final DataProvider<EventHolder> dataProvider;
@@ -34,11 +34,11 @@ public final class QueueBatchEventProcessor implements EventProcessor {
         DataProvider<EventHolder> dataProvider,
         SequenceBarrier sequenceBarrier,
         TypeResolver typeResolver,
-        RecordDataWriter recordDataWriter) {
+        AgentDataWriter agentDataWriter) {
         this.dataProvider = dataProvider;
         this.sequenceBarrier = sequenceBarrier;
         this.typeResolver = typeResolver;
-        this.recordDataWriter = recordDataWriter;
+        this.agentDataWriter = agentDataWriter;
     }
 
     @Override
@@ -106,7 +106,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                         if (processor == null) {
                             recordingQueueProcessors.put(
                                 updateRecordingMetadataItem.getRecordingMetadata().getId(),
-                                processor = new RecordingEventHandler(typeResolver, recordDataWriter)
+                                processor = new RecordingEventHandler(typeResolver, agentDataWriter)
                             );
                         }
                         processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);

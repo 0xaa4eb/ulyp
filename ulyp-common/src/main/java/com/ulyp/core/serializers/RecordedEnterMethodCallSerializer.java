@@ -1,6 +1,5 @@
 package com.ulyp.core.serializers;
 
-import com.ulyp.core.Method;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
@@ -22,11 +21,11 @@ public class RecordedEnterMethodCallSerializer {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
 
-    public void serializeEnterMethodCall(BinaryOutput out, int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
 
         out.write(callId);
-        out.write(method.getId());
+        out.write(methodId);
         out.write(nanoTime);
         out.write(args.length);
 
