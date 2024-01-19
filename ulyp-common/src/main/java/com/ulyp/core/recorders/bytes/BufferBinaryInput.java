@@ -72,6 +72,7 @@ public class BufferBinaryInput implements BinaryInput {
         int length = readInt();
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, pos, length);
+        pos += length;
         return new BufferBinaryInput(newBuf);
     }
 
