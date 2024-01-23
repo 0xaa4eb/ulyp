@@ -1,17 +1,35 @@
 package com.ulyp.core.recorders.bytes;
 
+import com.ulyp.core.mem.ManagedMemPool;
+import com.ulyp.core.mem.Page;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
-import org.agrona.MutableDirectBuffer;
+public class ManagedMemBinaryOutput extends AbstractBinaryOutput {
 
-// writes to provided buffer
-public class BufferBinaryOutput extends AbstractBinaryOutput {
+    private final Supplier<Page> pageSupplier;
+    private final List<Page> pages;
 
-    protected final MutableDirectBuffer buffer;
+    public ManagedMemBinaryOutput(Supplier<Page> pageSupplier) {
+        this.pageSupplier = pageSupplier;
+        this.pages = new ArrayList<>();
+    }
 
-    public BufferBinaryOutput(MutableDirectBuffer buffer) {
-        this.buffer = buffer;
+    private Page pageAt(int pos) {
+        int pageIndex = pos >> ManagedMemPool.PAGE_BITS;
+        if (pageIndex < pages.size()) {
+            return pages.get(pageIndex);
+        }
+        if (pageIndex > pages.size() + 1) {
+            throw new IllegalArgumentException("Can not borrow too many pages");
+        }
+        while (pageIndex >= pages.size()) {
+            pages.add();
+        }
     }
 
     public void write(boolean value) {
