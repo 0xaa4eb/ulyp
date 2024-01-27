@@ -1,6 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
+import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
@@ -26,6 +27,12 @@ public class RecordedMethodCallList {
 
     public RecordedMethodCallList(int recordingId) {
         this.out = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+
+        out.add(out -> out.write(recordingId));
+    }
+
+    public RecordedMethodCallList(int recordingId, BinaryOutput binaryOutput) {
+        this.out = new BinaryList.Out(WIRE_ID, binaryOutput);
 
         out.add(out -> out.write(recordingId));
     }

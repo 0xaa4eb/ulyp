@@ -1,5 +1,6 @@
 package com.ulyp.core.mem;
 
+import org.agrona.BitUtil;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.util.ArrayList;
@@ -22,19 +23,29 @@ public class Region {
     private final List<Page> pages;
     private final AtomicIntegerArray usedPages; // this adds some false sharing but should be rarely accessed
     private final AtomicInteger lastBorrowedPageId = new AtomicInteger(0);
+    private volatile State state;
 
-    public Region(int id, UnsafeBuffer buffer, int pageSize, int pagesCount) {
+    public Region(int id, UnsafeBuffer buffer, int pagesCount) {
+        if (!BitUtil.isPowerOfTwo(pagesCount)) {
+            throw new IllegalArgumentException("Page count must be a power of two, but was " + pagesCount);
+        }
         this.buffer = buffer;
         this.pagesCount = pagesCount;
         this.usedPages = new AtomicIntegerArray(pagesCount);
         this.pages = new ArrayList<>(pagesCount);
         this.pagesCountMask = pagesCount - 1;
         this.id = id;
-        for (int pgIndex = 0; pgIndex < pagesCount; pgIndex++) {
+        int pageSize = buffer.capacity() / pagesCount;
+        for (int pageId = 0; pageId < pagesCount; pageId++) {
             UnsafeBuffer unsafeBuffer = new UnsafeBuffer();
-            buffer.getBytes(pgIndex * pageSize, unsafeBuffer, 0, pageSize);
-            this.pages.add(new Page(pgIndex, id, unsafeBuffer));
+            unsafeBuffer.wrap(buffer, pageId * pageSize, pageSize);
+            this.pages.add(new Page(pageId, unsafeBuffer));
         }
+    }
+
+    enum State {
+        BORROWED,
+        FREE
     }
 
     public Page allocate() {

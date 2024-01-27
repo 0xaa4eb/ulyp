@@ -69,30 +69,9 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
         return pos;
     }
 
-    public int recursionDepth() {
-        return recursionDepth;
-    }
-
     @Override
     public int size() {
         return pos;
-    }
-
-    @Override
-    public BufferBinaryOutput nest() {
-        recursionDepth++;
-        return this;
-    }
-
-    @Override
-    public Checkpoint checkpoint() {
-        final int currentPos = this.pos;
-        return () -> this.pos = currentPos;
-    }
-
-    @Override
-    public int currentOffset() {
-        return this.pos;
     }
 
     @Override

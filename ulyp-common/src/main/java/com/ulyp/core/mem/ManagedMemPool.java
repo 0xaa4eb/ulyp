@@ -3,50 +3,34 @@ package com.ulyp.core.mem;
 import org.agrona.BitUtil;
 import org.agrona.concurrent.UnsafeBuffer;
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ManagedMemPool {
 
-    public static final int PAGE_BITS = 14;
-    public static final int PAGE_BYTE_SIZE = 1 << PAGE_BITS;
-    public static final int PAGE_BYTE_SIZE_MASK = PAGE_BYTE_SIZE - 1;
-    public static final int RECORDING_REGION_PAGE_COUNT = 128;
+    private final Queue<Region> regions;
 
-    private final ByteBuffer byteBuffer;
-    private final UnsafeBuffer memory;
-    private final Region[] regions;
-    private final int regionCount;
-    private final int regionCountMask;
-    private final AtomicIntegerArray regionsUsed;
-
-    public ManagedMemPool(int regionCount) {
+    public ManagedMemPool(UnsafeBuffer buffer, int regionCount, int pagesPerRegion) {
         if (!BitUtil.isPowerOfTwo(regionCount)) {
             throw new RuntimeException("Recording pool must be power of two but was " + regionCount);
         }
-        this.regions = new Region[regionCount];
-        this.regionCount = regionCount;
-        this.regionCountMask = regionCount - 1;
-        this.regionsUsed = new AtomicIntegerArray(regionCount);
-        int totalByteSize = regionCount * RECORDING_REGION_PAGE_COUNT * PAGE_BYTE_SIZE;
-        this.byteBuffer = ByteBuffer.allocateDirect(totalByteSize);
-        this.memory = new UnsafeBuffer(byteBuffer);
-    }
-
-    public Region allocate(int hint) {
-        int regionIdToCheck = hint & regionCountMask;
-        if (regionsUsed.get(regionIdToCheck) == 0 && regionsUsed.compareAndSet(regionIdToCheck, 0, 1)) {
-            return regions[regionIdToCheck];
+        if (!BitUtil.isPowerOfTwo(buffer.capacity())) {
+            throw new RuntimeException("Buffer capacity must be power of two but was " + regionCount);
         }
-        for (int i = 1; i < regionCount; i++) {
-            int idx = (regionIdToCheck + 1) & regionCountMask;
-            if (regionsUsed.get(idx) == 0 && regionsUsed.compareAndSet(idx, 0, 1)) {
-                return regions[idx];
-            }
+        this.regions = new ConcurrentLinkedQueue<>();
+        int regionSize = buffer.capacity() / regionCount;
+        for (int i = 0; i < regionCount; i++) {
+            UnsafeBuffer regionBuffer = new UnsafeBuffer();
+            regionBuffer.wrap(buffer, regionSize * i, regionSize);
+            regions.add(new Region(i, regionBuffer, pagesPerRegion));
         }
     }
 
-    public void dispose() {
+    public Region borrow() {
+        return regions.poll();
+    }
 
+    public void requite(Region region) {
+        regions.add(region);
     }
 }

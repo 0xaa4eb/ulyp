@@ -5,10 +5,14 @@ import com.ulyp.agent.queue.RecordingQueue;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.mem.ManagedMemPool;
+import com.ulyp.core.mem.Page;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.regex.Pattern;
@@ -29,6 +33,7 @@ public class AgentContext {
     private final MethodRepository methodRepository;
     private final RecordingQueue recordingQueue;
     private final Recorder recorder;
+    private final ManagedMemPool memPool;
     @Nullable
     private final AutoCloseable apiServer;
 
@@ -44,6 +49,14 @@ public class AgentContext {
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
         this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository));
         this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, recordingQueue);
+        int pagesPerRegion = 128;
+        int regionBytes = Page.PAGE_BYTE_SIZE * pagesPerRegion; // 4 mbytes
+        int regionCount = 64; // TODO configurable
+        this.memPool = new ManagedMemPool(
+                new UnsafeBuffer(ByteBuffer.allocateDirect(regionCount * regionBytes)),
+                regionCount,
+                pagesPerRegion
+        ); // TODO configurable
 
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
