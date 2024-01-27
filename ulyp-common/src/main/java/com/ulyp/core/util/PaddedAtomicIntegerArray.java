@@ -3,9 +3,9 @@ package com.ulyp.core.util;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class PaddedAtomicIntegerArray {
-    
+
     private final AtomicIntegerArray array;
-    
+
     public PaddedAtomicIntegerArray(int capacity) {
         if (Integer.bitCount(capacity) != 1) {
             throw new IllegalArgumentException("Expected threads must be power of two, provided " + capacity);

@@ -38,6 +38,14 @@ public interface BinaryOutput extends AutoCloseable {
 
     void write(char val);
 
+    /**
+     * Returns borrowed memory to the pool for further use
+     */
+    void dispose();
+
+    /**
+     * Closing is only used for decrementing recursion depth, use {@link BinaryOutput#dispose()} to free the memory
+     */
     DirectBuffer copy();
 
     void close() throws RuntimeException;

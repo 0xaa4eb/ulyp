@@ -12,11 +12,10 @@ public class ObjectPool<T> {
     private final ObjectPoolClaim<T>[] objectArray; // object array is read only and not padded
     private final PaddedAtomicIntegerArray used;
 
-    public ObjectPool(int expectedThreads, Supplier<T> supplier) {
-        if (Integer.bitCount(expectedThreads) != 1) {
-            throw new IllegalArgumentException("Expected threads must be power of two, provided " + expectedThreads);
+    public ObjectPool(int entriesCount, Supplier<T> supplier) {
+        if (Integer.bitCount(entriesCount) != 1) {
+            throw new IllegalArgumentException("Entry count must be power of two, but was " + entriesCount);
         }
-        int entriesCount = expectedThreads * 4;
         this.indexMask = entriesCount - 1;
         this.supplier = supplier;
         //noinspection unchecked
