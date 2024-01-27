@@ -134,5 +134,9 @@ public class BinaryList {
         public int size() {
             return size;
         }
+
+        public void dispose() {
+            this.binaryOutput.dispose();
+        }
     }
 }

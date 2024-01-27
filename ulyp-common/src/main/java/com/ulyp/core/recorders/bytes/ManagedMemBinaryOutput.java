@@ -7,16 +7,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ManagedMemBinaryOutput extends AbstractBinaryOutput {
 
     private final Supplier<Page> pageSupplier;
+    private final Consumer<Page> pageDisposer;
     private final List<Page> pages;
 
-    public ManagedMemBinaryOutput(Supplier<Page> pageSupplier) {
+    public ManagedMemBinaryOutput(Supplier<Page> pageSupplier, Consumer<Page> pageDisposer) {
         this.pageSupplier = pageSupplier;
+        this.pageDisposer = pageDisposer;
         this.pages = new ArrayList<>();
+        this.pages.add(pageSupplier.get());
     }
 
     private Page pageAt(int pos) {
@@ -24,12 +28,18 @@ public class ManagedMemBinaryOutput extends AbstractBinaryOutput {
         if (pageIndex < pages.size()) {
             return pages.get(pageIndex);
         }
-        if (pageIndex > pages.size() + 1) {
+        if (pageIndex > pages.size() + 2) {
             throw new IllegalArgumentException("Can not borrow too many pages");
         }
         while (pageIndex >= pages.size()) {
-            pages.add();
+            pages.add(pageSupplier.get());
         }
+        return pages.get(pageIndex);
+    }
+
+    private int currentPageRemaining() {
+        int pageIndex = pos >> ManagedMemPool.PAGE_BITS;
+
     }
 
     public void write(boolean value) {
@@ -78,6 +88,8 @@ public class ManagedMemBinaryOutput extends AbstractBinaryOutput {
 
     @Override
     public void dispose() {
-
+        for (int i = 0; i < pages.size(); i++) {
+            pageDisposer.accept(pages.get(i));
+        }
     }
 }

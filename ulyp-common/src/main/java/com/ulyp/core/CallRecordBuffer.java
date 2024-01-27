@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A collection of enter and exit recorded method calls for a certain recording session.
@@ -18,6 +20,7 @@ public class CallRecordBuffer {
     private final RecordedMethodCallList recordedCalls;
     private final int recordingId;
     private final int rootCallId;
+    private final List<Integer> memRegionsUsed = new ArrayList<>();
 
     private int lastExitCallId = -1;
     private int nextCallId;

@@ -13,4 +13,16 @@ public class Page {
         this.regionId = regionId;
         this.buffer = buffer;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getRegionId() {
+        return regionId;
+    }
+
+    public UnsafeBuffer getBuffer() {
+        return buffer;
+    }
 }
