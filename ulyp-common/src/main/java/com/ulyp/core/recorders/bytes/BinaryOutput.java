@@ -25,7 +25,7 @@ public interface BinaryOutput extends AutoCloseable {
 
     void write(byte c);
 
-    void write(byte[] bytes);
+/*    void write(byte[] bytes);*/
 
     void write(String value);
 

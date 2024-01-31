@@ -20,7 +20,6 @@ public class CallRecordBuffer {
     private final RecordedMethodCallList recordedCalls;
     private final int recordingId;
     private final int rootCallId;
-    private final List<Integer> memRegionsUsed = new ArrayList<>();
 
     private int lastExitCallId = -1;
     private int nextCallId;
