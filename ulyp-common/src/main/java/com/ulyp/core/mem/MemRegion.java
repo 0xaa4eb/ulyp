@@ -14,32 +14,28 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  * to a different thread which deallocates pages. The other thread should also return mem region to the pool after recording is
  * complete.
  */
-public class Region {
+public class MemRegion {
 
     private final int id;
     private final int pagesCount;
     private final int pagesCountMask;
     private final UnsafeBuffer buffer;
-    private final List<Page> pages;
+    private final List<MemPage> pages;
     private final AtomicIntegerArray usedPages; // this adds some false sharing but should be rarely accessed
     private final AtomicInteger lastBorrowedPageId = new AtomicInteger(0);
     private volatile State state;
 
-    public Region(int id, UnsafeBuffer buffer, int pagesCount) {
-        if (!BitUtil.isPowerOfTwo(pagesCount)) {
-            throw new IllegalArgumentException("Page count must be a power of two, but was " + pagesCount);
-        }
+    public MemRegion(int id, UnsafeBuffer buffer, int pageSize, int pagesCount) {
         this.buffer = buffer;
         this.pagesCount = pagesCount;
         this.usedPages = new AtomicIntegerArray(pagesCount);
         this.pages = new ArrayList<>(pagesCount);
         this.pagesCountMask = pagesCount - 1;
         this.id = id;
-        int pageSize = buffer.capacity() / pagesCount;
-        for (int pageId = 0; pageId < pagesCount; pageId++) {
+        for (int pgIndex = 0; pgIndex < pagesCount; pgIndex++) {
             UnsafeBuffer unsafeBuffer = new UnsafeBuffer();
-            unsafeBuffer.wrap(buffer, pageId * pageSize, pageSize);
-            this.pages.add(new Page(pageId, unsafeBuffer));
+            buffer.getBytes(pgIndex * pageSize, unsafeBuffer, 0, pageSize);
+            this.pages.add(new MemPage(pgIndex, unsafeBuffer));
         }
     }
 
@@ -48,7 +44,7 @@ public class Region {
         FREE
     }
 
-    public Page allocate() {
+    public MemPage allocate() {
         int checkPageId = (lastBorrowedPageId.get() + 1) & pagesCountMask;
         int used = usedPages.get(checkPageId);
         if (used == 0) {
@@ -66,7 +62,7 @@ public class Region {
         return null;
     }
 
-    public void deallocate(Page page) {
+    public void deallocate(MemPage page) {
         usedPages.lazySet(page.getId(), 0);
     }
 

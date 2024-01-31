@@ -23,6 +23,10 @@ public class BufferBinaryInput implements BinaryInput {
         this.buffer = new UnsafeBuffer(value);
     }
 
+    public BufferBinaryInput(byte[] value, int length) {
+        this.buffer = new UnsafeBuffer(value, 0, length);
+    }
+
     @Override
     public int available() {
         return buffer.capacity();
