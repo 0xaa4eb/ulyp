@@ -27,17 +27,6 @@ public class BinaryInputOutputTest {
     }
 
     @Test
-    public void testSize() {
-        out.write((byte) 5);
-
-        assertEquals(1, out.size());
-
-        out.write(42);
-
-        assertEquals(5, out.size());
-    }
-
-    @Test
     public void testSimpleReadWriteString() {
         out.write("abc");
 

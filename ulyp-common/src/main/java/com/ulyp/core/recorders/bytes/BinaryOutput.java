@@ -10,8 +10,6 @@ public interface BinaryOutput extends AutoCloseable {
 
     int recursionDepth();
 
-    int size();
-
     BinaryOutput nest();
 
     Checkpoint checkpoint();

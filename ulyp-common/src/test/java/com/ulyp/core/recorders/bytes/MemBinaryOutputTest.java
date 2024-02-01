@@ -1,18 +1,85 @@
 package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.mem.MemPool;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
 public class MemBinaryOutputTest {
 
+    public static final int ITERATIONS = 100;
+
     @Test
-    public void test() throws IOException {
+    public void testReadWriteVariousObjects() throws IOException {
+        for (int i = 0; i < ITERATIONS; i++) {
+            List<Object> written = new ArrayList<>();
+            BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+
+            while (out.currentOffset() < MemPool.PAGE_SIZE * 10) {
+                int rnd = ThreadLocalRandom.current().nextInt(7);
+                if (rnd == 0) {
+                    char value = (char) ('A' + ThreadLocalRandom.current().nextInt(25));
+                    out.write(value);
+                    written.add(value);
+                } else if (rnd == 1) {
+                    int value = ThreadLocalRandom.current().nextInt();
+                    out.write(value);
+                    written.add(value);
+                } else if (rnd == 2) {
+                    long value = ThreadLocalRandom.current().nextLong();
+                    out.write(value);
+                    written.add(value);
+                } else if (rnd == 3) {
+                    boolean value = ThreadLocalRandom.current().nextBoolean();
+                    out.write(value);
+                    written.add(value);
+                } else if (rnd == 4) {
+                    byte value = (byte) ThreadLocalRandom.current().nextInt(128);
+                    out.write(value);
+                    written.add(value);
+                } else if (rnd == 5) {
+                    String value = String.valueOf(ThreadLocalRandom.current().nextDouble());
+                    out.write(value);
+                    written.add(value);
+                } else {
+                    byte[] byteArray = new byte[ThreadLocalRandom.current().nextInt(128) + 1];
+                    ThreadLocalRandom.current().nextBytes(byteArray);
+                    out.write(byteArray);
+                    written.add(byteArray);
+                }
+            }
+
+            BufferBinaryInput input = flip(out);
+
+            for (Object value : written) {
+                if (value instanceof Character) {
+                    Assert.assertEquals(value, input.readChar());
+                } else if (value instanceof Integer) {
+                    Assert.assertEquals(value, input.readInt());
+                } else if (value instanceof Long) {
+                    Assert.assertEquals(value, input.readLong());
+                } else if (value instanceof Boolean) {
+                    Assert.assertEquals(value, input.readBoolean());
+                } else if (value instanceof String) {
+                    Assert.assertEquals(value, input.readString());
+                } else if (value instanceof Byte) {
+                    Assert.assertEquals(value, input.readByte());
+                } else if (value instanceof byte[]) {
+                    assertBytesEquals((byte[]) value, input.readBytes());
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testReadWriteManyInts() throws IOException {
         testWriteManyInts(10);
         testWriteManyInts(50);
         testWriteManyInts(100);
@@ -26,11 +93,10 @@ public class MemBinaryOutputTest {
         testWriteManyInts(10 * MemPool.PAGE_SIZE / Integer.BYTES + 3);
     }
 
-/*    @Test
+    @Test
     public void testByteArrayWriteSpanMultiplePages() throws IOException {
-        TestPageAllocator pageAllocator = new TestPageAllocator();
-        BinaryOutput out = new MemBinaryOutput(pageAllocator);
-        int intsCount = (MemPool.PAGE_SIZE / (Integer.BYTES * 2))+ 1; *//* more than half of page *//*
+        BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+        int intsCount = (MemPool.PAGE_SIZE / (Integer.BYTES * 2)) + 1;
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
         }
@@ -43,8 +109,8 @@ public class MemBinaryOutputTest {
         for (int i = 0; i < intsCount; i++) {
             assertEquals(i, input.readInt());
         }
-        byte[] bytesRead = input.
-    }*/
+        assertBytesEquals(bytes, input.readBytes());
+    }
 
     private void testWriteManyInts(int intsCount) throws IOException {
         TestPageAllocator pageAllocator = new TestPageAllocator();
@@ -60,10 +126,15 @@ public class MemBinaryOutputTest {
         }
     }
 
+    private static void assertBytesEquals(byte[] expected, BinaryInput actual) {
+        for (byte b : expected) {
+            Assert.assertEquals(b, actual.readByte());
+        }
+    }
+
     private static BufferBinaryInput flip(BinaryOutput out) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int length = out.writeTo(outputStream);
-        BufferBinaryInput input = new BufferBinaryInput(outputStream.toByteArray(), length);
-        return input;
+        return new BufferBinaryInput(outputStream.toByteArray(), length);
     }
 }

@@ -3,6 +3,7 @@ package com.ulyp.core.recorders.bytes;
 import com.ulyp.core.mem.MemPool;
 import com.ulyp.core.mem.MemPage;
 import com.ulyp.core.mem.MemPageAllocator;
+import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.IOException;
@@ -45,6 +46,11 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
 
     private void ensureAllocated() {
         pageAt(pos);
+    }
+
+    @Override
+    public DirectBuffer copy() {
+        return null;
     }
 
     public void write(boolean value) {
@@ -110,20 +116,24 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
         pos += Character.BYTES;
     }
 
+    @Override
+    public void write(DirectBuffer buffer) {
+
+    }
+
     public void write(byte[] value) {
-        write(value.length);
         int bytesLength = value.length;
-        int totalBytesWritten = 0;
+        write(bytesLength);
         int offset = 0;
-        while (totalBytesWritten != bytesLength) {
+        while (bytesLength > 0) {
             MemPage page = currentPage();
             int remainingBytes = currentPageRemainingBytes();
-            int bytesToWriteToPage = Math.min(remainingBytes, bytesLength);
-            page.getBuffer().putBytes(pos, value, offset, bytesToWriteToPage);
-            offset += bytesToWriteToPage;
-            totalBytesWritten += bytesToWriteToPage;
+            int bytesWritten = Math.min(remainingBytes, bytesLength);
+            page.getBuffer().putBytes(pos & MemPool.PAGE_BYTE_SIZE_MASK, value, offset, bytesWritten);
+            offset += bytesWritten;
+            bytesLength -= bytesWritten;
+            pos += bytesWritten;
         }
-        pos += value.length;
     }
 
     @Override

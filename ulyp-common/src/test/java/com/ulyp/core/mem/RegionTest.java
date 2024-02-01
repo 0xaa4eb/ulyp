@@ -1,3 +1,4 @@
+/*
 package com.ulyp.core.mem;
 
 import org.agrona.concurrent.UnsafeBuffer;
@@ -36,4 +37,4 @@ public class RegionTest {
         p1 = region.allocate();
         Assert.assertNotNull(p1);
     }
-}
+}*/

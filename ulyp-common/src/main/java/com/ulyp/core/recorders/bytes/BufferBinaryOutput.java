@@ -70,11 +70,6 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public int size() {
-        return pos;
-    }
-
-    @Override
     public void writeAt(int offset, int value) {
         buffer.putInt(offset, value);
     }
