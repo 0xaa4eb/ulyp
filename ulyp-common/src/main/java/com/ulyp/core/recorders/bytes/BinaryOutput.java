@@ -12,9 +12,11 @@ public interface BinaryOutput extends AutoCloseable {
 
     BinaryOutput nest();
 
-    Checkpoint checkpoint();
+    Mark mark();
 
-    int currentOffset();
+    int position();
+
+    int bytesWritten(int prevOffset);
 
     void writeAt(int offset, int value);
 

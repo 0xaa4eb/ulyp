@@ -13,18 +13,12 @@ public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutpu
     private static final int MAXIMUM_RECURSION_DEPTH = 3; // TODO configurable
     private static final int MAX_STRING_LENGTH = 200; // TODO configurable
 
-    protected int pos = 0;
+    protected int position = 0;
     private int recursionDepth = 0;
 
     @Override
-    public Checkpoint checkpoint() {
-        final int currentPos = this.pos;
-        return () -> this.pos = currentPos;
-    }
-
-    @Override
-    public int currentOffset() {
-        return this.pos;
+    public int position() {
+        return this.position;
     }
 
     public void write(String value) {

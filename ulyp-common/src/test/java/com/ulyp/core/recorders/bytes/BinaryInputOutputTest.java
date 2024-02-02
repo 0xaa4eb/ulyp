@@ -46,9 +46,9 @@ public class BinaryInputOutputTest {
     @Test
     public void testRollingBack() {
         try (BinaryOutput nested1 = out.nest()) {
-            Checkpoint checkpoint = nested1.checkpoint();
+            Mark mark = nested1.mark();
             nested1.write("abc");
-            checkpoint.rollback();
+            mark.rollback();
 
             nested1.write("xyz");
         }

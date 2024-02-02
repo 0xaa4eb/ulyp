@@ -61,7 +61,7 @@ public class RocksdbIndex implements Index {
         byte[] keyBytes = keyBuffer.get();
         BitUtil.longToBytes(id, keyBytes, 0);
 
-        int bytesWritten = binaryOutput.currentOffset();
+        int bytesWritten = binaryOutput.position();
         byte[] valueBytes = getValueBuffer(bytesWritten);
         buffer.getBytes(0, valueBytes);
         try {

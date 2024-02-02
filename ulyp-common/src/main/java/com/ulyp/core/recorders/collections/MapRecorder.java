@@ -8,7 +8,7 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.Checkpoint;
+import com.ulyp.core.recorders.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class MapRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
         try (BinaryOutput out = nout.nest()) {
             if (active) {
-                Checkpoint checkpoint = out.checkpoint();
+                Mark mark = out.mark();
                 out.write(RECORDED_ITEMS);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
@@ -83,9 +83,11 @@ public class MapRecorder extends ObjectRecorder {
                         recorded++;
                     }
                 } catch (Throwable throwable) {
-                    checkpoint.rollback();
+                    mark.rollback();
                     active = false; // TODO ban by id
                     writeMapIdentity(object, out, typeResolver);
+                } finally {
+                    mark.close();
                 }
             } else {
                 writeMapIdentity(object, out, typeResolver);

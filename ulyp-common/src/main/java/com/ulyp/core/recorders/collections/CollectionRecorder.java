@@ -8,7 +8,7 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.Checkpoint;
+import com.ulyp.core.recorders.bytes.Mark;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +72,7 @@ public class CollectionRecorder extends ObjectRecorder {
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         if (active) {
-            Checkpoint checkpoint = out.checkpoint();
+            Mark mark = out.mark();
             out.write(RECORDED_ITEMS_FLAG);
             try {
                 Collection<?> collection = (Collection<?>) object;
@@ -91,9 +91,11 @@ public class CollectionRecorder extends ObjectRecorder {
                 if (LoggingSettings.INFO_ENABLED) {
                     log.info("Collection items will not be recorded as error occurred while recording", throwable);
                 }
-                checkpoint.rollback();
+                mark.rollback();
                 active = false; // TODO ban by id
                 writeIdentity(object, out, typeResolver);
+            } finally {
+                mark.close();
             }
         } else {
             writeIdentity(object, out, typeResolver);
