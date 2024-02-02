@@ -2,10 +2,10 @@ package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
 import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.recorders.bytes.MemBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
-import org.agrona.ExpandableDirectByteBuffer;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.TestOnly;
 
 /**
@@ -26,7 +26,18 @@ public class RecordedMethodCallList {
     }
 
     public RecordedMethodCallList(int recordingId) {
-        this.out = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        this.out = new BinaryList.Out(WIRE_ID, new MemBinaryOutput(new MemPageAllocator() {
+
+            @Override
+            public MemPage allocate() {
+                return new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+            }
+
+            @Override
+            public void deallocate(MemPage page) {
+
+            }
+        }));
 
         out.add(out -> out.write(recordingId));
     }

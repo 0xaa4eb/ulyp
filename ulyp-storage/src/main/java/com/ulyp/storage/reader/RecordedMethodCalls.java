@@ -9,11 +9,13 @@ import com.ulyp.core.recorders.bytes.BinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 public class RecordedMethodCalls {
 
     private final BinaryList.In bytesIn;
+    @Getter
     private final int recordingId;
 
     public RecordedMethodCalls(BinaryList.In bytesIn) {
@@ -23,10 +25,6 @@ public class RecordedMethodCalls {
         }
         BinaryInput firstEntry = bytesIn.iterator().next();
         this.recordingId = firstEntry.readInt();
-    }
-
-    public int getRecordingId() {
-        return recordingId;
     }
 
     public boolean isEmpty() {

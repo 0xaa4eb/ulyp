@@ -1,6 +1,7 @@
 package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.mem.MemPool;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,8 +23,8 @@ public class MemBinaryOutputTest {
             List<Object> written = new ArrayList<>();
             BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
 
-            while (out.currentOffset() < MemPool.PAGE_SIZE * 10) {
-                int rnd = ThreadLocalRandom.current().nextInt(7);
+            while (out.currentOffset() < MemPool.PAGE_SIZE * 30) {
+                int rnd = ThreadLocalRandom.current().nextInt(8);
                 if (rnd == 0) {
                     char value = (char) ('A' + ThreadLocalRandom.current().nextInt(25));
                     out.write(value);
@@ -48,11 +49,17 @@ public class MemBinaryOutputTest {
                     String value = String.valueOf(ThreadLocalRandom.current().nextDouble());
                     out.write(value);
                     written.add(value);
-                } else {
+                } else if (rnd == 6) {
                     byte[] byteArray = new byte[ThreadLocalRandom.current().nextInt(128) + 1];
                     ThreadLocalRandom.current().nextBytes(byteArray);
                     out.write(byteArray);
                     written.add(byteArray);
+                } else {
+                    byte[] byteArray = new byte[ThreadLocalRandom.current().nextInt(128) + 1];
+                    ThreadLocalRandom.current().nextBytes(byteArray);
+                    UnsafeBuffer buffer = new UnsafeBuffer(byteArray);
+                    out.write(buffer);
+                    written.add(buffer);
                 }
             }
 
@@ -73,6 +80,8 @@ public class MemBinaryOutputTest {
                     Assert.assertEquals(value, input.readByte());
                 } else if (value instanceof byte[]) {
                     assertBytesEquals((byte[]) value, input.readBytes());
+                } else if (value instanceof UnsafeBuffer) {
+                    input.readBytes();
                 }
             }
         }
@@ -91,6 +100,29 @@ public class MemBinaryOutputTest {
         testWriteManyInts(MemPool.PAGE_SIZE / Integer.BYTES + 500);
         testWriteManyInts(10 * MemPool.PAGE_SIZE / Integer.BYTES);
         testWriteManyInts(10 * MemPool.PAGE_SIZE / Integer.BYTES + 3);
+    }
+
+    @Test
+    public void testReadWriteAtArbitraryPos() throws IOException {
+        int intsPerPage = MemPool.PAGE_SIZE / Integer.BYTES;
+        BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+        for (int i = 0; i < intsPerPage - 1; i++) {
+            out.write(i);
+        }
+        out.write((byte) 5);
+
+        int offset = out.currentOffset();
+
+        out.write(42);
+
+        out.writeAt(offset, 55);
+
+        BufferBinaryInput input = flip(out);
+        for (int i = 0; i < intsPerPage - 1; i++) {
+            input.readInt();
+        }
+        input.readByte();
+        Assert.assertEquals(55, input.readInt());
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.ulyp.core.mem;
 
 import org.agrona.BitUtil;
 import org.agrona.concurrent.UnsafeBuffer;
-import sun.jvm.hotspot.memory.MemRegion;
 
 import java.nio.ByteBuffer;
 import java.util.Deque;

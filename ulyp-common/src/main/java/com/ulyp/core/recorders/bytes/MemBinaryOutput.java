@@ -48,11 +48,6 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
         pageAt(pos);
     }
 
-    @Override
-    public DirectBuffer copy() {
-        return null;
-    }
-
     public void write(boolean value) {
         write(value ? 1 : 0);
     }
@@ -117,8 +112,24 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public void write(DirectBuffer buffer) {
+    public DirectBuffer copy() {
+        return null;
+    }
 
+    @Override
+    public void write(DirectBuffer buffer) {
+        int bytesLength = buffer.capacity();
+        write(bytesLength);
+        int offset = 0;
+        while (bytesLength > 0) {
+            MemPage page = currentPage();
+            int remainingBytes = currentPageRemainingBytes();
+            int bytesWritten = Math.min(remainingBytes, bytesLength);
+            page.getBuffer().putBytes(pos & MemPool.PAGE_BYTE_SIZE_MASK, buffer, offset, bytesWritten);
+            offset += bytesWritten;
+            bytesLength -= bytesWritten;
+            pos += bytesWritten;
+        }
     }
 
     public void write(byte[] value) {
@@ -164,7 +175,16 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
 
     @Override
     public void writeAt(int offset, int value) {
-/*        buffer.putInt(offset, value);*/
+        MemPage page = pageAt(offset);
+        int posWithinPage = offset & MemPool.PAGE_BYTE_SIZE_MASK;
+        int remBytesPage = MemPool.PAGE_SIZE - posWithinPage;
+        if (remBytesPage > Integer.BYTES) {
+            page.getBuffer().putInt(posWithinPage, value);
+        } else {
+            offset += remBytesPage;
+            page = pageAt(offset);
+            page.getBuffer().putInt(offset & MemPool.PAGE_BYTE_SIZE_MASK, value);
+        }
     }
 
     @Override

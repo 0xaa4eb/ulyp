@@ -1,17 +1,20 @@
 package com.ulyp.storage.reader;
 
 import com.ulyp.core.*;
-import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.mem.*;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.bytes.BinaryOutput;
 import com.ulyp.core.recorders.bytes.BufferBinaryInput;
 import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.recorders.bytes.MemBinaryOutput;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -19,23 +22,31 @@ import static org.junit.Assert.assertEquals;
 
 public class RecordedMethodCallListTest {
 
-    private final byte[] buf = new byte[16 * 1024];
-
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     @Test
-    public void testAddAndIterate() {
-        BinaryList.Out write = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new BufferBinaryOutput(new UnsafeBuffer(buf)));
-        RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, write);
+    public void testAddAndIterate() throws IOException {
+        BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new MemBinaryOutput(new MemPageAllocator() {
+
+            @Override
+            public MemPage allocate() {
+                return new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+            }
+
+            @Override
+            public void deallocate(MemPage page) {
+
+            }
+        }));
+        RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
 
         Type type = typeResolver.get(A.class);
-
         Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
         recordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
-        BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buf)));
+        BinaryList.In read = flip(out);
         RecordedMethodCalls list = new RecordedMethodCalls(read);
 
         AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());
@@ -52,6 +63,12 @@ public class RecordedMethodCallListTest {
         RecordedExitMethodCall exitCall = (RecordedExitMethodCall) it.next();
 
         assertEquals(134, exitCall.getCallId());
+    }
+
+    private static BinaryList.In flip(BinaryList.Out out) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int length = out.writeTo(outputStream);
+        return new BinaryList.In(new BufferBinaryInput(outputStream.toByteArray(), length));
     }
 
     public static class A {
