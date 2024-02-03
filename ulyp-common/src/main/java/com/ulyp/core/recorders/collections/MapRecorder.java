@@ -6,9 +6,9 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.Mark;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

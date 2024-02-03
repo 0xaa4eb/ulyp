@@ -1,10 +1,13 @@
-package com.ulyp.core.recorders.bytes;
+package com.ulyp.core.bytes;
 
 import com.ulyp.core.TypeResolver;
+import lombok.SneakyThrows;
 import org.agrona.DirectBuffer;
+import org.agrona.concurrent.UnsafeBuffer;
+import org.jetbrains.annotations.TestOnly;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public interface BinaryOutput extends AutoCloseable {
 
@@ -50,5 +53,14 @@ public interface BinaryOutput extends AutoCloseable {
 
     void close() throws RuntimeException;
 
-    int writeTo(OutputStream outputStream) throws IOException;
+    int writeTo(BinaryOutputSink sink) throws IOException;
+
+    @SneakyThrows
+    @TestOnly
+    default BinaryInput flip() {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(output);
+        writeTo(bufferedOutputStream);
+        return new BufferBinaryInput(new UnsafeBuffer(output.toByteArray()));
+    }
 }

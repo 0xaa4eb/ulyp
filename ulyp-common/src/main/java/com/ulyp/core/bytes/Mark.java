@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders.bytes;
+package com.ulyp.core.bytes;
 
 public interface Mark extends AutoCloseable {
 

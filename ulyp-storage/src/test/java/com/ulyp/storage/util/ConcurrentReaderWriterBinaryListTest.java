@@ -2,7 +2,7 @@ package com.ulyp.storage.util;
 
 import com.ulyp.core.mem.BinaryList;
 
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import lombok.Builder;
 import lombok.Value;
 import org.agrona.ExpandableDirectByteBuffer;

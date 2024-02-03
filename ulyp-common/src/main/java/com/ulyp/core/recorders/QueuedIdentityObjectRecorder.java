@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
 
 public class QueuedIdentityObjectRecorder extends ObjectRecorder {
 

@@ -1,11 +1,12 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BinaryOutputSink;
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
@@ -35,18 +36,16 @@ public class BinaryList {
         }
 
         public void add(Consumer<BinaryOutput> writeCallback) {
-            // TODO this is bad, should be redone
             int position = bytesOut.position();
             bytesOut.write(0);
             writeCallback.accept(bytesOut);
-            // int bytesWritten = bytesOut.position() - position - Integer.BYTES;
             int bytesWritten = bytesOut.bytesWritten(position) - Integer.BYTES; // TODO check initial int span multiple pages
             bytesOut.writeAt(position, bytesWritten);
             incSize();
         }
 
-        public int writeTo(OutputStream outputStream) throws IOException {
-            return bytesOut.writeTo(outputStream);
+        public int writeTo(BinaryOutputSink sink) throws IOException {
+            return bytesOut.writeTo(sink);
         }
 
         private void incSize() {
@@ -72,6 +71,11 @@ public class BinaryList {
 
         public void dispose() {
             this.bytesOut.dispose();
+        }
+
+        @TestOnly
+        public In flip() {
+            return new In(bytesOut.flip());
         }
     }
 

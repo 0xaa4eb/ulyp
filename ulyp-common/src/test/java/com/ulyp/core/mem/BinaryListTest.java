@@ -1,9 +1,10 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.MemBinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferedOutputStream;
+import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,21 +33,18 @@ public class BinaryListTest {
 
     @Test
     public void test() throws IOException {
-        BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new MemBinaryOutput(allocator()));
+        BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         out.add(o -> o.write("AVBACAS"));
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        out.writeTo(outputStream);
-
-        BinaryList.In inputList = new BinaryList.In(new BufferBinaryInput(outputStream.toByteArray()));
+        BinaryList.In inputList = out.flip();
 
         Assert.assertEquals(1, inputList.size());
     }
 
     @Test
     public void testByAddressAccess() throws IOException {
-        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new MemBinaryOutput(allocator()));
+        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         bytesOut.add(out -> {
             out.write(true);
@@ -62,9 +60,9 @@ public class BinaryListTest {
         });
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bytesOut.writeTo(outputStream);
+        bytesOut.writeTo(new BufferedOutputStream(outputStream));
         byte[] byteArray = outputStream.toByteArray();
-        BinaryList.In inputList = new BinaryList.In(new BufferBinaryInput(byteArray));
+        BinaryList.In inputList = bytesOut.flip();
 
         AddressableItemIterator<BinaryInput> it = inputList.iterator();
 
@@ -83,8 +81,8 @@ public class BinaryListTest {
     }
 
     @Test
-    public void testSimpleReadWrite() throws IOException {
-        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new MemBinaryOutput(allocator()));
+    public void testSimpleReadWrite() {
+        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         bytesOut.add(out -> {
             out.write('A');
@@ -97,10 +95,7 @@ public class BinaryListTest {
             out.write('D');
         });
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bytesOut.writeTo(outputStream);
-        BinaryList.In inputList = new BinaryList.In(new BufferBinaryInput(outputStream.toByteArray()));
-
+        BinaryList.In inputList = bytesOut.flip();
 
         assertEquals(3, inputList.size());
 

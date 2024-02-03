@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
-import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.MethodSerializer;
 import com.ulyp.core.serializers.ProcessMetadataSerializer;

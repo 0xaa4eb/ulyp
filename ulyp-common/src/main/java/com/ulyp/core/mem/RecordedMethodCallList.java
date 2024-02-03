@@ -1,8 +1,8 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.MemBinaryOutput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
 import org.agrona.concurrent.UnsafeBuffer;
@@ -26,7 +26,7 @@ public class RecordedMethodCallList {
     }
 
     public RecordedMethodCallList(int recordingId) {
-        this.out = new BinaryList.Out(WIRE_ID, new MemBinaryOutput(new MemPageAllocator() {
+        this.out = new BinaryList.Out(WIRE_ID, new PagedMemBinaryOutput(new MemPageAllocator() {
 
             @Override
             public MemPage allocate() {

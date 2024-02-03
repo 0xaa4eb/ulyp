@@ -9,7 +9,7 @@ import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.core.recorders.*;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.ObjectPool;
 import org.agrona.concurrent.UnsafeBuffer;

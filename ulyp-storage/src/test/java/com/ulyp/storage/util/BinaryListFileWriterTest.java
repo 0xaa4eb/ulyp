@@ -2,9 +2,9 @@ package com.ulyp.storage.util;
 
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.storage.reader.BinaryListWithAddress;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Before;

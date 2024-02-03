@@ -3,7 +3,7 @@ package com.ulyp.storage.reader;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;

@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders.bytes;
+package com.ulyp.core.bytes;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +12,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 // writes to provided buffer
 public class BufferBinaryOutput extends AbstractBinaryOutput {
 
-    private final List<MarkImpl> openedMarks = new ArrayList<>();
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
 
     protected final MutableDirectBuffer buffer;
@@ -52,7 +51,6 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
         } else {
             newMark = new MarkImpl();
         }
-        openedMarks.add(newMark);
         newMark.markPos = this.position;
         return newMark;
     }
@@ -108,10 +106,8 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public int writeTo(OutputStream outputStream) throws IOException {
-        for (int i = 0; i < position; i++) {
-            outputStream.write(buffer.getByte(i));
-        }
+    public int writeTo(BinaryOutputSink sink) throws IOException {
+        sink.write(buffer, position);
         return position;
     }
 

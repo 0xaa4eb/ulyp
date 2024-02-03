@@ -8,7 +8,7 @@ import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.serializers.ProcessMetadataSerializer;
 import com.ulyp.core.serializers.RecordingMetadataSerializer;
 import com.ulyp.core.util.LoggingSettings;

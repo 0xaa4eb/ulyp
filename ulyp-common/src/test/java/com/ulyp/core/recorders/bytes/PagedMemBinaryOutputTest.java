@@ -1,27 +1,28 @@
 package com.ulyp.core.recorders.bytes;
 
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.core.mem.MemPool;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
-public class MemBinaryOutputTest {
+public class PagedMemBinaryOutputTest {
 
     public static final int ITERATIONS = 100;
 
     @Test
-    public void testReadWriteInts() throws IOException {
+    public void testReadWriteInts() {
         for (int i = 0; i < ITERATIONS; i++) {
             List<Object> written = new ArrayList<>();
-            BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+            BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
             while (out.position() < MemPool.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(5);
@@ -44,7 +45,7 @@ public class MemBinaryOutputTest {
                 }
             }
 
-            BufferBinaryInput input = flip(out);
+            BinaryInput input = out.flip();
 
             for (Object value : written) {
                 if (value instanceof Character) {
@@ -65,10 +66,10 @@ public class MemBinaryOutputTest {
     }
 
     @Test
-    public void testReadWriteVariousObjects() throws IOException {
+    public void testReadWriteVariousObjects() {
         for (int i = 0; i < ITERATIONS; i++) {
             List<Object> written = new ArrayList<>();
-            BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+            BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
             while (out.position() < MemPool.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(8);
@@ -110,7 +111,7 @@ public class MemBinaryOutputTest {
                 }
             }
 
-            BufferBinaryInput input = flip(out);
+            BinaryInput input = out.flip();
 
             for (Object value : written) {
                 if (value instanceof Character) {
@@ -135,7 +136,8 @@ public class MemBinaryOutputTest {
     }
 
     @Test
-    public void testReadWriteManyInts() throws IOException {
+    public void testReadWriteManyInts() {
+        testWriteManyInts(1);
         testWriteManyInts(10);
         testWriteManyInts(50);
         testWriteManyInts(100);
@@ -150,16 +152,16 @@ public class MemBinaryOutputTest {
     }
 
     @Test
-    public void testReadWriteAtArbitraryPosAllAddresses() throws IOException {
+    public void testReadWriteAtArbitraryPosAllAddresses() {
         testReadWriteAtArbitraryPosAllAddresses(0);
         testReadWriteAtArbitraryPosAllAddresses(1);
         testReadWriteAtArbitraryPosAllAddresses(2);
         testReadWriteAtArbitraryPosAllAddresses(3);
     }
 
-    private void testReadWriteAtArbitraryPosAllAddresses(int shift) throws IOException {
+    private void testReadWriteAtArbitraryPosAllAddresses(int shift) {
         int writesCount = 3 * MemPool.PAGE_SIZE / Integer.BYTES + 100;
-        BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
         for (int b = 0; b < shift; b++) {
             out.write((byte) 5);
@@ -173,7 +175,7 @@ public class MemBinaryOutputTest {
             out.writeAt(offsets[i], i + 1);
         }
 
-        BufferBinaryInput input = flip(out);
+         BinaryInput input = out.flip();
 
         for (int b = 0; b < shift; b++) {
             input.readByte();
@@ -184,9 +186,9 @@ public class MemBinaryOutputTest {
     }
 
     @Test
-    public void testReadWriteAtArbitraryPos() throws IOException {
+    public void testReadWriteAtArbitraryPos() {
         int intsPerPage = MemPool.PAGE_SIZE / Integer.BYTES;
-        BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
         for (int i = 0; i < intsPerPage - 1; i++) {
             out.write(i);
         }
@@ -198,7 +200,7 @@ public class MemBinaryOutputTest {
 
         out.writeAt(offset, 55);
 
-        BufferBinaryInput input = flip(out);
+        BinaryInput input = out.flip();
         for (int i = 0; i < intsPerPage - 1; i++) {
             input.readInt();
         }
@@ -207,8 +209,8 @@ public class MemBinaryOutputTest {
     }
 
     @Test
-    public void testByteArrayWriteSpanMultiplePages() throws IOException {
-        BinaryOutput out = new MemBinaryOutput(new TestPageAllocator());
+    public void testByteArrayWriteSpanMultiplePages() {
+        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
         int intsCount = (MemPool.PAGE_SIZE / (Integer.BYTES * 2)) + 1;
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
@@ -217,7 +219,7 @@ public class MemBinaryOutputTest {
         ThreadLocalRandom.current().nextBytes(bytes);
         out.write(bytes);
 
-        BufferBinaryInput input = flip(out);
+        BinaryInput input = out.flip();
 
         for (int i = 0; i < intsCount; i++) {
             assertEquals(i, input.readInt());
@@ -225,13 +227,13 @@ public class MemBinaryOutputTest {
         assertBytesEquals(bytes, input.readBytes());
     }
 
-    private void testWriteManyInts(int intsCount) throws IOException {
+    private void testWriteManyInts(int intsCount) {
         TestPageAllocator pageAllocator = new TestPageAllocator();
-        BinaryOutput out = new MemBinaryOutput(pageAllocator);
+        BinaryOutput out = new PagedMemBinaryOutput(pageAllocator);
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
         }
-        BufferBinaryInput input = flip(out);
+        BinaryInput input = out.flip();
 
         assertEquals(intsCount * Integer.BYTES, input.available());
         for (int i = 0; i < intsCount; i++) {
@@ -243,11 +245,5 @@ public class MemBinaryOutputTest {
         for (byte b : expected) {
             Assert.assertEquals(b, actual.readByte());
         }
-    }
-
-    private static BufferBinaryInput flip(BinaryOutput out) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        int length = out.writeTo(outputStream);
-        return new BufferBinaryInput(outputStream.toByteArray(), length);
     }
 }

@@ -1,7 +1,7 @@
 package com.ulyp.storage.util;
 
 import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryInput;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.reader.BinaryListWithAddress;

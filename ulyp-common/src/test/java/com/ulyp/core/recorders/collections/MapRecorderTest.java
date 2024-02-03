@@ -14,10 +14,10 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.core.util.TypeMatcher;
 

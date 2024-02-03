@@ -1,7 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.Method;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.serializers.MethodSerializer;
 import org.agrona.ExpandableDirectByteBuffer;
 

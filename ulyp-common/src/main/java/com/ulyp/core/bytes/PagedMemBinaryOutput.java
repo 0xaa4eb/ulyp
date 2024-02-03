@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders.bytes;
+package com.ulyp.core.bytes;
 
 import com.ulyp.core.mem.MemPool;
 import com.ulyp.core.mem.MemPage;
@@ -7,19 +7,17 @@ import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemBinaryOutput extends AbstractBinaryOutput {
+public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
-    private final List<MarkImpl> openedMarks = new ArrayList<>();
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
 
     private final MemPageAllocator pageAllocator;
     private final List<MemPage> pages;
 
-    public MemBinaryOutput(MemPageAllocator pageAllocator) {
+    public PagedMemBinaryOutput(MemPageAllocator pageAllocator) {
         this.pageAllocator = pageAllocator;
         this.pages = new ArrayList<>();
         this.pages.add(pageAllocator.allocate());
@@ -37,12 +35,11 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
 
         @Override
         public void rollback() {
-            MemBinaryOutput.this.position = markPos;
+            PagedMemBinaryOutput.this.position = markPos;
         }
 
         @Override
         public void close() throws RuntimeException {
-            // return to pool
             if (unusedMarks.size() < 3) {
                 unusedMarks.add(this);
             }
@@ -57,7 +54,6 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
         } else {
             newMark = new MarkImpl();
         }
-        openedMarks.add(newMark);
         newMark.markPos = this.position;
         newMark.writtenBytes = 0;
         return newMark;
@@ -209,26 +205,19 @@ public class MemBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public int writeTo(OutputStream outputStream) throws IOException {
-        // TODO this is slow
+    public int writeTo(BinaryOutputSink sink) throws IOException {
         int totalBytesWritten = 0;
         int lastTouchedPage = position >> MemPool.PAGE_BITS;
         for (int i = 0; i < lastTouchedPage; i++) {
             MemPage memPage = pages.get(i);
             int bytesToWrite = MemPool.PAGE_SIZE - memPage.getUnused();
-            UnsafeBuffer buffer = memPage.getBuffer();
-            for (int b = 0; b < bytesToWrite; b++) {
-                outputStream.write(buffer.getByte(b));
-            }
+            sink.write(memPage.getBuffer(), bytesToWrite);
             totalBytesWritten += bytesToWrite;
         }
         if (lastTouchedPage < pages.size()) {
             MemPage lastPage = pages.get(lastTouchedPage);
             int bytesToWrite = position & MemPool.PAGE_BYTE_SIZE_MASK;
-            UnsafeBuffer buffer = lastPage.getBuffer();
-            for (int b = 0; b < bytesToWrite; b++) {
-                outputStream.write(buffer.getByte(b));
-            }
+            sink.write(lastPage.getBuffer(), bytesToWrite);
             totalBytesWritten += bytesToWrite;
         }
         return totalBytesWritten;

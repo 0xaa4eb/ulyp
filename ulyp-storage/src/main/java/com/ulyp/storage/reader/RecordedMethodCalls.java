@@ -5,7 +5,7 @@ import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.BinaryList;
 import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
