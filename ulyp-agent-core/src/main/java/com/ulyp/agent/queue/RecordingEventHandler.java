@@ -6,6 +6,7 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,6 +17,10 @@ public class RecordingEventHandler {
     private final MethodRepository methodRepository;
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
+    @Getter
+    private boolean complete = false;
+
+    private int idGen = 0;
 
     public RecordingEventHandler(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
@@ -28,7 +33,9 @@ public class RecordingEventHandler {
     }
 
     void onEventBatchStart() {
+    }
 
+    void onEventBatchEnd() {
     }
 
     void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
@@ -69,6 +76,7 @@ public class RecordingEventHandler {
 
             if (buffer.isComplete()) {
                 this.buffer = null;
+                this.complete = true;
             }
         }
     }

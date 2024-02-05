@@ -84,11 +84,11 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private void processEvents() {
         EventHolder eventHolder = null;
         long nextSequence = sequence.get() + 1L;
-        Set<Integer> recordingIds = new HashSet<>();
 
         while (true) {
             try {
                 final long availableSequence = sequenceBarrier.waitFor(nextSequence);
+                Set<Integer> recordingIds = new HashSet<>();
 
                 while (nextSequence <= availableSequence)
                 {
@@ -126,6 +126,13 @@ public final class QueueBatchEventProcessor implements EventProcessor {
 
                     if (nextSequence == availableSequence) {
                         // handle batch end
+                        for (Integer recordingId : recordingIds) {
+                            RecordingEventHandler handler = recordingQueueProcessors.get(recordingId);
+                            handler.onEventBatchEnd();
+                            if (handler.isComplete()) {
+                                recordingQueueProcessors.remove(recordingId);
+                            }
+                        }
                     }
 
                     nextSequence++;
