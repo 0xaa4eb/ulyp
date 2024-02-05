@@ -8,6 +8,8 @@ import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.TestOnly;
 
+import java.nio.ByteBuffer;
+
 /**
  * A list of serialized {@link RecordedMethodCall} instances
  */
@@ -30,7 +32,7 @@ public class RecordedMethodCallList {
 
             @Override
             public MemPage allocate() {
-                return new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+                return new MemPage(0, new UnsafeBuffer(ByteBuffer.allocateDirect(MemPool.PAGE_SIZE)));
             }
 
             @Override
@@ -54,10 +56,6 @@ public class RecordedMethodCallList {
 
     public void addExitMethodCall(int callId, TypeResolver typeResolver, Object returnValue, long nanoTime) {
         addExitMethodCall(callId, typeResolver, false, returnValue, nanoTime);
-    }
-
-    public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject) {
-        addExitMethodCall(callId, typeResolver, true, throwObject, -1L);
     }
 
     public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject, long nanoTime) {
