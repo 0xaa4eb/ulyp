@@ -27,6 +27,10 @@ public class RecordingEventHandler {
         recordingMetadata = update.getRecordingMetadata();
     }
 
+    void onEventBatchStart() {
+
+    }
+
     void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
         if (buffer == null) {
             buffer = new CallRecordBuffer(enterRecord.getRecordingId());

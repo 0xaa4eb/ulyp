@@ -1,7 +1,9 @@
 package com.ulyp.agent.queue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lmax.disruptor.AlertException;
@@ -82,6 +84,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private void processEvents() {
         EventHolder eventHolder = null;
         long nextSequence = sequence.get() + 1L;
+        Set<Integer> recordingIds = new HashSet<>();
 
         while (true) {
             try {
@@ -95,10 +98,16 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                         // TODO possible inline recording id and event type in item holder
                         EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
                         RecordingEventHandler processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
+                        if (recordingIds.add(enterRecord.getRecordingId())) {
+                            processor.onEventBatchStart();
+                        }
                         processor.onEnterCallRecord(enterRecord);
                     } else if (event instanceof ExitRecordQueueEvent) {
                         ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
                         RecordingEventHandler processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
+                        if (recordingIds.add(exitRecord.getRecordingId())) {
+                            processor.onEventBatchStart();
+                        }
                         processor.onExitCallRecord(exitRecord);
                     } else {
                         RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
