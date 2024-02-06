@@ -239,6 +239,8 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
     @Override
     public void dispose() {
-
+        for (MemPage page : pages) {
+            page.dispose();
+        }
     }
 }

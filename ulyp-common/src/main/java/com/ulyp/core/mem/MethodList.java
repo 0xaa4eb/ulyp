@@ -9,21 +9,21 @@ public class MethodList {
 
     public static final int WIRE_ID = 3;
 
-    private final BinaryList.Out bytesOut;
+    private final BinaryList.Out bytes;
 
     public MethodList() {
-        bytesOut = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        bytes = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
     }
 
     public void add(Method method) {
-        bytesOut.add(out -> MethodSerializer.instance.serialize(out, method));
+        bytes.add(out -> MethodSerializer.instance.serialize(out, method));
     }
 
     public int size() {
-        return bytesOut.size();
+        return bytes.size();
     }
 
-    public BinaryList.Out getRawBytes() {
-        return bytesOut;
+    public BinaryList.Out getBytes() {
+        return bytes;
     }
 }

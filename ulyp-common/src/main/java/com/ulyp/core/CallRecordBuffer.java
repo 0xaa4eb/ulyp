@@ -1,5 +1,6 @@
 package com.ulyp.core;
 
+import com.ulyp.core.mem.MemPageAllocator;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,26 +19,29 @@ public class CallRecordBuffer {
     private final RecordedMethodCallList recordedCalls;
     private final int recordingId;
     private final int rootCallId;
+    private final MemPageAllocator pageAllocator;
 
     private int lastExitCallId = -1;
     private int nextCallId;
 
-    public CallRecordBuffer(int recordingId) {
+    public CallRecordBuffer(int recordingId, MemPageAllocator pageAllocator) {
+        this.pageAllocator = pageAllocator;
         this.recordingId = recordingId;
         this.nextCallId = 1;
         this.rootCallId = 1;
-        this.recordedCalls = new RecordedMethodCallList(recordingId);
+        this.recordedCalls = new RecordedMethodCallList(recordingId, pageAllocator);
     }
 
-    private CallRecordBuffer(int recordingId, int nextCallId, int rootCallId) {
+    private CallRecordBuffer(int recordingId, int nextCallId, int rootCallId, MemPageAllocator pageAllocator) {
+        this.pageAllocator = pageAllocator;
         this.recordingId = recordingId;
         this.nextCallId = nextCallId;
         this.rootCallId = rootCallId;
-        this.recordedCalls = new RecordedMethodCallList(recordingId);
+        this.recordedCalls = new RecordedMethodCallList(recordingId, pageAllocator);
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.recordingId, this.nextCallId, rootCallId);
+        return new CallRecordBuffer(this.recordingId, this.nextCallId, rootCallId, pageAllocator);
     }
 
     public long estimateBytesSize() {

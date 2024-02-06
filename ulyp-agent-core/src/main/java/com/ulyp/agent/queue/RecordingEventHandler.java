@@ -6,6 +6,7 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
+import com.ulyp.core.mem.MemPageAllocator;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ public class RecordingEventHandler {
     private CallRecordBuffer buffer;
     @Getter
     private boolean complete = false;
+    private MemPageAllocator pageAllocator;
 
     private int idGen = 0;
 
@@ -26,6 +28,7 @@ public class RecordingEventHandler {
         this.typeResolver = typeResolver;
         this.agentDataWriter = agentDataWriter;
         this.methodRepository = agentDataWriter.getMethodRepository();
+        this.pageAllocator = new DirectBufMemPageAllocator();
     }
 
     void onRecordingMetadataUpdate(RecordingMetadataQueueEvent update) {
@@ -40,7 +43,7 @@ public class RecordingEventHandler {
 
     void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
         if (buffer == null) {
-            buffer = new CallRecordBuffer(enterRecord.getRecordingId());
+            buffer = new CallRecordBuffer(enterRecord.getRecordingId(), pageAllocator);
         }
 
         buffer.recordMethodEnter(

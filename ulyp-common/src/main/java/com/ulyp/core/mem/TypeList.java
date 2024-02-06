@@ -23,7 +23,7 @@ public class TypeList {
         return bytesOut.size();
     }
 
-    public BinaryList.Out getRawBytes() {
+    public BinaryList.Out getBytes() {
         return bytesOut;
     }
 }

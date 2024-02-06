@@ -67,11 +67,15 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
             return;
         }
         write(writer -> {
-            BinaryList.Out bytesOut = new BinaryList.Out(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
-            bytesOut.add(out -> ProcessMetadataSerializer.instance.serialize(out, processMetadata));
-            writer.write(bytesOut);
-            if (LoggingSettings.DEBUG_ENABLED) {
-                log.debug("Has written {} to storage", processMetadata);
+            BinaryList.Out bytes = new BinaryList.Out(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            try {
+                bytes.add(out -> ProcessMetadataSerializer.instance.serialize(out, processMetadata));
+                writer.write(bytes);
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Has written {} to storage", processMetadata);
+                }
+            } finally {
+                bytes.dispose();
             }
         });
     }
@@ -93,21 +97,30 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (types.size() == 0) {
             return;
         }
-        write(writer -> writer.write(types.getRawBytes()));
+        BinaryList.Out bytes = types.getBytes();
+        try {
+            write(writer -> writer.write(bytes));
+        } finally {
+            bytes.dispose();
+        }
     }
 
     @Override
     public synchronized void write(RecordedMethodCallList callRecords) {
-        BinaryList.Out bytesOut = callRecords.toBytes();
-        if (bytesOut.isEmpty()) {
-            return;
-        }
-        write(writer -> {
-            writer.write(bytesOut);
+        BinaryList.Out bytes = callRecords.toBytes();
+        try {
+            if (bytes.isEmpty()) {
+                return;
+            }
+            write(writer -> {
+                writer.write(bytes);
             /*if (LoggingSettings.DEBUG_ENABLED) {
                 log.debug("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
             }*/
-        });
+            });
+        } finally {
+            bytes.dispose();
+        }
     }
 
     @Override
@@ -115,7 +128,12 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (methods.size() == 0) {
             return;
         }
-        write(writer -> writer.write(methods.getRawBytes()));
+        BinaryList.Out bytes = methods.getBytes();
+        try {
+            write(writer -> writer.write(bytes));
+        } finally {
+            bytes.dispose();
+        }
     }
 
     @Override

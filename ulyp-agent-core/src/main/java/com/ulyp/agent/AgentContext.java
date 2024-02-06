@@ -6,13 +6,10 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
 
-import com.ulyp.core.mem.MemPool;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
-import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.regex.Pattern;
@@ -21,6 +18,7 @@ import lombok.Getter;
 
 public class AgentContext {
 
+    @Getter
     private static volatile AgentContext ctx;
     private static volatile boolean agentLoaded = false;
 
@@ -28,12 +26,16 @@ public class AgentContext {
     private final Settings settings;
     private final OverridableRecordingPolicy startRecordingPolicy;
     private final RecordingDataWriter recordingDataWriter;
+    @Getter
     private final ProcessMetadata processMetadata;
+    @Getter
     private final TypeResolver typeResolver;
+    @Getter
     private final MethodRepository methodRepository;
+    @Getter
     private final RecordingQueue recordingQueue;
+    @Getter
     private final Recorder recorder;
-//    private final MemPool memPool;
     @Nullable
     private final AutoCloseable apiServer;
 
@@ -49,16 +51,6 @@ public class AgentContext {
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
         this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository));
         this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, recordingQueue);
-        int pagesPerRegion = 128;
-/*
-        int regionBytes = Page.PAGE_BYTE_SIZE * pagesPerRegion; // 4 mbytes
-        int regionCount = 64; // TODO configurable
-        this.memPool = new MemPool(
-                new UnsafeBuffer(ByteBuffer.allocateDirect(regionCount * regionBytes)),
-                regionCount,
-                pagesPerRegion
-        ); // TODO configurable
-*/
 
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
@@ -77,7 +69,7 @@ public class AgentContext {
     private static OverridableRecordingPolicy initializePolicy(Settings settings) {
         String value = settings.getStartRecordingPolicyPropertyValue();
 
-        // TODO move string checks to policy implementations
+        // TODO move string checks to policy factory
         StartRecordingPolicy policy;
         if (value == null || value.isEmpty()) {
             policy = new EnabledRecordingPolicy();
@@ -113,36 +105,8 @@ public class AgentContext {
         agentLoaded = true;
     }
 
-    public RecordingQueue getRecordingQueue() {
-        return recordingQueue;
-    }
-
-    public MethodRepository getMethodRepository() {
-        return methodRepository;
-    }
-
-    public ProcessMetadata getProcessMetadata() {
-        return processMetadata;
-    }
-
-    public TypeResolver getTypeResolver() {
-        return typeResolver;
-    }
-
     public static boolean isLoaded() {
         return agentLoaded;
-    }
-
-    public StartRecordingPolicy getStartRecordingPolicy() {
-        return startRecordingPolicy;
-    }
-
-    public Recorder getRecorder() {
-        return recorder;
-    }
-
-    public static AgentContext getCtx() {
-        return ctx;
     }
 
     public RecordingDataWriter getStorageWriter() {

@@ -7,11 +7,13 @@ import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.dsl.EventProcessorFactory;
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.core.TypeResolver;
+import lombok.Getter;
 
 public class QueueBatchEventProcessorFactory implements EventProcessorFactory<EventHolder> {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
+    @Getter
     private volatile QueueBatchEventProcessor eventProcessor;
 
     public QueueBatchEventProcessorFactory(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
@@ -26,9 +28,5 @@ public class QueueBatchEventProcessorFactory implements EventProcessorFactory<Ev
         }
         SequenceBarrier sequenceBarrier = ringBuffer.newBarrier(barrierSequences);
         return eventProcessor = new QueueBatchEventProcessor(ringBuffer, sequenceBarrier, typeResolver, agentDataWriter);
-    }
-
-    public QueueBatchEventProcessor getEventProcessor() {
-        return eventProcessor;
     }
 }

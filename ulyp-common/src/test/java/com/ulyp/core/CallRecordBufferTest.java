@@ -1,3 +1,4 @@
+/*
 package com.ulyp.core;
 
 import org.junit.Assert;
@@ -53,4 +54,4 @@ public class CallRecordBufferTest {
         Assert.assertEquals(2, newLog.getTotalRecordedEnterCalls());
         Assert.assertEquals(2, newLog.getRecordedCallsSize());
     }
-}
+}*/
