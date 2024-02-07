@@ -26,4 +26,8 @@ public class TypeList {
     public BinaryList.Out getRawBytes() {
         return bytesOut;
     }
+
+    public long byteLength() {
+        return bytesOut.bytesWritten();
+    }
 }

@@ -1,19 +1,17 @@
 package com.perf.agent.benchmarks.recording;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class NumbersRecordingBenchmark {
+public class NumbersRecordingBenchmark extends RecordingBenchmark {
 
     @Param({"50000"})
     private int callCount;
@@ -64,13 +62,11 @@ public class NumbersRecordingBenchmark {
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public long computeRecordSync() throws InterruptedException, TimeoutException {
-        long result = doCompute();
-        AgentHelper.syncWriting();
-        return result;
+    public long computeRecordSync(Counters counters) {
+        return execRecordAndSync(counters, this::doCompute);
     }
 
-    private long doCompute() {
+    private Long doCompute() {
         long res = 0;
         for (int i = 0; i < callCount; i++) {
             res = (res - 1) ^ foo(

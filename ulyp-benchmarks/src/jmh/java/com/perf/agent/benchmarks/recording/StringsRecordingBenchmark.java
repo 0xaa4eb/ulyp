@@ -1,8 +1,7 @@
 package com.perf.agent.benchmarks.recording;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,8 +11,9 @@ import java.util.concurrent.TimeoutException;
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class StringsRecordingBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
+public class StringsRecordingBenchmark extends RecordingBenchmark {
 
     @Param({"50000"})
     private int callCount;
@@ -23,9 +23,7 @@ public class StringsRecordingBenchmark {
     }
 
     @Fork(value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeBaseline() {
         return doCompute();
     }
@@ -35,9 +33,7 @@ public class StringsRecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.sdjfhgsdhjfsd"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeInstrumented() {
         return doCompute();
     }
@@ -48,9 +44,7 @@ public class StringsRecordingBenchmark {
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public String computeRecord() {
         return doCompute();
     }
@@ -61,13 +55,9 @@ public class StringsRecordingBenchmark {
         "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public String computeRecordSync() throws InterruptedException, TimeoutException {
-        String result = doCompute();
-        AgentHelper.syncWriting();
-        return result;
+    public String computeRecordSync(Counters counters) throws InterruptedException, TimeoutException {
+        return execRecordAndSync(counters, this::doCompute);
     }
 
     private String doCompute() {

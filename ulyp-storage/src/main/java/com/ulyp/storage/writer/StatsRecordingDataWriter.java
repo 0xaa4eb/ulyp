@@ -23,6 +23,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     private final PerTypeStats methodStats = new PerTypeStats("Method");
     private final PerTypeStats callStats = new PerTypeStats("Recorded call");
     private final PerTypeStats callBufferStats = new PerTypeStats("Recorded call buffers");
+    private final PerTypeStats totalBytesWritten = new PerTypeStats("Total bytes written");
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
@@ -50,6 +51,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public void write(TypeList types) throws StorageException {
+        totalBytesWritten.addBytes(types.byteLength());
         delegate.write(types);
 //        typeStats.addToCount(types.size()); // TODO unlock RecorderCurrentSessionCountTest
 //        typeStats.addBytes(types.byteLength());
@@ -57,6 +59,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
+        totalBytesWritten.addBytes(callRecords.bytesWritten());
         delegate.write(callRecords);
         // Every call is recorded twice: as enter method call and exit method calls, therefore the value needs to be adjusted
 //        callStats.addToCount(callRecords.size() / 2);
@@ -66,7 +69,13 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
+    public long estimateBytesWritten() {
+        return totalBytesWritten.getTotalBytes();
+    }
+
+    @Override
     public void write(MethodList methods) throws StorageException {
+        totalBytesWritten.addBytes(methods.byteLength());
         delegate.write(methods);
 //        methodStats.addToCount(methods.size());
 //        methodStats.addBytes(methods.byteLength());

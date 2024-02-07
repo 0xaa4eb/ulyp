@@ -75,6 +75,11 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
+    public long estimateBytesWritten() {
+        return delegate.estimateBytesWritten();
+    }
+
+    @Override
     public void write(MethodList methods) {
         writeAsync(() -> delegate.write(methods));
     }

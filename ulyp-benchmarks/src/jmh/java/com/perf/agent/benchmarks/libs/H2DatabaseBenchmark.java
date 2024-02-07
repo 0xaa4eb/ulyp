@@ -1,16 +1,10 @@
 package com.perf.agent.benchmarks.libs;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.openjdk.jmh.annotations.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 5, time = 3)
 @Measurement(iterations = 10, time = 3)
-public class H2DatabaseBenchmark {
+public class H2DatabaseBenchmark extends RecordingBenchmark {
 
     private Connection connection;
     private int id = 0;
@@ -64,7 +58,7 @@ public class H2DatabaseBenchmark {
 
     @Fork(value = 2)
     @Benchmark
-    public void insertNoAgent() throws Exception {
+    public void insertNoAgent() {
         insertRow();
     }
 
@@ -76,7 +70,7 @@ public class H2DatabaseBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void insertInstrumented() throws Exception {
+    public void insertInstrumented() {
         insertRow();
     }
 
@@ -88,7 +82,7 @@ public class H2DatabaseBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void insertRecord() throws Exception {
+    public void insertRecord() {
         insertRow();
     }
 
@@ -100,25 +94,28 @@ public class H2DatabaseBenchmark {
         "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void insertRecordSync() throws Exception {
-        insertRow();
-        AgentHelper.syncWriting();
+    public void insertRecordSync(Counters counters) {
+        execRecordAndSync(counters, this::insertRow);
     }
 
-    private void insertRow() throws SQLException {
-        try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            prep.setInt(1, id++);
-            prep.setInt(2, ThreadLocalRandom.current().nextInt());
-            prep.setInt(3, ThreadLocalRandom.current().nextInt());
-            prep.setInt(4, ThreadLocalRandom.current().nextInt());
-            prep.setInt(5, ThreadLocalRandom.current().nextInt());
-            prep.setInt(6, ThreadLocalRandom.current().nextInt());
-            prep.setString(7, String.valueOf(ThreadLocalRandom.current().nextLong()));
-            prep.setString(8, String.valueOf(ThreadLocalRandom.current().nextLong()));
-            prep.setString(9, String.valueOf(ThreadLocalRandom.current().nextLong()));
-            prep.setString(10, String.valueOf(ThreadLocalRandom.current().nextLong()));
-            prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
-            prep.execute();
+    private void insertRow() {
+        try {
+            try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                prep.setInt(1, id++);
+                prep.setInt(2, ThreadLocalRandom.current().nextInt());
+                prep.setInt(3, ThreadLocalRandom.current().nextInt());
+                prep.setInt(4, ThreadLocalRandom.current().nextInt());
+                prep.setInt(5, ThreadLocalRandom.current().nextInt());
+                prep.setInt(6, ThreadLocalRandom.current().nextInt());
+                prep.setString(7, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                prep.setString(8, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                prep.setString(9, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                prep.setString(10, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                prep.execute();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

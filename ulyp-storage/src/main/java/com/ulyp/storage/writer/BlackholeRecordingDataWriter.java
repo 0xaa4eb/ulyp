@@ -43,6 +43,11 @@ public class BlackholeRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
+    public long estimateBytesWritten() {
+        return 0;
+    }
+
+    @Override
     public void write(MethodList methods) throws StorageException {
 
     }

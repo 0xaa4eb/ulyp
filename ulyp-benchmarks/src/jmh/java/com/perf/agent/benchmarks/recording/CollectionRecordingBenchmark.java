@@ -1,30 +1,19 @@
 package com.perf.agent.benchmarks.recording;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import org.openjdk.jmh.annotations.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
-
-import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class CollectionRecordingBenchmark {
+public class CollectionRecordingBenchmark extends RecordingBenchmark {
 
     @Param({"50000"})
     private int callCount;
@@ -74,10 +63,8 @@ public class CollectionRecordingBenchmark {
     @BenchmarkMode(Mode.AverageTime)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public int computeRecordSync() throws InterruptedException, TimeoutException {
-        int result = doCompute();
-        AgentHelper.syncWriting();
-        return result;
+    public int computeRecordSync(Counters counters) throws InterruptedException {
+        return execRecordAndSync(counters, this::doCompute);
     }
 
     private List<Object> foo(List<String> a, List<Integer> b, List<Object> c) {
@@ -103,7 +90,7 @@ public class CollectionRecordingBenchmark {
 
     }
 
-    private int doCompute() {
+    private Integer doCompute() {
         List<String> strings = new ArrayList<>();
         strings.add(String.valueOf(ThreadLocalRandom.current().nextInt()));
         strings.add(String.valueOf(ThreadLocalRandom.current().nextInt()));

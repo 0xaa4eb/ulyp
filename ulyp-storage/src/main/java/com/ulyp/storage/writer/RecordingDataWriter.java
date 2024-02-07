@@ -49,5 +49,7 @@ public interface RecordingDataWriter extends AutoCloseable {
 
     void write(RecordedMethodCallList callRecords) throws StorageException;
 
+    long estimateBytesWritten();
+
     void close() throws StorageException;
 }

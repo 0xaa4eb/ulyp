@@ -9,10 +9,19 @@ import com.ulyp.storage.writer.RecordingDataWriter;
 // only used for benchmarks, sometimes it's necessary to wait until all data is flushed
 public class AgentHelper {
 
-    public static void syncWriting() throws InterruptedException, TimeoutException {
-        AgentContext agentContext = AgentContext.getInstance();
+    public static void syncWriting() {
+        try {
+            AgentContext agentContext = AgentContext.getInstance();
+            RecordingDataWriter storageWriter = agentContext.getStorageWriter();
+            storageWriter.sync(Duration.ofSeconds(60));
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        RecordingDataWriter storageWriter = agentContext.getStorageWriter();
-        storageWriter.sync(Duration.ofSeconds(60));
+    public static long estimateBytesWritten() {
+        return AgentContext.getInstance().getStorageWriter().estimateBytesWritten();
     }
 }

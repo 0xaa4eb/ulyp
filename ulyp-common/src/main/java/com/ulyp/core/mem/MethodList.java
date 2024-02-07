@@ -23,6 +23,10 @@ public class MethodList {
         return bytesOut.size();
     }
 
+    public int byteLength() {
+        return bytesOut.bytesWritten();
+    }
+
     public BinaryList.Out getRawBytes() {
         return bytesOut;
     }
