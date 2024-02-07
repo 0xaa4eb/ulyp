@@ -1,26 +1,24 @@
 package com.perf.agent.benchmarks.libs;
 
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
+import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.libs.util.ApplicationConfiguration;
+import com.perf.agent.benchmarks.libs.util.Department;
+import com.perf.agent.benchmarks.libs.util.DepartmentService;
+import com.perf.agent.benchmarks.libs.util.Person;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.perf.agent.benchmarks.libs.util.ApplicationConfiguration;
-import com.perf.agent.benchmarks.libs.util.Department;
-import com.perf.agent.benchmarks.libs.util.DepartmentService;
-import com.perf.agent.benchmarks.libs.util.Person;
-import com.ulyp.agent.util.AgentHelper;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 5, time = 3)
 @Measurement(iterations = 10, time = 3)
-public class SpringHibernateBenchmark {
+public class SpringHibernateBenchmark extends RecordingBenchmark {
 
     private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));
     private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "20"));
@@ -95,8 +93,7 @@ public class SpringHibernateBenchmark {
         "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void shufflePeopleRecordSync() throws InterruptedException, TimeoutException {
-        departmentService.shufflePeople();
-        AgentHelper.syncWriting();
+    public void shufflePeopleRecordSync(Counters counters) {
+        execRecordAndSync(counters, () -> departmentService.shufflePeople());
     }
 }

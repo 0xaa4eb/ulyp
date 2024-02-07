@@ -1,8 +1,7 @@
 package com.perf.agent.benchmarks.libs;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.openjdk.jmh.annotations.*;
 
 import java.sql.*;
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class H2BootstrapBenchmark {
+public class H2BootstrapBenchmark extends RecordingBenchmark {
 
     @Param({"5000"})
     private int insertCount;
@@ -49,7 +48,7 @@ public class H2BootstrapBenchmark {
 
     @Fork(value = 2)
     @Benchmark
-    public void bootstrapBaseline() throws Exception {
+    public void bootstrapBaseline() {
         run();
     }
 
@@ -61,7 +60,7 @@ public class H2BootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void bootstrapInstrumented() throws Exception {
+    public void bootstrapInstrumented() {
         run();
     }
 
@@ -73,7 +72,7 @@ public class H2BootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void bootstrapRecord() throws Exception {
+    public void bootstrapRecord() {
         run();
     }
 
@@ -85,20 +84,23 @@ public class H2BootstrapBenchmark {
         "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void bootstrapRecordSync() throws Exception {
-        run();
-        AgentHelper.syncWriting();
+    public void bootstrapRecordSync(Counters counters) {
+        execRecordAndSync(counters, this::run);
     }
 
-    private void run() throws Exception {
-        setUp();
-        for (int i = 0; i < insertCount; i++) {
-            try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?)")) {
-                prep.setInt(1, id++);
-                prep.setString(2, "Hello");
-                prep.execute();
+    private void run() {
+        try {
+            setUp();
+            for (int i = 0; i < insertCount; i++) {
+                try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?)")) {
+                    prep.setInt(1, id++);
+                    prep.setString(2, "Hello");
+                    prep.execute();
+                }
             }
+            tearDown();
+        } catch (Exception e) {
+            throw new RuntimeException("Test failed", e);
         }
-        tearDown();
     }
 }

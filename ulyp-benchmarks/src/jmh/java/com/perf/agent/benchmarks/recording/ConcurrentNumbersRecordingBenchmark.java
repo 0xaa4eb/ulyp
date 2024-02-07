@@ -1,13 +1,8 @@
 package com.perf.agent.benchmarks.recording;
 
-import java.util.concurrent.TimeUnit;
+import org.openjdk.jmh.annotations.*;
 
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
+import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)

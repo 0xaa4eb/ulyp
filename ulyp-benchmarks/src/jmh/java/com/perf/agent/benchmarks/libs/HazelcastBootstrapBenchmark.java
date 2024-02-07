@@ -1,31 +1,21 @@
 package com.perf.agent.benchmarks.libs;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
-
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
+import org.openjdk.jmh.annotations.*;
+
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class HazelcastBootstrapBenchmark {
+public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
 
     @Fork(value = 2)
     @Benchmark
@@ -65,9 +55,8 @@ public class HazelcastBootstrapBenchmark {
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 2)
     @Benchmark
-    public void bootstrapRecordSync() throws InterruptedException, TimeoutException {
-        run();
-        AgentHelper.syncWriting();
+    public void bootstrapRecordSync(Counters counters) {
+        execRecordAndSync(counters, this::run);
     }
 
     private void run() {

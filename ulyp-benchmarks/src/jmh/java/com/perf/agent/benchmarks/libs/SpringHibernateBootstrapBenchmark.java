@@ -1,12 +1,11 @@
 package com.perf.agent.benchmarks.libs;
 
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.libs.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.libs.util.Department;
 import com.perf.agent.benchmarks.libs.util.DepartmentService;
 import com.perf.agent.benchmarks.libs.util.Person;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.openjdk.jmh.annotations.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class SpringHibernateBootstrapBenchmark {
+public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
 
     private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));
     private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "20"));
@@ -56,7 +55,7 @@ public class SpringHibernateBootstrapBenchmark {
 
     @Fork(value = 2)
     @Benchmark
-    public void boostrapBaseline() throws Exception {
+    public void boostrapBaseline() {
         runTest();
     }
 
@@ -68,7 +67,7 @@ public class SpringHibernateBootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void boostrapInstrumented() throws Exception {
+    public void boostrapInstrumented() {
         runTest();
     }
 
@@ -80,7 +79,7 @@ public class SpringHibernateBootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void boostrapRecord() throws Exception {
+    public void boostrapRecord() {
         runTest();
     }
 
@@ -92,14 +91,17 @@ public class SpringHibernateBootstrapBenchmark {
         "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void boostrapRecordSync() throws Exception {
-        runTest();
-        AgentHelper.syncWriting();
+    public void boostrapRecordSync(Counters counters) {
+        execRecordAndSync(counters, this::runTest);
     }
 
-    private void runTest() throws Exception {
-        setup();
-        departmentService.shufflePeople();
-        tearDown();
+    private void runTest() {
+        try {
+            setup();
+            departmentService.shufflePeople();
+            tearDown();
+        } catch (Exception e) {
+            throw new RuntimeException("Test failed", e);
+        }
     }
 }

@@ -124,6 +124,11 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
+    public long estimateBytesWritten() {
+        return 0;
+    }
+
+    @Override
     public synchronized void write(MethodList methods) {
         if (methods.size() == 0) {
             return;

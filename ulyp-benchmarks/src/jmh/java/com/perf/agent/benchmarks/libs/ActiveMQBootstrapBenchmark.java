@@ -1,10 +1,7 @@
 package com.perf.agent.benchmarks.libs;
 
-import java.util.concurrent.TimeoutException;
-
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
-import com.ulyp.agent.util.AgentHelper;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.openjdk.jmh.annotations.*;
@@ -16,7 +13,7 @@ import javax.jms.*;
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class ActiveMQBootstrapBenchmark {
+public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
 
     private ActiveMQConnectionFactory connectionFactory;
     private Connection connection;
@@ -65,7 +62,7 @@ public class ActiveMQBootstrapBenchmark {
 
     @Fork(value = 2)
     @Benchmark
-    public void baseline() throws JMSException {
+    public void baseline() {
         runTest();
     }
 
@@ -76,7 +73,7 @@ public class ActiveMQBootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void instrumentOnly() throws JMSException {
+    public void instrumentOnly() {
         runTest();
     }
 
@@ -87,7 +84,7 @@ public class ActiveMQBootstrapBenchmark {
             "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void instrumentAndRecord() throws JMSException {
+    public void instrumentAndRecord() {
         runTest();
     }
 
@@ -98,15 +95,18 @@ public class ActiveMQBootstrapBenchmark {
         "-Dulyp.constructors"
     }, value = 2)
     @Benchmark
-    public void instrumentAndRecordSync() throws JMSException, InterruptedException, TimeoutException {
-        runTest();
-        AgentHelper.syncWriting();
+    public void instrumentAndRecordSync(Counters counters) {
+        execRecordAndSync(counters, this::runTest);
     }
 
-    private void runTest() throws JMSException {
-        setup();
-        sendMessages();
-        receiveMessages();
-        teardown();
+    private void runTest() {
+        try {
+            setup();
+            sendMessages();
+            receiveMessages();
+            teardown();
+        } catch (JMSException e) {
+            throw new RuntimeException("Test failed", e);
+        }
     }
 }

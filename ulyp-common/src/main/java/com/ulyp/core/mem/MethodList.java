@@ -26,4 +26,8 @@ public class MethodList {
     public BinaryList.Out getBytes() {
         return bytes;
     }
+
+    public int byteLength() {
+        return bytes.bytesWritten();
+    }
 }
