@@ -20,8 +20,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.regex.Pattern;
 
-import lombok.Getter;
-
 public class AgentContext {
 
     @Getter
@@ -67,7 +65,7 @@ public class AgentContext {
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
         this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository));
-        this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, recordingQueue);
+        this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, recordingQueue, metrics);
 
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(

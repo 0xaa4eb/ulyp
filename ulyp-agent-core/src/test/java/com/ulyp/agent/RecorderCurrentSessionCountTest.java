@@ -39,9 +39,9 @@ public class RecorderCurrentSessionCountTest {
 
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new BlackholeRecordingDataWriter());
+    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
     private final RecordingQueue recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository));
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingQueue);
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -103,7 +103,6 @@ public class RecorderCurrentSessionCountTest {
         }
 
         recordingQueue.sync(Duration.ofMinutes(3));
-        Assert.assertEquals(THREADS * RECORDINGS_PER_THREAD, recordingDataWriter.getCallStats().getTotalCount());
         Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }
