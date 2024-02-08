@@ -40,6 +40,7 @@ public class Settings {
     public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
+    public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
     public static final boolean TIMESTAMPS_ENABLED;
 
     static {
@@ -47,8 +48,9 @@ public class Settings {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
+    @Getter
     @NotNull
-    private final Supplier<RecordingDataWriter> recordingDataWriterSupplier;
+    private final String recordingDataFilePath;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     @NotNull
@@ -65,9 +67,11 @@ public class Settings {
     private final boolean agentEnabled;
     @Getter
     private final boolean timestampsEnabled;
+    @Getter
+    private final boolean metricsEnabled;
 
     public Settings(
-            @NotNull Supplier<RecordingDataWriter> recordingDataWriterSupplier,
+            @NotNull String recordingDataFilePath,
             PackageList instrumentedPackages,
             PackageList excludedFromInstrumentationPackages,
             @NotNull StartRecordingMethods startRecordingMethods,
@@ -81,8 +85,9 @@ public class Settings {
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
             boolean agentEnabled,
-            boolean timestampsEnabled) {
-        this.recordingDataWriterSupplier = recordingDataWriterSupplier;
+            boolean timestampsEnabled,
+            boolean metricsEnabled) {
+        this.recordingDataFilePath = recordingDataFilePath;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.startRecordingMethods = startRecordingMethods;
@@ -97,6 +102,7 @@ public class Settings {
         this.bindNetworkAddress = bindNetworkAddress;
         this.agentEnabled = agentEnabled;
         this.timestampsEnabled = timestampsEnabled;
+        this.metricsEnabled = metricsEnabled;
     }
 
     public static Settings fromSystemProperties() {
@@ -115,39 +121,8 @@ public class Settings {
         String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
         StartRecordingMethods recordingStartMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
 
-        Supplier<RecordingDataWriter> recordingDataWriterSupplier;
-        String filePath = System.getProperty(FILE_PATH_PROPERTY);
-        if (filePath != null) {
-            if (filePath.isEmpty()) {
-                recordingDataWriterSupplier = new Supplier<RecordingDataWriter>() {
-                    @Override
-                    public RecordingDataWriter get() {
-                        return RecordingDataWriter.blackhole();
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "dev/null";
-                    }
-                };
-            } else {
-                recordingDataWriterSupplier = new Supplier<RecordingDataWriter>() {
-                    @Override
-                    public RecordingDataWriter get() {
-                        return RecordingDataWriter.async(
-                                RecordingDataWriter.statsRecording(
-                                        RecordingDataWriter.forFile(Paths.get(filePath).toFile())
-                                )
-                        );
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "file " + filePath;
-                    }
-                };
-            }
-        } else {
+        String recordingDataFilePath = System.getProperty(FILE_PATH_PROPERTY);
+        if (recordingDataFilePath == null) {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
@@ -173,6 +148,7 @@ public class Settings {
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
 
         boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
+        boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;
 
         Set<TypeMatcher> typesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
@@ -181,7 +157,7 @@ public class Settings {
                         .collect(Collectors.toSet());
 
         return new Settings(
-                recordingDataWriterSupplier,
+                recordingDataFilePath,
                 instrumentationPackages,
                 excludedPackages,
                 recordingStartMethods,
@@ -195,7 +171,8 @@ public class Settings {
                 excludeClassesFromInstrumentation,
                 bindNetworkAddress,
                 agentEnabled,
-                timestampsEnabled
+                timestampsEnabled,
+                metricsEnabled
         );
     }
 
@@ -224,10 +201,6 @@ public class Settings {
     @Nullable
     public Pattern getStartRecordingThreads() {
         return startRecordingThreads;
-    }
-
-    public RecordingDataWriter buildStorageWriter() {
-        return recordingDataWriterSupplier.get();
     }
 
     public boolean instrumentConstructors() {
@@ -260,7 +233,7 @@ public class Settings {
 
     @Override
     public String toString() {
-        return "file: " + recordingDataWriterSupplier +
+        return "file: " + recordingDataFilePath +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + startRecordingMethods +
