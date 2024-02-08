@@ -38,7 +38,6 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
         connectionFactory = null;
     }
 
-/*
     @Fork(value = 2)
     @Benchmark
     public void sendMsgBaseline() {
@@ -67,7 +66,6 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
     public void sendMsgRecord() {
         sendMsg();
     }
-*/
 
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
