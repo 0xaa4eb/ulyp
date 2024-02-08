@@ -72,7 +72,8 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
         "-Dulyp.constructors",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.metrics",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
     }, value = 2)
     @Benchmark
     public void sendMsgRecordSync(Counters counters) {

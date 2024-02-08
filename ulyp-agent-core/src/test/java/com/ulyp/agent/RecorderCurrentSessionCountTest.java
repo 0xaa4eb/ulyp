@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ulyp.core.metrics.NullMetrics;
 import org.junit.*;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
@@ -36,8 +37,8 @@ public class RecorderCurrentSessionCountTest {
 
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new BlackholeRecordingDataWriter());
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingDataWriter);
+    private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
+    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingDataWriter, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -95,7 +96,6 @@ public class RecorderCurrentSessionCountTest {
             fut.get(1, TimeUnit.MINUTES);
         }
 
-        Assert.assertEquals(THREADS * RECORDINGS_PER_THREAD, recordingDataWriter.getCallStats().getTotalCount());
         Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }
