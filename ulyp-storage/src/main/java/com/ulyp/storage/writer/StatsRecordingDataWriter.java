@@ -8,29 +8,31 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.metrics.BytesCounter;
+import com.ulyp.core.metrics.Metrics;
 import com.ulyp.storage.StorageException;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class StatsRecordingDataWriter implements RecordingDataWriter {
 
     private final RecordingDataWriter delegate;
+    private final BytesCounter typeBytes;
+    private final BytesCounter methodBytes;
+    private final BytesCounter callsBytes;
 
-    private final PerTypeStats typeStats = new PerTypeStats("Type");
-    private final PerTypeStats methodStats = new PerTypeStats("Method");
-    private final PerTypeStats callStats = new PerTypeStats("Recorded call");
-    private final PerTypeStats callBufferStats = new PerTypeStats("Recorded call buffers");
     private final PerTypeStats totalBytesWritten = new PerTypeStats("Total bytes written");
+
+    public StatsRecordingDataWriter(Metrics metrics, RecordingDataWriter delegate) {
+        this.delegate = delegate;
+        this.typeBytes = metrics.getOrCreateByteCounter("writer.bytes.types");
+        this.methodBytes = metrics.getOrCreateByteCounter("writer.bytes.methods");
+        this.callsBytes = metrics.getOrCreateByteCounter("writer.bytes.calls");
+    }
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
-        typeStats.reset();
-        methodStats.reset();
-        callStats.reset();
-        callBufferStats.reset();
         delegate.reset(resetRequest);
     }
 
@@ -53,19 +55,14 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     public void write(TypeList types) throws StorageException {
         totalBytesWritten.addBytes(types.byteLength());
         delegate.write(types);
-//        typeStats.addToCount(types.size()); // TODO unlock RecorderCurrentSessionCountTest
-//        typeStats.addBytes(types.byteLength());
+        typeBytes.add(types.byteLength(), types.size());
     }
 
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
         totalBytesWritten.addBytes(callRecords.bytesWritten());
         delegate.write(callRecords);
-        // Every call is recorded twice: as enter method call and exit method calls, therefore the value needs to be adjusted
-//        callStats.addToCount(callRecords.size() / 2);
-//        callStats.addBytes(callRecords.byteLength());
-        // TODO
-//        callBufferStats.addToCount(1);
+        callsBytes.add(callRecords.bytesWritten(), callRecords.size());
     }
 
     @Override
@@ -77,20 +74,11 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     public void write(MethodList methods) throws StorageException {
         totalBytesWritten.addBytes(methods.byteLength());
         delegate.write(methods);
-//        methodStats.addToCount(methods.size());
-//        methodStats.addBytes(methods.byteLength());
-    }
-
-    public PerTypeStats getCallStats() {
-        return callStats;
+        methodBytes.add(methods.byteLength(), methods.size());
     }
 
     @Override
     public void close() throws StorageException {
-        log.info("File stats: {}", typeStats);
-        log.info("File stats: {}", methodStats);
-        log.info("File stats: {}", callStats);
-        log.info("File stats: {}", callBufferStats);
         delegate.close();
     }
 }

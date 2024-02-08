@@ -38,6 +38,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
         connectionFactory = null;
     }
 
+/*
     @Fork(value = 2)
     @Benchmark
     public void sendMsgBaseline() {
@@ -66,13 +67,15 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
     public void sendMsgRecord() {
         sendMsg();
     }
+*/
 
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
         "-Dulyp.constructors",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.metrics",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
     }, value = 2)
     @Benchmark
     public void sendMsgRecordSync(Counters counters) {

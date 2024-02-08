@@ -21,7 +21,6 @@ public class RecordingBenchmark {
         runnable.run();
         AgentHelper.syncWriting();
         counters.bytesWritten = AgentHelper.estimateBytesWritten() - bytes;
-        System.out.println(counters.bytesWritten);
     }
 
     public <T> T execRecordAndSync(Counters counters, Supplier<T> supplier) {

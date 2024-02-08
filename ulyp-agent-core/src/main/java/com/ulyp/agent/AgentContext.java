@@ -1,11 +1,17 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.bootstrap.RecordingDataWriterFactory;
 import com.ulyp.agent.policy.*;
+import com.ulyp.agent.util.MetricDumper;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.metrics.Metrics;
+import com.ulyp.core.metrics.MetricsImpl;
+import com.ulyp.core.metrics.NullMetrics;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Paths;
@@ -26,11 +32,22 @@ public class AgentContext {
     private final MethodRepository methodRepository;
     @Nullable
     private final AutoCloseable apiServer;
+    @Getter
+    private final Metrics metrics;
+    @Nullable
+    private final MetricDumper metricDumper;
 
     private AgentContext() {
         this.settings = Settings.fromSystemProperties();
+        if (settings.isMetricsEnabled()) {
+            this.metrics = new MetricsImpl();
+            this.metricDumper = new MetricDumper(metrics);
+        } else {
+            this.metrics = new NullMetrics();
+            this.metricDumper = null;
+        }
         this.startRecordingPolicy = initializePolicy(settings);
-        this.recordingDataWriter = settings.buildStorageWriter();
+        this.recordingDataWriter = new RecordingDataWriterFactory().build(settings.getRecordingDataFilePath(), metrics);
         this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
                 .mainClassName(ProcessMetadata.getMainClassNameFromProp())
