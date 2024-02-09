@@ -8,6 +8,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.queue.disruptor.Disruptor;
+import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
@@ -16,8 +18,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
 import com.lmax.disruptor.SleepingWaitStrategy;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
@@ -34,15 +34,15 @@ public class RecordingQueue implements AutoCloseable {
     private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
-    public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
+    public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
         this.disruptor = new Disruptor<>(
-            EventHolder::new,
-            1024 * 1024, // TODO configurable
-            new QueueEventHandlerThreadFactory(),
-            ProducerType.MULTI,
-            new SleepingWaitStrategy()
+                EventHolder::new,
+                1024 * 1024, // TODO configurable
+                new QueueEventHandlerThreadFactory(),
+                new SleepingWaitStrategy(),
+                metrics
         );
         this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
         this.scheduledExecutorService = Executors.newScheduledThreadPool(
@@ -123,9 +123,11 @@ public class RecordingQueue implements AutoCloseable {
 
     private void reportSeqDiff() {
         QueueBatchEventProcessor eventProcessor = eventProcessorFactory.getEventProcessor();
-        log.info("Seq difference: " + (disruptor.getCursor() - eventProcessor.getSequence().get()) +
-            ", event processor seq: " + eventProcessor.getSequence().get() +
-            ", published seq: " + disruptor.getCursor());
+        if (log.isDebugEnabled()) {
+            log.debug("Seq difference: " + (disruptor.getCursor() - eventProcessor.getSequence().get()) +
+                    ", event processor seq: " + eventProcessor.getSequence().get() +
+                    ", published seq: " + disruptor.getCursor());
+        }
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 5, time = 1)
@@ -42,6 +41,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
+            "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
     }, value = 2)
     @Benchmark
@@ -53,10 +53,11 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+        "-Dulyp.metrics",
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
     }, value = 2)
     @Benchmark
-    public String computeRecordSync(Counters counters) throws InterruptedException, TimeoutException {
+    public String computeRecordSync(Counters counters) {
         return execRecordAndSync(counters, this::doCompute);
     }
 

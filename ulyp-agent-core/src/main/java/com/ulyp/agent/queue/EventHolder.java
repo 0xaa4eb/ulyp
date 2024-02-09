@@ -1,6 +1,6 @@
 package com.ulyp.agent.queue;
 
-class EventHolder {
+public class EventHolder {
 
     Object event;
 }

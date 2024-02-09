@@ -1,11 +1,11 @@
 package com.ulyp.agent.queue;
 
 import com.lmax.disruptor.EventProcessor;
-import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
-import com.lmax.disruptor.dsl.EventProcessorFactory;
 import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.queue.disruptor.EventProcessorFactory;
+import com.ulyp.agent.queue.disruptor.RingBuffer;
 import com.ulyp.core.TypeResolver;
 import lombok.Getter;
 

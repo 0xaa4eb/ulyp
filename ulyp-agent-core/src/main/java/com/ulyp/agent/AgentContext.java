@@ -64,7 +64,7 @@ public class AgentContext {
                 .pid(System.currentTimeMillis())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
-        this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository));
+        this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
         this.recorder = new Recorder(typeResolver, methodRepository, startRecordingPolicy, recordingQueue, metrics);
 
         if (settings.getBindNetworkAddress() != null) {

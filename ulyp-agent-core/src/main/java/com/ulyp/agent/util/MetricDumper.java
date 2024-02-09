@@ -23,7 +23,7 @@ public class MetricDumper implements Closeable {
                         .daemon(true)
                         .build()
         );
-        executor.scheduleAtFixedRate(this::dumpAllMetrics,5, /*TODO configurable*/ 5, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(this::dumpAllMetrics,10, /*TODO configurable*/ 10, TimeUnit.SECONDS);
     }
 
     private static class LogMetricSink implements MetricSink {
