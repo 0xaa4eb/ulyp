@@ -62,7 +62,7 @@ public class RecordingQueue implements AutoCloseable {
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        disruptor.publishEvent((entry, seq) -> entry.event = new EnterRecordQueueEvent(recordingId, callId, methodId, convert(callee), convert(args), nanoTime));
+        disruptor.publishEvent((entry, seq) -> entry.event = new EnterRecordQueueEvent(recordingId, callId, methodId, convertCallee(callee), convert(args), nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
@@ -75,6 +75,14 @@ public class RecordingQueue implements AutoCloseable {
             converted[i] = convert(args[i]);
         }
         return converted;
+    }
+
+    private Object convertCallee(Object value) {
+        if (value != null) {
+            return new QueuedIdentityObject(typeResolver.get(value), value);
+        } else {
+            return null;
+        }
     }
 
     private Object convert(Object value) {

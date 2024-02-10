@@ -49,7 +49,7 @@ public class RecordedEnterMethodCallSerializer {
             }
         }
 
-        ObjectRecorder recorder = callee != null ? ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+        ObjectRecorder recorder = callee != null ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
 
         out.write(typeResolver.get(callee).getId());
         out.write(recorder.getId());
