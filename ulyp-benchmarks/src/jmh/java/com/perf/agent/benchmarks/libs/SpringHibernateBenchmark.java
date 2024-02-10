@@ -14,10 +14,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 5, time = 3)
-@Measurement(iterations = 10, time = 3)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
 public class SpringHibernateBenchmark extends RecordingBenchmark {
 
     private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));

@@ -11,12 +11,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Warmup(iterations = 2, time = 3)
-@Measurement(iterations = 5, time = 3)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
 public class HazelcastBenchmark extends RecordingBenchmark {
 
+    public static final int PUTS_PER_INVOCATION = 100;
     public static final int KEYS_COUNT = 50000;
 
     private HazelcastInstance instance1;
@@ -93,10 +94,12 @@ public class HazelcastBenchmark extends RecordingBenchmark {
     }
 
     private void put() {
-        int index = opIndex++;
-        if (index >= KEYS_COUNT) {
-            opIndex = 0;
+        for (int i = 0; i < PUTS_PER_INVOCATION; i++) {
+            int index = opIndex++;
+            if (index >= KEYS_COUNT) {
+                opIndex = 0;
+            }
+            map1.put(String.valueOf(index), "Value" + index);
         }
-        map1.put(String.valueOf(index), "Value" + index);
     }
 }

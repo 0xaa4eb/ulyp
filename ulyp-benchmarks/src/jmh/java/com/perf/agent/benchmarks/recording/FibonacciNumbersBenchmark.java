@@ -1,4 +1,4 @@
-package com.perf.agent.benchmarks.instrumentation;
+package com.perf.agent.benchmarks.recording;
 
 import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
@@ -6,9 +6,9 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-@BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 10, time = 1)
+@BenchmarkMode(Mode.SingleShotTime)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 
