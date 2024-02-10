@@ -9,11 +9,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Warmup(iterations = 5, time = 3)
-@Measurement(iterations = 10, time = 3)
-public class H2DatabaseBenchmark extends RecordingBenchmark {
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
+public class H2Benchmark extends RecordingBenchmark {
+
+    public static final int INSERTS_PER_INVOCATION = 100;
 
     private Connection connection;
     private int id = 0;
@@ -100,19 +102,21 @@ public class H2DatabaseBenchmark extends RecordingBenchmark {
 
     private void insertRow() {
         try {
-            try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-                prep.setInt(1, id++);
-                prep.setInt(2, ThreadLocalRandom.current().nextInt());
-                prep.setInt(3, ThreadLocalRandom.current().nextInt());
-                prep.setInt(4, ThreadLocalRandom.current().nextInt());
-                prep.setInt(5, ThreadLocalRandom.current().nextInt());
-                prep.setInt(6, ThreadLocalRandom.current().nextInt());
-                prep.setString(7, String.valueOf(ThreadLocalRandom.current().nextLong()));
-                prep.setString(8, String.valueOf(ThreadLocalRandom.current().nextLong()));
-                prep.setString(9, String.valueOf(ThreadLocalRandom.current().nextLong()));
-                prep.setString(10, String.valueOf(ThreadLocalRandom.current().nextLong()));
-                prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
-                prep.execute();
+            for (int i = 0; i < INSERTS_PER_INVOCATION; i++) {
+                try (PreparedStatement prep = connection.prepareStatement("insert into test values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    prep.setInt(1, id++);
+                    prep.setInt(2, ThreadLocalRandom.current().nextInt());
+                    prep.setInt(3, ThreadLocalRandom.current().nextInt());
+                    prep.setInt(4, ThreadLocalRandom.current().nextInt());
+                    prep.setInt(5, ThreadLocalRandom.current().nextInt());
+                    prep.setInt(6, ThreadLocalRandom.current().nextInt());
+                    prep.setString(7, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                    prep.setString(8, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                    prep.setString(9, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                    prep.setString(10, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                    prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
+                    prep.execute();
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

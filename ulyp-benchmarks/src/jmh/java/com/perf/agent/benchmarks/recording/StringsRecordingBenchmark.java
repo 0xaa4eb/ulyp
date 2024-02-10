@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 10, time = 1)
-@BenchmarkMode(Mode.AverageTime)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
+@BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class StringsRecordingBenchmark extends RecordingBenchmark {
 

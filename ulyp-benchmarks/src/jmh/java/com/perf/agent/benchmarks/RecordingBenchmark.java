@@ -1,9 +1,7 @@
 package com.perf.agent.benchmarks;
 
 import com.ulyp.agent.util.AgentHelper;
-import org.openjdk.jmh.annotations.AuxCounters;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.function.Supplier;
 
@@ -14,6 +12,23 @@ public class RecordingBenchmark {
     @AuxCounters(AuxCounters.Type.EVENTS)
     public static class Counters {
         public long bytesWritten;
+    }
+
+    /**
+     * Simple sleep as the relaxation is added to all benchmarks. The main purpose is to enforce a pattern
+     * where burst of methods (usually like ~200k-300k) is recorded with a small pause going afterwards. This
+     * closely resembles the real usage of Ulyp in enterprise apps. We use sync writing (wait until all data is flushed)
+     * and then we insert a small pause.
+     */
+    @TearDown(Level.Invocation)
+    public void relax() {
+        AgentHelper.syncWriting();
+
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public <T> void execRecordAndSync(Counters counters, Runnable runnable) {

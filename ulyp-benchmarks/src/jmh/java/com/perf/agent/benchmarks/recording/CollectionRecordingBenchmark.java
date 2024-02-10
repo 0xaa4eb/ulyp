@@ -10,18 +10,17 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 10, time = 1)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.SingleShotTime)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class CollectionRecordingBenchmark extends RecordingBenchmark {
 
-    @Param({"50000"})
+    @Param({"250000"})
     private int callCount;
 
     @Fork(value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeBaseline() {
         return doCompute();
     }
@@ -32,9 +31,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd",
             "-Dulyp.collections=JAVA"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeInstrumented() {
         return doCompute();
     }
@@ -46,9 +43,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeRecord() {
         return doCompute();
     }
@@ -60,9 +55,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.collections=JAVA",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 2)
-    @BenchmarkMode(Mode.AverageTime)
     @Benchmark
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public int computeRecordSync(Counters counters) throws InterruptedException {
         return execRecordAndSync(counters, this::doCompute);
     }

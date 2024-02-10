@@ -11,10 +11,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Warmup(iterations = 2, time = 3)
-@Measurement(iterations = 5, time = 3)
+@Warmup(iterations = 20)
+@Measurement(iterations = 20)
 public class ActiveMQBenchmark extends RecordingBenchmark {
 
     private ActiveMQConnectionFactory connectionFactory;
@@ -60,6 +60,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
             "-Dulyp.constructors",
+            "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 2)
     @Benchmark
@@ -85,9 +86,11 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer producer = session.createProducer(queue);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            ActiveMQTextMessage msg = new ActiveMQTextMessage();
-            msg.setText(String.valueOf(ThreadLocalRandom.current().nextInt()));
-            producer.send(msg);
+            for (int i = 0; i < 100; i++) {
+                ActiveMQTextMessage msg = new ActiveMQTextMessage();
+                msg.setText(String.valueOf(ThreadLocalRandom.current().nextInt()));
+                producer.send(msg);
+            }
             producer.close();
             session.close();
         } catch (Exception e) {
