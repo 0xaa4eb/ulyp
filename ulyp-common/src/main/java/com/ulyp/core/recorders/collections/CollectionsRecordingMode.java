@@ -10,7 +10,7 @@ public enum CollectionsRecordingMode {
     JAVA {
         @Override
         public boolean supports(Class<?> type) {
-            return type.getName().startsWith("java.");
+            return type.getName().startsWith("java.") && !type.getName().startsWith("java.util.concurrent");
         }
 
         @Override
@@ -19,7 +19,7 @@ public enum CollectionsRecordingMode {
         }
     },
     /**
-     * The most intrusive mode: try to record items on every collection
+     * The most intrusive mode: try to record items on every collection. Might break recordings
      */
     ALL {
         @Override

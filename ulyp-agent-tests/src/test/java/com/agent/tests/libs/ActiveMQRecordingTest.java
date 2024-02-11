@@ -6,7 +6,6 @@ import javax.jms.IllegalStateException;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
@@ -42,8 +41,6 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    @Ignore
-    // TODO debug this
     public void testProduceAndConsumerWithActiveMQWithCollections() {
 
         RecordingResult recordingResult = runSubprocess(

@@ -43,9 +43,13 @@ public class BufferBinaryInput implements BinaryInput {
 
     @Override
     public int readInt() {
-        int val = buffer.getInt(pos);
-        pos += Integer.BYTES;
-        return val;
+        try {
+            int val = buffer.getInt(pos);
+            pos += Integer.BYTES;
+            return val;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
