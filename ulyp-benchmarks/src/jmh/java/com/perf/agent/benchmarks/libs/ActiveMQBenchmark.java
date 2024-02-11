@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 20)
+@Measurement(iterations = 60)
 public class ActiveMQBenchmark extends RecordingBenchmark {
 
     private ActiveMQConnectionFactory connectionFactory;

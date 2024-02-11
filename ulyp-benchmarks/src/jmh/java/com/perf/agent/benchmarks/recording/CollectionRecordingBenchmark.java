@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 20)
-@Measurement(iterations = 20)
+@Measurement(iterations = 60)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class CollectionRecordingBenchmark extends RecordingBenchmark {
 

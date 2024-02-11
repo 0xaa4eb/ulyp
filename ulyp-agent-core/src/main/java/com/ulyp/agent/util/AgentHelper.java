@@ -12,6 +12,13 @@ import com.ulyp.storage.writer.RecordingDataWriter;
 public class AgentHelper {
 
     public static void syncWriting() {
+        AgentContext agentContext = AgentContext.getInstance();
+        if (agentContext == null) {
+            return;
+        }
+
+        try {
+            RecordingDataWriter storageWriter = agentContext.getStorageWriter();
         try {
             RecordingQueue recordingQueue = RecorderInstance.instance.getRecordingQueue();
             recordingQueue.sync(Duration.ofSeconds(60));
