@@ -1,16 +1,12 @@
 package com.agent.tests.libs;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
+import javax.jms.*;
 import javax.jms.IllegalStateException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
 
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
@@ -45,41 +41,70 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
         );
     }
 
+    @Test
+    @Ignore
+    // TODO debug this
+    public void testProduceAndConsumerWithActiveMQWithCollections() {
+
+        RecordingResult recordingResult = runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(ActiveMQTestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.ActiveMQTestCase.main"))
+                        .withInstrumentedPackages()
+                        .withRecordConstructors()
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+        );
+
+        CallRecord singleRoot = recordingResult.getSingleRoot();
+
+        assertThat(
+                DebugCallRecordTreePrinter.printTree(singleRoot),
+                singleRoot.getSubtreeSize(),
+                greaterThan(3000)
+        );
+    }
+
     public static class ActiveMQTestCase {
 
+        private static final int messageCount = 500;
+
         public static void main(String[] args) throws Exception {
-            try {
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
-                Connection connection = connectionFactory.createConnection();
-                connection.start();
-                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                Queue queue = session.createQueue("TEST_QUEUE");
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=false");
+            Connection connection = connectionFactory.createConnection();
+            connection.start();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue("TEST_QUEUE");
 
-                MessageProducer producer = session.createProducer(queue);
-                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-                for (int i = 0; i < 10; i++) {
-                    ActiveMQTextMessage msg = new ActiveMQTextMessage();
-                    msg.setText("Text message 123");
-                    producer.send(msg);
-                }
-                producer.close();
+            sendMessages(session, queue, messageCount);
+            readMessages(session, queue, messageCount);
 
-                MessageConsumer consumer = session.createConsumer(queue);
-                for (int i = 0; i < 10; i++) {
-                    Message message = consumer.receive(5000);
-                    if (message == null) {
-                        throw new IllegalStateException("There must be a message in the queue! Something is wrong");
-                    }
-                    String text = ((ActiveMQTextMessage) message).getText();
-                    if (!text.equals("Text message 123")) {
-                        throw new IllegalStateException("Message has wrong content");
-                    }
+            session.close();
+            connection.close();
+        }
+
+        private static void readMessages(Session session, Queue queue, int messageCount) throws JMSException {
+            MessageConsumer consumer = session.createConsumer(queue);
+            for (int i = 0; i < messageCount; i++) {
+                Message message = consumer.receive(5000);
+                if (message == null) {
+                    throw new IllegalStateException("There must be a message in the queue! Something is wrong");
                 }
-                session.close();
-                connection.close();
-            } finally {
-                System.exit(0);
+                String text = ((ActiveMQTextMessage) message).getText();
+                if (!text.equals("Text message 123")) {
+                    throw new IllegalStateException("Message has wrong content");
+                }
             }
+        }
+
+        private static void sendMessages(Session session, Queue queue, int messageCount) throws JMSException {
+            MessageProducer producer = session.createProducer(queue);
+            producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+            for (int i = 0; i < messageCount; i++) {
+                ActiveMQTextMessage msg = new ActiveMQTextMessage();
+                msg.setText("Text message 123");
+                producer.send(msg);
+            }
+            producer.close();
         }
     }
 }
