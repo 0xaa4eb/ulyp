@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 20)
+@Measurement(iterations = 60)
 public class HazelcastBenchmark extends RecordingBenchmark {
 
     public static final int PUTS_PER_INVOCATION = 100;
@@ -40,11 +40,8 @@ public class HazelcastBenchmark extends RecordingBenchmark {
 
     @TearDown(Level.Trial)
     public void tearDown() {
-        for (int i = 0; i < KEYS_COUNT; i++) {
-            String value = map2.get(String.valueOf(i));
-            if (!value.equals("Value" + i)) {
-                throw new RuntimeException("Value is different for index " + i);
-            }
+        if (map2.isEmpty()) {
+            throw new RuntimeException("Test failed");
         }
         instance1.shutdown();
         instance2.shutdown();

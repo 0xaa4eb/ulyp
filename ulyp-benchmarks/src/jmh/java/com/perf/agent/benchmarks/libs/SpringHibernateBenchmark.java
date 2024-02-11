@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 20)
+@Measurement(iterations = 60)
 public class SpringHibernateBenchmark extends RecordingBenchmark {
 
     private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));

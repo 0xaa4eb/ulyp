@@ -10,8 +10,12 @@ import com.ulyp.storage.writer.RecordingDataWriter;
 public class AgentHelper {
 
     public static void syncWriting() {
+        AgentContext agentContext = AgentContext.getInstance();
+        if (agentContext == null) {
+            return;
+        }
+
         try {
-            AgentContext agentContext = AgentContext.getInstance();
             RecordingDataWriter storageWriter = agentContext.getStorageWriter();
             storageWriter.sync(Duration.ofSeconds(60));
         } catch (InterruptedException ie) {
