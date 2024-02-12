@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 1)
 public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public void bootstrapBaseline() {
         run();
@@ -29,7 +29,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.HazelcastBootstrapBenchmark.xcjznfgasd",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void bootstrapInstrumented() {
         run();
@@ -41,7 +41,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.HazelcastBootstrapBenchmark.run",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void bootstrapRecord() {
         run();
@@ -53,7 +53,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.HazelcastBootstrapBenchmark.run",
         "-Dulyp.constructors",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void bootstrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::run);
