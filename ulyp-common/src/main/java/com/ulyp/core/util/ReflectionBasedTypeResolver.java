@@ -4,7 +4,6 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.TestOnly;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,12 +41,17 @@ public class ReflectionBasedTypeResolver implements TypeResolver {
 
     @Override
     public @NotNull Type get(Class<?> clazz) {
+        Type type = map.get(clazz);
+        if (type != null) {
+            return type;
+        }
+
         return map.computeIfAbsent(
                 clazz,
                 klass -> {
-                    Type type = build(clazz);
-                    typesList.add(type);
-                    return type;
+                    Type newType = build(clazz);
+                    typesList.add(newType);
+                    return newType;
                 }
         );
     }
