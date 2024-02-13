@@ -48,7 +48,7 @@ public class RecordedEnterMethodCallSerializer {
 
         if (callee != null) {
 
-            ObjectRecorder recorder = callee instanceof QueuedIdentityObjectRecorder ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+            ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
 
             out.write(typeResolver.get(callee).getId());
             out.write(recorder.getId());
