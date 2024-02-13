@@ -4,7 +4,6 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.bytes.BufferBinaryInput;
 import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
@@ -12,7 +11,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class RecordedMethodCallListTest {
     @Test
     public void testReadWriteRecordedCallsList() throws IOException {
         for (int iter = 0; iter < 500; iter++) {
-            BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
+            OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
             RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
 
             Type type = typeResolver.get(A.class);
@@ -38,7 +36,7 @@ public class RecordedMethodCallListTest {
                 recordedMethodCallList.addExitMethodCall(i, typeResolver, "ABC");
             }
 
-            BinaryList.In read = out.flip();
+            InputBinaryList read = out.flip();
 
             RecordedMethodCalls list = new RecordedMethodCalls(read);
             Assert.assertEquals(callsCount * 2, list.size());
@@ -52,7 +50,7 @@ public class RecordedMethodCallListTest {
 
     @Test
     public void testAddAndIterate() throws IOException {
-        BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
+        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
         RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
 
         Type type = typeResolver.get(A.class);
@@ -61,7 +59,7 @@ public class RecordedMethodCallListTest {
         recordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
-        BinaryList.In read = out.flip();
+        InputBinaryList read = out.flip();
         RecordedMethodCalls list = new RecordedMethodCalls(read);
 
         AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());

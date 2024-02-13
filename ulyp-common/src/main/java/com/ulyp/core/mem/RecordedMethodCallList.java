@@ -14,17 +14,17 @@ public class RecordedMethodCallList {
     public static final byte ENTER_METHOD_CALL_ID = 1;
     public static final int WIRE_ID = 2;
 
-    private final BinaryList.Out out;
+    private final OutputBinaryList out;
 
     @TestOnly
-    public RecordedMethodCallList(int recordingId, BinaryList.Out writeBinaryList) {
+    public RecordedMethodCallList(int recordingId, OutputBinaryList writeBinaryList) {
         this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
     }
 
     public RecordedMethodCallList(int recordingId, MemPageAllocator pageAllocator) {
-        this.out = new BinaryList.Out(WIRE_ID, new PagedMemBinaryOutput(pageAllocator));
+        this.out = new OutputBinaryList(WIRE_ID, new PagedMemBinaryOutput(pageAllocator));
 
         out.add(out -> out.write(recordingId));
     }
@@ -42,7 +42,9 @@ public class RecordedMethodCallList {
     }
 
     private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
-        out.add(out -> RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(out, callId, typeResolver, thrown, returnValue, nanoTime));
+        OutputBinaryList.Writer writer = out.writer();
+        RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(writer, callId, typeResolver, thrown, returnValue, nanoTime);
+        writer.commit();
     }
 
     public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
@@ -50,7 +52,9 @@ public class RecordedMethodCallList {
     }
 
     public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
-        out.add(out -> RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(out, callId, methodId, typeResolver, callee, args, nanoTime));
+        OutputBinaryList.Writer writer = out.writer();
+        RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, callId, methodId, typeResolver, callee, args, nanoTime);
+        writer.commit();
     }
 
     public boolean isEmpty() {
@@ -65,7 +69,7 @@ public class RecordedMethodCallList {
         return out.bytesWritten();
     }
 
-    public BinaryList.Out toBytes() {
+    public OutputBinaryList toBytes() {
         return out;
     }
 }

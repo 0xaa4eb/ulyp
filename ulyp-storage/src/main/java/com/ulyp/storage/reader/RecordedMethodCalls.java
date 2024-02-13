@@ -3,7 +3,7 @@ package com.ulyp.storage.reader;
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.Type;
-import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.mem.InputBinaryList;
 import com.ulyp.core.mem.RecordedMethodCallList;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.repository.ReadableRepository;
@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class RecordedMethodCalls {
 
-    private final BinaryList.In bytesIn;
+    private final InputBinaryList bytesIn;
     @Getter
     private final int recordingId;
 
-    public RecordedMethodCalls(BinaryList.In bytesIn) {
+    public RecordedMethodCalls(InputBinaryList bytesIn) {
         this.bytesIn = bytesIn;
         if (bytesIn.id() != RecordedMethodCallList.WIRE_ID) {
             throw new IllegalArgumentException("Invalid wire id");

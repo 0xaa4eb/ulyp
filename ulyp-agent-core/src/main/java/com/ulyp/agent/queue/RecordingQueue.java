@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
-import com.ulyp.agent.queue.disruptor.Disruptor;
+import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
@@ -30,14 +30,14 @@ public class RecordingQueue implements AutoCloseable {
 
     private final ObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
-    private final Disruptor<EventHolder> disruptor;
+    private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
-        this.disruptor = new Disruptor<>(
+        this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
                 1024 * 1024, // TODO configurable
                 new QueueEventHandlerThreadFactory(),
@@ -58,23 +58,22 @@ public class RecordingQueue implements AutoCloseable {
     }
 
     public void enqueueRecordingMetadataUpdate(RecordingMetadata recordingMetadata) {
-        disruptor.publishEvent((entry, seq) -> entry.event = new RecordingMetadataQueueEvent(recordingMetadata));
+        disruptor.publish(new RecordingMetadataQueueEvent(recordingMetadata));
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        disruptor.publishEvent((entry, seq) -> entry.event = new EnterRecordQueueEvent(recordingId, callId, methodId, convertCallee(callee), convert(args), nanoTime));
+        disruptor.publish(new EnterRecordQueueEvent(recordingId, callId, methodId, convertCallee(callee), convert(args), nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        disruptor.publishEvent((entry, seq) -> entry.event = new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
+        disruptor.publish(new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
     }
 
     private Object[] convert(Object[] args) {
-        Object[] converted = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
-            converted[i] = convert(args[i]);
+            args[i] = convert(args[i]);
         }
-        return converted;
+        return args;
     }
 
     private Object convertCallee(Object value) {

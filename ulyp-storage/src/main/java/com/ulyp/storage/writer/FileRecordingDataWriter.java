@@ -4,10 +4,7 @@ import com.ulyp.core.ProcessMetadata;
 
 import com.ulyp.core.RecordingCompleteMark;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.serializers.ProcessMetadataSerializer;
 import com.ulyp.core.serializers.RecordingMetadataSerializer;
@@ -67,7 +64,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
             return;
         }
         write(writer -> {
-            BinaryList.Out bytes = new BinaryList.Out(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            OutputBinaryList bytes = new OutputBinaryList(ProcessMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
             try {
                 bytes.add(out -> ProcessMetadataSerializer.instance.serialize(out, processMetadata));
                 writer.write(bytes);
@@ -83,7 +80,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void write(RecordingMetadata recordingMetadata) {
         write(writer -> {
-            BinaryList.Out bytesOut = new BinaryList.Out(RecordingMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+            OutputBinaryList bytesOut = new OutputBinaryList(RecordingMetadata.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
             bytesOut.add(out -> RecordingMetadataSerializer.instance.serialize(out, recordingMetadata));
             writer.write(bytesOut);
             if (LoggingSettings.DEBUG_ENABLED) {
@@ -97,7 +94,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (types.size() == 0) {
             return;
         }
-        BinaryList.Out bytes = types.getBytes();
+        OutputBinaryList bytes = types.getBytes();
         try {
             write(writer -> writer.write(bytes));
         } finally {
@@ -107,7 +104,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public synchronized void write(RecordedMethodCallList callRecords) {
-        BinaryList.Out bytes = callRecords.toBytes();
+        OutputBinaryList bytes = callRecords.toBytes();
         try {
             if (bytes.isEmpty()) {
                 return;
@@ -133,7 +130,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (methods.size() == 0) {
             return;
         }
-        BinaryList.Out bytes = methods.getBytes();
+        OutputBinaryList bytes = methods.getBytes();
         try {
             write(writer -> writer.write(bytes));
         } finally {
@@ -149,7 +146,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void close() {
         if (fileWriter != null) {
-            fileWriter.write(new BinaryList.Out(RecordingCompleteMark.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer())));
+            fileWriter.write(new OutputBinaryList(RecordingCompleteMark.WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer())));
             fileWriter.close();
             fileWriter = null;
         }

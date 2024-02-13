@@ -9,10 +9,10 @@ public class MethodList {
 
     public static final int WIRE_ID = 3;
 
-    private final BinaryList.Out bytes;
+    private final OutputBinaryList bytes;
 
     public MethodList() {
-        bytes = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        bytes = new OutputBinaryList(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
     }
 
     public void add(Method method) {
@@ -23,7 +23,7 @@ public class MethodList {
         return bytes.size();
     }
 
-    public BinaryList.Out getBytes() {
+    public OutputBinaryList getBytes() {
         return bytes;
     }
 

@@ -1,10 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BufferBinaryInput;
-import com.ulyp.core.bytes.BufferedOutputStream;
-import com.ulyp.core.bytes.PagedMemBinaryOutput;
+import com.ulyp.core.bytes.*;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,19 +29,35 @@ public class BinaryListTest {
     }
 
     @Test
-    public void test() throws IOException {
-        BinaryList.Out out = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
+    public void testBasicSize() {
+        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
-        out.add(o -> o.write("AVBACAS"));
+        OutputBinaryList.Writer writer = out.writer();
+        writer.write("AVBACAS");
+        writer.commit();
 
-        BinaryList.In inputList = out.flip();
+        InputBinaryList inputList = out.flip();
 
         Assert.assertEquals(1, inputList.size());
     }
 
     @Test
+    public void testWriteByUsingWriter() {
+        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
+
+        OutputBinaryList.Writer writer = out.writer();
+        writer.write("AVBACAS");
+        writer.commit();
+
+        InputBinaryList inputList = out.flip();
+
+        BinaryInput in = inputList.iterator().next();
+        Assert.assertEquals("AVBACAS", in.readString());
+    }
+
+    @Test
     public void testByAddressAccess() throws IOException {
-        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
+        OutputBinaryList bytesOut = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         bytesOut.add(out -> {
             out.write(true);
@@ -62,15 +75,13 @@ public class BinaryListTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bytesOut.writeTo(new BufferedOutputStream(outputStream));
         byte[] byteArray = outputStream.toByteArray();
-        BinaryList.In inputList = bytesOut.flip();
+        InputBinaryList inputList = bytesOut.flip();
 
         AddressableItemIterator<BinaryInput> it = inputList.iterator();
 
-        BinaryInput next = it.next();
-        long address1 = it.address();
-        System.out.println(address1);
+        it.next();
 
-        BinaryInput next1 = it.next();
+        it.next();
         long address2 = it.address();
 
         UnsafeBuffer unsafeBuffer = new UnsafeBuffer(byteArray, (int) address2, 12);
@@ -82,7 +93,7 @@ public class BinaryListTest {
 
     @Test
     public void testSimpleReadWrite() {
-        BinaryList.Out bytesOut = new BinaryList.Out(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
+        OutputBinaryList bytesOut = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         bytesOut.add(out -> {
             out.write('A');
@@ -95,7 +106,7 @@ public class BinaryListTest {
             out.write('D');
         });
 
-        BinaryList.In inputList = bytesOut.flip();
+        InputBinaryList inputList = bytesOut.flip();
 
         assertEquals(3, inputList.size());
 
@@ -107,20 +118,20 @@ public class BinaryListTest {
         assertEquals(2, next.available());
         assertEquals('A', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 4, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 4, iterator.address());
 
         next = iterator.next();
         assertEquals(4, next.available());
         assertEquals('B', next.readChar());
         assertEquals('C', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 10, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 10, iterator.address());
 
         next = iterator.next();
         assertEquals(2, next.available());
         assertEquals('D', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 18, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 18, iterator.address());
 
         assertFalse(iterator.hasNext());
     }

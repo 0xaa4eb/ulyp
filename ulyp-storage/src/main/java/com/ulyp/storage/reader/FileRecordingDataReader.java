@@ -67,7 +67,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (binaryListWithAddress == null) {
                 return null;
             }
-            BinaryList.In bytes = binaryListWithAddress.getBytes();
+            InputBinaryList bytes = binaryListWithAddress.getBytes();
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
@@ -150,21 +150,21 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(BinaryList.In in) {
+        private void onProcessMetadata(InputBinaryList in) {
             job.onProcessMetadata(ProcessMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        protected void onRecordingMetadata(BinaryList.In in) {
+        protected void onRecordingMetadata(InputBinaryList in) {
             job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        private void onTypes(BinaryList.In typesList) {
+        private void onTypes(InputBinaryList typesList) {
             for (BinaryInput input : typesList) {
                 job.onType(TypeSerializer.instance.deserialize(input));
             }
         }
 
-        private void onMethods(BinaryList.In methodList) {
+        private void onMethods(InputBinaryList methodList) {
             for (BinaryInput input : methodList) {
                 job.onMethod(MethodSerializer.instance.deserialize(input));
             }

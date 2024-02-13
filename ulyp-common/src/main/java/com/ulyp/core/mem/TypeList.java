@@ -9,10 +9,10 @@ public class TypeList {
 
     public static final int WIRE_ID = 1;
 
-    private final BinaryList.Out bytesOut;
+    private final OutputBinaryList bytesOut;
 
     public TypeList() {
-        bytesOut = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        bytesOut = new OutputBinaryList(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
     }
 
     public void add(Type type) {
@@ -23,7 +23,7 @@ public class TypeList {
         return bytesOut.size();
     }
 
-    public BinaryList.Out getBytes() {
+    public OutputBinaryList getBytes() {
         return bytesOut;
     }
 

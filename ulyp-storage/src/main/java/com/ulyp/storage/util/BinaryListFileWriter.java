@@ -1,6 +1,6 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.mem.OutputBinaryList;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.storage.StorageException;
 
@@ -32,7 +32,7 @@ public class BinaryListFileWriter implements AutoCloseable {
         }
     }
 
-    public void write(BinaryList.Out values) throws StorageException {
+    public void write(OutputBinaryList values) throws StorageException {
         try {
             long startAddr = address;
             outputStream.write((byte) 0);
