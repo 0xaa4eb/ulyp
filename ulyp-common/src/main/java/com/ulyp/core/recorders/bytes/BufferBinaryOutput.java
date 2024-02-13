@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
+import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.MutableDirectBuffer;
 
 // writes to provided buffer
 public class BufferBinaryOutput implements AutoCloseable, BinaryOutput {
 
-    private static final int MAXIMUM_RECURSION_DEPTH = 3; // TODO configurable
-    private static final int MAX_STRING_LENGTH = 200; // TODO configurable
+    private static final int MAXIMUM_RECURSION_DEPTH = SystemPropertyUtil.getInt("ulyp.recorder.max-recursion", 3);
+    private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
 
     protected final MutableDirectBuffer buffer;
     protected int pos = 0;

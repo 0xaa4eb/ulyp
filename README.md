@@ -6,14 +6,14 @@
 
 ## TL;DR
 
-TBD
+Ulyp instruments all third-party library classes and record their method calls, so that you can have a better understanding of what your code does.
 
 ## Example of usage
 
-Ulyp is a Java recording debugger. Usage is relatively simple.
+Usage is relatively simple.
 
 * First, download or build the agent
-* Second, use system properties in order to enable the recording. Here is the minimum set of options one will need for recording.
+* Second, use VM properties in order to enable the recording. Here is the minimum set of options one will need for recording.
     
     
     ```
@@ -23,8 +23,8 @@ Ulyp is a Java recording debugger. Usage is relatively simple.
     ```
     
     
-All methods with name `save` and class name `HibernateShowcase` (regardless of the package) will be recorded including all nested method calls.
-    
+Whenever methods with name `save` and class name `**.HibernateShowcase` (inheritors including) are called, recording will start. 
+The data is dropped to the specified file.
 
 * Run your code with system properties set.
     
@@ -37,7 +37,7 @@ All methods with name `save` and class name `HibernateShowcase` (regardless of t
     }
     ```
 
-* Run the UI and open the recording file. Enjoy the view
+* Run the UI and open the recording file
 
 ![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
@@ -57,15 +57,10 @@ Run UI:
 All instrumentation is done using [byte buddy](https://github.com/raphw/byte-buddy) library. 
 All Java objects are recorded by the [recorders](https://github.com/0xaa4eb/ulyp/tree/master/ulyp-common/src/main/java/com/ulyp/core/recorders). 
 Each recorder supports a particular set of Java types and is responsible for serializing object 
-values into bytes. [SBE](https://github.com/real-logic/simple-binary-encoding) library is used for serializing objects into bytes.
+values into bytes.
 Note that Ulyp doesn't fully serialize objects. Let's say, for `String` the first couple of hundred symbols are only recorded. 
 
-
 All data is written to file in a flat format. UI later uses [RocksDB](https://github.com/facebook/rocksdb) in order to build the index
-
-
-The agent has functional tests. The agent is built and then used to record Java subprocess execution. 
-The recording is then later analyzed and verified. [Here](https://github.com/0xaa4eb/ulyp/blob/master/ulyp-agent-tests/src/test/java/com/agent/tests/recorders/CharRecorderTest.java) is the example of test. 
 
 ## What's not recorded
 
