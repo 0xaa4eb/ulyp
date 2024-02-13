@@ -6,9 +6,6 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.Checkpoint;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.Setter;
 import com.ulyp.core.bytes.BinaryInput;
@@ -67,10 +64,8 @@ public class MapRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
         try (BinaryOutput out = nout.nest()) {
             if (active) {
-                Checkpoint checkpoint = out.checkpoint();
-                out.write(RECORDED_ITEMS_FLAG);
                 Mark mark = out.mark();
-                out.write(RECORDED_ITEMS);
+                out.write(RECORDED_ITEMS_FLAG);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
