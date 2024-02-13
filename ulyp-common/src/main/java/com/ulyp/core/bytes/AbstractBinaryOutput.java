@@ -7,11 +7,14 @@ import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
 
 import java.nio.charset.StandardCharsets;
+import com.ulyp.core.util.SystemPropertyUtil;
+import org.agrona.MutableDirectBuffer;
+
 
 public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutput {
 
-    private static final int MAXIMUM_RECURSION_DEPTH = 3; // TODO configurable
-    private static final int MAX_STRING_LENGTH = 200; // TODO configurable
+    private static final int MAXIMUM_RECURSION_DEPTH = SystemPropertyUtil.getInt("ulyp.recorder.max-recursion", 3);
+    private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
 
     protected int position = 0;
     private int recursionDepth = 0;

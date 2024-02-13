@@ -6,6 +6,11 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
+import com.ulyp.core.recorders.bytes.BinaryInput;
+import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.recorders.bytes.Checkpoint;
+import com.ulyp.core.util.SystemPropertyUtil;
+import lombok.Setter;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.bytes.BinaryOutput;
 import com.ulyp.core.bytes.Mark;
@@ -18,10 +23,11 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    public static final int MAX_ITEMS_TO_RECORD = 3; // TODO configurable
-    private static final int RECORDED_ITEMS = 1;
+    public static final int MAX_ITEMS_TO_RECORD = SystemPropertyUtil.getInt("ulyp.recorder.map.items", 3);
+    private static final int RECORDED_ITEMS_FLAG = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
-    private CollectionsRecordingMode mode;
+    @Setter
+    private volatile CollectionsRecordingMode mode;
     private volatile boolean active = true;
 
     public MapRecorder(byte id) {
@@ -33,10 +39,6 @@ public class MapRecorder extends ObjectRecorder {
         return Map.class.isAssignableFrom(type) && mode.supports(type);
     }
 
-    public void setMode(CollectionsRecordingMode collectionsRecordingMode) {
-        this.mode = collectionsRecordingMode;
-    }
-
     @Override
     public boolean supportsAsyncRecording() {
         return false;
@@ -46,7 +48,7 @@ public class MapRecorder extends ObjectRecorder {
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
-        if (recordedItems == RECORDED_ITEMS) {
+        if (recordedItems == RECORDED_ITEMS_FLAG) {
             int collectionSize = input.readInt();
             int recordedItemsCount = input.readInt();
             List<MapEntryRecord> entries = new ArrayList<>();
@@ -65,6 +67,8 @@ public class MapRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
         try (BinaryOutput out = nout.nest()) {
             if (active) {
+                Checkpoint checkpoint = out.checkpoint();
+                out.write(RECORDED_ITEMS_FLAG);
                 Mark mark = out.mark();
                 out.write(RECORDED_ITEMS);
                 try {

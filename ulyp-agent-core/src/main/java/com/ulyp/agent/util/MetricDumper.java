@@ -2,6 +2,7 @@ package com.ulyp.agent.util;
 
 import com.ulyp.core.metrics.*;
 import com.ulyp.core.util.NamedThreadFactory;
+import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Closeable;
@@ -11,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class MetricDumper implements Closeable {
+
+    private static final int METRIC_DUMP_INTERVAL_SECONDS = SystemPropertyUtil.getInt("ulyp.metrics.dump-interval.sec", 10);
 
     private final Metrics metrics;
     private final ScheduledExecutorService executor;
@@ -23,7 +26,12 @@ public class MetricDumper implements Closeable {
                         .daemon(true)
                         .build()
         );
-        executor.scheduleAtFixedRate(this::dumpAllMetrics,10, /*TODO configurable*/ 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(
+                this::dumpAllMetrics,
+                METRIC_DUMP_INTERVAL_SECONDS,
+                METRIC_DUMP_INTERVAL_SECONDS,
+                TimeUnit.SECONDS
+        );
     }
 
     private static class LogMetricSink implements MetricSink {

@@ -6,6 +6,9 @@ import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.util.LoggingSettings;
+import com.ulyp.core.util.Preconditions;
+import com.ulyp.core.util.SystemPropertyUtil;
+import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,9 @@ import org.jetbrains.annotations.TestOnly;
 @Slf4j
 @ThreadSafe
 public class Recorder {
+
+    private static final int RECORD_BUFFER_FLUSH_BYTE_SIZE = SystemPropertyUtil.getInt("ulyp.record.buffer-flush-byte-size", 16 * 1024 * 1024);
+    private static final int RECORD_BUFFER_FLUSH_LIFETIME_MS = SystemPropertyUtil.getInt("ulyp.record.buffer-flush-lifetime-milli", 50);
 
     public static final AtomicInteger recordingIdGenerator = new AtomicInteger(-1);
 
