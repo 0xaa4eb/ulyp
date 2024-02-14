@@ -96,6 +96,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                 {
                     eventHolder = dataProvider.get(nextSequence);
                     Object event = eventHolder.event;
+                    eventHolder.event = null;
                     if (event instanceof EnterRecordQueueEvent) {
                         // TODO possible inline recording id and event type in item holder
                         EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
@@ -153,7 +154,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
         }
     }
 
-    private void handleEventException(final Throwable ex, final long sequence, final EventHolder event) {
+    private void handleEventException(Throwable ex, long sequence, Object event) {
         // TODO handle somehow
     }
 }
