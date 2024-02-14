@@ -1,12 +1,17 @@
 package com.ulyp.agent.queue;
 
 import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
+import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
+import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
+import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
 import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
 import com.ulyp.core.mem.MemPageAllocator;
+import com.ulyp.core.recorders.QueuedIdentityObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +26,7 @@ public class RecordingEventHandler {
     @Getter
     private boolean complete = false;
     private MemPageAllocator pageAllocator;
+    private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
     private int idGen = 0;
 
@@ -45,13 +51,16 @@ public class RecordingEventHandler {
         if (buffer == null) {
             buffer = new CallRecordBuffer(enterRecord.getRecordingId(), pageAllocator);
         }
+        cachedQueuedIdentityCallee.setTypeId(enterRecord.getCalleeTypeId());
+        cachedQueuedIdentityCallee.setIdentityHashCode(enterRecord.getCalleeIdentityHashCode());
 
+        long nanoTime = (enterRecord instanceof TimestampedEnterRecordQueueEvent) ? ((TimestampedEnterRecordQueueEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
-                enterRecord.getCallee(),
+                cachedQueuedIdentityCallee,
                 enterRecord.getArgs(),
-                enterRecord.getNanoTime()
+                nanoTime
         );
     }
 
@@ -62,10 +71,11 @@ public class RecordingEventHandler {
             log.debug("Call record buffer not found for recording id " + recordingId);
             return;
         }
+        long nanoTime = (exitRecord instanceof TimestampedExitRecordQueueEvent) ? ((TimestampedExitRecordQueueEvent) exitRecord).getNanoTime() : -1;
         if (exitRecord.isThrown()) {
-            buffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), exitRecord.getNanoTime());
+            buffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), nanoTime);
         } else {
-            buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), exitRecord.getNanoTime());
+            buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
         }
 
         if (buffer.isComplete() ||

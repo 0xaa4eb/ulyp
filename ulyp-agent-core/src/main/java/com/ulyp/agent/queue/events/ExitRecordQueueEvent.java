@@ -1,22 +1,20 @@
-package com.ulyp.agent.queue;
+package com.ulyp.agent.queue.events;
 
 import lombok.Getter;
 
 @Getter
-class ExitRecordQueueEvent {
+public class ExitRecordQueueEvent {
 
-    private final int recordingId;
-    private final int callId;
-    private final Object returnValue;
-    private final boolean thrown;
-    private final long nanoTime;
+    protected final int recordingId;
+    protected final int callId;
+    protected final Object returnValue;
+    protected final boolean thrown;
 
-    ExitRecordQueueEvent(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
+    public ExitRecordQueueEvent(int recordingId, int callId, Object returnValue, boolean thrown) {
         this.recordingId = recordingId;
         this.callId = callId;
         this.returnValue = returnValue;
         this.thrown = thrown;
-        this.nanoTime = nanoTime;
     }
 
     @Override
@@ -26,7 +24,6 @@ class ExitRecordQueueEvent {
                 ", callId=" + callId +
                 ", returnValue=" + returnValue +
                 ", thrown=" + thrown +
-                ", nanoTime=" + nanoTime +
                 '}';
     }
 }

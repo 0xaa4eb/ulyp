@@ -9,6 +9,10 @@ import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
+import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
+import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
+import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
+import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
@@ -61,12 +65,53 @@ public class RecordingQueue implements AutoCloseable {
         disruptor.publish(new RecordingMetadataQueueEvent(recordingMetadata));
     }
 
+    public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args) {
+        int calleeTypeId;
+        int calleeIdentityHashCode;
+        if (callee != null) {
+            calleeTypeId = typeResolver.get(callee).getId();
+            calleeIdentityHashCode = System.identityHashCode(callee);
+        } else {
+            calleeTypeId = -1;
+            calleeIdentityHashCode = 0;
+        }
+        disruptor.publish(new EnterRecordQueueEvent(
+                recordingId,
+                callId,
+                methodId,
+                calleeTypeId,
+                calleeIdentityHashCode,
+                convert(args))
+        );
+    }
+
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        disruptor.publish(new EnterRecordQueueEvent(recordingId, callId, methodId, convertCallee(callee), convert(args), nanoTime));
+        int calleeTypeId;
+        int calleeIdentityHashCode;
+        if (callee != null) {
+            calleeTypeId = typeResolver.get(callee).getId();
+            calleeIdentityHashCode = System.identityHashCode(callee);
+        } else {
+            calleeTypeId = -1;
+            calleeIdentityHashCode = 0;
+        }
+        disruptor.publish(new TimestampedEnterRecordQueueEvent(
+                recordingId,
+                callId,
+                methodId,
+                calleeTypeId,
+                calleeIdentityHashCode,
+                convert(args),
+                nanoTime)
+        );
+    }
+
+    public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
+        disruptor.publish(new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        disruptor.publish(new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
+        disruptor.publish(new TimestampedExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
     }
 
     private Object[] convert(Object[] args) {
@@ -74,14 +119,6 @@ public class RecordingQueue implements AutoCloseable {
             args[i] = convert(args[i]);
         }
         return args;
-    }
-
-    private Object convertCallee(Object value) {
-        if (value != null) {
-            return new QueuedIdentityObject(typeResolver.get(value), value);
-        } else {
-            return null;
-        }
     }
 
     private Object convert(Object value) {
@@ -93,7 +130,7 @@ public class RecordingQueue implements AutoCloseable {
         }
         if (value == null || recorder.supportsAsyncRecording()) {
             if (value != null && recorder instanceof IdentityRecorder) {
-                return new QueuedIdentityObject(type, value);
+                return new QueuedIdentityObject(type.getId(), value);
             } else {
                 return value;
             }
@@ -107,7 +144,7 @@ public class RecordingQueue implements AutoCloseable {
                     if (LoggingSettings.DEBUG_ENABLED) {
                         log.debug("Error while recording object", e);
                     }
-                    return new QueuedIdentityObject(type, value);
+                    return new QueuedIdentityObject(type.getId(), value);
                 }
             }
         }

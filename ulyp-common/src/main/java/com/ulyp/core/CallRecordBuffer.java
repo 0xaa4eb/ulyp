@@ -48,13 +48,8 @@ public class CallRecordBuffer {
         return recordedCalls.bytesWritten();
     }
 
-    public int recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args) {
-        return recordMethodEnter(typeResolver, methodId, callee, args, -1L);
-    }
-
     public int recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         try {
-
             int callId = nextCallId++;
             recordedCalls.addEnterMethodCall(callId, methodId, typeResolver, callee, args, nanoTime);
             return callId;

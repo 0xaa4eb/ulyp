@@ -1,24 +1,27 @@
 package com.ulyp.core.recorders;
 
-import com.ulyp.core.Type;
-
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class QueuedIdentityObject {
 
-    private final Type type;
-    private final int identityHashCode;
+    private int typeId; // object is reused -> fields can not final
+    private int identityHashCode;
 
-    public QueuedIdentityObject(Type type, Object value) {
-        this.type = type;
+    public QueuedIdentityObject() {
+    }
+
+    public QueuedIdentityObject(int typeId, Object value) {
+        this.typeId = typeId;
         this.identityHashCode = System.identityHashCode(value);
     }
 
     @Override
     public String toString() {
         return "QueuedIdentityObject{" +
-                "type=" + type +
+                "typeId=" + typeId +
                 ", identityHashCode=" + identityHashCode +
                 '}';
     }

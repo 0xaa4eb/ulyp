@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class Settings {
 
+    public static final boolean TIMESTAMPS_ENABLED;
+
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
     public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
@@ -41,7 +43,6 @@ public class Settings {
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
     public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
-    public static final boolean TIMESTAMPS_ENABLED;
 
     static {
         // make 'static final'. bytecode will be thrown off if the feature is disabled

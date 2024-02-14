@@ -34,7 +34,7 @@ public class QueuedIdentityObjectRecorder extends ObjectRecorder {
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
         QueuedIdentityObject identityObject = (QueuedIdentityObject) object;
-        out.write(identityObject.getType().getId());
+        out.write(identityObject.getTypeId());
         out.write(identityObject.getIdentityHashCode());
     }
 }

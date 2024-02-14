@@ -164,12 +164,12 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                long nanoTime = 0;
-                if (Settings.TIMESTAMPS_ENABLED) {
-                    nanoTime = System.nanoTime();
-                }
                 int callId = recordingState.nextCallId();
-                recordingQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args, nanoTime);
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    recordingQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args, System.nanoTime());
+                } else {
+                    recordingQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
+                }
                 return callId;
             } finally {
                 recordingState.setEnabled(true);
@@ -191,17 +191,18 @@ public class Recorder {
 
             try {
                 recordingState.setEnabled(false);
-                long nanoTime = 0;
-                if (Settings.TIMESTAMPS_ENABLED) {
-                    nanoTime = System.nanoTime();
-                }
+
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
                     recordingQueue.enqueueRecordingMetadataUpdate(
                         recordingState.getRecordingMetadata().withCompleteTime(System.currentTimeMillis())
                     );
                 }
 
-                recordingQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, nanoTime);
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    recordingQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
+                } else {
+                    recordingQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
+                }
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
                     int recordingId = recordingState.getRecordingId();
