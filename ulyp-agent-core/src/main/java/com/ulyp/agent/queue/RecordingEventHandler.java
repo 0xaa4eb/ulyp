@@ -25,10 +25,8 @@ public class RecordingEventHandler {
     private CallRecordBuffer buffer;
     @Getter
     private boolean complete = false;
-    private MemPageAllocator pageAllocator;
-    private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
-
-    private int idGen = 0;
+    private final MemPageAllocator pageAllocator;
+    private final QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
     public RecordingEventHandler(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;

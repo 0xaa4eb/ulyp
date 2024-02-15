@@ -1,6 +1,8 @@
-package com.ulyp.agent;
+package com.ulyp.agent.advice;
 
-import com.ulyp.core.MethodRepository;
+import com.ulyp.agent.MethodId;
+import com.ulyp.agent.MethodIdFactory;
+import com.ulyp.agent.RecorderInstance;
 
 import net.bytebuddy.asm.Advice;
 
@@ -8,7 +10,7 @@ import net.bytebuddy.asm.Advice;
  * Advice which instructs how to instrument constructors. The byte buddy library copies the bytecode of methods into
  * constructors being instrumented.
  */
-public class ConstructorCallRecordingAdvice {
+public class StartRecordingConstructorAdvice {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
@@ -20,15 +22,7 @@ public class ConstructorCallRecordingAdvice {
             @Advice.Local("callId") int callId,
             @MethodId int methodId,
             @Advice.AllArguments Object[] arguments) {
-
-        // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
-        if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
-            callId = RecorderInstance.instance.startOrContinueRecordingOnConstructorEnter(methodId, arguments);
-        } else {
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                callId = RecorderInstance.instance.onConstructorEnter(methodId, arguments);
-            }
-        }
+        callId = RecorderInstance.instance.startOrContinueRecordingOnConstructorEnter(methodId, arguments);
     }
 
     /**

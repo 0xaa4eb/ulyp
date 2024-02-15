@@ -5,28 +5,17 @@ import com.ulyp.core.util.ConcurrentArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class MethodRepository {
-
-    public static final int RECORD_METHODS_MIN_ID = 1_000_000_000;
 
     private final ConcurrentArrayList<Method> methods = new ConcurrentArrayList<>(64_000);
     private final ConcurrentArrayList<Method> recordingStartMethods = new ConcurrentArrayList<>(64_000);
 
     public Method get(int id) {
-        if (id < RECORD_METHODS_MIN_ID) {
-            return methods.get(id);
-        } else {
-            return recordingStartMethods.get(id - RECORD_METHODS_MIN_ID);
-        }
+        return methods.get(id);
     }
 
     public int putAndGetId(Method method) {
-        if (method.shouldStartRecording()) {
-            return RECORD_METHODS_MIN_ID + recordingStartMethods.add(method);
-        } else {
-            return methods.add(method);
-        }
+        return methods.add(method);
     }
 
     public ConcurrentArrayList<Method> getMethods() {
