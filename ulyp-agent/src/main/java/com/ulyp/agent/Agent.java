@@ -10,14 +10,12 @@ import com.ulyp.agent.advice.StartRecordingMethodAdvice;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -84,7 +82,7 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildMethodsMatcher(settings));
+                .on(buildContinueRecordingMethodsMatcher(settings));
         AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(StartRecordingConstructorAdvice.class)
@@ -92,7 +90,7 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(ConstructorAdvice.class)
-                .on(ElementMatchers.isConstructor());
+                .on(buildContinueRecordingConstructorMatcher(settings));
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
             .ignore(ignoreMatcher)
@@ -125,13 +123,25 @@ public class Agent {
         );
     }
 
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingConstructorMatcher(Settings settings) {
+        return ElementMatchers.isConstructor().and(
+                methodDescription -> !settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
     private static ElementMatcher.Junction<MethodDescription> buildStartRecordingMethodsMatcher(Settings settings) {
-        return buildMethodsMatcher(settings).and(
+        return basicMethodsMatcher(settings).and(
                 methodDescription -> settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
         );
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildMethodsMatcher(Settings settings) {
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingMethodsMatcher(Settings settings) {
+        return basicMethodsMatcher(settings).and(
+                methodDescription -> !settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> basicMethodsMatcher(Settings settings) {
         ElementMatcher.Junction<MethodDescription> methodMatcher = ElementMatchers.isMethod()
             .and(ElementMatchers.not(ElementMatchers.isAbstract()))
             .and(ElementMatchers.not(ElementMatchers.isConstructor()));

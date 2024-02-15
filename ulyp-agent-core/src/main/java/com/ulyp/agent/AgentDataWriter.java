@@ -23,7 +23,6 @@ public class AgentDataWriter {
     @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
     public AgentDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
@@ -50,31 +49,6 @@ public class AgentDataWriter {
                 int currentIndex = lastIndexOfMethodWritten.get();
                 if (currentIndex < upToExcluding) {
                     if (lastIndexOfMethodWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
-        methodsList = new MethodList();
-        methods = methodRepository.getRecordingStartMethods();
-        upToExcluding = methods.size() - 1;
-        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            recordingDataWriter.write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodToRecordWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
                         break;
                     }
                 } else {
