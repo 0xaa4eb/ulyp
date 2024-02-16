@@ -14,7 +14,12 @@ public class MethodRepository {
     }
 
     public int putAndGetId(Method method) {
-        return methods.add(method);
+        // TODO we rely on method.id here which is bad
+        int id = methods.add(method);
+        if (method.getId() != id) {
+            System.out.println(method + " put at id " + id);
+        }
+        return id;
     }
 
     public ConcurrentArrayList<Method> getMethods() {

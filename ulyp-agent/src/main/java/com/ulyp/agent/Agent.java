@@ -117,6 +117,7 @@ public class Agent {
         agent.installOn(instrumentation);
     }
 
+    // TODO reduce convertions to domain model
     private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(Settings settings) {
         return ElementMatchers.isConstructor().and(
                 methodDescription -> settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))

@@ -18,7 +18,7 @@ public class ByteBuddyMethodResolver {
     public static final ByteBuddyMethodResolver INSTANCE = new ByteBuddyMethodResolver(ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE);
 
     private final ByteBuddyTypeConverter typeConverter;
-    private final AtomicInteger idGenerator = new AtomicInteger();
+    private final AtomicInteger idGenerator = new AtomicInteger(-1);
 
     public ByteBuddyMethodResolver(ByteBuddyTypeConverter typeConverter) {
         this.typeConverter = typeConverter;
