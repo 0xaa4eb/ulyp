@@ -5,6 +5,13 @@ import it.unimi.dsi.fastutil.longs.LongList;
 
 public class BitUtil {
 
+    public static int log2(int value) {
+        if (!org.agrona.BitUtil.isPowerOfTwo(value)) {
+            throw new IllegalArgumentException("is not power of 2: " + value);
+        }
+        return (int) (Math.log(value) / Math.log(2));
+    }
+
     public static void intToBytes(long value, byte[] dst, int offset) {
         for (int i = Integer.BYTES - 1; i >= 0; i--) {
             dst[offset + i] = (byte) (value & 0xFF);

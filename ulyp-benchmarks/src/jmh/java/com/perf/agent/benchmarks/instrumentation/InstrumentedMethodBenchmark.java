@@ -42,7 +42,7 @@ public class InstrumentedMethodBenchmark {
         }
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public String returnObjectBaseline(State1 s1, State2 s2, State3 s3) {
         return "ABC";
@@ -54,7 +54,7 @@ public class InstrumentedMethodBenchmark {
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String returnObjectInstrumented(State1 s1, State2 s2, State3 s3) {
         return "ABC";
@@ -66,7 +66,7 @@ public class InstrumentedMethodBenchmark {
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @CompilerControl(CompilerControl.Mode.EXCLUDE)
     public String returnObjectNoCompile(State1 s1, State2 s2, State3 s3) {

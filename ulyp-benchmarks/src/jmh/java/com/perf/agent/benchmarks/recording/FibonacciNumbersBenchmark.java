@@ -25,7 +25,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
         return compute(x - 2) + compute(x - 1);
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeBaseline() {
         return compute(18);
@@ -35,7 +35,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeInstrumented() {
         return compute(18);
@@ -46,7 +46,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeAndRecord() {
         // TODO direct mem limit reached with 31
@@ -58,7 +58,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeAndRecordSync(Counters counters) {
         // TODO direct mem limit reached with 31

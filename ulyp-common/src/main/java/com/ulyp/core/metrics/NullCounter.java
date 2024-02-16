@@ -13,6 +13,11 @@ public class NullCounter implements Counter {
     }
 
     @Override
+    public long getValue() {
+        return 0;
+    }
+
+    @Override
     public void dump(MetricOutput out) {
 
     }

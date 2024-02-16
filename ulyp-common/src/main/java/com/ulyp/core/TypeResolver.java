@@ -5,9 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Is used at runtime to resolve object's type in order to determine what recorder should be used.
  */
+@ThreadSafe
 public interface TypeResolver {
 
     @NotNull

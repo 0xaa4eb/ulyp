@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 50)
 public class HazelcastBenchmark extends RecordingBenchmark {
 
     public static final int PUTS_PER_INVOCATION = 100;
@@ -47,7 +47,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
         instance2.shutdown();
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public void putBaseline() {
         put();
@@ -59,7 +59,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.HazelcastBenchmark.zxc",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void sendMsgInstrumented() {
         put();
@@ -72,7 +72,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.HazelcastBenchmark.put",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void sendMsgRecord() {
         put();
@@ -84,7 +84,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.HazelcastBenchmark.put",
         "-Dulyp.constructors",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void putRecordSync(Counters counters) {
         execRecordAndSync(counters, this::put);

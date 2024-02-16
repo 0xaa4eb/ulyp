@@ -12,6 +12,7 @@ dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
 
+    implementation group: 'com.lmax', name: 'disruptor', version: '3.4.4'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
@@ -65,6 +66,7 @@ shadowJar {
     relocate 'com.google', 'shadowed2.com.google'
     relocate 'javax.annotation', 'shadowed2.javax.annotation'
     relocate 'net.bytebuddy', 'shadowed2.net.bytebuddy'
+    relocate 'com.lmax', 'shadowed.com.lmax'
 
     archiveName = "${rootProject.name}-agent-core-${rootProject.version}.jar"
 

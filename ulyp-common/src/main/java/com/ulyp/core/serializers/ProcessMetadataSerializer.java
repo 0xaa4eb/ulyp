@@ -1,8 +1,8 @@
 package com.ulyp.core.serializers;
 
 import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
 
 public class ProcessMetadataSerializer implements Serializer<ProcessMetadata> {
 

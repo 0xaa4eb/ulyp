@@ -23,6 +23,11 @@ public class CounterImpl implements Counter {
     }
 
     @Override
+    public long getValue() {
+        return counter.longValue();
+    }
+
+    @Override
     public void dump(MetricOutput out) {
         out.write("Counter ").write(name).write(" val: ").write(counter.longValue());
     }

@@ -6,7 +6,6 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 20)
@@ -22,7 +21,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
         return String.valueOf(a.charAt(5)) + b.charAt(2) + c.charAt(6) + d.charAt(3) + "XVADASDASD";
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public String computeBaseline() {
         return doCompute();
@@ -32,7 +31,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.sdjfhgsdhjfsd"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String computeInstrumented() {
         return doCompute();
@@ -43,7 +42,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String computeRecord() {
         return doCompute();
@@ -54,9 +53,9 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public String computeRecordSync(Counters counters) throws InterruptedException, TimeoutException {
+    public String computeRecordSync(Counters counters) {
         return execRecordAndSync(counters, this::doCompute);
     }
 

@@ -13,20 +13,16 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Gathers all necessary recording data like types, calls, methods and passes it to the recording data storage layer.
- * It also tracks what methods and types have already been written to the underlying storage by maintaining watermarks.
- * Sadly, moving that logic to storage level is not feasible right now
- */
 @Slf4j
 public class AgentDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
+    @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
     public AgentDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
@@ -53,31 +49,6 @@ public class AgentDataWriter {
                 int currentIndex = lastIndexOfMethodWritten.get();
                 if (currentIndex < upToExcluding) {
                     if (lastIndexOfMethodWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
-        methodsList = new MethodList();
-        methods = methodRepository.getRecordingStartMethods();
-        upToExcluding = methods.size() - 1;
-        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            recordingDataWriter.write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodToRecordWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
                         break;
                     }
                 } else {

@@ -1,6 +1,6 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.mem.BinaryList;
+import com.ulyp.core.mem.OutputBinaryList;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.storage.StorageException;
 
@@ -10,12 +10,12 @@ public class BinaryListFileWriter implements AutoCloseable {
 
     private final File file;
     private ByAddressFileWriter byAddressFileWriter;
-    private OutputStream outputStream;
+    private com.ulyp.core.bytes.OutputStream outputStream;
     private long address = 0;
 
     public BinaryListFileWriter(File file) throws IOException {
         this.file = file;
-        this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
+        this.outputStream = new com.ulyp.core.bytes.BufferedOutputStream(new java.io.BufferedOutputStream(new FileOutputStream(file, false)));
         this.byAddressFileWriter = new ByAddressFileWriter(file);
     }
 
@@ -24,7 +24,7 @@ public class BinaryListFileWriter implements AutoCloseable {
             this.byAddressFileWriter.close();
             this.outputStream.close();
 
-            this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
+            this.outputStream = new com.ulyp.core.bytes.BufferedOutputStream(new FileOutputStream(file, false));
             this.byAddressFileWriter = new ByAddressFileWriter(file);
             this.address = 0;
         } catch (IOException e) {
@@ -32,12 +32,12 @@ public class BinaryListFileWriter implements AutoCloseable {
         }
     }
 
-    public void write(BinaryList.Out values) throws StorageException {
+    public void write(OutputBinaryList values) throws StorageException {
         try {
             long startAddr = address;
-            outputStream.write(0);
+            outputStream.write((byte) 0);
             for (int i = 0; i < Integer.BYTES; i++) {
-                outputStream.write(1);
+                outputStream.write((byte) 1);
             }
 
             int bytesWritten = values.writeTo(this.outputStream);

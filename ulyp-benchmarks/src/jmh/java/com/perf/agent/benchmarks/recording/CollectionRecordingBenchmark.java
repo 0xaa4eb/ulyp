@@ -19,7 +19,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
     @Param({"250000"})
     private int callCount;
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeBaseline() {
         return doCompute();
@@ -30,7 +30,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd",
             "-Dulyp.collections=JAVA"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeInstrumented() {
         return doCompute();
@@ -42,7 +42,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
             "-Dulyp.collections=JAVA",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeRecord() {
         return doCompute();
@@ -54,7 +54,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
         "-Dulyp.collections=JAVA",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeRecordSync(Counters counters) throws InterruptedException {
         return execRecordAndSync(counters, this::doCompute);

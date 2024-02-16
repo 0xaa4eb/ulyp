@@ -4,6 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.NumberRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.Test;
 
@@ -30,9 +31,25 @@ public class IdentityRecorderTest extends AbstractInstrumentationTest {
         assertEquals(X.class.getName(), arg.getType().getName());
     }
 
+    @Test
+    public void testIdentityRepresentationOfCallee() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("main")
+        );
+
+        CallRecord fooCall = root.getChildren().get(1);
+
+        ObjectRecord callee = fooCall.getCallee();
+        assertEquals(X.class.getName(), callee.getType().getName());
+    }
+
 
     static class X {
-
+        public int foo() {
+            return 5;
+        }
     }
 
     static class TestCase {
@@ -43,6 +60,7 @@ public class IdentityRecorderTest extends AbstractInstrumentationTest {
 
         public static void main(String[] args) {
             pass(new X());
+            System.out.println(new X().foo());
         }
     }
 }

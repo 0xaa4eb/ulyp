@@ -21,7 +21,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         return x + y + z;
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public long computeBaseline() {
         return doCompute();
@@ -31,7 +31,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public long computeInstrumented() {
         return doCompute();
@@ -43,7 +43,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
     public long computeRecord() {
@@ -56,7 +56,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
         "-Dulyp.metrics",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public long computeRecordSync(Counters counters) {
         return execRecordAndSync(counters, this::doCompute);

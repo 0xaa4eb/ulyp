@@ -17,19 +17,22 @@ public class RecordingMetadata {
     public static final int WIRE_ID = 7;
 
     private int id;
-    private long recordingStartedEpochMillis;
-    private long logCreatedEpochMillis;
-    private long recordingCompletedEpochMillis;
-    private String threadName;
     private long threadId;
-    @Builder.Default
+    private String threadName;
+    private long recordingStartedEpochMillis;
+    private long logCreatedEpochMillis; // TODO remove
+    private long recordingCompletedEpochMillis;
+    @Builder.Default @ToString.Exclude
     private List<String> stackTraceElements = Collections.emptyList();
 
-    public RecordingMetadata withNewCreationTimestamp() {
+    public RecordingMetadata withCompleteTime(long recordingCompletedEpochMillis) {
         return RecordingMetadata.builder()
             .id(id)
+            .threadId(threadId)
+            .threadName(threadName)
             .recordingStartedEpochMillis(recordingStartedEpochMillis)
-            .logCreatedEpochMillis(System.currentTimeMillis())
+            .recordingCompletedEpochMillis(recordingCompletedEpochMillis)
+            .stackTraceElements(stackTraceElements)
             .build();
     }
 }

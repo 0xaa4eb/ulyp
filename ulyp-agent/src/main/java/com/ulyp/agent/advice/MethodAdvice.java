@@ -1,6 +1,9 @@
-package com.ulyp.agent;
+package com.ulyp.agent.advice;
 
-import com.ulyp.core.MethodRepository;
+import com.ulyp.agent.MethodId;
+import com.ulyp.agent.MethodIdFactory;
+import com.ulyp.agent.Recorder;
+import com.ulyp.agent.RecorderInstance;
 
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
@@ -9,7 +12,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
  * Advice which instructs how to instrument methods. The byte buddy library copies the bytecode of methods into
  * constructors being instrumented.
  */
-public class MethodCallRecordingAdvice {
+public class MethodAdvice {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
@@ -21,18 +24,9 @@ public class MethodCallRecordingAdvice {
             @Advice.Local("callId") int callId,
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
-
-        // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
-        if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
-
-            // noinspection UnusedAssignment local variable callId is used by exit() method
-            callId = RecorderInstance.instance.startOrContinueRecordingOnMethodEnter(methodId, callee, arguments);
-        } else {
-
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                //noinspection UnusedAssignment
-                callId = RecorderInstance.instance.onMethodEnter(methodId, callee, arguments);
-            }
+        if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
+            //noinspection UnusedAssignment
+            callId = RecorderInstance.instance.onMethodEnter(methodId, callee, arguments);
         }
     }
 

@@ -1,15 +1,11 @@
 package com.ulyp.core.serializers;
 
-import com.ulyp.core.Method;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.RecorderChooser;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.recorders.*;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
 import com.ulyp.core.repository.ReadableRepository;
 
 import java.util.ArrayList;
@@ -22,11 +18,11 @@ public class RecordedEnterMethodCallSerializer {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
 
-    public void serializeEnterMethodCall(BinaryOutput out, int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
 
         out.write(callId);
-        out.write(method.getId());
+        out.write(methodId);
         out.write(nanoTime);
         out.write(args.length);
 
@@ -50,14 +46,26 @@ public class RecordedEnterMethodCallSerializer {
             }
         }
 
-        ObjectRecorder recorder = callee != null ? ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+        if (callee != null) {
 
-        out.write(typeResolver.get(callee).getId());
-        out.write(recorder.getId());
-        try {
-            recorder.write(callee, out, typeResolver);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+
+            out.write(typeResolver.get(callee).getId());
+            out.write(recorder.getId());
+            try {
+                recorder.write(callee, out, typeResolver);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            ObjectRecorder recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+            out.write(Type.unknown().getId()); // TODO optimize size
+            out.write(recorder.getId());
+            try {
+                recorder.write(null, out, typeResolver);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

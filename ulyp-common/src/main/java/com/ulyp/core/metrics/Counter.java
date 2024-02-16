@@ -9,6 +9,8 @@ public interface Counter {
 
     String getName();
 
+    long getValue();
+
     void dump(MetricOutput out);
 
     default void inc() {

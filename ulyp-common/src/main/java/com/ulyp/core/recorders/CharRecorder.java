@@ -3,8 +3,8 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class CharRecorder extends ObjectRecorder {
@@ -16,6 +16,11 @@ public class CharRecorder extends ObjectRecorder {
     @Override
     public boolean supports(Class<?> type) {
         return type == char.class || type == Character.class;
+    }
+
+    @Override
+    public boolean supportsAsyncRecording() {
+        return true;
     }
 
     @Override

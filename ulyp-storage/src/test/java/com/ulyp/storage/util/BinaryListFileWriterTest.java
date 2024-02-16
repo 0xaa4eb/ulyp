@@ -1,10 +1,11 @@
 package com.ulyp.storage.util;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.mem.BinaryList;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.mem.InputBinaryList;
+import com.ulyp.core.mem.OutputBinaryList;
 import com.ulyp.storage.reader.BinaryListWithAddress;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class BinaryListFileWriterTest {
     public void shouldReadSingleList() throws IOException {
         assertNull(reader.read());
 
-        BinaryList.Out bytesOut = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut = new OutputBinaryList(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
 
         bytesOut.add(out -> out.write(1));
         bytesOut.add(out -> out.write(2));
@@ -50,7 +51,7 @@ public class BinaryListFileWriterTest {
 
         writer.write(bytesOut);
 
-        BinaryList.In bytesIn = reader.read();
+        InputBinaryList bytesIn = reader.read();
 
         assertEquals(3, bytesIn.size());
 
@@ -63,18 +64,18 @@ public class BinaryListFileWriterTest {
 
     @Test
     public void shouldReadMultipleLists() throws IOException {
-        BinaryList.Out bytesOut1 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut1 = new OutputBinaryList(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
         bytesOut1.add(out -> out.write(1));
         bytesOut1.add(out -> out.write(2));
         writer.write(bytesOut1);
 
-        BinaryList.Out bytesOut2 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut2 = new OutputBinaryList(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
         bytesOut2.add(out -> out.write(2));
         bytesOut2.add(out -> out.write(3));
         bytesOut2.add(out -> out.write(4));
         writer.write(bytesOut2);
 
-        BinaryList.In bytesIn = reader.read();
+        InputBinaryList bytesIn = reader.read();
         assertEquals(2, bytesIn.size());
 
         bytesIn = reader.read();
@@ -83,13 +84,13 @@ public class BinaryListFileWriterTest {
 
     @Test
     public void shouldAllowToNavigateToArbitraryListInFile() throws IOException {
-        BinaryList.Out bytesOut1 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut1 = new OutputBinaryList(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
         bytesOut1.add(out -> out.write(4356274L));
         bytesOut1.add(out -> out.write(7643565L));
         bytesOut1.add(out -> out.write(9874534L));
         writer.write(bytesOut1);
 
-        BinaryList.Out bytesOut2 = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut2 = new OutputBinaryList(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
         bytesOut2.add(out -> out.write(5489234L));
         bytesOut2.add(out -> out.write(6903234L));
         bytesOut2.add(out -> out.write(8983434L));
@@ -106,7 +107,7 @@ public class BinaryListFileWriterTest {
         assertEquals(7643565L, input.readLong());
 
         BinaryListWithAddress list2 = reader.readWithAddress();
-        BinaryList.In bytes2 = list2.getBytes();
+        InputBinaryList bytes2 = list2.getBytes();
         it = bytes2.iterator();
         it.next();
         it.next();

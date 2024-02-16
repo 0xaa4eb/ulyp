@@ -25,7 +25,7 @@ public class TimestampRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordTimestamp2() {
+    public void shouldRecordTimestampLongerTime() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

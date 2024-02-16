@@ -3,16 +3,19 @@ package com.ulyp.agent;
 import java.lang.instrument.Instrumentation;
 import java.util.Optional;
 
+import com.ulyp.agent.advice.ConstructorAdvice;
+import com.ulyp.agent.advice.MethodAdvice;
+import com.ulyp.agent.advice.StartRecordingConstructorAdvice;
+import com.ulyp.agent.advice.StartRecordingMethodAdvice;
+import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.ToStringPrintingRecorder;
+import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -20,6 +23,7 @@ import net.bytebuddy.asm.Advice;
 import net.bytebuddy.asm.AsmVisitorWrapper;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 
@@ -39,7 +43,7 @@ public class Agent {
     public static void start(String args, Instrumentation instrumentation) {
 
         Settings settings = Settings.fromSystemProperties();
-        if (settings.isAgentDisabled()) {
+        if (!settings.isAgentEnabled()) {
             System.out.println("ULYP agent disabled, no code will be instrumented");
             return;
         }
@@ -52,15 +56,7 @@ public class Agent {
         } else {
             AgentContext.init();
         }
-        AgentContext context = AgentContext.getInstance();
-
-        StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
-
-        if (startRecordingMethods.isEmpty()) {
-            startRecordingMethods = StartRecordingMethods.of(
-                new MethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
-            );
-        }
+        AgentContext context = AgentContext.getCtx();
 
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
@@ -71,32 +67,41 @@ public class Agent {
         MapRecorder mapRecorder = (MapRecorder) ObjectRecorderRegistry.MAP_RECORDER.getInstance();
         mapRecorder.setMode(settings.getCollectionsRecordingMode());
 
-        ToStringPrintingRecorder toStringRecorder = (ToStringPrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
+        PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getTypesToPrint());
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);
 
-        MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository(), startRecordingMethods);
+        MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository());
 
+        AsmVisitorWrapper.ForDeclaredMethods startRecordingMethodAdvice = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(StartRecordingMethodAdvice.class)
+                .on(buildStartRecordingMethodsMatcher(settings));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
-                .to(MethodCallRecordingAdvice.class)
-                .on(buildMethodsMatcher(settings));
+                .to(MethodAdvice.class)
+                .on(buildContinueRecordingMethodsMatcher(settings));
+        AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(StartRecordingConstructorAdvice.class)
+                .on(buildStartRecordingConstructorMatcher(settings));
+        AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(ConstructorAdvice.class)
+                .on(buildContinueRecordingConstructorMatcher(settings));
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(methodCallAdvice));
-
-        if (settings.instrumentConstructors()) {
-            AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
-                    .bind(methodIdFactory)
-                    .to(ConstructorCallRecordingAdvice.class)
-                    .on(ElementMatchers.isConstructor());
-
-            agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(constructorAdvice));
-        }
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+                DynamicType.Builder<?> visitor = builder.visit(startRecordingMethodAdvice).visit(methodCallAdvice);
+                if (settings.instrumentConstructors()) {
+                    visitor = visitor.visit(startRecordingConstructorAdvice).visit(constructorAdvice);
+                }
+                return visitor;
+            });
 
         AgentBuilder agent = agentBuilder.with(AgentBuilder.TypeStrategy.Default.REDEFINE);
         if (settings.instrumentLambdas()) {
@@ -112,7 +117,32 @@ public class Agent {
         agent.installOn(instrumentation);
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildMethodsMatcher(Settings settings) {
+    // TODO reduce convertions to domain model
+    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(Settings settings) {
+        return ElementMatchers.isConstructor().and(
+                methodDescription -> settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingConstructorMatcher(Settings settings) {
+        return ElementMatchers.isConstructor().and(
+                methodDescription -> !settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingMethodsMatcher(Settings settings) {
+        return basicMethodsMatcher(settings).and(
+                methodDescription -> settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingMethodsMatcher(Settings settings) {
+        return basicMethodsMatcher(settings).and(
+                methodDescription -> !settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+        );
+    }
+
+    private static ElementMatcher.Junction<MethodDescription> basicMethodsMatcher(Settings settings) {
         ElementMatcher.Junction<MethodDescription> methodMatcher = ElementMatchers.isMethod()
             .and(ElementMatchers.not(ElementMatchers.isAbstract()))
             .and(ElementMatchers.not(ElementMatchers.isConstructor()));
