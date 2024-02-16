@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public abstract class RecordedMethodCall {
     private final long callId;
+    private final long nanoTime;
 }

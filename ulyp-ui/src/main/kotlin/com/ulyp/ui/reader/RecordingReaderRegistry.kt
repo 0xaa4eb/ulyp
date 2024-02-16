@@ -46,6 +46,10 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
         return callRecordTree
     }
 
+    fun dispose(callTree: CallRecordTree) {
+        CloseReaderOnExitHook.remove(callTree)
+    }
+
     private object CloseReaderOnExitHook {
         private var readers = mutableListOf<Pair<Path, CallRecordTree>>()
 
@@ -56,6 +60,11 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
         @Synchronized
         fun add(readerEntry: Pair<Path, CallRecordTree>) {
             readers.add(readerEntry)
+        }
+
+        @Synchronized
+        fun remove(callTree: CallRecordTree) {
+            readers.removeIf { it.second == callTree}
         }
 
         @Synchronized

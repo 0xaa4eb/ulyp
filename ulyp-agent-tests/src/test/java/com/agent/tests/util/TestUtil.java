@@ -29,7 +29,6 @@ public class TestUtil {
             processArgs.add("-cp");
             processArgs.add(classPath);
             processArgs.addAll(settingsBuilder.toCmdJavaProps());
-            processArgs.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + settingsBuilder.getLogLevel());
             processArgs.add(settingsBuilder.getMainClassName().getName());
 
             ProcResult result = new ProcBuilder(javaBinary, processArgs.toArray(new String[]{}))

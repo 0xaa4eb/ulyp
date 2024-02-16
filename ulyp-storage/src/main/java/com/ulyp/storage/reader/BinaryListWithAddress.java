@@ -9,5 +9,5 @@ import lombok.Value;
 public class BinaryListWithAddress {
 
     long address;
-    BinaryList bytes;
+    BinaryList.In bytes;
 }

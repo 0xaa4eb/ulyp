@@ -2,6 +2,10 @@
     -fx-fill: rgb(255, 30, 30);
 }
 
+.ulyp-call-tree-timestamp {
+    -fx-fill: rgb(161, 201, 52);
+}
+
 .ulyp-bright-text {
     -fx-fill: rgb(255, 191, 30);
 }

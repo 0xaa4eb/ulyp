@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
+// TODO investigate OOM
 public class DirectMemLeakTest extends AbstractInstrumentationTest {
 
     @Test

@@ -1,5 +1,8 @@
 package com.ulyp.storage.writer;
 
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.MethodList;
@@ -11,6 +14,11 @@ public class BlackholeRecordingDataWriter implements RecordingDataWriter {
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
+
+    }
+
+    @Override
+    public void sync(Duration duration) {
 
     }
 
@@ -32,6 +40,11 @@ public class BlackholeRecordingDataWriter implements RecordingDataWriter {
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
 
+    }
+
+    @Override
+    public long estimateBytesWritten() {
+        return 0;
     }
 
     @Override

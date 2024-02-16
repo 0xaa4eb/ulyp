@@ -25,6 +25,6 @@ public class CharRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeChar((char) object);
+        out.write((char) object);
     }
 }

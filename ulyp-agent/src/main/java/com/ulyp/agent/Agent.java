@@ -17,6 +17,7 @@ import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
+import net.bytebuddy.asm.AsmVisitorWrapper;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -78,23 +79,23 @@ public class Agent {
 
         MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository(), startRecordingMethods);
 
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodCallRecordingAdvice.class)
+                .on(buildMethodsMatcher(settings));
+
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
-                Advice.withCustomMapping()
-                    .bind(methodIdFactory)
-                    .to(MethodCallRecordingAdvice.class)
-                    .on(buildMethodsMatcher(settings))
-            ));
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(methodCallAdvice));
 
         if (settings.instrumentConstructors()) {
-            agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(
-                Advice.withCustomMapping()
+            AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
                     .bind(methodIdFactory)
                     .to(ConstructorCallRecordingAdvice.class)
-                    .on(ElementMatchers.isConstructor())
-            ));
+                    .on(ElementMatchers.isConstructor());
+
+            agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(constructorAdvice));
         }
 
         AgentBuilder agent = agentBuilder.with(AgentBuilder.TypeStrategy.Default.REDEFINE);

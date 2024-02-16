@@ -4,3 +4,7 @@
 
 .ulyp-recording-list-item.system-font-text {
 }
+
+.zero-padding {
+    -fx-padding: 0 0 0 0;
+}

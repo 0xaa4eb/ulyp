@@ -63,7 +63,43 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
         Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
+    @Test
+    public void shouldFallbackToIdentityIfRecordingOfMapValueFailed() {
+
+        CallRecord root = runSubprocessAndReadFile(
+            new ForkProcessBuilder()
+                .withMainClassName(TestCase.class)
+                .withMethodToRecord("returnMapWithObjectsThrowingOnPrint")
+                .withRecordCollections(CollectionsRecordingMode.ALL)
+                .withPrintClasses("**.XYZ")
+        );
+
+        MapRecord collection = (MapRecord) root.getReturnValue();
+
+        Assert.assertEquals(2, collection.getSize());
+
+        List<MapEntryRecord> entries = collection.getEntries();
+        MapEntryRecord firstEntry = entries.get(0);
+        Assert.assertTrue(firstEntry.getValue() instanceof IdentityObjectRecord);
+    }
+
+    static class XYZ {
+        @Override
+        public String toString() {
+            throw new RuntimeException("not supported");
+        }
+    }
+
     static class TestCase {
+
+        public static Map<String, XYZ> returnMapWithObjectsThrowingOnPrint() {
+            return new LinkedHashMap<String, XYZ>() {
+                {
+                    put("a", new XYZ());
+                    put("c", new XYZ());
+                }
+            };
+        }
 
         public static Map<String, String> returnHashMap() {
             return new LinkedHashMap<String, String>() {
@@ -92,6 +128,11 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
             System.out.println(returnHashMap());
             Map<String, String> stringStringMap = returnMapThrowingOnIteration();
             System.out.println(System.identityHashCode(stringStringMap));
+            try {
+                System.out.println(System.identityHashCode(returnMapWithObjectsThrowingOnPrint()));
+            } catch (Throwable tw) {
+                System.out.println(returnMapWithObjectsThrowingOnPrint().size());
+            }
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.ulyp.core;
 
 import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.transport.BinaryTypeDecoder;
-import com.ulyp.transport.BinaryTypeEncoder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,20 +28,6 @@ public class Type {
 
     public static Type unknown() {
         return UNKNOWN;
-    }
-
-    public static Type deserialize(BinaryTypeDecoder decoder) {
-        String name = decoder.name();
-
-        return Type.builder()
-                .id(decoder.id())
-                .name(name)
-                .build();
-    }
-
-    public void serialize(BinaryTypeEncoder encoder) {
-        encoder.id(this.id);
-        encoder.name(this.name);
     }
 
     public ObjectRecorder getRecorderHint() {

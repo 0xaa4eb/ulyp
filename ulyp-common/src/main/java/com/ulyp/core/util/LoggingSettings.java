@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("all")
 public class LoggingSettings {
 
-    public static final String LOG_LEVEL_PROPERTY = "ulyp.org.slf4j.simpleLogger.defaultLogLevel";
-    public static final String SHOW_DATETIME_PROPERTY = "ulyp.org.slf4j.simpleLogger.showDateTime";
+    public static final String LOG_LEVEL_PROPERTY = "com.ulyp.slf4j.simpleLogger.defaultLogLevel";
+    public static final String SHOW_DATETIME_PROPERTY = "com.ulyp.slf4j.simpleLogger.showDateTime";
     public static final boolean TRACE_ENABLED;
     public static final boolean DEBUG_ENABLED;
     public static final boolean INFO_ENABLED;
@@ -40,6 +40,6 @@ public class LoggingSettings {
     }
 
     public static String getLoggingLevel() {
-        return System.getProperty("ulyp.org.slf4j.simpleLogger.defaultLogLevel");
+        return System.getProperty(LOG_LEVEL_PROPERTY);
     }
 }

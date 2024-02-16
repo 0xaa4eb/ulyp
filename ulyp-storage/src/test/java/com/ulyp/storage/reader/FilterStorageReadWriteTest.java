@@ -97,7 +97,6 @@ public class FilterStorageReadWriteTest {
 
         Assert.assertEquals(1, job.getRecordingMetadatas().size());
 
-        Assert.assertEquals(1, job.getTypes().size());
         Type typeDeserialized = job.getTypes().get(type.getId());
         Assert.assertEquals(typeDeserialized, type);
 

@@ -26,6 +26,10 @@ public class PerTypeStats {
         totalCount.addAndGet(delta);
     }
 
+    public long getTotalBytes() {
+        return totalBytes.getByteSize();
+    }
+
     public void addBytes(long bytes) {
         totalBytes = totalBytes.addBytes(bytes);
     }

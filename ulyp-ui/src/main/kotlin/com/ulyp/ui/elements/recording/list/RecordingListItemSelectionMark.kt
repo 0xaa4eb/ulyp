@@ -1,10 +1,9 @@
 package com.ulyp.ui.elements.recording.list
 
-import com.ulyp.ui.util.Style
-import javafx.scene.text.Text
+import javafx.scene.layout.Region
 
-class RecordingListItemSelectionMark: Text("\uD83D\uDDF2 ") {
+class RecordingListItemSelectionMark() : Region() {
     init {
-        this.styleClass.addAll(Style.BRIGHT_TEXT.cssClasses)
+        styleClass += "ulyp-recording-list-item-selected"
     }
 }

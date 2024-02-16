@@ -29,7 +29,6 @@ if (javaVersion >= JavaVersion.VERSION_1_7 && javaVersion < JavaVersion.VERSION_
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
-    implementation files('libs/fernflower.jar')
 
     implementation "javax.annotation:javax.annotation-api:1.3.2"
     implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
@@ -82,18 +81,5 @@ task fatJar(type: Jar) {
     group = 'build'
     archiveName = "ulyp-ui-${rootProject.version}.jar"
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    filesMatching([
-            '**/fastutil/booleans/*.class',
-            '**/fastutil/bytes/*.class',
-            '**/fastutil/chars/*.class',
-            '**/fastutil/doubles/*.class',
-            '**/fastutil/floats/*.class',
-            '**/fastutil/ints/*.class',
-            '**/fastutil/io/*.class',
-            '**/fastutil/shorts/*.class',
-            '**/fastutil/objects/Object*.class',
-            '**/fastutil/objects/Reference*.class'], { fileCopyDetails ->
-        fileCopyDetails.exclude()
-    })
     with jar
 }

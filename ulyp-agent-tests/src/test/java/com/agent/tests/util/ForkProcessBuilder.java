@@ -2,6 +2,7 @@ package com.agent.tests.util;
 
 import com.ulyp.agent.Settings;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
+import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
@@ -26,6 +27,7 @@ public class ForkProcessBuilder {
     private Boolean recordConstructors = null;
     private Boolean instrumentLambdas = null;
     private Boolean instrumentTypeInitializers = null;
+    private Boolean recordTimestamps = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -77,12 +79,13 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public String getLogLevel() {
-        return logLevel;
-    }
-
     public ForkProcessBuilder withInstrumentLambdas(Boolean instrumentLambdas) {
         this.instrumentLambdas = instrumentLambdas;
+        return this;
+    }
+
+    public ForkProcessBuilder withRecordTimestamps(Boolean recordTimestamps) {
+        this.recordTimestamps = recordTimestamps;
         return this;
     }
 
@@ -165,7 +168,11 @@ public class ForkProcessBuilder {
         if (instrumentTypeInitializers != null) {
             params.add("-D" + Settings.INSTRUMENT_TYPE_INITIALIZERS);
         }
+        if (recordTimestamps != null) {
+            params.add("-D" + Settings.TIMESTAMPS_ENABLED_PROPERTY);
+        }
 
+        params.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + logLevel);
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
         params.add("-D" + Settings.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
         params.add("-D" + Settings.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());

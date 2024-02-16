@@ -37,6 +37,10 @@ public class ByteSize {
         return DEC_FORMAT.format((double) size / divider) + " " + unitName;
     }
 
+    public long getByteSize() {
+        return byteSize;
+    }
+
     public ByteSize addBytes(long byteSize) {
         return new ByteSize(this.byteSize + byteSize);
     }

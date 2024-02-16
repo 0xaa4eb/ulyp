@@ -13,7 +13,7 @@ class RecordingTabView(private val applicationContext: ApplicationContext) : VBo
     private val tabsByRecordingId: MutableMap<Int, RecordingTab> = ConcurrentHashMap()
     var currentTab: RecordingTab? = null
 
-    fun getOrCreateRecordingTab(processMetadata: ProcessMetadata, recording: Recording): RecordingTab {
+    private fun getOrCreateRecordingTab(processMetadata: ProcessMetadata, recording: Recording): RecordingTab {
         val id = recording.id
         return FxThreadExecutor.execute {
             tabsByRecordingId.computeIfAbsent(id) { recordingId: Int ->

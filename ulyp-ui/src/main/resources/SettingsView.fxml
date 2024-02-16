@@ -168,6 +168,20 @@
                                     <Insets top="40.0" />
                                  </VBox.margin>
                               </HBox>
+                               <HBox prefWidth="200.0">
+                                   <children>
+                                       <Label prefWidth="200.0" text="Font spacing (px)" />
+                                       <Slider fx:id="recordingListSpacingSlider" blockIncrement="1.0" max="50.0" value="3.0" />
+                                       <Label fx:id="recordingListSpacingLabel" text="Label">
+                                           <HBox.margin>
+                                               <Insets left="20.0" />
+                                           </HBox.margin>
+                                       </Label>
+                                   </children>
+                                   <VBox.margin>
+                                       <Insets left="20.0" top="20.0" />
+                                   </VBox.margin>
+                               </HBox>
                               <HBox prefWidth="200.0">
                                  <children>
                                     <Label prefWidth="200.0" text="Show thread name" />

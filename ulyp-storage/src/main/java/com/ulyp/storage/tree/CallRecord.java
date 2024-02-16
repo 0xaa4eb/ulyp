@@ -7,6 +7,7 @@ import com.ulyp.storage.StorageException;
 
 import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Builder;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class CallRecord {
 
     private final long callId;
     private final int subtreeSize;
+    @Getter
+    private final long nanosDuration;
     private final Method method;
     private final List<ObjectRecord> args;
     private final LongList childrenCallIds;

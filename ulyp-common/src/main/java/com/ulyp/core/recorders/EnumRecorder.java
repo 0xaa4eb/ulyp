@@ -25,6 +25,6 @@ public class EnumRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
-        out.writeString(((Enum<?>) object).name());
+        out.write(((Enum<?>) object).name());
     }
 }

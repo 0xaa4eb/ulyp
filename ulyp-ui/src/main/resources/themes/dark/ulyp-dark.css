@@ -55,7 +55,15 @@
     -fx-background-color: -fx-mark-highlight-color, rgb(255, 255, 255);
 }
 
+.list-cell {
+    -fx-padding: 0 0 0 0;
+}
+
 /* ULYP part */
+
+.ulyp-call-tree-timestamp {
+    -fx-fill: rgb(161, 201, 52);
+}
 
 .ulyp-recording-list-item {
     -fx-fill: rgb(169, 183, 198);
@@ -115,7 +123,7 @@
 }
 
 .ulyp-call-tree-printed.ulyp-call-tree-bold {
-    -fx-fill: rgb(152, 118, 170);
+    -fx-fill: rgb(0, 102, 204);
 }
 
 .ulyp-call-tree-object-value {
@@ -157,7 +165,11 @@
     -fx-background-color: black;
     -fx-border-style: solid;
     -fx-border-width: 2;
-    -fx-border-color: rgb(50, 50, 50);
+    -fx-border-color: black;
     -fx-min-height: 20;
     -fx-max-height: 20;
+}
+
+.ulyp-recording-list-item.selected {
+    -fx-background-color: rgb(0, 80, 100);
 }

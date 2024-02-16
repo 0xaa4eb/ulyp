@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import com.ulyp.core.Type;
+import com.ulyp.core.mem.TypeList;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,7 +53,6 @@ public class AsyncRecordingDataWriterTest {
         writer.write(
             ProcessMetadata.builder()
                 .pid(5435L)
-                .classPathFiles(Arrays.asList("a.b.A", "a.b.B", "a.b.C"))
                 .mainClassName("a.b.c.D")
                 .build()
         );
@@ -64,14 +65,16 @@ public class AsyncRecordingDataWriterTest {
         writer.write(
             ProcessMetadata.builder()
                 .pid(5435L)
-                .classPathFiles(Arrays.asList("a.b.A", "a.b.B", "a.b.C"))
                 .mainClassName("a.b.c.D")
                 .build()
         );
 
+        TypeList types = new TypeList();
+        types.add(Type.builder().name("a.b.Type").build());
+        writer.write(types);
+
         ProcessMetadata processMetadata = reader.getProcessMetadata();
 
-        Assert.assertEquals(Arrays.asList("a.b.A", "a.b.B", "a.b.C"), processMetadata.getClassPathFiles());
         Assert.assertEquals("a.b.c.D", processMetadata.getMainClassName());
         Assert.assertEquals(5435L, processMetadata.getPid());
     }

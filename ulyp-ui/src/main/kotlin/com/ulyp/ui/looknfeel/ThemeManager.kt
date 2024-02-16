@@ -1,12 +1,10 @@
 package com.ulyp.ui.looknfeel
 
 import com.ulyp.ui.SceneRegistry
-import com.ulyp.ui.code.SourceCodeTab
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ThemeManager(@Autowired private val sourceCodeTab: SourceCodeTab) {
+class ThemeManager() {
 
     private lateinit var sceneRegistry: SceneRegistry
 
@@ -25,7 +23,6 @@ class ThemeManager(@Autowired private val sourceCodeTab: SourceCodeTab) {
             scene.stylesheets.addAll(0, theme.cssPaths)
         }
 
-        this.sourceCodeTab.setTheme(theme.rsyntaxThemePath)
         this.currentTheme = theme
     }
 

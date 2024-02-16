@@ -5,6 +5,8 @@ import java.util.concurrent.CompletableFuture;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
+import com.ulyp.core.Type;
+import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.storage.StorageException;
 
 /**
@@ -17,12 +19,12 @@ public interface RecordingDataReader extends AutoCloseable {
     /**
      *
      */
-    RecordedEnterMethodCall readEnterMethodCall(long address);
+    RecordedEnterMethodCall readEnterMethodCall(long address, ReadableRepository<Integer, Type> typeRepository);
 
     /**
      *
      */
-    RecordedExitMethodCall readExitMethodCall(long address);
+    RecordedExitMethodCall readExitMethodCall(long address, ReadableRepository<Integer, Type> typeRepository);
 
     ProcessMetadata getProcessMetadata();
 
