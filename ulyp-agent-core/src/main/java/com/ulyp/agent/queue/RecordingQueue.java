@@ -11,13 +11,13 @@ import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
 import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
 import com.ulyp.core.metrics.Metrics;
+import com.ulyp.core.pool.ObjectPool;
+import com.ulyp.core.pool.QueueBasedObjectPool;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.ObjectPool;
+import com.ulyp.core.util.SmallObjectPool;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,34 +26,41 @@ import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.NamedThreadFactory;
+import com.ulyp.core.util.SystemPropertyUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RecordingQueue implements AutoCloseable {
 
-    private final ObjectPool<byte[]> bufferPool;
+    private static final int RING_BUFFER_CAPACITY = SystemPropertyUtil.getInt("ulyp.recorder-queue.capacity", 1024 * 1024);
+    private static final int TMP_BUFFER_POOL_ENTRIES = SystemPropertyUtil.getInt("ulyp.recorder-queue.tmp-buffer.entries", 8);
+    private static final int TMP_BUFFER_POOL_ENTRY_BYTE_SIZE = SystemPropertyUtil.getInt("ulyp.recorder-queue.tmp-buffer.entry-size", 16 * 1024);
+    private static final int CALL_RECORD_POOL_SIZE = SystemPropertyUtil.getInt("ulyp.recorder-queue.record-pool.size", 16 * 1024);
+
+    private final SmallObjectPool<byte[]> tmpBufferPool;
+    private final ObjectPool<EnterRecordQueueEvent> enterRecordObjectPool;
+    private final ObjectPool<ExitRecordQueueEvent> exitRecordObjectPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
-    private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
-        this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
+        this.tmpBufferPool = new SmallObjectPool<>(
+                TMP_BUFFER_POOL_ENTRIES,
+                () -> new byte[TMP_BUFFER_POOL_ENTRY_BYTE_SIZE]
+        );
         this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
-                1024 * 1024, // TODO configurable
+                RING_BUFFER_CAPACITY,
                 new QueueEventHandlerThreadFactory(),
                 new SleepingWaitStrategy(),
                 metrics
         );
-        this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(
-            1,
-            NamedThreadFactory.builder().name("ulyp-recorder-queue-stats-reporter").daemon(true).build()
-        );
-        this.scheduledExecutorService.scheduleAtFixedRate(this::reportSeqDiff, 1, 1, TimeUnit.SECONDS);
+        this.enterRecordObjectPool = new QueueBasedObjectPool<>("enter-record-pool", CALL_RECORD_POOL_SIZE, EnterRecordQueueEvent::new, metrics);
+        this.exitRecordObjectPool = new QueueBasedObjectPool<>("exit-record-pool", CALL_RECORD_POOL_SIZE, ExitRecordQueueEvent::new, metrics);
+        this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter, enterRecordObjectPool, exitRecordObjectPool);
     }
 
     public void start() {
@@ -75,14 +82,17 @@ public class RecordingQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
-        disruptor.publish(new EnterRecordQueueEvent(
+//        EnterRecordQueueEvent enterRecordQueueEvent = new EnterRecordQueueEvent();
+        EnterRecordQueueEvent enterRecordQueueEvent = enterRecordObjectPool.borrow();
+        enterRecordQueueEvent.set(
                 recordingId,
                 callId,
                 methodId,
                 calleeTypeId,
                 calleeIdentityHashCode,
-                convert(args))
+                convert(args)
         );
+        disruptor.publish(enterRecordQueueEvent);
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
@@ -95,7 +105,7 @@ public class RecordingQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
-        disruptor.publish(new TimestampedEnterRecordQueueEvent(
+/*        disruptor.publish(new TimestampedEnterRecordQueueEvent(
                 recordingId,
                 callId,
                 methodId,
@@ -103,15 +113,18 @@ public class RecordingQueue implements AutoCloseable {
                 calleeIdentityHashCode,
                 convert(args),
                 nanoTime)
-        );
+        );*/
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
-        disruptor.publish(new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown));
+//        ExitRecordQueueEvent exitRecordQueueEvent = new ExitRecordQueueEvent();
+        ExitRecordQueueEvent exitRecordQueueEvent = exitRecordObjectPool.borrow();
+        exitRecordQueueEvent.set(recordingId, callId, convert(returnValue), thrown);
+        disruptor.publish(exitRecordQueueEvent);
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        disruptor.publish(new TimestampedExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
+        /*disruptor.publish(new TimestampedExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));*/
     }
 
     private Object[] convert(Object[] args) {
@@ -135,7 +148,7 @@ public class RecordingQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            try (ObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
+            try (SmallObjectPool.ObjectPoolClaim<byte[]> buffer = tmpBufferPool.claim()) {
                 BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);
@@ -165,18 +178,8 @@ public class RecordingQueue implements AutoCloseable {
             + eventProcessor.getSequence().get());
     }
 
-    private void reportSeqDiff() {
-        QueueBatchEventProcessor eventProcessor = eventProcessorFactory.getEventProcessor();
-        if (log.isDebugEnabled()) {
-            log.debug("Seq difference: " + (disruptor.getCursor() - eventProcessor.getSequence().get()) +
-                    ", event processor seq: " + eventProcessor.getSequence().get() +
-                    ", published seq: " + disruptor.getCursor());
-        }
-    }
-
     @Override
     public void close() {
-        scheduledExecutorService.shutdownNow();
         disruptor.halt();
     }
 }

@@ -7,10 +7,10 @@ import java.util.Arrays;
 @Getter
 public class TimestampedEnterRecordQueueEvent extends EnterRecordQueueEvent {
 
-    private final long nanoTime;
+    private long nanoTime;
 
-    public TimestampedEnterRecordQueueEvent(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args, long nanoTime) {
-        super(recordingId, callId, methodId, calleeTypeId, calleeIdentityHashCode, args);
+    public void set(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args, long nanoTime) {
+        set(recordingId, callId, methodId, calleeTypeId, calleeIdentityHashCode, args);
         this.nanoTime = nanoTime;
     }
 

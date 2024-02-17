@@ -4,17 +4,19 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+import com.ulyp.core.pool.PooledObject;
+
 @Getter
-public class EnterRecordQueueEvent {
+public class EnterRecordQueueEvent extends PooledObject {
 
-    protected final int recordingId;
-    protected final int callId;
-    protected final int methodId;
-    protected final int calleeTypeId;
-    protected final int calleeIdentityHashCode;
-    protected final Object[] args;
+    protected int recordingId;
+    protected int callId;
+    protected int methodId;
+    protected int calleeTypeId;
+    protected int calleeIdentityHashCode;
+    protected Object[] args;
 
-    public EnterRecordQueueEvent(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args) {
+    public void set(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args) {
         this.recordingId = recordingId;
         this.callId = callId;
         this.methodId = methodId;

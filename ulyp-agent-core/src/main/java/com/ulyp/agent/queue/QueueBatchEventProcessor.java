@@ -16,6 +16,7 @@ import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.pool.ObjectPool;
 import com.ulyp.core.util.LoggingSettings;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public final class QueueBatchEventProcessor implements EventProcessor {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
+    private final ObjectPool<EnterRecordQueueEvent> enterRecordObjectPool;
+    private final ObjectPool<ExitRecordQueueEvent> exitRecordObjectPool;
     private final Map<Integer, RecordingEventHandler> recordingQueueProcessors = new HashMap<>();
     private final AtomicInteger running = new AtomicInteger(IDLE);
     private final DataProvider<EventHolder> dataProvider;
@@ -38,11 +41,15 @@ public final class QueueBatchEventProcessor implements EventProcessor {
         DataProvider<EventHolder> dataProvider,
         SequenceBarrier sequenceBarrier,
         TypeResolver typeResolver,
-        AgentDataWriter agentDataWriter) {
+        AgentDataWriter agentDataWriter,
+        ObjectPool<EnterRecordQueueEvent> enterRecordObjectPool,
+        ObjectPool<ExitRecordQueueEvent> exitRecordObjectPool) {
         this.dataProvider = dataProvider;
         this.sequenceBarrier = sequenceBarrier;
         this.typeResolver = typeResolver;
         this.agentDataWriter = agentDataWriter;
+        this.enterRecordObjectPool = enterRecordObjectPool;
+        this.exitRecordObjectPool = exitRecordObjectPool;
     }
 
     @Override
@@ -105,6 +112,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                             processor.onEventBatchStart();
                         }
                         processor.onEnterCallRecord(enterRecord);
+                        enterRecordObjectPool.requite(enterRecord);
                     } else if (event instanceof ExitRecordQueueEvent) {
                         ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
                         RecordingEventHandler processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
@@ -112,6 +120,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                             processor.onEventBatchStart();
                         }
                         processor.onExitCallRecord(exitRecord);
+                        exitRecordObjectPool.requite(exitRecord);
                     } else {
                         RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
                         RecordingEventHandler processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());

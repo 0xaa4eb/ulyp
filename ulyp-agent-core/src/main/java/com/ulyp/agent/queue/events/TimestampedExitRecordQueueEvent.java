@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class TimestampedExitRecordQueueEvent extends ExitRecordQueueEvent {
 
-    private final long nanoTime;
+    private long nanoTime;
 
-    public TimestampedExitRecordQueueEvent(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        super(recordingId, callId, returnValue, thrown);
+    public void set(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
+        set(recordingId, callId, returnValue, thrown);
         this.nanoTime = nanoTime;
     }
 

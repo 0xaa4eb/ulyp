@@ -1,16 +1,18 @@
 package com.ulyp.agent.queue.events;
 
+import com.ulyp.core.pool.PooledObject;
+
 import lombok.Getter;
 
 @Getter
-public class ExitRecordQueueEvent {
+public class ExitRecordQueueEvent extends PooledObject {
 
-    protected final int recordingId;
-    protected final int callId;
-    protected final Object returnValue;
-    protected final boolean thrown;
+    protected int recordingId;
+    protected int callId;
+    protected Object returnValue;
+    protected boolean thrown;
 
-    public ExitRecordQueueEvent(int recordingId, int callId, Object returnValue, boolean thrown) {
+    public void set(int recordingId, int callId, Object returnValue, boolean thrown) {
         this.recordingId = recordingId;
         this.callId = callId;
         this.returnValue = returnValue;
