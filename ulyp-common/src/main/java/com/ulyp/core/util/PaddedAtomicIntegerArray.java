@@ -10,18 +10,22 @@ public class PaddedAtomicIntegerArray {
         if (Integer.bitCount(capacity) != 1) {
             throw new IllegalArgumentException("Expected threads must be power of two, provided " + capacity);
         }
-        this.array = new AtomicIntegerArray(capacity << Constants.CACHE_LINE_INTS_BITS_SHIFT);
+        this.array = new AtomicIntegerArray(toInternalIndex(capacity));
     }
 
     public int get(int index) {
-        return this.array.get(index << Constants.CACHE_LINE_INTS_BITS_SHIFT);
+        return this.array.get(toInternalIndex(index));
     }
 
     public void set(int index, int value) {
-        this.array.set(index << Constants.CACHE_LINE_INTS_BITS_SHIFT, value);
+        this.array.set(toInternalIndex(index), value);
     }
 
     public boolean compareAndSet(int index, int expected, int value) {
-        return this.array.compareAndSet(index, expected, value);
+        return this.array.compareAndSet(toInternalIndex(index), expected, value);
+    }
+
+    private int toInternalIndex(int index) {
+        return index << Constants.CACHE_LINE_INTS_BITS_SHIFT;
     }
 }

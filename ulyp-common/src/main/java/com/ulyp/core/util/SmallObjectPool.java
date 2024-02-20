@@ -1,9 +1,8 @@
 package com.ulyp.core.util;
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
-public class ObjectPool<T> {
+public class SmallObjectPool<T> {
 
     public static final int MAX_TRIES_BEFORE_ALLOC = 3;
 
@@ -12,7 +11,7 @@ public class ObjectPool<T> {
     private final ObjectPoolClaim<T>[] objectArray; // object array is read only and not padded
     private final PaddedAtomicIntegerArray used;
 
-    public ObjectPool(int entriesCount, Supplier<T> supplier) {
+    public SmallObjectPool(int entriesCount, Supplier<T> supplier) {
         if (Integer.bitCount(entriesCount) != 1) {
             throw new IllegalArgumentException("Entry count must be power of two, but was " + entriesCount);
         }
@@ -29,8 +28,8 @@ public class ObjectPool<T> {
     }
 
     public ObjectPoolClaim<T> claim() {
-        int id = ThreadLocalRandom.current().nextInt();
-        return claim(id & indexMask, 0);
+        long id = Thread.currentThread().getId();
+        return claim(((int) id) & indexMask, 0);
     }
 
     private ObjectPoolClaim<T> claim(int index, int tries) {
@@ -55,11 +54,11 @@ public class ObjectPool<T> {
     }
 
     public static class ObjectPoolClaim<T> implements AutoCloseable {
-        private final ObjectPool<T> pool;
+        private final SmallObjectPool<T> pool;
         private final int index;
         private final T object;
 
-        public ObjectPoolClaim(ObjectPool<T> pool, int index, T object) {
+        public ObjectPoolClaim(SmallObjectPool<T> pool, int index, T object) {
             this.pool = pool;
             this.index = index;
             this.object = object;

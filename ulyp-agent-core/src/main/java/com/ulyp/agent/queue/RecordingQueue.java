@@ -17,7 +17,7 @@ import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.ObjectPool;
+import com.ulyp.core.util.SmallObjectPool;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordingQueue implements AutoCloseable {
 
-    private final ObjectPool<byte[]> bufferPool;
+    private final SmallObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -40,7 +40,7 @@ public class RecordingQueue implements AutoCloseable {
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
-        this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
+        this.bufferPool = new SmallObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
         this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
                 1024 * 1024, // TODO configurable
@@ -135,7 +135,7 @@ public class RecordingQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            try (ObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
+            try (SmallObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
                 BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);
