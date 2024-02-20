@@ -45,7 +45,7 @@ public class RecordingQueue implements AutoCloseable {
                 EventHolder::new,
                 1024 * 1024, // TODO configurable
                 new QueueEventHandlerThreadFactory(),
-                new SleepingWaitStrategy(),
+                new SleepingWaitStrategy(3, TimeUnit.MILLISECONDS.toNanos(1)),
                 metrics
         );
         this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
