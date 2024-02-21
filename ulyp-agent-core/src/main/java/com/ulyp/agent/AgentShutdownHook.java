@@ -26,11 +26,7 @@ public class AgentShutdownHook implements Runnable {
         } catch (TimeoutException e) {
             // ignore
         }
-/*        try {
-            callRecordQueue.close();
-        } catch (Exception e) {
-            log.info("Failed when closing call record queue", e);
-        }*/
+        recordingQueue.close();
 
         RecordingDataWriter storageWriter = ctx.getStorageWriter();
         try {
