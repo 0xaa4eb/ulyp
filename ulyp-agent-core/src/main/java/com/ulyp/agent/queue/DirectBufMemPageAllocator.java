@@ -14,7 +14,6 @@ public class DirectBufMemPageAllocator implements MemPageAllocator {
         return new MemPage(0, new UnsafeBuffer(ByteBuffer.allocateDirect(MemPool.PAGE_SIZE)));
     }
 
-
     @Override
     public void deallocate(MemPage page) {
 
