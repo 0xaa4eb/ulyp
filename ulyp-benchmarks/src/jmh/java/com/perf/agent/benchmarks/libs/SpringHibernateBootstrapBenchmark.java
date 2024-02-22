@@ -53,7 +53,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
         departmentService.removeAll();
     }
 
-    @Fork(value = 2)
+    @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
     public void boostrapBaseline() {
         runTest();
@@ -65,7 +65,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void boostrapInstrumented() {
         runTest();
@@ -77,7 +77,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void boostrapRecord() {
         runTest();
@@ -89,7 +89,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
-    }, value = 2)
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void boostrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::runTest);
