@@ -26,7 +26,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.HazelcastBootstrapBenchmark.xcjznfgasd",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.xcjznfgasd",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
@@ -38,7 +38,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.HazelcastBootstrapBenchmark.run",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ", **.HazelcastBootstrapBenchmark.run",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
@@ -50,7 +50,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.HazelcastBootstrapBenchmark.run",
+        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.run",
         "-Dulyp.constructors",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)

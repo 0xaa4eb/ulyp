@@ -8,6 +8,14 @@ import java.util.function.Supplier;
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
 
+    // additional non-existent methods to make instrumentation matcher do more work
+    protected static final String METHOD_MATCHERS =
+            "org.apache.activemq.JMSMssfasdasfa.kdusdhfe," +
+            "org.apache.activemq.ActiveMQInstrumentation.vnxmxhcs," +
+            "org.apache.activemq.Ajaxcas.dfksdjf," +
+            "**.test.JMSMessage.fsdjkhgsd," +
+            "**.ActiveMQBootstrapBenchmark.xvxcxxx";
+
     @State(Scope.Thread)
     @AuxCounters(AuxCounters.Type.EVENTS)
     public static class Counters {

@@ -62,7 +62,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = BenchmarkConstants.FORKS)
@@ -74,7 +74,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBenchmark.runTest",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = BenchmarkConstants.FORKS)
@@ -86,7 +86,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
+        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBenchmark.runTest",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
     }, value = BenchmarkConstants.FORKS)
