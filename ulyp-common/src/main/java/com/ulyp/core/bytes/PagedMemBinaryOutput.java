@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Growable binary output which requests page by page from the specified allocator. When container grows a new page is
+ * requested and no copying happens
+ */
 public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
