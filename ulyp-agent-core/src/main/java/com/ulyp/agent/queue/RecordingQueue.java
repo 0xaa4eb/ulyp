@@ -30,6 +30,14 @@ import com.ulyp.core.util.NamedThreadFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Main entry point for recorded calls. For most of the objects only their identity is recorded (identity hash code and type id).
+ * Other objects like strings and numbers are immutable, so we can only pass a reference to object and
+ * avoid serialization/recording. The state of object is then recorded to bytes in the background. For objects like collections
+ * we must record in the caller thread and pass a buffer.
+ *
+ * Currently, it has fixed capacity which should be addressed in near future
+ */
 @Slf4j
 public class RecordingQueue implements AutoCloseable {
 
