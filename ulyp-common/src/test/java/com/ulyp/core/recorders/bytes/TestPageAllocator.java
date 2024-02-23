@@ -2,7 +2,7 @@ package com.ulyp.core.recorders.bytes;
 
 import com.ulyp.core.mem.MemPage;
 import com.ulyp.core.mem.MemPageAllocator;
-import com.ulyp.core.mem.MemPool;
+import com.ulyp.core.mem.PageConstants;
 import lombok.Getter;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -16,7 +16,7 @@ public class TestPageAllocator implements MemPageAllocator {
 
     @Override
     public MemPage allocate() {
-        MemPage memPage = new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+        MemPage memPage = new MemPage(0, new UnsafeBuffer(new byte[PageConstants.PAGE_SIZE]));
         pages.add(memPage);
         return memPage;
     }

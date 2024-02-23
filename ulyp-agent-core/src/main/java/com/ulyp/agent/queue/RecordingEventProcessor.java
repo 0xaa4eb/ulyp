@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RecordingEventHandler {
+public class RecordingEventProcessor {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
@@ -28,9 +28,7 @@ public class RecordingEventHandler {
     private MemPageAllocator pageAllocator;
     private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
-    private int idGen = 0;
-
-    public RecordingEventHandler(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
+    public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
         this.agentDataWriter = agentDataWriter;
         this.methodRepository = agentDataWriter.getMethodRepository();
@@ -56,6 +54,7 @@ public class RecordingEventHandler {
 
         long nanoTime = (enterRecord instanceof TimestampedEnterRecordQueueEvent) ? ((TimestampedEnterRecordQueueEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
+                enterRecord.getCallId(),
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
                 cachedQueuedIdentityCallee,

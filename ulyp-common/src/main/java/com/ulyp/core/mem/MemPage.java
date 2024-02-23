@@ -4,14 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.agrona.concurrent.UnsafeBuffer;
 
-import javax.annotation.Nullable;
-
 @Getter
 public class MemPage {
     private final int id;
     private final UnsafeBuffer buffer;
     @Setter
-    private int unused; // TODO reset
+    private int unused;
 
     public MemPage(int id, UnsafeBuffer buffer) {
         this.id = id;

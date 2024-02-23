@@ -18,6 +18,7 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.SmallObjectPool;
+import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordingQueue implements AutoCloseable {
 
+    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 1024 * 1024);
+    private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.size", 16 * 1024);
+    private static final int TMP_BUFFER_ENTRIES = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.entries", 8);
+
     private final SmallObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
@@ -40,10 +45,10 @@ public class RecordingQueue implements AutoCloseable {
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
-        this.bufferPool = new SmallObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
+        this.bufferPool = new SmallObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
         this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
-                1024 * 1024, // TODO configurable
+                RECORDING_QUEUE_SIZE,
                 new QueueEventHandlerThreadFactory(),
                 new SleepingWaitStrategy(3, TimeUnit.MILLISECONDS.toNanos(1)),
                 metrics
