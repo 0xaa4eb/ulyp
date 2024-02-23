@@ -55,10 +55,10 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2MemDatabaseBenchmark.asdasd",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapInstrumented() {
         run();
@@ -67,10 +67,10 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2MemDatabaseBenchmark.run",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecord() {
         run();
@@ -79,10 +79,10 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.H2MemDatabaseBenchmark.run",
+        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::run);

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 public class H2Benchmark extends RecordingBenchmark {
 
     public static final int INSERTS_PER_INVOCATION = 100;
@@ -81,7 +81,8 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void insertRecord() {
@@ -89,11 +90,12 @@ public class H2Benchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-        "-Dulyp.constructors"
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void insertRecordSync(Counters counters) {

@@ -8,8 +8,6 @@ import com.ulyp.core.recorders.RecorderChooser;
 
 import java.nio.charset.StandardCharsets;
 import com.ulyp.core.util.SystemPropertyUtil;
-import org.agrona.MutableDirectBuffer;
-
 
 public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutput {
 
