@@ -80,7 +80,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQInstrumentationBenchmark.runTest",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQBootstrapBenchmark.runTest",
             "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
@@ -91,9 +91,9 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQInstrumentationBenchmark.runTest",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQBootstrapBenchmark.runTest",
             "-Dulyp.constructors"
-    }, value = 3)
+    }, value = 3, jvmArgsAppend = {"-Dulyp.constructors", "-Dulyp.collections=JAVA"})
     @Benchmark
     public void instrumentAndRecordSync(Counters counters) {
         execRecordAndSync(counters, this::runTest);

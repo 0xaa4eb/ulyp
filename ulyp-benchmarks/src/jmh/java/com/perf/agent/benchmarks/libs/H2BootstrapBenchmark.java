@@ -14,14 +14,6 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 1)
 public class H2BootstrapBenchmark extends RecordingBenchmark {
 
-    // additional non-existent methods to make instrumentation matcher do more work
-    public static final String RECORD_METHOD_MATCHERS =
-            "**.JDBCConnection.kdusdhfe," +
-            "**.PreparedStatement.vcxvxc," +
-            "**.MessageZXvcjs.llbbldksjdfm," +
-            "org.apache.activemq.AJKsdsdxvdf.dfksdjf," +
-            "**.test.JMSMessage.fsdjkhgsd";
-
     @Param({"5000"})
     private int insertCount;
 
@@ -63,7 +55,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.asdasd",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 3)
@@ -75,7 +67,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.run",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
     }, value = 3)
@@ -87,7 +79,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.run",
+        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
     }, value = 3)

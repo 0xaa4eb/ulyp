@@ -48,8 +48,8 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc",
-            "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+            "-Dulyp.constructors"},
+            value = BenchmarkConstants.FORKS)
     @Benchmark
     public void sendMsgInstrumented() {
         sendMsg();
@@ -61,6 +61,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
             "-Dulyp.constructors",
             "-Dulyp.metrics",
+            "-Dulyp.collections=JAVA",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
@@ -69,12 +70,13 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-        "-Dulyp.constructors",
-        "-Dulyp.metrics",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA",
+            "-Dulyp.metrics",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void sendMsgRecordSync(Counters counters) {

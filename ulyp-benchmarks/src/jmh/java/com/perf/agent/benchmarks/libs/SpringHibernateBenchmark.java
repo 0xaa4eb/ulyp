@@ -66,7 +66,8 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void shufflePeopleInstrumented() {
@@ -78,7 +79,8 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.DepartmentService.shufflePeople",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void shufflePeopleRecord() {
@@ -86,11 +88,12 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.DepartmentService.shufflePeople",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-        "-Dulyp.constructors"
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.DepartmentService.shufflePeople",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.constructors",
+            "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void shufflePeopleRecordSync(Counters counters) {
