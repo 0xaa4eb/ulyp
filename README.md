@@ -52,6 +52,19 @@ Build without tests:
 Run UI:
     `./gradlew :ulyp-ui:run`
 
+## Similar projects
+
+Ulyp is POC and unstable all the time since the beginning. There are already similar projects which you might consider to use before Ulyp.
+<table border="1">
+<tr>
+		<th>Project</th>
+		<th>Link</th>
+		<th>Source</th>
+</tr>
+<tr><td>Bugjail</td><td>bugjail.com</td><td>Closed source</td></tr>
+<tr><td>Findtheflow</td><td>findtheflow.io</td><td>Closed source</td></tr>
+</table>
+
 ## Key details
 
 All instrumentation is done using [byte buddy](https://github.com/raphw/byte-buddy) library. 
