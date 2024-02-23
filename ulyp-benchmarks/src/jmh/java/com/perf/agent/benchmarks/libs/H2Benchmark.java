@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 public class H2Benchmark extends RecordingBenchmark {
 
     public static final int INSERTS_PER_INVOCATION = 100;

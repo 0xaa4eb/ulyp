@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 50)
+@Measurement(iterations = 30)
 public class HazelcastBenchmark extends RecordingBenchmark {
 
     public static final int PUTS_PER_INVOCATION = 100;

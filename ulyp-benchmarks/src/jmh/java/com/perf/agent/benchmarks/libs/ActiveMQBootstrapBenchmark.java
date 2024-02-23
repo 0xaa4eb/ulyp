@@ -60,7 +60,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
         }
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(value = 3)
     @Benchmark
     public void baseline() {
         runTest();
@@ -71,7 +71,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQZxcxckzxc.kdusdhfe",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void instrumentOnly() {
         runTest();
@@ -82,7 +82,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQInstrumentationBenchmark.runTest",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void instrumentAndRecord() {
         runTest();
@@ -93,7 +93,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQInstrumentationBenchmark.runTest",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void instrumentAndRecordSync(Counters counters) {
         execRecordAndSync(counters, this::runTest);

@@ -29,7 +29,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.xcjznfgasd",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapInstrumented() {
         run();
@@ -41,7 +41,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=" + METHOD_MATCHERS + ", **.HazelcastBootstrapBenchmark.run",
             "-Dulyp.constructors",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecord() {
         run();
@@ -53,7 +53,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.run",
         "-Dulyp.constructors",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::run);

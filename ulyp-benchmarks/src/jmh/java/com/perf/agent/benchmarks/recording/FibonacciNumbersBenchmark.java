@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 

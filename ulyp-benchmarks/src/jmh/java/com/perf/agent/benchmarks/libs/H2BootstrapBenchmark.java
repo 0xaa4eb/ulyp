@@ -66,7 +66,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapInstrumented() {
         run();
@@ -78,7 +78,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.run",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecord() {
         run();
@@ -90,7 +90,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=" + RECORD_METHOD_MATCHERS + ",**.H2MemDatabaseBenchmark.run",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void bootstrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::run);

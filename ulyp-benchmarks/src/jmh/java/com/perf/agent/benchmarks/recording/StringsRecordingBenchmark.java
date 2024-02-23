@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class StringsRecordingBenchmark extends RecordingBenchmark {
