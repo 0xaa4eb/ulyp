@@ -1,14 +1,11 @@
 package com.ulyp.core.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
  * A collection of utility methods to retrieve and parse the values of the Java system properties.
  */
-@Slf4j
 public final class SystemPropertyUtil {
 
     public static boolean contains(String key) {
@@ -33,7 +30,7 @@ public final class SystemPropertyUtil {
                 });
             }
         } catch (SecurityException e) {
-            log.warn("Unable to retrieve a system property '{}'; default values will be used.", key, e);
+            // ignore
         }
 
         if (value == null) {
@@ -53,10 +50,8 @@ public final class SystemPropertyUtil {
         try {
             return Integer.parseInt(value);
         } catch (Exception e) {
-            // Ignore
+            // ignore
         }
-
-        log.warn("Unable to parse the integer system property '{}':{} - using the default value: {}", key, value, def);
         return def;
     }
 
@@ -70,10 +65,8 @@ public final class SystemPropertyUtil {
         try {
             return Long.parseLong(value);
         } catch (Exception e) {
-            // Ignore
+            // ignore
         }
-
-        log.warn("Unable to parse the long integer system property '{}':{} - using the default value: {}", key, value, def);
         return def;
     }
 

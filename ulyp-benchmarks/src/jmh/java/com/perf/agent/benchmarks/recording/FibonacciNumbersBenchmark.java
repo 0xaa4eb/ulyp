@@ -45,7 +45,8 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeAndRecord() {
@@ -54,10 +55,11 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeAndRecordSync(Counters counters) {

@@ -2,7 +2,6 @@ package com.ulyp.agent;
 
 import javax.annotation.Nullable;
 
-import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.RecordingMetadata;
 
 import lombok.Getter;
@@ -11,15 +10,21 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
-@Setter
 public class RecordingState {
 
-    private int recordingId;
-    private boolean enabled;
+    public static final int ROOT_CALL_RECORDING_ID = 1;
+
+    @Getter
+    private int recordingId = -1;
     @Nullable
     private RecordingMetadata recordingMetadata;
-    @Nullable
-    private CallRecordBuffer callRecordBuffer;
+    private int callId = ROOT_CALL_RECORDING_ID;
+    @Setter
+    private boolean enabled;
+
+    public int nextCallId() {
+        return callId++;
+    }
 
     public void setRecordingMetadata(@Nullable RecordingMetadata recordingMetadata) {
         if (recordingMetadata != null) {
@@ -27,7 +32,8 @@ public class RecordingState {
             this.recordingId = recordingMetadata.getId();
         } else {
             this.recordingMetadata = null;
-            this.recordingId = 0;
+            this.recordingId = -1;
         }
+        this.callId = ROOT_CALL_RECORDING_ID;
     }
 }

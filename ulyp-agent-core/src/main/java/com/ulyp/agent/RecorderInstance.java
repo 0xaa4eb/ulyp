@@ -5,11 +5,5 @@ package com.ulyp.agent;
  */
 public class RecorderInstance {
 
-    public static final Recorder instance = new Recorder(
-            AgentContext.getInstance().getTypeResolver(),
-            AgentContext.getInstance().getMethodRepository(),
-            AgentContext.getInstance().getStartRecordingPolicy(),
-            AgentContext.getInstance().getStorageWriter(),
-            AgentContext.getInstance().getMetrics()
-    );
+    public static final Recorder instance = AgentContext.getCtx().getRecorder();
 }

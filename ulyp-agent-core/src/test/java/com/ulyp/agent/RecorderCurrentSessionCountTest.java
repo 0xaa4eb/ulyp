@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -16,6 +17,7 @@ import org.slf4j.spi.LocationAwareLogger;
 
 import com.ulyp.agent.log.SimpleLoggerFactory;
 import com.ulyp.agent.policy.EnabledRecordingPolicy;
+import com.ulyp.agent.queue.RecordingQueue;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
@@ -38,7 +40,8 @@ public class RecorderCurrentSessionCountTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
-    private final Recorder recorder = new Recorder(typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingDataWriter, new NullMetrics());
+    private final RecordingQueue recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
+    private final Recorder recorder = new Recorder(methodRepository, new EnabledRecordingPolicy(), recordingQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -49,10 +52,13 @@ public class RecorderCurrentSessionCountTest {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
         methodIdx = methodRepository.putAndGetId(method);
         executor = Executors.newFixedThreadPool(THREADS);
+        recordingQueue.start();
     }
 
     @After
     public void tearDown() throws InterruptedException {
+        recordingQueue.close();
+
         ((SimpleLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory()).setCurrentLogLevel(LocationAwareLogger.INFO_INT);
 
         executor.shutdownNow();
@@ -96,6 +102,7 @@ public class RecorderCurrentSessionCountTest {
             fut.get(1, TimeUnit.MINUTES);
         }
 
+        recordingQueue.sync(Duration.ofMinutes(3));
         Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }

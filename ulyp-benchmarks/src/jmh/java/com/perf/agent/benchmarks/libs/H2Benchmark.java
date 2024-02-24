@@ -82,8 +82,8 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"},
-            value = BenchmarkConstants.FORKS)
+            "-Dulyp.collections=JAVA"
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void insertRecord() {
         insertRow();
@@ -95,8 +95,8 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"},
-            value = BenchmarkConstants.FORKS)
+            "-Dulyp.collections=JAVA"
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void insertRecordSync(Counters counters) {
         execRecordAndSync(counters, this::insertRow);

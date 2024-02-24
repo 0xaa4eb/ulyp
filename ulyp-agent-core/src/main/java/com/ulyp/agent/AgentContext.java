@@ -2,10 +2,12 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.bootstrap.RecordingDataWriterFactory;
 import com.ulyp.agent.policy.*;
+import com.ulyp.agent.queue.RecordingQueue;
 import com.ulyp.agent.util.MetricDumper;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.TypeResolver;
+
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.metrics.MetricsImpl;
 import com.ulyp.core.metrics.NullMetrics;
@@ -20,16 +22,24 @@ import java.util.regex.Pattern;
 
 public class AgentContext {
 
-    private static volatile AgentContext instance;
-
+    @Getter
+    private static volatile AgentContext ctx;
     private static volatile boolean agentLoaded = false;
 
+    @Getter
     private final Settings settings;
     private final OverridableRecordingPolicy startRecordingPolicy;
     private final RecordingDataWriter recordingDataWriter;
+    @Getter
     private final ProcessMetadata processMetadata;
+    @Getter
     private final TypeResolver typeResolver;
+    @Getter
     private final MethodRepository methodRepository;
+    @Getter
+    private final RecordingQueue recordingQueue;
+    @Getter
+    private final Recorder recorder;
     @Nullable
     private final AutoCloseable apiServer;
     @Getter
@@ -54,13 +64,9 @@ public class AgentContext {
                 .pid(System.currentTimeMillis())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
+        this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
+        this.recorder = new Recorder(methodRepository, startRecordingPolicy, recordingQueue, metrics);
 
-        if (!settings.isAgentDisabled()) {
-            this.recordingDataWriter.write(processMetadata);
-
-            Thread shutdown = new Thread(recordingDataWriter::close);
-            Runtime.getRuntime().addShutdownHook(shutdown);
-        }
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
                     startRecordingPolicy::setRecordingCanStart,
@@ -78,7 +84,7 @@ public class AgentContext {
     private static OverridableRecordingPolicy initializePolicy(Settings settings) {
         String value = settings.getStartRecordingPolicyPropertyValue();
 
-        // TODO move string checks to policy implementations
+        // TODO move string checks to policy factory
         StartRecordingPolicy policy;
         if (value == null || value.isEmpty()) {
             policy = new EnabledRecordingPolicy();
@@ -100,28 +106,22 @@ public class AgentContext {
     }
 
     public static void init() {
-        instance = new AgentContext();
+        ctx = new AgentContext();
+
+        if (ctx.getSettings().isAgentEnabled()) {
+            ctx.getStorageWriter().write(ctx.getProcessMetadata());
+
+            Thread shutdown = new Thread(new AgentShutdownHook());
+            Runtime.getRuntime().addShutdownHook(shutdown);
+
+            ctx.getRecordingQueue().start();
+        }
+
         agentLoaded = true;
-    }
-
-    public MethodRepository getMethodRepository() {
-        return methodRepository;
-    }
-
-    public TypeResolver getTypeResolver() {
-        return typeResolver;
     }
 
     public static boolean isLoaded() {
         return agentLoaded;
-    }
-
-    public StartRecordingPolicy getStartRecordingPolicy() {
-        return startRecordingPolicy;
-    }
-
-    public static AgentContext getInstance() {
-        return instance;
     }
 
     public RecordingDataWriter getStorageWriter() {

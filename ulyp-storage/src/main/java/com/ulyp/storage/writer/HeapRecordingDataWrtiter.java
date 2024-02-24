@@ -1,14 +1,14 @@
-/*
 package com.ulyp.storage.writer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ulyp.core.*;
 import com.ulyp.core.repository.InMemoryRepository;
+import com.ulyp.core.serializers.MethodSerializer;
+import com.ulyp.core.serializers.TypeSerializer;
+import com.ulyp.storage.reader.RecordedMethodCalls;
 import lombok.Getter;
 import org.jetbrains.annotations.TestOnly;
 
@@ -27,45 +27,50 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override
     public void sync(Duration duration) {
-
+        // NOP for tests
     }
 
     @Override
     public void write(ProcessMetadata processMetadata) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override
     public void write(RecordingMetadata recordingMetadata) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override
     public void write(TypeList types) throws StorageException {
-        types.forEach(type -> this.types.store(type.getId(), type));
+        types.getBytes().flip().forEach(input -> {
+            Type type = TypeSerializer.instance.deserialize(input);
+            this.types.store(type.getId(), type);
+        });
     }
 
     @Override
     public void write(MethodList methods) throws StorageException {
-        methods.forEach(this.methods::add);
+        methods.getBytes().flip().forEach(input -> this.methods.add(MethodSerializer.instance.deserialize(input)));
     }
 
     @Override
     public void write(RecordedMethodCallList callRecords) throws StorageException {
-        AddressableItemIterator<RecordedMethodCall> it = callRecords.iterator(types);
-        while (it.hasNext()) {
-            callRecords.add
-        }
-        callRecords.forEach(this.callRecords::add);
+        RecordedMethodCalls calls = new RecordedMethodCalls(callRecords.toBytes().flip());
+        calls.iterator(types).forEachRemaining(this.callRecords::add);
+    }
+
+    @Override
+    public long estimateBytesWritten() {
+        return 0;
     }
 
     @Override
     public void close() throws StorageException {
         // NOP
     }
-}*/
+}

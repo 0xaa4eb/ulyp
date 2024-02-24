@@ -41,7 +41,8 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
             "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeRecord() {
@@ -49,11 +50,12 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-        "-Dulyp.collections=JAVA",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
+            "-Dulyp.collections=JAVA",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int computeRecordSync(Counters counters) throws InterruptedException {

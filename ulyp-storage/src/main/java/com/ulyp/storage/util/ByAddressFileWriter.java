@@ -4,11 +4,9 @@ import java.io.*;
 
 public class ByAddressFileWriter implements AutoCloseable {
 
-    private final OutputStream outputStream;
     private final RandomAccessFile randomAccessFile;
 
     public ByAddressFileWriter(File file) throws IOException {
-        this.outputStream = new BufferedOutputStream(new FileOutputStream(file, false));
         this.randomAccessFile = new RandomAccessFile(file, "rw");
     }
 
@@ -18,10 +16,6 @@ public class ByAddressFileWriter implements AutoCloseable {
     }
 
     public void close() throws IOException {
-        try {
-            outputStream.close();
-        } finally {
-            randomAccessFile.close();
-        }
+        randomAccessFile.close();
     }
 }

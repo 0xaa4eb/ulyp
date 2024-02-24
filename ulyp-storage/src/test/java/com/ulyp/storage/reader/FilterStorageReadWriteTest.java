@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ulyp.core.bytes.PagedMemBinaryOutput;
+import com.ulyp.storage.util.TestMemPageAllocator;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,14 +74,14 @@ public class FilterStorageReadWriteTest {
         this.reader = new FileRecordingDataReaderBuilder(file)
             .build();
 
-        RecordedMethodCallList methodCalls1 = new RecordedMethodCallList(1);
+        RecordedMethodCallList methodCalls1 = new RecordedMethodCallList(1, new TestMemPageAllocator());
 
-        methodCalls1.addEnterMethodCall(0, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(1, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(2, method, typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(3, method, typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(0, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(1, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(2, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(3, method.getId(), typeResolver, callee, new Object[]{"ABC"});
 
-        RecordedMethodCallList methodCalls2 = new RecordedMethodCallList(1);
+        RecordedMethodCallList methodCalls2 = new RecordedMethodCallList(1, new TestMemPageAllocator());
         methodCalls2.addExitMethodCall(3, typeResolver, "BVBC");
         methodCalls2.addExitMethodCall(2, typeResolver, "XCZXC");
 

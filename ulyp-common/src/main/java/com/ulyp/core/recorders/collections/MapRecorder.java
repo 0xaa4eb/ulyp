@@ -6,11 +6,11 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BinaryOutput;
-import com.ulyp.core.recorders.bytes.Checkpoint;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.Setter;
+import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,6 +37,11 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
+    public boolean supportsAsyncRecording() {
+        return false;
+    }
+
+    @Override
     public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
@@ -59,7 +64,7 @@ public class MapRecorder extends ObjectRecorder {
     public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
         try (BinaryOutput out = nout.nest()) {
             if (active) {
-                Checkpoint checkpoint = out.checkpoint();
+                Mark mark = out.mark();
                 out.write(RECORDED_ITEMS_FLAG);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
@@ -77,15 +82,16 @@ public class MapRecorder extends ObjectRecorder {
                         recorded++;
                     }
                 } catch (Throwable throwable) {
-                    checkpoint.rollback();
+                    mark.rollback();
                     active = false; // TODO ban by id
                     writeMapIdentity(object, out, typeResolver);
+                } finally {
+                    mark.close();
                 }
             } else {
                 writeMapIdentity(object, out, typeResolver);
             }
         }
-
     }
 
     private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {

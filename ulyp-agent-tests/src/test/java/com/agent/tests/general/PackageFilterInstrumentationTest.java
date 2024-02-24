@@ -52,6 +52,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
                         .withMainClassName(A.class)
                         .withInstrumentedPackages("com.agent.tests.general.a")
                         .withExcludedFromInstrumentationPackages("com.agent.tests.general.a.b", "com.agent.tests.general.a.c")
+                        .withLogLevel("INFO")
         );
 
         assertThat(root.getMethod().getName(), is("main"));

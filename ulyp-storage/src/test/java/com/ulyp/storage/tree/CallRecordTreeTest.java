@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutionException;
 
+import com.ulyp.storage.util.TestMemPageAllocator;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -77,8 +78,8 @@ public class CallRecordTreeTest {
 
     @Test
     public void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
-        RecordedMethodCallList calls = new RecordedMethodCallList(1);
-        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
+        RecordedMethodCallList calls = new RecordedMethodCallList(1, new TestMemPageAllocator());
+        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
         calls.addExitMethodCall(0, typeResolver, "CDE");
 
         writer.write(RecordingMetadata.builder().id(1).build());
@@ -105,8 +106,8 @@ public class CallRecordTreeTest {
 
     @Test
     public void testNotFinishedRecording() throws ExecutionException, InterruptedException {
-        RecordedMethodCallList calls = new RecordedMethodCallList(1);
-        calls.addEnterMethodCall(0, method, typeResolver, obj, new Object[]{"ABC"});
+        RecordedMethodCallList calls = new RecordedMethodCallList(1, new TestMemPageAllocator());
+        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
 
         writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);

@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders.bytes;
+package com.ulyp.core.bytes;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
@@ -21,6 +21,10 @@ public class BufferBinaryInput implements BinaryInput {
 
     public BufferBinaryInput(byte[] value) {
         this.buffer = new UnsafeBuffer(value);
+    }
+
+    public BufferBinaryInput(byte[] value, int length) {
+        this.buffer = new UnsafeBuffer(value, 0, length);
     }
 
     @Override
@@ -68,6 +72,15 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
+    public BinaryInput readBytes() {
+        int length = readInt();
+        UnsafeBuffer newBuf = new UnsafeBuffer();
+        newBuf.wrap(buffer, pos, length);
+        pos += length;
+        return new BufferBinaryInput(newBuf);
+    }
+
+    @Override
     public BinaryInput readBytes(int offset, int length) {
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, offset, length);
@@ -94,11 +107,6 @@ public class BufferBinaryInput implements BinaryInput {
     @Override
     public int readIntAt(int offset) {
         return buffer.getInt(offset);
-    }
-
-    @Override
-    public void copyBytes(int bytesLength) {
-
     }
 
     @Override

@@ -13,17 +13,14 @@ import com.ulyp.core.mem.TypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Gathers all necessary recording data like types, calls, methods and passes it to the recording data storage layer.
- * It also tracks what methods and types have already been written to the underlying storage by maintaining watermarks.
- * Sadly, moving that logic to storage level is not feasible right now
- */
 @Slf4j
 public class AgentDataWriter {
 
     private final RecordingDataWriter recordingDataWriter;
+    @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);

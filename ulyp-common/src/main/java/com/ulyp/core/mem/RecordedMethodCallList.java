@@ -1,10 +1,9 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
-import org.agrona.ExpandableDirectByteBuffer;
 import org.jetbrains.annotations.TestOnly;
 
 /**
@@ -15,17 +14,17 @@ public class RecordedMethodCallList {
     public static final byte ENTER_METHOD_CALL_ID = 1;
     public static final int WIRE_ID = 2;
 
-    private final BinaryList.Out out;
+    private final OutputBinaryList out;
 
     @TestOnly
-    public RecordedMethodCallList(int recordingId, BinaryList.Out writeBinaryList) {
+    public RecordedMethodCallList(int recordingId, OutputBinaryList writeBinaryList) {
         this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
     }
 
-    public RecordedMethodCallList(int recordingId) {
-        this.out = new BinaryList.Out(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+    public RecordedMethodCallList(int recordingId, MemPageAllocator pageAllocator) {
+        this.out = new OutputBinaryList(WIRE_ID, new PagedMemBinaryOutput(pageAllocator));
 
         out.add(out -> out.write(recordingId));
     }
@@ -38,24 +37,24 @@ public class RecordedMethodCallList {
         addExitMethodCall(callId, typeResolver, false, returnValue, nanoTime);
     }
 
-    public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject) {
-        addExitMethodCall(callId, typeResolver, true, throwObject, -1L);
-    }
-
     public void addExitMethodThrow(int callId, TypeResolver typeResolver, Object throwObject, long nanoTime) {
         addExitMethodCall(callId, typeResolver, true, throwObject, nanoTime);
     }
 
     private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
-        out.add(out -> RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(out, callId, typeResolver, thrown, returnValue, nanoTime));
+        OutputBinaryList.Writer writer = out.writer();
+        RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(writer, callId, typeResolver, thrown, returnValue, nanoTime);
+        writer.commit();
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args) {
-        addEnterMethodCall(callId, method, typeResolver, callee, args, -1L);
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
+        addEnterMethodCall(callId, methodId, typeResolver, callee, args, -1L);
     }
 
-    public void addEnterMethodCall(int callId, Method method, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
-        out.add(out -> RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(out, callId, method, typeResolver, callee, args, nanoTime));
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+        OutputBinaryList.Writer writer = out.writer();
+        RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, callId, methodId, typeResolver, callee, args, nanoTime);
+        writer.commit();
     }
 
     public boolean isEmpty() {
@@ -70,7 +69,7 @@ public class RecordedMethodCallList {
         return out.bytesWritten();
     }
 
-    public BinaryList.Out toBytes() {
+    public OutputBinaryList toBytes() {
         return out;
     }
 }

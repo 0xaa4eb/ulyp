@@ -1,22 +1,63 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.recorders.bytes.BinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.*;
 import org.agrona.concurrent.UnsafeBuffer;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 public class BinaryListTest {
 
-    private final byte[] buffer = new byte[8 * 1024];
+    private MemPageAllocator allocator() {
+        return new MemPageAllocator() {
+
+            @Override
+            public MemPage allocate() {
+                return new MemPage(0, new UnsafeBuffer(new byte[PageConstants.PAGE_SIZE]));
+            }
+
+            @Override
+            public void deallocate(MemPage page) {
+
+            }
+        };
+    }
 
     @Test
-    public void testByAddressAccess() {
+    public void testBasicSize() {
+        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
-        BinaryList.Out bytesOut = new BinaryList.Out(5, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList.Writer writer = out.writer();
+        writer.write("AVBACAS");
+        writer.commit();
+
+        InputBinaryList inputList = out.flip();
+
+        Assert.assertEquals(1, inputList.size());
+    }
+
+    @Test
+    public void testWriteByUsingWriter() {
+        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
+
+        OutputBinaryList.Writer writer = out.writer();
+        writer.write("AVBACAS");
+        writer.commit();
+
+        InputBinaryList inputList = out.flip();
+
+        BinaryInput in = inputList.iterator().next();
+        Assert.assertEquals("AVBACAS", in.readString());
+    }
+
+    @Test
+    public void testByAddressAccess() throws IOException {
+        OutputBinaryList bytesOut = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
         bytesOut.add(out -> {
             out.write(true);
@@ -31,18 +72,19 @@ public class BinaryListTest {
             out.write(1233434734L);
         });
 
-        BinaryList.In bytesIn = new BinaryList.In(new BufferBinaryInput(buffer));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bytesOut.writeTo(new BufferedOutputStream(outputStream));
+        byte[] byteArray = outputStream.toByteArray();
+        InputBinaryList inputList = bytesOut.flip();
 
-        AddressableItemIterator<BinaryInput> it = bytesIn.iterator();
+        AddressableItemIterator<BinaryInput> it = inputList.iterator();
 
-        BinaryInput next = it.next();
-        long address1 = it.address();
-        System.out.println(address1);
+        it.next();
 
-        BinaryInput next1 = it.next();
+        it.next();
         long address2 = it.address();
 
-        UnsafeBuffer unsafeBuffer = new UnsafeBuffer(buffer, (int) address2, 12);
+        UnsafeBuffer unsafeBuffer = new UnsafeBuffer(byteArray, (int) address2, 12);
         BufferBinaryInput in = new BufferBinaryInput(unsafeBuffer);
 
         assertFalse(in.readBoolean());
@@ -51,24 +93,24 @@ public class BinaryListTest {
 
     @Test
     public void testSimpleReadWrite() {
-        BinaryList.Out write = new BinaryList.Out(5435, new BufferBinaryOutput(new UnsafeBuffer(buffer)));
+        OutputBinaryList bytesOut = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(allocator()));
 
-        write.add(out -> {
+        bytesOut.add(out -> {
             out.write('A');
         });
-        write.add(out -> {
+        bytesOut.add(out -> {
             out.write('B');
             out.write('C');
         });
-        write.add(out -> {
+        bytesOut.add(out -> {
             out.write('D');
         });
 
-        BinaryList.In read = new BinaryList.In(new BufferBinaryInput(new UnsafeBuffer(buffer)));
+        InputBinaryList inputList = bytesOut.flip();
 
-        assertEquals(3, read.size());
+        assertEquals(3, inputList.size());
 
-        AddressableItemIterator<BinaryInput> iterator = read.iterator();
+        AddressableItemIterator<BinaryInput> iterator = inputList.iterator();
 
         assertTrue(iterator.hasNext());
 
@@ -76,20 +118,20 @@ public class BinaryListTest {
         assertEquals(2, next.available());
         assertEquals('A', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 4, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 4, iterator.address());
 
         next = iterator.next();
         assertEquals(4, next.available());
         assertEquals('B', next.readChar());
         assertEquals('C', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 10, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 10, iterator.address());
 
         next = iterator.next();
         assertEquals(2, next.available());
         assertEquals('D', next.readChar());
 
-        assertEquals(BinaryList.HEADER_LENGTH + 18, iterator.address());
+        assertEquals(OutputBinaryList.HEADER_LENGTH + 18, iterator.address());
 
         assertFalse(iterator.hasNext());
     }

@@ -48,8 +48,8 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc",
-            "-Dulyp.constructors"},
-            value = BenchmarkConstants.FORKS)
+            "-Dulyp.constructors"
+    }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void sendMsgInstrumented() {
         sendMsg();

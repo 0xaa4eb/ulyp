@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class Settings {
 
+    public static final boolean TIMESTAMPS_ENABLED;
+
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
     public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
@@ -41,7 +43,6 @@ public class Settings {
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
     public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
-    public static final boolean TIMESTAMPS_ENABLED;
 
     static {
         // make 'static final'. bytecode will be thrown off if the feature is disabled
@@ -64,7 +65,7 @@ public class Settings {
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
-    private final boolean agentDisabled;
+    private final boolean agentEnabled;
     @Getter
     private final boolean timestampsEnabled;
     @Getter
@@ -84,7 +85,7 @@ public class Settings {
             String startRecordingPolicyPropertyValue,
             List<TypeMatcher> excludeFromInstrumentationClasses,
             String bindNetworkAddress,
-            boolean agentDisabled,
+            boolean agentEnabled,
             boolean timestampsEnabled,
             boolean metricsEnabled) {
         this.recordingDataFilePath = recordingDataFilePath;
@@ -100,7 +101,7 @@ public class Settings {
         this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
         this.bindNetworkAddress = bindNetworkAddress;
-        this.agentDisabled = agentDisabled;
+        this.agentEnabled = agentEnabled;
         this.timestampsEnabled = timestampsEnabled;
         this.metricsEnabled = metricsEnabled;
     }
@@ -147,7 +148,7 @@ public class Settings {
         }
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
 
-        boolean agentDisabled = System.getProperty(AGENT_DISABLED_PROPERTY) != null;
+        boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
         boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;
 
         Set<TypeMatcher> typesToPrint =
@@ -170,7 +171,7 @@ public class Settings {
                 startRecordingPolicy,
                 excludeClassesFromInstrumentation,
                 bindNetworkAddress,
-                agentDisabled,
+                agentEnabled,
                 timestampsEnabled,
                 metricsEnabled
         );
@@ -227,8 +228,8 @@ public class Settings {
         return excludeFromInstrumentationClasses;
     }
 
-    public boolean isAgentDisabled() {
-        return agentDisabled;
+    public boolean isAgentEnabled() {
+        return agentEnabled;
     }
 
     @Override

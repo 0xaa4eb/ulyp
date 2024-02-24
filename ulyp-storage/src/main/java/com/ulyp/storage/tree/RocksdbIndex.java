@@ -1,7 +1,7 @@
 package com.ulyp.storage.tree;
 
-import com.ulyp.core.recorders.bytes.BufferBinaryInput;
-import com.ulyp.core.recorders.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.storage.StorageException;
 import com.ulyp.core.util.BitUtil;
 import org.agrona.ExpandableDirectByteBuffer;
@@ -61,7 +61,7 @@ public class RocksdbIndex implements Index {
         byte[] keyBytes = keyBuffer.get();
         BitUtil.longToBytes(id, keyBytes, 0);
 
-        int bytesWritten = binaryOutput.currentOffset();
+        int bytesWritten = binaryOutput.position();
         byte[] valueBytes = getValueBuffer(bytesWritten);
         buffer.getBytes(0, valueBytes);
         try {
