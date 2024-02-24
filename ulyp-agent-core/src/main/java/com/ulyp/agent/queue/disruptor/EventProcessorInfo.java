@@ -48,9 +48,6 @@ class EventProcessorInfo<T> implements ConsumerInfo {
         eventprocessor.halt();
     }
 
-    /**
-     *
-     */
     @Override
     public void markAsUsedInBarrier() {
         endOfChain = false;

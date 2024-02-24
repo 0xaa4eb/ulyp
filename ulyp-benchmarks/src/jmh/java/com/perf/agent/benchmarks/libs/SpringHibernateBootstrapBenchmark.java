@@ -62,10 +62,10 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.asdasd",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void boostrapInstrumented() {
         runTest();
@@ -74,10 +74,10 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void boostrapRecord() {
         runTest();
@@ -86,10 +86,10 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         BenchmarkConstants.AGENT_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.SpringHibernateBenchmark.runTest",
+        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void boostrapRecordSync(Counters counters) {
         execRecordAndSync(counters, this::runTest);

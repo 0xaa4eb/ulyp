@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @State(Scope.Benchmark)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class NumbersRecordingBenchmark extends RecordingBenchmark {
 
@@ -42,7 +42,8 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
             "-Dulyp.metrics",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -55,7 +56,8 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
         "-Dulyp.metrics",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+        "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public long computeRecordSync(Counters counters) {

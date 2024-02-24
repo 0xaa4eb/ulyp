@@ -1,17 +1,20 @@
 package com.ulyp.core.bytes;
 
+import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.DirectBuffer;
 
 import java.io.IOException;
 
 public class BufferedOutputStream implements OutputStream {
 
+    private static final int TMP_BUF_SIZE = SystemPropertyUtil.getInt("ulyp.storage.buffered-output-stream.size", 4 * 1024);
+
     private final java.io.OutputStream sink;
     private final byte[] buf;
 
     public BufferedOutputStream(java.io.OutputStream sink) {
         this.sink = sink;
-        this.buf = new byte[1024 * 4]; // TODO configurable
+        this.buf = new byte[TMP_BUF_SIZE];
     }
 
     @Override

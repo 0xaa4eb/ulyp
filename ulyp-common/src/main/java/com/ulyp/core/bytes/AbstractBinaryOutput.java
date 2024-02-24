@@ -8,8 +8,6 @@ import com.ulyp.core.recorders.RecorderChooser;
 
 import java.nio.charset.StandardCharsets;
 import com.ulyp.core.util.SystemPropertyUtil;
-import org.agrona.MutableDirectBuffer;
-
 
 public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutput {
 
@@ -50,7 +48,15 @@ public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutpu
             ObjectRecorder recorder;
             if (object != null) {
                 // Simply stop recursively write objects if it's too deep
-                recorder = recursionDepth() <= MAXIMUM_RECURSION_DEPTH ? (itemType.getRecorderHint() != null ? itemType.getRecorderHint() : RecorderChooser.getInstance().chooseForType(object.getClass())) : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+                if (recursionDepth() <= MAXIMUM_RECURSION_DEPTH) {
+                    recorder = itemType.getRecorderHint();
+                    if (recorder == null) {
+                        recorder = RecorderChooser.getInstance().chooseForType(object.getClass());
+                        itemType.setRecorderHint(recorder);
+                    }
+                } else {
+                    recorder = ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+                }
             } else {
                 recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
             }

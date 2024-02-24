@@ -84,7 +84,7 @@ public class RecordedMethodCallListTest {
             @Override
             public MemPage allocate() {
                 System.out.println("allocated a new page");
-                return new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+                return new MemPage(0, new UnsafeBuffer(new byte[PageConstants.PAGE_SIZE]));
             }
 
             @Override

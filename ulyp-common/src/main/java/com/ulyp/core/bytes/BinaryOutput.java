@@ -9,7 +9,12 @@ import org.jetbrains.annotations.TestOnly;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public interface BinaryOutput extends AutoCloseable {
+/**
+ * Common interface for byte containers. This is pretty similar to {@link java.io.OutputStream}, but provides additional
+ * methods for writing objects with help of recorders, primitive data, arrays etc. It also allows nesting one output into another with recursion
+ * depth tracking (it actually uses same output under the hood) and write position rollback
+ */
+public interface BinaryOutput extends AutoCloseable, Borrowable {
 
     int recursionDepth();
 
@@ -40,11 +45,6 @@ public interface BinaryOutput extends AutoCloseable {
     void write(Object object, TypeResolver typeResolver) throws Exception;
 
     void write(char val);
-
-    /**
-     * Returns borrowed memory to the pool for further use
-     */
-    void dispose();
 
     /**
      * Closing is only used for decrementing recursion depth, use {@link BinaryOutput#dispose()} to free the memory

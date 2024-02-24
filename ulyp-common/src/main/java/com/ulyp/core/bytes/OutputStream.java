@@ -1,7 +1,5 @@
 package com.ulyp.core.bytes;
 
-import com.ulyp.core.bytes.BinaryOutputSink;
-
 import java.io.IOException;
 
 /**

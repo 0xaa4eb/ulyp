@@ -1,4 +1,3 @@
-/*
 package com.ulyp.agent;
 
 import java.time.Duration;
@@ -7,19 +6,20 @@ import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import com.ulyp.agent.queue.RecordingQueue;
+import com.ulyp.core.metrics.NullMetrics;
+import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.ulyp.agent.policy.EnabledRecordingPolicy;
-import com.ulyp.agent.queue.CallRecordQueue;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
-import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,12 +35,13 @@ public class RecorderTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final HeapRecordingDataWrtiter storage = new HeapRecordingDataWrtiter();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final CallRecordQueue callRecordQueue = new CallRecordQueue(typeResolver, new RecordDataWriter(storage, methodRepository));
+    private final RecordingQueue callRecordQueue = new RecordingQueue(typeResolver, new AgentDataWriter(storage, methodRepository), new NullMetrics());
     private final Recorder recorder = new Recorder(
-        typeResolver,
-        methodRepository,
-        new EnabledRecordingPolicy(),
-        callRecordQueue);
+            typeResolver,
+            methodRepository,
+            new EnabledRecordingPolicy(),
+            callRecordQueue,
+            new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -104,4 +105,4 @@ public class RecorderTest {
 
         assertNull(recorder.getRecordingState());
     }
-}*/
+}

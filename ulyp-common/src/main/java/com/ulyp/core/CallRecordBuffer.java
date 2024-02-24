@@ -18,50 +18,30 @@ public class CallRecordBuffer {
     @Getter
     private final RecordedMethodCallList recordedCalls;
     private final int recordingId;
-    private final int rootCallId;
     private final MemPageAllocator pageAllocator;
-
     private int lastExitCallId = -1;
-    private int nextCallId;
 
     public CallRecordBuffer(int recordingId, MemPageAllocator pageAllocator) {
         this.pageAllocator = pageAllocator;
         this.recordingId = recordingId;
-        this.nextCallId = 1;
-        this.rootCallId = 1;
-        this.recordedCalls = new RecordedMethodCallList(recordingId, pageAllocator);
-    }
-
-    private CallRecordBuffer(int recordingId, int nextCallId, int rootCallId, MemPageAllocator pageAllocator) {
-        this.pageAllocator = pageAllocator;
-        this.recordingId = recordingId;
-        this.nextCallId = nextCallId;
-        this.rootCallId = rootCallId;
         this.recordedCalls = new RecordedMethodCallList(recordingId, pageAllocator);
     }
 
     public CallRecordBuffer cloneWithoutData() {
-        return new CallRecordBuffer(this.recordingId, this.nextCallId, rootCallId, pageAllocator);
+        return new CallRecordBuffer(this.recordingId, pageAllocator);
     }
 
     public long estimateBytesSize() {
         return recordedCalls.bytesWritten();
     }
 
-    public int recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+    public void recordMethodEnter(int callId, TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         try {
-            int callId = nextCallId++;
             recordedCalls.addEnterMethodCall(callId, methodId, typeResolver, callee, args, nanoTime);
-            return callId;
         } catch (Throwable err) {
             // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted
             log.error("Error while recording", err);
-            return -1;
         }
-    }
-
-    public void recordMethodExit(TypeResolver typeResolver, Object returnValue, Throwable thrown, int callId) {
-        recordMethodExit(typeResolver, returnValue, thrown, callId, -1L);
     }
 
     public void recordMethodExit(TypeResolver typeResolver, Object returnValue, Throwable thrown, int callId, long nanoTime) {
@@ -76,15 +56,7 @@ public class CallRecordBuffer {
     }
 
     public boolean isComplete() {
-        return lastExitCallId == rootCallId;
-    }
-
-    public long getTotalRecordedEnterCalls() {
-        return (long) nextCallId - rootCallId;
-    }
-
-    public int getRecordedCallsSize() {
-        return recordedCalls.size();
+        return lastExitCallId == 1;
     }
 
     @Override

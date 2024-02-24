@@ -60,7 +60,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
         }
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(value = 3)
     @Benchmark
     public void baseline() {
         runTest();
@@ -69,9 +69,9 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQZxcxckzxc.kdusdhfe",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void instrumentOnly() {
         runTest();
@@ -80,20 +80,20 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.runTest",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQBootstrapBenchmark.runTest",
             "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    }, value = 3)
     @Benchmark
     public void instrumentAndRecord() {
         runTest();
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.runTest",
-        "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.ActiveMQBootstrapBenchmark.runTest",
+            "-Dulyp.constructors"
+    }, value = 3, jvmArgsAppend = {"-Dulyp.constructors", "-Dulyp.collections=JAVA"})
     @Benchmark
     public void instrumentAndRecordSync(Counters counters) {
         execRecordAndSync(counters, this::runTest);

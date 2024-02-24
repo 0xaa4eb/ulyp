@@ -1,6 +1,6 @@
 package com.ulyp.core.bytes;
 
-import com.ulyp.core.mem.MemPool;
+import com.ulyp.core.mem.PageConstants;
 import com.ulyp.core.mem.MemPage;
 import com.ulyp.core.mem.MemPageAllocator;
 import org.agrona.DirectBuffer;
@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Growable binary output which requests page by page from the specified allocator. When container grows a new page is
+ * requested and no copying happens
+ */
 public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
@@ -80,7 +84,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     }
 
     private MemPage pageAt(int pos) {
-        int pageIndex = pos >> MemPool.PAGE_BITS;
+        int pageIndex = pos >> PageConstants.PAGE_BITS;
         if (pageIndex < pages.size()) {
             return pages.get(pageIndex);
         }
@@ -94,7 +98,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     }
 
     private int currentPageRemainingBytes() {
-        return MemPool.PAGE_SIZE - (position & MemPool.PAGE_BYTE_SIZE_MASK);
+        return PageConstants.PAGE_SIZE - (position & PageConstants.PAGE_BYTE_SIZE_MASK);
     }
 
     private void ensureAllocated() {
@@ -111,13 +115,13 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
         if (Integer.BYTES <= remainingBytes) {
             UnsafeBuffer buffer = page.getBuffer();
-            buffer.putInt(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            buffer.putInt(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         } else {
             page.setUnused(remainingBytes);
             position += remainingBytes;
             ensureAllocated();
             page = currentPage();
-            page.getBuffer().putInt(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            page.getBuffer().putInt(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         }
         addWrittenBytes(Integer.BYTES);
     }
@@ -128,13 +132,13 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
         if (Long.BYTES <= remainingBytes) {
             UnsafeBuffer buffer = page.getBuffer();
-            buffer.putLong(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            buffer.putLong(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         } else {
             page.setUnused(remainingBytes);
             position += remainingBytes;
             ensureAllocated();
             page = currentPage();
-            page.getBuffer().putLong(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            page.getBuffer().putLong(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         }
         addWrittenBytes(Long.BYTES);
     }
@@ -146,7 +150,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     public void write(byte value) {
         MemPage page = currentPage();
         UnsafeBuffer buffer = page.getBuffer();
-        buffer.putByte(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+        buffer.putByte(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         addWrittenBytes(Byte.BYTES);
     }
 
@@ -157,13 +161,13 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
         if (Character.BYTES <= remainingBytes) {
             UnsafeBuffer buffer = page.getBuffer();
-            buffer.putChar(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            buffer.putChar(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         } else {
             page.setUnused(remainingBytes);
             position += remainingBytes;
             ensureAllocated();
             page = currentPage();
-            page.getBuffer().putChar(position & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            page.getBuffer().putChar(position & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         }
         addWrittenBytes(Character.BYTES);
     }
@@ -182,7 +186,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
             MemPage page = currentPage();
             int remainingBytes = currentPageRemainingBytes();
             int bytesWritten = Math.min(remainingBytes, bytesLength);
-            page.getBuffer().putBytes(position & MemPool.PAGE_BYTE_SIZE_MASK, buffer, offset, bytesWritten);
+            page.getBuffer().putBytes(position & PageConstants.PAGE_BYTE_SIZE_MASK, buffer, offset, bytesWritten);
             offset += bytesWritten;
             bytesLength -= bytesWritten;
             addWrittenBytes(bytesWritten);
@@ -197,7 +201,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
             MemPage page = currentPage();
             int remainingBytes = currentPageRemainingBytes();
             int bytesWritten = Math.min(remainingBytes, bytesLength);
-            page.getBuffer().putBytes(position & MemPool.PAGE_BYTE_SIZE_MASK, value, offset, bytesWritten);
+            page.getBuffer().putBytes(position & PageConstants.PAGE_BYTE_SIZE_MASK, value, offset, bytesWritten);
             offset += bytesWritten;
             bytesLength -= bytesWritten;
             addWrittenBytes(bytesWritten);
@@ -207,16 +211,16 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     @Override
     public int writeTo(BinaryOutputSink sink) throws IOException {
         int totalBytesWritten = 0;
-        int lastTouchedPage = position >> MemPool.PAGE_BITS;
+        int lastTouchedPage = position >> PageConstants.PAGE_BITS;
         for (int i = 0; i < lastTouchedPage; i++) {
             MemPage memPage = pages.get(i);
-            int bytesToWrite = MemPool.PAGE_SIZE - memPage.getUnused();
+            int bytesToWrite = PageConstants.PAGE_SIZE - memPage.getUnused();
             sink.write(memPage.getBuffer(), bytesToWrite);
             totalBytesWritten += bytesToWrite;
         }
         if (lastTouchedPage < pages.size()) {
             MemPage lastPage = pages.get(lastTouchedPage);
-            int bytesToWrite = position & MemPool.PAGE_BYTE_SIZE_MASK;
+            int bytesToWrite = position & PageConstants.PAGE_BYTE_SIZE_MASK;
             sink.write(lastPage.getBuffer(), bytesToWrite);
             totalBytesWritten += bytesToWrite;
         }
@@ -226,14 +230,14 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     @Override
     public void writeAt(int offset, int value) {
         MemPage page = pageAt(offset);
-        int posWithinPage = offset & MemPool.PAGE_BYTE_SIZE_MASK;
-        int remBytesPage = MemPool.PAGE_SIZE - posWithinPage;
+        int posWithinPage = offset & PageConstants.PAGE_BYTE_SIZE_MASK;
+        int remBytesPage = PageConstants.PAGE_SIZE - posWithinPage;
         if (remBytesPage >= Integer.BYTES) {
             page.getBuffer().putInt(posWithinPage, value);
         } else {
             offset += remBytesPage;
             page = pageAt(offset);
-            page.getBuffer().putInt(offset & MemPool.PAGE_BYTE_SIZE_MASK, value);
+            page.getBuffer().putInt(offset & PageConstants.PAGE_BYTE_SIZE_MASK, value);
         }
     }
 

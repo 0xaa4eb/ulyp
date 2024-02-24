@@ -28,7 +28,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
-    private final Map<Integer, RecordingEventHandler> recordingQueueProcessors = new HashMap<>();
+    private final Map<Integer, RecordingEventProcessor> recordingQueueProcessors = new HashMap<>();
     private final AtomicInteger running = new AtomicInteger(IDLE);
     private final DataProvider<EventHolder> dataProvider;
     private final SequenceBarrier sequenceBarrier;
@@ -100,25 +100,25 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                     if (event instanceof EnterRecordQueueEvent) {
                         // TODO possible inline recording id and event type in item holder
                         EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
-                        RecordingEventHandler processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
+                        RecordingEventProcessor processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
                         if (recordingIds.add(enterRecord.getRecordingId())) {
                             processor.onEventBatchStart();
                         }
                         processor.onEnterCallRecord(enterRecord);
                     } else if (event instanceof ExitRecordQueueEvent) {
                         ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
-                        RecordingEventHandler processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
+                        RecordingEventProcessor processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
                         if (recordingIds.add(exitRecord.getRecordingId())) {
                             processor.onEventBatchStart();
                         }
                         processor.onExitCallRecord(exitRecord);
                     } else {
                         RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
-                        RecordingEventHandler processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
+                        RecordingEventProcessor processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
                         if (processor == null) {
                             recordingQueueProcessors.put(
                                 updateRecordingMetadataItem.getRecordingMetadata().getId(),
-                                processor = new RecordingEventHandler(typeResolver, agentDataWriter)
+                                processor = new RecordingEventProcessor(typeResolver, agentDataWriter)
                             );
                         }
                         processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);
@@ -130,7 +130,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                     if (nextSequence == availableSequence) {
                         // handle batch end
                         for (Integer recordingId : recordingIds) {
-                            RecordingEventHandler handler = recordingQueueProcessors.get(recordingId);
+                            RecordingEventProcessor handler = recordingQueueProcessors.get(recordingId);
                             handler.onEventBatchEnd();
                             if (handler.isComplete()) {
                                 recordingQueueProcessors.remove(recordingId);

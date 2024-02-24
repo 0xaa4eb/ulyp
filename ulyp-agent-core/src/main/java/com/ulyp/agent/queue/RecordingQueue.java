@@ -17,7 +17,8 @@ import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBinaryOutput;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.ObjectPool;
+import com.ulyp.core.util.SmallObjectPool;
+import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,10 +30,22 @@ import com.ulyp.core.util.NamedThreadFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Main entry point for recorded calls. For most of the objects only their identity is recorded (identity hash code and type id).
+ * Other objects like strings and numbers are immutable, so we can only pass a reference to object and
+ * avoid serialization/recording. The state of object is then recorded to bytes in the background. For objects like collections
+ * we must record in the caller thread and pass a buffer.
+ *
+ * Currently, it has fixed capacity which should be addressed in near future
+ */
 @Slf4j
 public class RecordingQueue implements AutoCloseable {
 
-    private final ObjectPool<byte[]> bufferPool;
+    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 1024 * 1024);
+    private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.size", 16 * 1024);
+    private static final int TMP_BUFFER_ENTRIES = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.entries", 8);
+
+    private final SmallObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -40,12 +53,12 @@ public class RecordingQueue implements AutoCloseable {
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
-        this.bufferPool = new ObjectPool<>(8, () -> new byte[16 * 1024]); // TODO configurable
+        this.bufferPool = new SmallObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
         this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
-                1024 * 1024, // TODO configurable
+                RECORDING_QUEUE_SIZE,
                 new QueueEventHandlerThreadFactory(),
-                new SleepingWaitStrategy(),
+                new SleepingWaitStrategy(3, TimeUnit.MILLISECONDS.toNanos(1)),
                 metrics
         );
         this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
@@ -135,7 +148,7 @@ public class RecordingQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            try (ObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
+            try (SmallObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
                 BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @Warmup(iterations = 20)
-@Measurement(iterations = 60)
+@Measurement(iterations = 30)
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class StringsRecordingBenchmark extends RecordingBenchmark {
@@ -41,7 +41,8 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             BenchmarkConstants.AGENT_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String computeRecord() {
@@ -49,10 +50,11 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
+            BenchmarkConstants.AGENT_PROP,
+            "-Dulyp.file=/tmp/test.dat",
+            "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
+            "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String computeRecordSync(Counters counters) {

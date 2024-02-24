@@ -3,7 +3,7 @@ package com.ulyp.core.recorders.bytes;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.bytes.BinaryOutput;
 import com.ulyp.core.bytes.PagedMemBinaryOutput;
-import com.ulyp.core.mem.MemPool;
+import com.ulyp.core.mem.PageConstants;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class PagedMemBinaryOutputTest {
             List<Object> written = new ArrayList<>();
             BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
-            while (out.position() < MemPool.PAGE_SIZE * 30) {
+            while (out.position() < PageConstants.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(5);
                 if (rnd == 0) {
                     char value = (char) ('A' + ThreadLocalRandom.current().nextInt(25));
@@ -71,7 +71,7 @@ public class PagedMemBinaryOutputTest {
             List<Object> written = new ArrayList<>();
             BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
-            while (out.position() < MemPool.PAGE_SIZE * 30) {
+            while (out.position() < PageConstants.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(8);
                 if (rnd == 0) {
                     char value = (char) ('A' + ThreadLocalRandom.current().nextInt(25));
@@ -143,12 +143,12 @@ public class PagedMemBinaryOutputTest {
         testWriteManyInts(100);
         testWriteManyInts(512);
         testWriteManyInts(1024);
-        testWriteManyInts(MemPool.PAGE_SIZE / Integer.BYTES);
-        testWriteManyInts(MemPool.PAGE_SIZE / Integer.BYTES + 1);
-        testWriteManyInts(2 * MemPool.PAGE_SIZE / Integer.BYTES);
-        testWriteManyInts(MemPool.PAGE_SIZE / Integer.BYTES + 500);
-        testWriteManyInts(10 * MemPool.PAGE_SIZE / Integer.BYTES);
-        testWriteManyInts(10 * MemPool.PAGE_SIZE / Integer.BYTES + 3);
+        testWriteManyInts(PageConstants.PAGE_SIZE / Integer.BYTES);
+        testWriteManyInts(PageConstants.PAGE_SIZE / Integer.BYTES + 1);
+        testWriteManyInts(2 * PageConstants.PAGE_SIZE / Integer.BYTES);
+        testWriteManyInts(PageConstants.PAGE_SIZE / Integer.BYTES + 500);
+        testWriteManyInts(10 * PageConstants.PAGE_SIZE / Integer.BYTES);
+        testWriteManyInts(10 * PageConstants.PAGE_SIZE / Integer.BYTES + 3);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class PagedMemBinaryOutputTest {
     }
 
     private void testReadWriteAtArbitraryPosAllAddresses(int shift) {
-        int writesCount = 3 * MemPool.PAGE_SIZE / Integer.BYTES + 100;
+        int writesCount = 3 * PageConstants.PAGE_SIZE / Integer.BYTES + 100;
         BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
 
         for (int b = 0; b < shift; b++) {
@@ -187,7 +187,7 @@ public class PagedMemBinaryOutputTest {
 
     @Test
     public void testReadWriteAtArbitraryPos() {
-        int intsPerPage = MemPool.PAGE_SIZE / Integer.BYTES;
+        int intsPerPage = PageConstants.PAGE_SIZE / Integer.BYTES;
         BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
         for (int i = 0; i < intsPerPage - 1; i++) {
             out.write(i);
@@ -211,11 +211,11 @@ public class PagedMemBinaryOutputTest {
     @Test
     public void testByteArrayWriteSpanMultiplePages() {
         BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
-        int intsCount = (MemPool.PAGE_SIZE / (Integer.BYTES * 2)) + 1;
+        int intsCount = (PageConstants.PAGE_SIZE / (Integer.BYTES * 2)) + 1;
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
         }
-        byte[] bytes = new byte[MemPool.PAGE_SIZE * 2 + 532];
+        byte[] bytes = new byte[PageConstants.PAGE_SIZE * 2 + 532];
         ThreadLocalRandom.current().nextBytes(bytes);
         out.write(bytes);
 

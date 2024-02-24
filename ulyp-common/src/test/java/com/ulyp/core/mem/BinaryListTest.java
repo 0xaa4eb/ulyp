@@ -18,7 +18,7 @@ public class BinaryListTest {
 
             @Override
             public MemPage allocate() {
-                return new MemPage(0, new UnsafeBuffer(new byte[MemPool.PAGE_SIZE]));
+                return new MemPage(0, new UnsafeBuffer(new byte[PageConstants.PAGE_SIZE]));
             }
 
             @Override
