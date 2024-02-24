@@ -67,6 +67,7 @@ abstract class RingBufferFields<E> extends RingBufferPad {
     }
 }
 
+@SuppressWarnings("unused")
 public final class RingBuffer<E> extends RingBufferFields<E> implements Cursored, EventSequencer<E>, EventSink<E> {
     public static final long INITIAL_CURSOR_VALUE = -1L;
     private long p1, p2, p3, p4, p5, p6, p7;
@@ -115,26 +116,6 @@ public final class RingBuffer<E> extends RingBufferFields<E> implements Cursored
         return sequencer.tryNext(n);
     }
 
-    public E claimAndGetPreallocated(long sequence) {
-        sequencer.claim(sequence);
-        return get(sequence);
-    }
-
-    /**
-     * Determines if a particular entry is available.  Note that using this when not within a context that is
-     * maintaining a sequence barrier, it is likely that using this to determine if you can read a value is likely
-     * to result in a race condition and broken code.
-     *
-     * @param sequence The sequence to identify the entry.
-     * @return If the value can be read or not.
-     * @deprecated Please don't use this method.  It probably won't
-     * do what you think that it does.
-     */
-    @Deprecated
-    public boolean isPublished(long sequence) {
-        return sequencer.isAvailable(sequence);
-    }
-
     /**
      * Add the specified gating sequences to this instance of the Disruptor.  They will
      * safely and atomically added to the list of gating sequences.
@@ -145,26 +126,12 @@ public final class RingBuffer<E> extends RingBufferFields<E> implements Cursored
         sequencer.addGatingSequences(gatingSequences);
     }
 
-    public long getMinimumGatingSequence() {
-        return sequencer.getMinimumSequence();
-    }
-
     public boolean removeGatingSequence(Sequence sequence) {
         return sequencer.removeGatingSequence(sequence);
     }
 
     public SequenceBarrier newBarrier(Sequence... sequencesToTrack) {
         return sequencer.newBarrier(sequencesToTrack);
-    }
-
-    /**
-     * Creates an event poller for this ring buffer gated on the supplied sequences.
-     *
-     * @param gatingSequences to be gated on.
-     * @return A poller that will gate on this ring buffer and the supplied sequences.
-     */
-    public EventPoller<E> newPoller(Sequence... gatingSequences) {
-        return sequencer.newPoller(this, gatingSequences);
     }
 
     /**
