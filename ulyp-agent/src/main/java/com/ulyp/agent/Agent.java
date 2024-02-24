@@ -3,10 +3,7 @@ package com.ulyp.agent;
 import java.lang.instrument.Instrumentation;
 import java.util.Optional;
 
-import com.ulyp.agent.advice.ConstructorAdvice;
-import com.ulyp.agent.advice.MethodAdvice;
-import com.ulyp.agent.advice.StartRecordingConstructorAdvice;
-import com.ulyp.agent.advice.StartRecordingMethodAdvice;
+import com.ulyp.agent.advice.*;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
@@ -83,6 +80,10 @@ public class Agent {
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
                 .on(buildContinueRecordingMethodsMatcher(settings));
+/*        AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice0Args = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdvice0Args.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(ElementMatchers.takesNoArguments()));*/
         AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(StartRecordingConstructorAdvice.class)

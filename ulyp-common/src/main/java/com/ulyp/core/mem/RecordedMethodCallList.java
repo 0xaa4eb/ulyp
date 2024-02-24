@@ -4,6 +4,7 @@ import com.ulyp.core.*;
 import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 /**
@@ -47,11 +48,11 @@ public class RecordedMethodCallList {
         writer.commit();
     }
 
-    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, @Nullable Object[] args) {
         addEnterMethodCall(callId, methodId, typeResolver, callee, args, -1L);
     }
 
-    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, @Nullable Object[] args, long nanoTime) {
         OutputBinaryList.Writer writer = out.writer();
         RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, callId, methodId, typeResolver, callee, args, nanoTime);
         writer.commit();

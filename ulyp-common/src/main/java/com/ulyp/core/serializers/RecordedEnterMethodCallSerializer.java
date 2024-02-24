@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.bytes.BinaryOutput;
 import com.ulyp.core.repository.ReadableRepository;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,32 +19,37 @@ public class RecordedEnterMethodCallSerializer {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
 
-    public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, @Nullable Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
 
         out.write(callId);
         out.write(methodId);
         out.write(nanoTime);
-        out.write(args.length);
+        if (args != null) {
+            int argsCount = args.length;
+            out.write(argsCount);
 
-        for (int i = 0; i < args.length; i++) {
-            Object argValue = args[i];
-            Type argType = typeResolver.get(argValue);
-            ObjectRecorder recorderHint = argType.getRecorderHint();
-            if (argValue != null && recorderHint == null) {
-                recorderHint = RecorderChooser.getInstance().chooseForType(argValue.getClass());
-                argType.setRecorderHint(recorderHint);
+            for (int i = 0; i < argsCount; i++) {
+                Object argValue = args[i];
+                Type argType = typeResolver.get(argValue);
+                ObjectRecorder recorderHint = argType.getRecorderHint();
+                if (argValue != null && recorderHint == null) {
+                    recorderHint = RecorderChooser.getInstance().chooseForType(argValue.getClass());
+                    argType.setRecorderHint(recorderHint);
+                }
+
+                ObjectRecorder recorder = argValue != null ? recorderHint : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+
+                out.write(argType.getId());
+                out.write(recorder.getId());
+                try {
+                    recorder.write(argValue, out, typeResolver);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            ObjectRecorder recorder = argValue != null ? recorderHint : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
-
-            out.write(argType.getId());
-            out.write(recorder.getId());
-            try {
-                recorder.write(argValue, out, typeResolver);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        } else {
+            out.write(0); // TODO 1 bit control
         }
 
         if (callee != null) {

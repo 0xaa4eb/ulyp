@@ -152,6 +152,10 @@ public class Recorder {
         return onMethodEnter(recordingState, methodId, null, args);
     }
 
+    public int onMethodEnter(int methodId, @Nullable Object callee) {
+        return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, null);
+    }
+
     public int onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, args);
     }
