@@ -4,8 +4,10 @@ import com.lmax.disruptor.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class WorkProcessor<T>
-        implements EventProcessor {
+/**
+ * Forked from disruptor library
+ */
+public final class WorkProcessor<T> implements EventProcessor {
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final Sequence sequence = new Sequence(Sequencer.INITIAL_CURSOR_VALUE);
     private final RingBuffer<T> ringBuffer;

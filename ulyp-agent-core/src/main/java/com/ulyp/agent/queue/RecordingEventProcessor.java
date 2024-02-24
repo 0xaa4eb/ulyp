@@ -40,9 +40,11 @@ public class RecordingEventProcessor {
     }
 
     void onEventBatchStart() {
+        // not used yet
     }
 
     void onEventBatchEnd() {
+        // not used yet
     }
 
     void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
@@ -77,8 +79,7 @@ public class RecordingEventProcessor {
             buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
         }
 
-        if (buffer.isComplete() ||
-            buffer.estimateBytesSize() > 32 * 1024 * 1024) {
+        if (buffer.isComplete() || buffer.estimateBytesSize() > 32 * 1024 * 1024) {
 
             if (!buffer.isComplete()) {
                 this.buffer = buffer.cloneWithoutData();

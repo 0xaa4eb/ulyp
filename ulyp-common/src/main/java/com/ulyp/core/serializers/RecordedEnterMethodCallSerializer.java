@@ -20,12 +20,39 @@ public class RecordedEnterMethodCallSerializer {
 
     public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
-
         out.write(callId);
         out.write(methodId);
         out.write(nanoTime);
-        out.write(args.length);
+        serializeArgs(out, typeResolver, args);
+        serializeCallee(out, typeResolver, callee);
+    }
 
+    private static void serializeCallee(BinaryOutput out, TypeResolver typeResolver, Object callee) {
+        if (callee != null) {
+
+            ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
+
+            out.write(typeResolver.get(callee).getId());
+            out.write(recorder.getId());
+            try {
+                recorder.write(callee, out, typeResolver);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            ObjectRecorder recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
+            out.write(Type.unknown().getId());
+            out.write(recorder.getId());
+            try {
+                recorder.write(null, out, typeResolver);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static void serializeArgs(BinaryOutput out, TypeResolver typeResolver, Object[] args) {
+        out.write(args.length);
         for (int i = 0; i < args.length; i++) {
             Object argValue = args[i];
             Type argType = typeResolver.get(argValue);
@@ -41,28 +68,6 @@ public class RecordedEnterMethodCallSerializer {
             out.write(recorder.getId());
             try {
                 recorder.write(argValue, out, typeResolver);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if (callee != null) {
-
-            ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
-
-            out.write(typeResolver.get(callee).getId());
-            out.write(recorder.getId());
-            try {
-                recorder.write(callee, out, typeResolver);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            ObjectRecorder recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
-            out.write(Type.unknown().getId()); // TODO optimize size
-            out.write(recorder.getId());
-            try {
-                recorder.write(null, out, typeResolver);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

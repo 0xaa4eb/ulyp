@@ -49,9 +49,4 @@ public class CachedDirectBufMemPageAllocator implements MemPageAllocator {
             pagesCached.incrementAndGet();
         }
     }
-
-    @Override
-    public void close() throws RuntimeException {
-
-    }
 }

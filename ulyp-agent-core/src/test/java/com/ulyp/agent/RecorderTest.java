@@ -37,7 +37,6 @@ public class RecorderTest {
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final RecordingQueue callRecordQueue = new RecordingQueue(typeResolver, new AgentDataWriter(storage, methodRepository), new NullMetrics());
     private final Recorder recorder = new Recorder(
-            typeResolver,
             methodRepository,
             new EnabledRecordingPolicy(),
             callRecordQueue,
