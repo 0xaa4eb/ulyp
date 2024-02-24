@@ -27,22 +27,22 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
 
     @Override
     public void reset(ResetRequest resetRequest) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override
     public void sync(Duration duration) {
-
+        // NOP for tests
     }
 
     @Override
     public void write(ProcessMetadata processMetadata) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override
     public void write(RecordingMetadata recordingMetadata) throws StorageException {
-
+        // NOP for tests
     }
 
     @Override

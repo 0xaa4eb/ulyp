@@ -6,9 +6,7 @@ import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.Preconditions;
 import com.ulyp.core.util.SystemPropertyUtil;
-import com.ulyp.storage.writer.RecordingDataWriter;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +48,6 @@ public class Recorder {
     private final Counter recordingsCounter;
 
     public Recorder(
-        TypeResolver typeResolver,
         MethodRepository methodRepository,
         StartRecordingPolicy startRecordingPolicy,
         RecordingQueue recordingQueue,

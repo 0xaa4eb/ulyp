@@ -27,6 +27,7 @@ public class QueueBatchEventProcessorFactory implements EventProcessorFactory<Ev
             return eventProcessor;
         }
         SequenceBarrier sequenceBarrier = ringBuffer.newBarrier(barrierSequences);
-        return eventProcessor = new QueueBatchEventProcessor(ringBuffer, sequenceBarrier, typeResolver, agentDataWriter);
+        eventProcessor = new QueueBatchEventProcessor(ringBuffer, sequenceBarrier, typeResolver, agentDataWriter);
+        return eventProcessor;
     }
 }

@@ -29,7 +29,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
     private final Map<Integer, RecordingEventProcessor> recordingQueueProcessors = new HashMap<>();
-    private final AtomicInteger running = new AtomicInteger(IDLE);
+    private final AtomicInteger status = new AtomicInteger(IDLE);
     private final DataProvider<EventHolder> dataProvider;
     private final SequenceBarrier sequenceBarrier;
     private final Sequence sequence = new Sequence(Sequencer.INITIAL_CURSOR_VALUE);
@@ -52,39 +52,35 @@ public final class QueueBatchEventProcessor implements EventProcessor {
 
     @Override
     public void halt() {
-        running.set(HALTED);
+        status.set(HALTED);
         sequenceBarrier.alert();
     }
 
     @Override
     public boolean isRunning() {
-        return running.get() != IDLE;
+        return status.get() != IDLE;
     }
 
     @Override
     public void run() {
-        if (running.compareAndSet(IDLE, RUNNING)) {
+        if (status.compareAndSet(IDLE, RUNNING)) {
             sequenceBarrier.clearAlert();
 
             try {
-                if (running.get() == RUNNING) {
+                if (status.get() == RUNNING) {
                     processEvents();
                 }
             } finally {
-                running.set(IDLE);
+                status.set(IDLE);
             }
         } else {
-            // This is a little bit of guess work.  The running state could of changed to HALTED by
-            // this point.  However, Java does not have compareAndExchange which is the only way
-            // to get it exactly correct.
-            if (running.get() == RUNNING) {
+            if (status.get() == RUNNING) {
                 throw new IllegalStateException("Thread is already running");
             }
         }
     }
 
     private void processEvents() {
-        EventHolder eventHolder = null;
         long nextSequence = sequence.get() + 1L;
 
         while (true) {
@@ -92,69 +88,73 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                 final long availableSequence = sequenceBarrier.waitFor(nextSequence);
                 Set<Integer> recordingIds = new HashSet<>();
 
-                while (nextSequence <= availableSequence)
-                {
-                    eventHolder = dataProvider.get(nextSequence);
-                    Object event = eventHolder.event;
-                    eventHolder.event = null;
-                    if (event instanceof EnterRecordQueueEvent) {
-                        // TODO possible inline recording id and event type in item holder
-                        EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
-                        RecordingEventProcessor processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
-                        if (recordingIds.add(enterRecord.getRecordingId())) {
-                            processor.onEventBatchStart();
-                        }
-                        processor.onEnterCallRecord(enterRecord);
-                    } else if (event instanceof ExitRecordQueueEvent) {
-                        ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
-                        RecordingEventProcessor processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
-                        if (recordingIds.add(exitRecord.getRecordingId())) {
-                            processor.onEventBatchStart();
-                        }
-                        processor.onExitCallRecord(exitRecord);
-                    } else {
-                        RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
-                        RecordingEventProcessor processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
-                        if (processor == null) {
-                            recordingQueueProcessors.put(
-                                updateRecordingMetadataItem.getRecordingMetadata().getId(),
-                                processor = new RecordingEventProcessor(typeResolver, agentDataWriter)
-                            );
-                        }
-                        processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);
-                    }
-                    if (LoggingSettings.TRACE_ENABLED) {
-                        log.trace("Event processed {} at seq {}", event, nextSequence);
-                    }
+                while (nextSequence <= availableSequence) {
+                    processAtSeq(nextSequence, recordingIds);
 
                     if (nextSequence == availableSequence) {
-                        // handle batch end
-                        for (Integer recordingId : recordingIds) {
-                            RecordingEventProcessor handler = recordingQueueProcessors.get(recordingId);
-                            handler.onEventBatchEnd();
-                            if (handler.isComplete()) {
-                                recordingQueueProcessors.remove(recordingId);
-                            }
-                        }
+                        handleBatchEnd(recordingIds);
                     }
-
                     nextSequence++;
                 }
 
                 sequence.set(availableSequence);
             } catch (final AlertException ex) {
-                if (running.get() != RUNNING) {
+                if (status.get() != RUNNING) {
                     break;
                 }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                break;
             } catch (final Throwable ex) {
-                handleEventException(ex, nextSequence, eventHolder);
                 sequence.set(nextSequence);
                 nextSequence++;
             }
         }
     }
 
-    private void handleEventException(Throwable ex, long sequence, Object event) {
-        // TODO handle somehow
+    private void processAtSeq(long sequence, Set<Integer> recordingIds) {
+        EventHolder eventHolder = dataProvider.get(sequence);
+        Object event = eventHolder.event;
+        eventHolder.event = null;
+        if (event instanceof EnterRecordQueueEvent) {
+            // TODO possible inline recording id and event type in item holder
+            EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
+            RecordingEventProcessor processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
+            if (recordingIds.add(enterRecord.getRecordingId())) {
+                processor.onEventBatchStart();
+            }
+            processor.onEnterCallRecord(enterRecord);
+        } else if (event instanceof ExitRecordQueueEvent) {
+            ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
+            RecordingEventProcessor processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
+            if (recordingIds.add(exitRecord.getRecordingId())) {
+                processor.onEventBatchStart();
+            }
+            processor.onExitCallRecord(exitRecord);
+        } else {
+            RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
+            RecordingEventProcessor processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
+            if (processor == null) {
+                processor = new RecordingEventProcessor(typeResolver, agentDataWriter);
+                recordingQueueProcessors.put(
+                        updateRecordingMetadataItem.getRecordingMetadata().getId(),
+                        processor
+                );
+            }
+            processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);
+        }
+        if (LoggingSettings.TRACE_ENABLED) {
+            log.trace("Event processed {} at seq {}", event, sequence);
+        }
+    }
+
+    private void handleBatchEnd(Set<Integer> recordingIds) {
+        for (Integer recordingId : recordingIds) {
+            RecordingEventProcessor handler = recordingQueueProcessors.get(recordingId);
+            handler.onEventBatchEnd();
+            if (handler.isComplete()) {
+                recordingQueueProcessors.remove(recordingId);
+            }
+        }
     }
 }

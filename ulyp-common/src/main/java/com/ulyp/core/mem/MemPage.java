@@ -21,5 +21,6 @@ public class MemPage {
     }
 
     public void dispose() {
+        // NOP by default
     }
 }

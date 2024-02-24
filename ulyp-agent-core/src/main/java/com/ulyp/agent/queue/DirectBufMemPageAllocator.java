@@ -16,11 +16,6 @@ public class DirectBufMemPageAllocator implements MemPageAllocator {
 
     @Override
     public void deallocate(MemPage page) {
-
-    }
-
-    @Override
-    public void close() throws RuntimeException {
-
+        // it's GC managed, so we don't deallocate
     }
 }

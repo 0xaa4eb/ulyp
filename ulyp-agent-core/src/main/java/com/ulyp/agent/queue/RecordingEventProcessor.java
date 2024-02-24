@@ -6,6 +6,7 @@ import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
 import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
 import com.ulyp.core.CallRecordBuffer;
+import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
@@ -19,6 +20,7 @@ public class RecordingEventProcessor {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
+    private final MethodRepository methodRepository;
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
     @Getter
@@ -29,6 +31,7 @@ public class RecordingEventProcessor {
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
         this.agentDataWriter = agentDataWriter;
+        this.methodRepository = agentDataWriter.getMethodRepository();
         this.pageAllocator = new DirectBufMemPageAllocator();
     }
 
@@ -37,9 +40,11 @@ public class RecordingEventProcessor {
     }
 
     void onEventBatchStart() {
+        // not used yet
     }
 
     void onEventBatchEnd() {
+        // not used yet
     }
 
     void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
@@ -62,28 +67,27 @@ public class RecordingEventProcessor {
 
     void onExitCallRecord(ExitRecordQueueEvent exitRecord) {
         int recordingId = exitRecord.getRecordingId();
-        CallRecordBuffer buffer = this.buffer;
-        if (buffer == null) {
+        CallRecordBuffer currentBuffer = this.buffer;
+        if (currentBuffer == null) {
             log.debug("Call record buffer not found for recording id " + recordingId);
             return;
         }
         long nanoTime = (exitRecord instanceof TimestampedExitRecordQueueEvent) ? ((TimestampedExitRecordQueueEvent) exitRecord).getNanoTime() : -1;
         if (exitRecord.isThrown()) {
-            buffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), nanoTime);
+            currentBuffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), nanoTime);
         } else {
-            buffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
+            currentBuffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
         }
 
-        if (buffer.isComplete() ||
-            buffer.estimateBytesSize() > 32 * 1024 * 1024) {
+        if (currentBuffer.isComplete() || currentBuffer.estimateBytesSize() > 32 * 1024 * 1024) {
 
-            if (!buffer.isComplete()) {
-                this.buffer = buffer.cloneWithoutData();
+            if (!currentBuffer.isComplete()) {
+                this.buffer = currentBuffer.cloneWithoutData();
             }
 
-            agentDataWriter.write(typeResolver, recordingMetadata, buffer);
+            agentDataWriter.write(typeResolver, recordingMetadata, currentBuffer);
 
-            if (buffer.isComplete()) {
+            if (currentBuffer.isComplete()) {
                 this.buffer = null;
                 this.complete = true;
             }

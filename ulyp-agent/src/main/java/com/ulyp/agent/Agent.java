@@ -54,6 +54,7 @@ public class Agent {
             AgentContext.init();
         }
         AgentContext context = AgentContext.getCtx();
+        StartRecordingMethods startRecordingMethods = settings.getRecordMethodList();
 
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
