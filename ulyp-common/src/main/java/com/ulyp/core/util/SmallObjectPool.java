@@ -9,7 +9,7 @@ public class SmallObjectPool<T> {
     private final Supplier<T> supplier;
     private final int indexMask;
     private final ObjectPoolClaim<T>[] objectArray; // object array is read only and not padded
-    private final PaddedAtomicIntegerArray used;
+    private final PaddedAtomicIntegerArray slotsUsed;
 
     public SmallObjectPool(int entriesCount, Supplier<T> supplier) {
         if (Integer.bitCount(entriesCount) != 1) {
@@ -24,7 +24,7 @@ public class SmallObjectPool<T> {
             this.objectArray[i] = new ObjectPoolClaim<>(this, i, supplier.get());
         }
 
-        this.used = new PaddedAtomicIntegerArray(entriesCount);
+        this.slotsUsed = new PaddedAtomicIntegerArray(entriesCount);
     }
 
     public ObjectPoolClaim<T> claim() {
@@ -33,11 +33,9 @@ public class SmallObjectPool<T> {
     }
 
     private ObjectPoolClaim<T> claim(int index, int tries) {
-        int used = this.used.get(index);
-        if (used == 0) {
-            if (this.used.compareAndSet(index, 0, 1)) {
-                return objectArray[index];
-            }
+        int slotUsed = this.slotsUsed.get(index);
+        if (slotUsed == 0 && this.slotsUsed.compareAndSet(index, 0, 1)) {
+            return objectArray[index];
         }
 
         if (tries < MAX_TRIES_BEFORE_ALLOC) {
@@ -49,18 +47,18 @@ public class SmallObjectPool<T> {
         }
     }
 
-    private void release(int index) {
-        used.set(index, 0);
+    private void release(int slotIndex) {
+        slotsUsed.set(slotIndex, 0);
     }
 
     public static class ObjectPoolClaim<T> implements AutoCloseable {
         private final SmallObjectPool<T> pool;
-        private final int index;
+        private final int slotIndex;
         private final T object;
 
-        public ObjectPoolClaim(SmallObjectPool<T> pool, int index, T object) {
+        public ObjectPoolClaim(SmallObjectPool<T> pool, int slotIndex, T object) {
             this.pool = pool;
-            this.index = index;
+            this.slotIndex = slotIndex;
             this.object = object;
         }
 
@@ -70,8 +68,8 @@ public class SmallObjectPool<T> {
 
         @Override
         public void close() throws RuntimeException {
-            if (index >= 0) {
-                pool.release(index);
+            if (slotIndex >= 0) {
+                pool.release(slotIndex);
             }
         }
     }

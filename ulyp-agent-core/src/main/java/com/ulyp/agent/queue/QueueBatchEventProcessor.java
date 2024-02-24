@@ -102,6 +102,9 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                 if (status.get() != RUNNING) {
                     break;
                 }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                break;
             } catch (final Throwable ex) {
                 sequence.set(nextSequence);
                 nextSequence++;
@@ -132,9 +135,10 @@ public final class QueueBatchEventProcessor implements EventProcessor {
             RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
             RecordingEventProcessor processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
             if (processor == null) {
+                processor = new RecordingEventProcessor(typeResolver, agentDataWriter);
                 recordingQueueProcessors.put(
                         updateRecordingMetadataItem.getRecordingMetadata().getId(),
-                        processor = new RecordingEventProcessor(typeResolver, agentDataWriter)
+                        processor
                 );
             }
             processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);

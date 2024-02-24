@@ -18,8 +18,7 @@ public class OutputBinaryList {
     private static final int SIZE_OFFSET = Integer.BYTES;
     private static final int ID_OFFSET = SIZE_OFFSET + Integer.BYTES;
     public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
-    private static final int RECORD_HEADER_LENGTH = Integer.BYTES;
-    
+
     private final BinaryOutput bytesOut;
     private final Writer writer = new Writer();
     private int size = 0;
@@ -165,6 +164,7 @@ public class OutputBinaryList {
             return bytesOut.writeTo(sink);
         }
 
+        @Override
         @TestOnly
         @SneakyThrows
         public BinaryInput flip() {

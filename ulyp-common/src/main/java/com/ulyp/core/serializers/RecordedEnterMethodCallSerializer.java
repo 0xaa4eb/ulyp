@@ -3,6 +3,7 @@ package com.ulyp.core.serializers;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.exception.RecordingException;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.bytes.BinaryOutput;
@@ -46,15 +47,15 @@ public class RecordedEnterMethodCallSerializer {
             try {
                 recorder.write(null, out, typeResolver);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RecordingException("Error while serializing callee", e);
             }
         }
     }
 
     private static void serializeArgs(BinaryOutput out, TypeResolver typeResolver, Object[] args) {
         out.write(args.length);
-        for (int i = 0; i < args.length; i++) {
-            Object argValue = args[i];
+        for (int argIndex = 0; argIndex < args.length; argIndex++) {
+            Object argValue = args[argIndex];
             Type argType = typeResolver.get(argValue);
             ObjectRecorder recorderHint = argType.getRecorderHint();
             if (argValue != null && recorderHint == null) {
@@ -69,7 +70,7 @@ public class RecordedEnterMethodCallSerializer {
             try {
                 recorder.write(argValue, out, typeResolver);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RecordingException("Error while serializing argument at index " + argIndex, e);
             }
         }
     }

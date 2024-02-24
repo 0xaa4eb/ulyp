@@ -19,7 +19,7 @@ public class InputBinaryList implements Iterable<BinaryInput> {
     public InputBinaryList(BinaryInput bytesIn) {
         this.bytesIn = bytesIn;
         if (bytesIn.readInt() != MAGIC) {
-            throw new RuntimeException("Magic is " + getMagic());
+            throw new IllegalArgumentException("Magic is " + getMagic() + ", wrong buffer is provided");
         }
     }
 

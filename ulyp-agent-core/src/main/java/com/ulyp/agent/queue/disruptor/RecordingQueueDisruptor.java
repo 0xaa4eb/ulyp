@@ -134,10 +134,7 @@ public class RecordingQueueDisruptor {
             final BatchEventProcessor<EventHolder> batchEventProcessor =
                     new BatchEventProcessor<>(ringBuffer, barrier, eventHandler);
 
-            if (exceptionHandler != null) {
-                batchEventProcessor.setExceptionHandler(exceptionHandler);
-            }
-
+            batchEventProcessor.setExceptionHandler(exceptionHandler);
             consumerRepository.add(batchEventProcessor, eventHandler, barrier);
             processorSequences[i] = batchEventProcessor.getSequence();
         }
