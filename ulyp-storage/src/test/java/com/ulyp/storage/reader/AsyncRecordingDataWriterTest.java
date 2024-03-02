@@ -3,10 +3,9 @@ package com.ulyp.storage.reader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 import com.ulyp.core.Type;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedTypeList;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,7 +68,7 @@ public class AsyncRecordingDataWriterTest {
                 .build()
         );
 
-        TypeList types = new TypeList();
+        SerializedTypeList types = new SerializedTypeList();
         types.add(Type.builder().name("a.b.Type").build());
         writer.write(types);
 

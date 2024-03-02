@@ -129,13 +129,13 @@ public class FileRecordingDataReader implements RecordingDataReader {
                             case RecordingMetadata.WIRE_ID:
                                 onRecordingMetadata(data.getBytes());
                                 break;
-                            case TypeList.WIRE_ID:
+                            case SerializedTypeList.WIRE_ID:
                                 onTypes(data.getBytes());
                                 break;
-                            case MethodList.WIRE_ID:
+                            case SerializedMethodList.WIRE_ID:
                                 onMethods(data.getBytes());
                                 break;
-                            case RecordedMethodCallList.WIRE_ID:
+                            case SerializedRecordedMethodCallList.WIRE_ID:
                                 onRecordedCalls(data);
                                 break;
                             case RecordingCompleteMark.WIRE_ID:

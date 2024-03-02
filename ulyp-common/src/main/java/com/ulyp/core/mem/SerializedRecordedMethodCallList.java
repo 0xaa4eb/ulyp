@@ -9,7 +9,7 @@ import org.jetbrains.annotations.TestOnly;
 /**
  * A list of serialized {@link RecordedMethodCall} instances
  */
-public class RecordedMethodCallList {
+public class SerializedRecordedMethodCallList {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
     public static final int WIRE_ID = 2;
@@ -17,13 +17,13 @@ public class RecordedMethodCallList {
     private final OutputBytesList out;
 
     @TestOnly
-    public RecordedMethodCallList(int recordingId, OutputBytesList writeBinaryList) {
+    public SerializedRecordedMethodCallList(int recordingId, OutputBytesList writeBinaryList) {
         this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
     }
 
-    public RecordedMethodCallList(int recordingId, MemPageAllocator pageAllocator) {
+    public SerializedRecordedMethodCallList(int recordingId, MemPageAllocator pageAllocator) {
         this.out = new OutputBytesList(WIRE_ID, new PagedMemBytesOut(pageAllocator));
 
         out.add(out -> out.write(recordingId));

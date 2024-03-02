@@ -2,9 +2,9 @@ package com.ulyp.storage.writer;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.storage.StorageException;
 
@@ -44,11 +44,11 @@ public interface RecordingDataWriter extends AutoCloseable {
 
     void write(RecordingMetadata recordingMetadata) throws StorageException;
 
-    void write(TypeList types) throws StorageException;
+    void write(SerializedTypeList types) throws StorageException;
 
-    void write(MethodList methods) throws StorageException;
+    void write(SerializedMethodList methods) throws StorageException;
 
-    void write(RecordedMethodCallList callRecords) throws StorageException;
+    void write(SerializedRecordedMethodCallList callRecords) throws StorageException;
 
     long estimateBytesWritten();
 

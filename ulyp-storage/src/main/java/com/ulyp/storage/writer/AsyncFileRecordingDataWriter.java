@@ -2,9 +2,9 @@ package com.ulyp.storage.writer;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.storage.StorageException;
 import com.ulyp.core.util.NamedThreadFactory;
 import lombok.SneakyThrows;
@@ -65,12 +65,12 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(TypeList types) {
+    public void write(SerializedTypeList types) {
         writeAsync(() -> delegate.write(types));
     }
 
     @Override
-    public void write(RecordedMethodCallList callRecords) {
+    public void write(SerializedRecordedMethodCallList callRecords) {
         writeAsync(() -> delegate.write(callRecords));
     }
 
@@ -80,7 +80,7 @@ public class AsyncFileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(MethodList methods) {
+    public void write(SerializedMethodList methods) {
         writeAsync(() -> delegate.write(methods));
     }
 

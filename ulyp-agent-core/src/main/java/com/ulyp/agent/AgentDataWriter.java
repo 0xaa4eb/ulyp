@@ -8,8 +8,8 @@ import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
 
@@ -33,7 +33,7 @@ public class AgentDataWriter {
 
     public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
 
-        MethodList methodsList = new MethodList();
+        SerializedMethodList methodsList = new SerializedMethodList();
 
         ConcurrentArrayList<Method> methods = methodRepository.getMethods();
         int upToExcluding = methods.size() - 1;
@@ -59,7 +59,7 @@ public class AgentDataWriter {
             }
         }
 
-        methodsList = new MethodList();
+        methodsList = new SerializedMethodList();
         methods = methodRepository.getRecordingStartMethods();
         upToExcluding = methods.size() - 1;
         startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
@@ -84,7 +84,7 @@ public class AgentDataWriter {
             }
         }
 
-        TypeList typesList = new TypeList();
+        SerializedTypeList typesList = new SerializedTypeList();
         ConcurrentArrayList<Type> types = typeResolver.getAllResolvedAsConcurrentList();
         upToExcluding = types.size() - 1;
         startFrom = lastIndexOfTypeWritten.get() + 1;

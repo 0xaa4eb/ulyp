@@ -21,9 +21,9 @@ import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.util.StubRecordingDataReaderJob;
 import com.ulyp.storage.writer.RecordingDataWriter;
@@ -42,8 +42,8 @@ public class FilterStorageReadWriteTest {
             .isStatic(false)
             .returnsSomething(true)
             .build();
-    private final TypeList types = new TypeList();
-    private final MethodList methods = new MethodList();
+    private final SerializedTypeList types = new SerializedTypeList();
+    private final SerializedMethodList methods = new SerializedMethodList();
     private RecordingDataReader reader;
     private RecordingDataWriter writer;
     private File file;
@@ -73,14 +73,14 @@ public class FilterStorageReadWriteTest {
         this.reader = new FileRecordingDataReaderBuilder(file)
             .build();
 
-        RecordedMethodCallList methodCalls1 = new RecordedMethodCallList(1, new TestMemPageAllocator());
+        SerializedRecordedMethodCallList methodCalls1 = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
 
         methodCalls1.addEnterMethodCall(0, method.getId(), typeResolver, callee, new Object[]{"ABC"});
         methodCalls1.addEnterMethodCall(1, method.getId(), typeResolver, callee, new Object[]{"ABC"});
         methodCalls1.addEnterMethodCall(2, method.getId(), typeResolver, callee, new Object[]{"ABC"});
         methodCalls1.addEnterMethodCall(3, method.getId(), typeResolver, callee, new Object[]{"ABC"});
 
-        RecordedMethodCallList methodCalls2 = new RecordedMethodCallList(1, new TestMemPageAllocator());
+        SerializedRecordedMethodCallList methodCalls2 = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
         methodCalls2.addExitMethodCall(3, typeResolver, "BVBC");
         methodCalls2.addExitMethodCall(2, typeResolver, "XCZXC");
 

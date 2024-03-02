@@ -90,7 +90,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public synchronized void write(TypeList types) {
+    public synchronized void write(SerializedTypeList types) {
         if (types.size() == 0) {
             return;
         }
@@ -103,7 +103,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public synchronized void write(RecordedMethodCallList callRecords) {
+    public synchronized void write(SerializedRecordedMethodCallList callRecords) {
         OutputBytesList bytes = callRecords.toBytes();
         try {
             if (bytes.isEmpty()) {
@@ -126,7 +126,7 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public synchronized void write(MethodList methods) {
+    public synchronized void write(SerializedMethodList methods) {
         if (methods.size() == 0) {
             return;
         }

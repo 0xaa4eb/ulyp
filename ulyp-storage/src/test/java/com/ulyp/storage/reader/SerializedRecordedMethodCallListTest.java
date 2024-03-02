@@ -17,23 +17,23 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 
-public class RecordedMethodCallListTest {
+public class SerializedRecordedMethodCallListTest {
 
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     @Test
     public void testReadWriteRecordedCallsList() throws IOException {
         for (int iter = 0; iter < 500; iter++) {
-            OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
-            RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
+            OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
+            SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
 
             Type type = typeResolver.get(A.class);
             Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
             int callsCount = 10000;
             for (int i = 0; i < callsCount; i++) {
-                recordedMethodCallList.addEnterMethodCall(i, method.getId(), typeResolver, new A(), new Object[]{5});
-                recordedMethodCallList.addExitMethodCall(i, typeResolver, "ABC");
+                serializedRecordedMethodCallList.addEnterMethodCall(i, method.getId(), typeResolver, new A(), new Object[]{5});
+                serializedRecordedMethodCallList.addExitMethodCall(i, typeResolver, "ABC");
             }
 
             InputBytesList read = out.flip();
@@ -50,14 +50,14 @@ public class RecordedMethodCallListTest {
 
     @Test
     public void testAddAndIterate() throws IOException {
-        OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
-        RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
+        OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
+        SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
 
         Type type = typeResolver.get(A.class);
         Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
-        recordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
-        recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
+        serializedRecordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
+        serializedRecordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
         InputBytesList read = out.flip();
         RecordedMethodCalls list = new RecordedMethodCalls(read);

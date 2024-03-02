@@ -1,7 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.mem.MemPageAllocator;
-import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +16,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 public class CallRecordBuffer {
 
     @Getter
-    private final RecordedMethodCallList recordedCalls;
+    private final SerializedRecordedMethodCallList recordedCalls;
     private final int recordingId;
     private final MemPageAllocator pageAllocator;
     private int lastExitCallId = -1;
@@ -24,7 +24,7 @@ public class CallRecordBuffer {
     public CallRecordBuffer(int recordingId, MemPageAllocator pageAllocator) {
         this.pageAllocator = pageAllocator;
         this.recordingId = recordingId;
-        this.recordedCalls = new RecordedMethodCallList(recordingId, pageAllocator);
+        this.recordedCalls = new SerializedRecordedMethodCallList(recordingId, pageAllocator);
     }
 
     public CallRecordBuffer cloneWithoutData() {

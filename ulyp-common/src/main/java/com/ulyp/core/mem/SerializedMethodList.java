@@ -1,31 +1,31 @@
 package com.ulyp.core.mem;
 
-import com.ulyp.core.Type;
+import com.ulyp.core.Method;
 import com.ulyp.core.bytes.BufferBytesOut;
-import com.ulyp.core.serializers.TypeSerializer;
+import com.ulyp.core.serializers.MethodSerializer;
 import lombok.Getter;
 import org.agrona.ExpandableDirectByteBuffer;
 
 @Getter
-public class TypeList {
+public class SerializedMethodList {
 
-    public static final int WIRE_ID = 1;
+    public static final int WIRE_ID = 3;
 
     private final OutputBytesList bytes;
 
-    public TypeList() {
+    public SerializedMethodList() {
         bytes = new OutputBytesList(WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()));
     }
 
-    public void add(Type type) {
-        bytes.add(out -> TypeSerializer.instance.serialize(out, type));
+    public void add(Method method) {
+        bytes.add(out -> MethodSerializer.instance.serialize(out, method));
     }
 
     public int size() {
         return bytes.size();
     }
 
-    public long byteLength() {
+    public int byteLength() {
         return bytes.bytesWritten();
     }
 }

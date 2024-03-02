@@ -30,7 +30,7 @@ public class BinaryListTest {
 
     @Test
     public void testBasicSize() {
-        OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
+        OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         OutputBytesList.Writer writer = out.writer();
         writer.write("AVBACAS");
@@ -43,7 +43,7 @@ public class BinaryListTest {
 
     @Test
     public void testWriteByUsingWriter() {
-        OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
+        OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         OutputBytesList.Writer writer = out.writer();
         writer.write("AVBACAS");
@@ -57,7 +57,7 @@ public class BinaryListTest {
 
     @Test
     public void testByAddressAccess() throws IOException {
-        OutputBytesList bytesOut = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
+        OutputBytesList bytesOut = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         bytesOut.add(out -> {
             out.write(true);
@@ -93,7 +93,7 @@ public class BinaryListTest {
 
     @Test
     public void testSimpleReadWrite() {
-        OutputBytesList bytesOut = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
+        OutputBytesList bytesOut = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         bytesOut.add(out -> {
             out.write('A');

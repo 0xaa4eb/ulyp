@@ -4,7 +4,7 @@ import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.RecordedMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.InputBytesList;
-import com.ulyp.core.mem.RecordedMethodCallList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
@@ -20,7 +20,7 @@ public class RecordedMethodCalls {
 
     public RecordedMethodCalls(InputBytesList bytesIn) {
         this.bytesIn = bytesIn;
-        if (bytesIn.id() != RecordedMethodCallList.WIRE_ID) {
+        if (bytesIn.id() != SerializedRecordedMethodCallList.WIRE_ID) {
             throw new IllegalArgumentException("Invalid wire id");
         }
         BytesIn firstEntry = bytesIn.iterator().next();
@@ -54,7 +54,7 @@ public class RecordedMethodCalls {
             @Override
             public RecordedMethodCall next() {
                 BytesIn in = iterator.next();
-                if (in.readByte() == RecordedMethodCallList.ENTER_METHOD_CALL_ID) {
+                if (in.readByte() == SerializedRecordedMethodCallList.ENTER_METHOD_CALL_ID) {
                     return RecordedEnterMethodCallSerializer.deserialize(in, typeResolver);
                 } else {
                     return RecordedExitMethodCallSerializer.deserialize(in, typeResolver);

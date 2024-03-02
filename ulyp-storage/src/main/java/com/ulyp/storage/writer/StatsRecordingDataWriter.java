@@ -5,9 +5,9 @@ import java.util.concurrent.TimeoutException;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.metrics.BytesCounter;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.storage.StorageException;
@@ -52,14 +52,14 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(TypeList types) throws StorageException {
+    public void write(SerializedTypeList types) throws StorageException {
         totalBytesWritten.addBytes(types.byteLength());
         delegate.write(types);
         typeBytes.add(types.byteLength(), types.size());
     }
 
     @Override
-    public void write(RecordedMethodCallList callRecords) throws StorageException {
+    public void write(SerializedRecordedMethodCallList callRecords) throws StorageException {
         totalBytesWritten.addBytes(callRecords.bytesWritten());
         delegate.write(callRecords);
         callsBytes.add(callRecords.bytesWritten(), callRecords.size());
@@ -71,7 +71,7 @@ public class StatsRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(MethodList methods) throws StorageException {
+    public void write(SerializedMethodList methods) throws StorageException {
         totalBytesWritten.addBytes(methods.byteLength());
         delegate.write(methods);
         methodBytes.add(methods.byteLength(), methods.size());
