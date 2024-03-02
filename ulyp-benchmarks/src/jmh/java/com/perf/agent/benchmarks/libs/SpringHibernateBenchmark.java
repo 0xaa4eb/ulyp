@@ -57,7 +57,7 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleBaseline() {
+    public void baseline() {
         departmentService.shufflePeople();
     }
 
@@ -70,7 +70,7 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleInstrumented() {
+    public void instrumented() {
         departmentService.shufflePeople();
     }
 
@@ -83,7 +83,7 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleRecord() {
+    public void record() {
         departmentService.shufflePeople();
     }
 
@@ -96,7 +96,7 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleRecordSync(Counters counters) {
-        execRecordAndSync(counters, () -> departmentService.shufflePeople());
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, () -> departmentService.shufflePeople());
     }
 }

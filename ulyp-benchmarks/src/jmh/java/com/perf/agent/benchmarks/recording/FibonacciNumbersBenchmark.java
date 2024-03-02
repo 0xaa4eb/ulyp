@@ -27,7 +27,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeBaseline() {
+    public int baseline() {
         return compute(18);
     }
 
@@ -37,7 +37,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeInstrumented() {
+    public int instrumented() {
         return compute(18);
     }
 
@@ -49,7 +49,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeAndRecord() {
+    public int record() {
         // TODO direct mem limit reached with 31
         return compute(18);
     }
@@ -62,8 +62,8 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeAndRecordSync(Counters counters) {
+    public int syncRecord(Counters counters) {
         // TODO direct mem limit reached with 31
-        return execRecordAndSync(counters, () -> compute(18));
+        return execSyncRecord(counters, () -> compute(18));
     }
 }

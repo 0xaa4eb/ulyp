@@ -21,7 +21,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeBaseline() {
+    public int baseline() {
         return doCompute();
     }
 
@@ -32,7 +32,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeInstrumented() {
+    public int instrumented() {
         return doCompute();
     }
 
@@ -45,7 +45,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeRecord() {
+    public int record() {
         return doCompute();
     }
 
@@ -58,8 +58,8 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeRecordSync(Counters counters) throws InterruptedException {
-        return execRecordAndSync(counters, this::doCompute);
+    public int syncRecord(Counters counters) throws InterruptedException {
+        return execSyncRecord(counters, this::doCompute);
     }
 
     private List<Object> foo(List<String> a, List<Integer> b, List<Object> c) {

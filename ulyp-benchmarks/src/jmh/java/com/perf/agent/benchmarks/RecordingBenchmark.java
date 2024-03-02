@@ -45,7 +45,7 @@ public class RecordingBenchmark {
         }
     }
 
-    public <T> void execRecordAndSync(Counters counters, Runnable runnable) {
+    public <T> void execSyncRecord(Counters counters, Runnable runnable) {
         Counter stallsCounter = AgentContext.getCtx().getMetrics().getOrCreateCounter("recording.queue.stalls");
         long stalls = stallsCounter.getValue();
         long bytes = AgentHelper.estimateBytesWritten();
@@ -55,7 +55,7 @@ public class RecordingBenchmark {
         counters.recordingQueueStalls = stallsCounter.getValue() - stalls;
     }
 
-    public <T> T execRecordAndSync(Counters counters, Supplier<T> supplier) {
+    public <T> T execSyncRecord(Counters counters, Supplier<T> supplier) {
         Counter stallsCounter = AgentContext.getCtx().getMetrics().getOrCreateCounter("recording.queue.stalls");
         long stalls = stallsCounter.getValue();
         long bytes = AgentHelper.estimateBytesWritten();

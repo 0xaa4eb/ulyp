@@ -60,7 +60,7 @@ public class H2Benchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertNoAgent() {
+    public void baseline() {
         insertRow();
     }
 
@@ -72,7 +72,7 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertInstrumented() {
+    public void instrumented() {
         insertRow();
     }
 
@@ -85,7 +85,7 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertRecord() {
+    public void record() {
         insertRow();
     }
 
@@ -98,8 +98,8 @@ public class H2Benchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::insertRow);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::insertRow);
     }
 
     private void insertRow() {

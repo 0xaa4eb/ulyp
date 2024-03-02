@@ -73,7 +73,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
-    public void instrumentOnly() {
+    public void instrumented() {
         runTest();
     }
 
@@ -84,7 +84,7 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
-    public void instrumentAndRecord() {
+    public void record() {
         runTest();
     }
 
@@ -95,8 +95,8 @@ public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = 3, jvmArgsAppend = {"-Dulyp.constructors", "-Dulyp.collections=JAVA"})
     @Benchmark
-    public void instrumentAndRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::runTest);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::runTest);
     }
 
     private void runTest() {

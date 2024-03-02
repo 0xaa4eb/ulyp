@@ -49,7 +49,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void putBaseline() {
+    public void baseline() {
         put();
     }
 
@@ -62,7 +62,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"},
             value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void sendMsgInstrumented() {
+    public void instrumented() {
         put();
     }
 
@@ -76,7 +76,7 @@ public class HazelcastBenchmark extends RecordingBenchmark {
             "-Dulyp.collections=JAVA"},
             value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void sendMsgRecord() {
+    public void record() {
         put();
     }
 
@@ -89,8 +89,8 @@ public class HazelcastBenchmark extends RecordingBenchmark {
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"},
             value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void putRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::put);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::put);
     }
 
     private void put() {

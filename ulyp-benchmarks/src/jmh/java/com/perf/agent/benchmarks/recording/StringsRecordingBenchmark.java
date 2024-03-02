@@ -23,7 +23,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public String computeBaseline() {
+    public String baseline() {
         return doCompute();
     }
 
@@ -33,7 +33,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.StringsRecordingBenchmark.sdjfhgsdhjfsd"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public String computeInstrumented() {
+    public String instrumented() {
         return doCompute();
     }
 
@@ -45,7 +45,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public String computeRecord() {
+    public String record() {
         return doCompute();
     }
 
@@ -57,8 +57,8 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public String computeRecordSync(Counters counters) {
-        return execRecordAndSync(counters, this::doCompute);
+    public String syncRecord(Counters counters) {
+        return execSyncRecord(counters, this::doCompute);
     }
 
     private String doCompute() {

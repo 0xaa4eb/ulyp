@@ -23,7 +23,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public long computeBaseline() {
+    public long baseline() {
         return doCompute();
     }
 
@@ -33,7 +33,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public long computeInstrumented() {
+    public long instrumented() {
         return doCompute();
     }
 
@@ -47,7 +47,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public long computeRecord() {
+    public long record() {
         return doCompute();
     }
 
@@ -60,8 +60,8 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public long computeRecordSync(Counters counters) {
-        return execRecordAndSync(counters, this::doCompute);
+    public long syncRecord(Counters counters) {
+        return execSyncRecord(counters, this::doCompute);
     }
 
     private Long doCompute() {

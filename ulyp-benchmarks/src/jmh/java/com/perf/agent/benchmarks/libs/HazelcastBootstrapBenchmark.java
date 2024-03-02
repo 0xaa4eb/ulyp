@@ -19,7 +19,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void bootstrapBaseline() {
+    public void baseline() {
         run();
     }
 
@@ -31,7 +31,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 3)
     @Benchmark
-    public void bootstrapInstrumented() {
+    public void instrumented() {
         run();
     }
 
@@ -43,7 +43,7 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 3)
     @Benchmark
-    public void bootstrapRecord() {
+    public void record() {
         run();
     }
 
@@ -55,8 +55,8 @@ public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = 3)
     @Benchmark
-    public void bootstrapRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::run);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::run);
     }
 
     private void run() {

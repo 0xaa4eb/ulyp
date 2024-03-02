@@ -55,7 +55,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
 
     @Fork(value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void boostrapBaseline() {
+    public void baseline() {
         runTest();
     }
 
@@ -67,7 +67,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
-    public void boostrapInstrumented() {
+    public void instrumented() {
         runTest();
     }
 
@@ -79,7 +79,7 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
             "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
-    public void boostrapRecord() {
+    public void record() {
         runTest();
     }
 
@@ -91,8 +91,8 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
         "-Dulyp.constructors"
     }, value = 3)
     @Benchmark
-    public void boostrapRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::runTest);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::runTest);
     }
 
     private void runTest() {
