@@ -106,7 +106,8 @@ public class PagedMemBytesOut extends AbstractBytesOut {
     }
 
     public void write(boolean value) {
-        write(value ? 1 : 0);
+        byte byteValue = value ? (byte) 1 : (byte) 0;
+        write(byteValue);
     }
 
     public void write(int value) {

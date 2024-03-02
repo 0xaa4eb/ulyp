@@ -33,8 +33,8 @@ public class DirectBytesIn implements BytesIn {
 
     @Override
     public boolean readBoolean() {
-        long val = readInt();
-        return val == 1;
+        byte val = readByte();
+        return val == (byte) 1;
     }
 
     @Override

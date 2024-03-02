@@ -55,7 +55,7 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     dependsOn = [':ulyp-agent:shadowJar']
     // To enable the built-in stacktrace sampling profiler
 //    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*', '-rf', 'json']
-    args = ['-prof', 'gc', '.*SpringHibernateBenchmark.shufflePeopleRecord']
+    args = ['-prof', 'gc']
 }
 
 classes.finalizedBy(jmhClasses)
