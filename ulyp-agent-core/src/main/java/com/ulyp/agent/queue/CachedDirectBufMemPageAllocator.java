@@ -22,6 +22,7 @@ public class CachedDirectBufMemPageAllocator implements MemPageAllocator {
         MemPage memPage = pages.pollLast();
         if (memPage != null) {
             pagesCached.decrementAndGet();
+            memPage.reset();
             return memPage;
         } else {
             return new DirectMemPage(0, new UnsafeBuffer(ByteBuffer.allocateDirect(PageConstants.PAGE_SIZE)));

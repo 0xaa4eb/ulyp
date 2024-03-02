@@ -4,7 +4,7 @@ import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.bytes.PagedMemBinaryOutput;
+import com.ulyp.core.bytes.PagedMemBytesOut;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.agrona.concurrent.UnsafeBuffer;
@@ -24,7 +24,7 @@ public class RecordedMethodCallListTest {
     @Test
     public void testReadWriteRecordedCallsList() throws IOException {
         for (int iter = 0; iter < 500; iter++) {
-            OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
+            OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
             RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
 
             Type type = typeResolver.get(A.class);
@@ -36,7 +36,7 @@ public class RecordedMethodCallListTest {
                 recordedMethodCallList.addExitMethodCall(i, typeResolver, "ABC");
             }
 
-            InputBinaryList read = out.flip();
+            InputBytesList read = out.flip();
 
             RecordedMethodCalls list = new RecordedMethodCalls(read);
             Assert.assertEquals(callsCount * 2, list.size());
@@ -50,7 +50,7 @@ public class RecordedMethodCallListTest {
 
     @Test
     public void testAddAndIterate() throws IOException {
-        OutputBinaryList out = new OutputBinaryList(RecordedMethodCallList.WIRE_ID, new PagedMemBinaryOutput(pageAllocator()));
+        OutputBytesList out = new OutputBytesList(RecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
         RecordedMethodCallList recordedMethodCallList = new RecordedMethodCallList(333, out);
 
         Type type = typeResolver.get(A.class);
@@ -59,7 +59,7 @@ public class RecordedMethodCallListTest {
         recordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
         recordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
 
-        InputBinaryList read = out.flip();
+        InputBytesList read = out.flip();
         RecordedMethodCalls list = new RecordedMethodCalls(read);
 
         AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());

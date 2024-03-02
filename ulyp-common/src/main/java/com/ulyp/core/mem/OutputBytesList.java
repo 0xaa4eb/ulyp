@@ -1,9 +1,9 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
-import com.ulyp.core.bytes.BinaryOutputSink;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.bytes.BytesOutputSink;
 import com.ulyp.core.bytes.Mark;
 import lombok.SneakyThrows;
 import org.agrona.DirectBuffer;
@@ -12,18 +12,18 @@ import org.jetbrains.annotations.TestOnly;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-public class OutputBinaryList {
+public class OutputBytesList {
 
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int SIZE_OFFSET = Integer.BYTES;
     private static final int ID_OFFSET = SIZE_OFFSET + Integer.BYTES;
     public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
 
-    private final BinaryOutput bytesOut;
+    private final BytesOut bytesOut;
     private final Writer writer = new Writer();
     private int size = 0;
 
-    public OutputBinaryList(int id, BinaryOutput bytesOut) {
+    public OutputBytesList(int id, BytesOut bytesOut) {
         this.bytesOut = bytesOut;
         this.bytesOut.write(MAGIC);
         this.bytesOut.write(0);
@@ -36,7 +36,7 @@ public class OutputBinaryList {
         return writer;
     }
 
-    public void add(Consumer<BinaryOutput> writeCallback) {
+    public void add(Consumer<BytesOut> writeCallback) {
         int position = bytesOut.position();
         bytesOut.write(0);
         writeCallback.accept(bytesOut);
@@ -45,7 +45,7 @@ public class OutputBinaryList {
         incSize();
     }
 
-    public int writeTo(BinaryOutputSink sink) throws IOException {
+    public int writeTo(BytesOutputSink sink) throws IOException {
         return bytesOut.writeTo(sink);
     }
 
@@ -75,11 +75,11 @@ public class OutputBinaryList {
     }
 
     @TestOnly
-    public InputBinaryList flip() {
-        return new InputBinaryList(bytesOut.flip());
+    public InputBytesList flip() {
+        return new InputBytesList(bytesOut.flip());
     }
 
-    public class Writer implements BinaryOutput {
+    public class Writer implements BytesOut {
         int position;
 
         public void commit() {
@@ -92,7 +92,7 @@ public class OutputBinaryList {
             return bytesOut.recursionDepth();
         }
 
-        public BinaryOutput nest() {
+        public BytesOut nest() {
             return bytesOut.nest();
         }
 
@@ -160,14 +160,14 @@ public class OutputBinaryList {
             bytesOut.close();
         }
 
-        public int writeTo(BinaryOutputSink sink) throws IOException {
+        public int writeTo(BytesOutputSink sink) throws IOException {
             return bytesOut.writeTo(sink);
         }
 
         @Override
         @TestOnly
         @SneakyThrows
-        public BinaryInput flip() {
+        public BytesIn flip() {
             return bytesOut.flip();
         }
     }

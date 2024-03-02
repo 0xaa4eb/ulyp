@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.ulyp.core.bytes.PagedMemBinaryOutput;
 import com.ulyp.storage.util.TestMemPageAllocator;
 import org.junit.After;
 import org.junit.Assert;

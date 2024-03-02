@@ -3,8 +3,8 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.util.TypeMatcher;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,7 @@ public class PrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
         int result = input.readInt();
         if (result == TO_STRING_CALL_SUCCESS) {
             int identityHashCode = input.readInt();
@@ -48,7 +48,7 @@ public class PrintingRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         try {
             String printed = object.toString();
 

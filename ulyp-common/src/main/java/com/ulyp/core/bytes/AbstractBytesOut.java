@@ -9,7 +9,7 @@ import com.ulyp.core.recorders.RecorderChooser;
 import java.nio.charset.StandardCharsets;
 import com.ulyp.core.util.SystemPropertyUtil;
 
-public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutput {
+public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
 
     private static final int MAXIMUM_RECURSION_DEPTH = SystemPropertyUtil.getInt("ulyp.recorder.max-recursion", 3);
     private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
@@ -42,7 +42,7 @@ public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutpu
     }
 
     public void write(Object object, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutput nestedOut = nest()) {
+        try (BytesOut nestedOut = nest()) {
             Type itemType = typeResolver.get(object);
             write(itemType.getId());
             ObjectRecorder recorder;
@@ -70,7 +70,7 @@ public abstract class AbstractBinaryOutput implements AutoCloseable, BinaryOutpu
     }
 
     @Override
-    public BinaryOutput nest() {
+    public BytesOut nest() {
         recursionDepth++;
         return this;
     }

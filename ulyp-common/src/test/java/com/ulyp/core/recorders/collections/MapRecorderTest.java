@@ -14,10 +14,10 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
-import com.ulyp.core.bytes.BufferBinaryInput;
-import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.bytes.DirectBytesIn;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.core.util.TypeMatcher;
 
@@ -33,8 +33,8 @@ public class MapRecorderTest {
     }
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
-    private final BinaryOutput out = new BufferBinaryOutput(buffer);
-    private final BinaryInput in = new BufferBinaryInput(buffer);
+    private final BytesOut out = new BufferBytesOut(buffer);
+    private final BytesIn in = new DirectBytesIn(buffer);
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final MapRecorder mapRecorder = new MapRecorder((byte) 1);
     private final PrintingRecorder printingRecorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();

@@ -1,15 +1,15 @@
 package com.ulyp.core.serializers;
 
 import com.ulyp.core.Type;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 
 public class TypeSerializer implements Serializer<Type> {
 
     public static final TypeSerializer instance = new TypeSerializer();
 
     @Override
-    public Type deserialize(BinaryInput input) {
+    public Type deserialize(BytesIn input) {
         return Type.builder()
                 .id(input.readInt())
                 .name(input.readString())
@@ -17,7 +17,7 @@ public class TypeSerializer implements Serializer<Type> {
     }
 
     @Override
-    public void serialize(BinaryOutput out, Type m) {
+    public void serialize(BytesOut out, Type m) {
         out.write(m.getId());
         out.write(m.getName());
     }

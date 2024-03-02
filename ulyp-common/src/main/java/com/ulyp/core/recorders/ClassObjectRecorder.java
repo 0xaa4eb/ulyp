@@ -3,8 +3,8 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +27,12 @@ public class ClassObjectRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
         return new ClassObjectRecord(objectType, typeResolver.getType(input.readInt()));
     }
 
     @Override
-    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         Class<?> clazz = (Class<?>) object;
 
         int typeId = typeResolver.get(clazz).getId();

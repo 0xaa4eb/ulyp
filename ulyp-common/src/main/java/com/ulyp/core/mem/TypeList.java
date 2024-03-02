@@ -1,33 +1,31 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.Type;
-import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.serializers.TypeSerializer;
+import lombok.Getter;
 import org.agrona.ExpandableDirectByteBuffer;
 
+@Getter
 public class TypeList {
 
     public static final int WIRE_ID = 1;
 
-    private final OutputBinaryList bytesOut;
+    private final OutputBytesList bytes;
 
     public TypeList() {
-        bytesOut = new OutputBinaryList(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+        bytes = new OutputBytesList(WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()));
     }
 
     public void add(Type type) {
-        bytesOut.add(out -> TypeSerializer.instance.serialize(out, type));
+        bytes.add(out -> TypeSerializer.instance.serialize(out, type));
     }
 
     public int size() {
-        return bytesOut.size();
-    }
-
-    public OutputBinaryList getBytes() {
-        return bytesOut;
+        return bytes.size();
     }
 
     public long byteLength() {
-        return bytesOut.bytesWritten();
+        return bytes.bytesWritten();
     }
 }

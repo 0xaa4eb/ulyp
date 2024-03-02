@@ -1,7 +1,7 @@
 package com.ulyp.storage.tree;
 
-import com.ulyp.core.bytes.BufferBinaryInput;
-import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.DirectBytesIn;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.storage.StorageException;
 import com.ulyp.core.util.BitUtil;
 import org.agrona.ExpandableDirectByteBuffer;
@@ -49,13 +49,13 @@ public class RocksdbIndex implements Index {
         if (bytes == null) {
             return null;
         }
-        return BinaryRecordedCallStateSerializer.instance.deserialize(new BufferBinaryInput(bytes));
+        return BinaryRecordedCallStateSerializer.instance.deserialize(new DirectBytesIn(bytes));
     }
 
     @Override
     public void store(long id, CallRecordIndexState value) {
         MutableDirectBuffer buffer = tempBuffer.get();
-        BufferBinaryOutput binaryOutput = new BufferBinaryOutput(buffer);
+        BufferBytesOut binaryOutput = new BufferBytesOut(buffer);
         BinaryRecordedCallStateSerializer.instance.serialize(binaryOutput, value);
 
         byte[] keyBytes = keyBuffer.get();

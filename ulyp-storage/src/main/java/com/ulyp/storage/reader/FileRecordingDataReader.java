@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
-import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.MethodSerializer;
 import com.ulyp.core.serializers.ProcessMetadataSerializer;
@@ -67,7 +67,7 @@ public class FileRecordingDataReader implements RecordingDataReader {
             if (binaryListWithAddress == null) {
                 return null;
             }
-            InputBinaryList bytes = binaryListWithAddress.getBytes();
+            InputBytesList bytes = binaryListWithAddress.getBytes();
             if (bytes.id() != ProcessMetadata.WIRE_ID) {
                 return null;
             }
@@ -150,22 +150,22 @@ public class FileRecordingDataReader implements RecordingDataReader {
             }
         }
 
-        private void onProcessMetadata(InputBinaryList in) {
+        private void onProcessMetadata(InputBytesList in) {
             job.onProcessMetadata(ProcessMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        protected void onRecordingMetadata(InputBinaryList in) {
+        protected void onRecordingMetadata(InputBytesList in) {
             job.onRecordingMetadata(RecordingMetadataSerializer.instance.deserialize(in.iterator().next()));
         }
 
-        private void onTypes(InputBinaryList typesList) {
-            for (BinaryInput input : typesList) {
+        private void onTypes(InputBytesList typesList) {
+            for (BytesIn input : typesList) {
                 job.onType(TypeSerializer.instance.deserialize(input));
             }
         }
 
-        private void onMethods(InputBinaryList methodList) {
-            for (BinaryInput input : methodList) {
+        private void onMethods(InputBytesList methodList) {
+            for (BytesIn input : methodList) {
                 job.onMethod(MethodSerializer.instance.deserialize(input));
             }
         }

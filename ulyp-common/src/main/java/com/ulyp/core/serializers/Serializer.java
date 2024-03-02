@@ -1,11 +1,11 @@
 package com.ulyp.core.serializers;
 
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 
 public interface Serializer<T> {
 
-    T deserialize(BinaryInput input);
+    T deserialize(BytesIn input);
 
-    void serialize(BinaryOutput out, T object);
+    void serialize(BytesOut out, T object);
 }

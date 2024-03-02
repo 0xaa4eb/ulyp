@@ -1,7 +1,7 @@
 package com.ulyp.storage.util;
 
-import com.ulyp.core.bytes.BufferBinaryInput;
-import com.ulyp.core.mem.InputBinaryList;
+import com.ulyp.core.bytes.DirectBytesIn;
+import com.ulyp.core.mem.InputBytesList;
 import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.Preconditions;
 import com.ulyp.storage.reader.BinaryListWithAddress;
@@ -48,7 +48,7 @@ public class BinaryListFileReader implements AutoCloseable {
                         " bytes. Read " + bytesRead + " bytes");
         UnsafeBuffer buffer = new UnsafeBuffer();
         buffer.wrap(data, HEADER_SIZE, bytesToRead - HEADER_SIZE);
-        InputBinaryList in = new InputBinaryList(new BufferBinaryInput(buffer));
+        InputBytesList in = new InputBytesList(new DirectBytesIn(buffer));
         this.address += bytesRead;
         return BinaryListWithAddress.builder()
                 .address(address + HEADER_SIZE)
@@ -56,7 +56,7 @@ public class BinaryListFileReader implements AutoCloseable {
                 .build();
     }
 
-    public InputBinaryList read() throws IOException {
+    public InputBytesList read() throws IOException {
         BinaryListWithAddress data = readWithAddress();
         return data != null ? data.getBytes() : null;
     }

@@ -14,11 +14,11 @@ import java.io.IOException;
  * methods for writing objects with help of recorders, primitive data, arrays etc. It also allows nesting one output into another with recursion
  * depth tracking (it actually uses same output under the hood) and write position rollback
  */
-public interface BinaryOutput extends AutoCloseable, Borrowable {
+public interface BytesOut extends AutoCloseable, Borrowable {
 
     int recursionDepth();
 
-    BinaryOutput nest();
+    BytesOut nest();
 
     Mark mark();
 
@@ -47,20 +47,20 @@ public interface BinaryOutput extends AutoCloseable, Borrowable {
     void write(char val);
 
     /**
-     * Closing is only used for decrementing recursion depth, use {@link BinaryOutput#dispose()} to free the memory
+     * Closing is only used for decrementing recursion depth, use {@link BytesOut#dispose()} to free the memory
      */
     DirectBuffer copy();
 
     void close() throws RuntimeException;
 
-    int writeTo(BinaryOutputSink sink) throws IOException;
+    int writeTo(BytesOutputSink sink) throws IOException;
 
     @SneakyThrows
     @TestOnly
-    default BinaryInput flip() {
+    default BytesIn flip() {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(output);
         writeTo(bufferedOutputStream);
-        return new BufferBinaryInput(new UnsafeBuffer(output.toByteArray()));
+        return new DirectBytesIn(new UnsafeBuffer(output.toByteArray()));
     }
 }

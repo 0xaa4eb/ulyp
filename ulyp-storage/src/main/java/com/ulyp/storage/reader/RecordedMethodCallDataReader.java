@@ -3,7 +3,7 @@ package com.ulyp.storage.reader;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
-import com.ulyp.core.bytes.BufferBinaryInput;
+import com.ulyp.core.bytes.DirectBytesIn;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
@@ -26,7 +26,7 @@ class RecordedMethodCallDataReader implements Closeable {
     public RecordedEnterMethodCall readEnterMethodCall(long addr, ReadableRepository<Integer, Type> typeRepository) {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
-            BufferBinaryInput input = new BufferBinaryInput(new UnsafeBuffer(bytes));
+            DirectBytesIn input = new DirectBytesIn(new UnsafeBuffer(bytes));
             input.readByte();
             return RecordedEnterMethodCallSerializer.deserialize(input, typeRepository);
         } catch (IOException e) {
@@ -41,7 +41,7 @@ class RecordedMethodCallDataReader implements Closeable {
     public RecordedExitMethodCall readExitMethodCall(long addr, ReadableRepository<Integer, Type> typeRepository) {
         try {
             byte[] bytes = reader.readBytes(addr, 8 * 1024);
-            BufferBinaryInput input = new BufferBinaryInput(new UnsafeBuffer(bytes));
+            DirectBytesIn input = new DirectBytesIn(new UnsafeBuffer(bytes));
             input.readByte(); // TODO this is ugly
             return RecordedExitMethodCallSerializer.deserialize(input, typeRepository);
         } catch (IOException e) {

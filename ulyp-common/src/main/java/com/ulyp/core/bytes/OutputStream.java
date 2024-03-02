@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Simple output stream which allows writing off-heap buffers. Not thread-safe
  */
-public interface OutputStream extends BinaryOutputSink {
+public interface OutputStream extends BytesOutputSink {
 
     void flush() throws IOException;
 

@@ -7,8 +7,8 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.repository.ReadableRepository;
 
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class RecordedExitMethodCallSerializer {
 
     public static final byte EXIT_METHOD_CALL_ID = 2;
 
-    public void serializeExitMethodCall(BinaryOutput out, int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
+    public void serializeExitMethodCall(BytesOut out, int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
         out.write(EXIT_METHOD_CALL_ID);
         out.write(callId);
         out.write(thrown);
@@ -47,7 +47,7 @@ public class RecordedExitMethodCallSerializer {
         }
     }
 
-    private static ObjectRecord deserializeObject(BinaryInput input, ReadableRepository<Integer, Type> typeResolver) {
+    private static ObjectRecord deserializeObject(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
         int typeId = input.readInt();
         byte recorderId = input.readByte();
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
@@ -59,7 +59,7 @@ public class RecordedExitMethodCallSerializer {
         );
     }
 
-    public static RecordedExitMethodCall deserialize(BinaryInput input, ReadableRepository<Integer, Type> typeResolver) {
+    public static RecordedExitMethodCall deserialize(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
 
         int callId = input.readInt();
         boolean thrown = input.readBoolean();

@@ -14,14 +14,14 @@ import java.util.List;
  * Growable binary output which requests page by page from the specified allocator. When container grows a new page is
  * requested and no copying happens
  */
-public class PagedMemBinaryOutput extends AbstractBinaryOutput {
+public class PagedMemBytesOut extends AbstractBytesOut {
 
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
 
     private final MemPageAllocator pageAllocator;
     private final List<MemPage> pages;
 
-    public PagedMemBinaryOutput(MemPageAllocator pageAllocator) {
+    public PagedMemBytesOut(MemPageAllocator pageAllocator) {
         this.pageAllocator = pageAllocator;
         this.pages = new ArrayList<>();
         this.pages.add(pageAllocator.allocate());
@@ -39,7 +39,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
 
         @Override
         public void rollback() {
-            PagedMemBinaryOutput.this.position = markPos;
+            PagedMemBytesOut.this.position = markPos;
         }
 
         @Override
@@ -209,7 +209,7 @@ public class PagedMemBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public int writeTo(BinaryOutputSink sink) throws IOException {
+    public int writeTo(BytesOutputSink sink) throws IOException {
         int totalBytesWritten = 0;
         int lastTouchedPage = position >> PageConstants.PAGE_BITS;
         for (int i = 0; i < lastTouchedPage; i++) {

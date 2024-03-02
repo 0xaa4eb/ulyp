@@ -15,7 +15,7 @@ import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
-import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.SmallObjectPool;
 import com.ulyp.core.util.SystemPropertyUtil;
@@ -149,7 +149,7 @@ public class RecordingQueue implements AutoCloseable {
             }
         } else {
             try (SmallObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
-                BufferBinaryOutput output = new BufferBinaryOutput(new UnsafeBuffer(buffer.get()));
+                BufferBytesOut output = new BufferBytesOut(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);
                     return new QueuedRecordedObject(type, recorder.getId(), output.copy());

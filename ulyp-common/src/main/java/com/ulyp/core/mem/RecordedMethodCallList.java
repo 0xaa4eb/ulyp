@@ -1,7 +1,7 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.*;
-import com.ulyp.core.bytes.PagedMemBinaryOutput;
+import com.ulyp.core.bytes.PagedMemBytesOut;
 import com.ulyp.core.serializers.RecordedEnterMethodCallSerializer;
 import com.ulyp.core.serializers.RecordedExitMethodCallSerializer;
 import org.jetbrains.annotations.TestOnly;
@@ -14,17 +14,17 @@ public class RecordedMethodCallList {
     public static final byte ENTER_METHOD_CALL_ID = 1;
     public static final int WIRE_ID = 2;
 
-    private final OutputBinaryList out;
+    private final OutputBytesList out;
 
     @TestOnly
-    public RecordedMethodCallList(int recordingId, OutputBinaryList writeBinaryList) {
+    public RecordedMethodCallList(int recordingId, OutputBytesList writeBinaryList) {
         this.out = writeBinaryList;
 
         writeBinaryList.add(out -> out.write(recordingId));
     }
 
     public RecordedMethodCallList(int recordingId, MemPageAllocator pageAllocator) {
-        this.out = new OutputBinaryList(WIRE_ID, new PagedMemBinaryOutput(pageAllocator));
+        this.out = new OutputBytesList(WIRE_ID, new PagedMemBytesOut(pageAllocator));
 
         out.add(out -> out.write(recordingId));
     }
@@ -42,7 +42,7 @@ public class RecordedMethodCallList {
     }
 
     private void addExitMethodCall(int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
-        OutputBinaryList.Writer writer = out.writer();
+        OutputBytesList.Writer writer = out.writer();
         RecordedExitMethodCallSerializer.instance.serializeExitMethodCall(writer, callId, typeResolver, thrown, returnValue, nanoTime);
         writer.commit();
     }
@@ -52,7 +52,7 @@ public class RecordedMethodCallList {
     }
 
     public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
-        OutputBinaryList.Writer writer = out.writer();
+        OutputBytesList.Writer writer = out.writer();
         RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, callId, methodId, typeResolver, callee, args, nanoTime);
         writer.commit();
     }
@@ -69,7 +69,7 @@ public class RecordedMethodCallList {
         return out.bytesWritten();
     }
 
-    public OutputBinaryList toBytes() {
+    public OutputBytesList toBytes() {
         return out;
     }
 }

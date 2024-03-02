@@ -10,21 +10,20 @@ import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.charset.StandardCharsets;
 
-public class BufferBinaryInput implements BinaryInput {
+/**
+ * Allows to read from direct buffer
+ */
+public class DirectBytesIn implements BytesIn {
 
     private final DirectBuffer buffer;
     private int pos = 0;
 
-    public BufferBinaryInput(DirectBuffer buffer) {
+    public DirectBytesIn(DirectBuffer buffer) {
         this.buffer = buffer;
     }
 
-    public BufferBinaryInput(byte[] value) {
+    public DirectBytesIn(byte[] value) {
         this.buffer = new UnsafeBuffer(value);
-    }
-
-    public BufferBinaryInput(byte[] value, int length) {
-        this.buffer = new UnsafeBuffer(value, 0, length);
     }
 
     @Override
@@ -72,19 +71,19 @@ public class BufferBinaryInput implements BinaryInput {
     }
 
     @Override
-    public BinaryInput readBytes() {
+    public BytesIn readBytes() {
         int length = readInt();
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, pos, length);
         pos += length;
-        return new BufferBinaryInput(newBuf);
+        return new DirectBytesIn(newBuf);
     }
 
     @Override
-    public BinaryInput readBytes(int offset, int length) {
+    public BytesIn readBytes(int offset, int length) {
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, offset, length);
-        return new BufferBinaryInput(newBuf);
+        return new DirectBytesIn(newBuf);
     }
 
     @Override
