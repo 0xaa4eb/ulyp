@@ -10,6 +10,7 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.function.Supplier;
 
+@Fork(jvmArgsPrepend = {"-Xms6G", "-Xmx6G"})
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
 
