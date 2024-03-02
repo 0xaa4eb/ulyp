@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 30)
 public class H2Benchmark extends RecordingBenchmark {
 
-    public static final int INSERTS_PER_INVOCATION = 100;
+    public static final int INSERTS_PER_INVOCATION = 5000;
 
     private Connection connection;
     private int id = 0;
@@ -119,6 +119,7 @@ public class H2Benchmark extends RecordingBenchmark {
                     prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
                     prep.execute();
                 }
+                connection.commit();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

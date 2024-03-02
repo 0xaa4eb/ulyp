@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 10)
 @Measurement(iterations = 30)
 public class SpringHibernateBenchmark extends RecordingBenchmark {
