@@ -21,25 +21,19 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         return x + y + z;
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public long baseline() {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public long instrumented() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
@@ -52,8 +46,6 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
         "-Dulyp.metrics",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",

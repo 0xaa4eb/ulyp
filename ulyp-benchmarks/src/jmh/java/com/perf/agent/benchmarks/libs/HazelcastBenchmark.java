@@ -47,47 +47,26 @@ public class HazelcastBenchmark extends RecordingBenchmark {
         instance2.shutdown();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void baseline() {
         put();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.HazelcastBenchmark.zxc",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"},
-            value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.HazelcastBenchmark.zxc", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         put();
     }
 
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.HazelcastBenchmark.put",
-            "-Dulyp.constructors",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.collections=JAVA"},
-            value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.HazelcastBenchmark.put", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
         put();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.HazelcastBenchmark.put",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"},
-            value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.HazelcastBenchmark.put", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void syncRecord(Counters counters) {
         execSyncRecord(counters, this::put);

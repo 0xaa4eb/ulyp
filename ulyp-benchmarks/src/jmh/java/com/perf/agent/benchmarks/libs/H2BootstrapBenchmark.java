@@ -46,30 +46,21 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
         connection.close();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = 3)
     @Benchmark
     public void baseline() {
         run();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.asdasd",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.asdasd", value = 3)
     @Benchmark
     public void instrumented() {
         run();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF"
     }, value = 3)
     @Benchmark
     public void record() {
@@ -77,8 +68,6 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.constructors"

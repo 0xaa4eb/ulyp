@@ -19,29 +19,20 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
     @Param({"250000"})
     private int callCount;
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int baseline() {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int instrumented() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
@@ -50,11 +41,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark

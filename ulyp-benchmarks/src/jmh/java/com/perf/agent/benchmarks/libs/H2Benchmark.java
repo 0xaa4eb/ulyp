@@ -58,45 +58,25 @@ public class H2Benchmark extends RecordingBenchmark {
         connection.close();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void baseline() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.asdasd",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2DatabaseBenchmark.asdasd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void syncRecord(Counters counters) {
         execSyncRecord(counters, this::insertRow);

@@ -1,5 +1,6 @@
 package com.perf.agent.benchmarks;
 
+import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.util.AgentHelper;
 import com.ulyp.core.metrics.Counter;
@@ -10,7 +11,14 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.function.Supplier;
 
-@Fork(jvmArgsPrepend = {"-Xms6G", "-Xmx6G"})
+@Fork(jvmArgsPrepend = {
+        "-Xms6G",
+        "-Xmx6G",
+        BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.constructors",
+        "-Dulyp.collections=JAVA"
+})
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
 

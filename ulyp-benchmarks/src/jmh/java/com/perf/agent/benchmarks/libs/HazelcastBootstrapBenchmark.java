@@ -17,43 +17,25 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 1)
 public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = 3)
     @Benchmark
     public void baseline() {
         run();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.xcjznfgasd",
-            "-Dulyp.constructors",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.xcjznfgasd", value = 3)
     @Benchmark
     public void instrumented() {
         run();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ", **.HazelcastBootstrapBenchmark.run",
-            "-Dulyp.constructors",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ", **.HazelcastBootstrapBenchmark.run", value = 3)
     @Benchmark
     public void record() {
         run();
     }
 
-    @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.run",
-        "-Dulyp.constructors",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.HazelcastBootstrapBenchmark.run", value = 3)
     @Benchmark
     public void syncRecord(Counters counters) {
         execSyncRecord(counters, this::run);

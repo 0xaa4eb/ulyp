@@ -55,30 +55,21 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
         connectionFactory = null;
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void baseline() {
         sendMsg();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc",
-            "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         sendMsg();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-            "-Dulyp.constructors",
             "-Dulyp.metrics",
-            "-Dulyp.collections=JAVA",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
@@ -87,11 +78,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
     }, value = BenchmarkConstants.FORKS)
