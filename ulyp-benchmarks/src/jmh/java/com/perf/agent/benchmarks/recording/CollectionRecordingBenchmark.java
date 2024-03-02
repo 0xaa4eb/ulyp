@@ -19,47 +19,34 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
     @Param({"250000"})
     private int callCount;
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeBaseline() {
+    public int baseline() {
+        return doCompute();
+    }
+
+    @Fork(jvmArgs = "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
+    @Benchmark
+    public int instrumented() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.CollectionRecordingBenchmark.sdjfhgsdhjfsd",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
-    @Benchmark
-    public int computeInstrumented() {
-        return doCompute();
-    }
-
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeRecord() {
+    public int record() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.collections=JAVA",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeRecordSync(Counters counters) throws InterruptedException {
-        return execRecordAndSync(counters, this::doCompute);
+    public int syncRecord(Counters counters) throws InterruptedException {
+        return execSyncRecord(counters, this::doCompute);
     }
 
     private List<Object> foo(List<String> a, List<Integer> b, List<Object> c) {

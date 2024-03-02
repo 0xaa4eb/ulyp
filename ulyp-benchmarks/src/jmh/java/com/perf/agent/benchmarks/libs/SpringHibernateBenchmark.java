@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 10)
 @Measurement(iterations = 30)
 public class SpringHibernateBenchmark extends RecordingBenchmark {
@@ -55,48 +55,27 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
         departmentService.removeAll();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleBaseline() {
+    public void baseline() {
         departmentService.shufflePeople();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleInstrumented() {
+    public void instrumented() {
         departmentService.shufflePeople();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.DepartmentService.shufflePeople",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.DepartmentService.shufflePeople", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleRecord() {
+    public void record() {
         departmentService.shufflePeople();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.DepartmentService.shufflePeople",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.DepartmentService.shufflePeople", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void shufflePeopleRecordSync(Counters counters) {
-        execRecordAndSync(counters, () -> departmentService.shufflePeople());
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, () -> departmentService.shufflePeople());
     }
 }

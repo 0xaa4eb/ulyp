@@ -53,46 +53,28 @@ public class SpringHibernateBootstrapBenchmark extends RecordingBenchmark {
         departmentService.removeAll();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void boostrapBaseline() {
+    public void baseline() {
         runTest();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.asdasd",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.asdasd", value = 3)
     @Benchmark
-    public void boostrapInstrumented() {
+    public void instrumented() {
         runTest();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest", value = 3)
     @Benchmark
-    public void boostrapRecord() {
+    public void record() {
         runTest();
     }
 
-    @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest",
-        "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-        "-Dulyp.constructors"
-    }, value = 3)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest", value = 3)
     @Benchmark
-    public void boostrapRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::runTest);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::runTest);
     }
 
     private void runTest() {

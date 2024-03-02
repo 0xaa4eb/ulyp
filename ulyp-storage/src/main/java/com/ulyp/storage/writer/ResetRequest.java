@@ -1,8 +1,8 @@
 package com.ulyp.storage.writer;
 
 import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedTypeList;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 public class ResetRequest {
 
     private final ProcessMetadata processMetadata;
-    private final TypeList types;
-    private final MethodList methods;
+    private final SerializedTypeList types;
+    private final SerializedMethodList methods;
 }
 

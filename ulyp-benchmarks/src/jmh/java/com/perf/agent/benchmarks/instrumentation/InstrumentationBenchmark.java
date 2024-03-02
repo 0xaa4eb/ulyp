@@ -26,7 +26,7 @@ public class InstrumentationBenchmark {
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
+            BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.DoesntExist.zxc,**.X000sadasd.vdmff,**.X10f0sadasd.vdmff,**.X50ssaadasd.vdmff,**.X510sadasd.vdmnsbd"
     }, value = BenchmarkConstants.FORKS)

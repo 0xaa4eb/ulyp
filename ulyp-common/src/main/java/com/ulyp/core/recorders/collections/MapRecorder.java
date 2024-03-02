@@ -8,8 +8,8 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.Setter;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +42,7 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         int recordedItems = input.readInt();
 
         if (recordedItems == RECORDED_ITEMS_FLAG) {
@@ -61,8 +61,8 @@ public class MapRecorder extends ObjectRecorder {
     }
 
     @Override
-    public void write(Object object, BinaryOutput nout, TypeResolver typeResolver) throws Exception {
-        try (BinaryOutput out = nout.nest()) {
+    public void write(Object object, BytesOut nout, TypeResolver typeResolver) throws Exception {
+        try (BytesOut out = nout.nest()) {
             if (active) {
                 Mark mark = out.mark();
                 out.write(RECORDED_ITEMS_FLAG);
@@ -94,8 +94,8 @@ public class MapRecorder extends ObjectRecorder {
         }
     }
 
-    private void writeMapIdentity(Object object, BinaryOutput out, TypeResolver runtime) throws Exception {
-        try (BinaryOutput nestedOut = out.nest()) {
+    private void writeMapIdentity(Object object, BytesOut out, TypeResolver runtime) throws Exception {
+        try (BytesOut nestedOut = out.nest()) {
             nestedOut.write(RECORDED_IDENTITY_ONLY);
             ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, nestedOut, runtime);
         }

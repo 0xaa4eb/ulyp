@@ -8,22 +8,22 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class BinaryInputOutputTest {
+public class BytesInOutputTest {
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
-    private final BinaryOutput out = new BufferBinaryOutput(buffer);
-    private final BinaryInput in = new BufferBinaryInput(buffer);
+    private final BytesOut out = new BufferBytesOut(buffer);
+    private final BytesIn in = new DirectBytesIn(buffer);
 
     @Test
     public void testReadWriteBytes() {
         byte[] buf = new byte[] {5, 2, 127, -128, -120, 0, 5, 120, 54};
-        try (BinaryOutput nestedOut = out.nest()) {
+        try (BytesOut nestedOut = out.nest()) {
             nestedOut.write(new UnsafeBuffer(buf));
         }
 
-        BinaryInput binaryInputResult = in.readBytes();
+        BytesIn bytesInResult = in.readBytes();
         for (int i = 0; i < buf.length; i++) {
-            Assert.assertEquals(buf[i], binaryInputResult.readByte());
+            Assert.assertEquals(buf[i], bytesInResult.readByte());
         }
     }
 
@@ -36,7 +36,7 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testNestedReadWriteString() {
-        try (BinaryOutput nested = out.nest()) {
+        try (BytesOut nested = out.nest()) {
             nested.write("abc");
         }
 
@@ -46,7 +46,7 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testRollingBack() {
-        try (BinaryOutput nested1 = out.nest()) {
+        try (BytesOut nested1 = out.nest()) {
             Mark mark = nested1.mark();
             nested1.write("abc");
             mark.rollback();
@@ -59,7 +59,7 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testSimpleReadWriteUtf8String() {
-        try (BinaryOutput nested = out.nest()) {
+        try (BytesOut nested = out.nest()) {
             nested.write("АБЦ");
         }
 
@@ -68,7 +68,7 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testSimpleReadWriteUtf8StringChineese() {
-        try (BinaryOutput nested = out.nest()) {
+        try (BytesOut nested = out.nest()) {
             nested.write("早上好");
         }
 
@@ -77,7 +77,7 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testComplexReadWrite() {
-        try (BinaryOutput nested = out.nest()) {
+        try (BytesOut nested = out.nest()) {
             nested.write(2L);
             nested.write((String) null);
             nested.write(6L);
@@ -90,9 +90,9 @@ public class BinaryInputOutputTest {
 
     @Test
     public void testNestedAppender() {
-        try (BinaryOutput nested1 = out.nest()) {
+        try (BytesOut nested1 = out.nest()) {
             nested1.write(2L);
-            try (BinaryOutput nested2 = nested1.nest()) {
+            try (BytesOut nested2 = nested1.nest()) {
                 nested2.write("你吃了吗?");
             }
             nested1.write(6L);

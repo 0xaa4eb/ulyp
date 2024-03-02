@@ -1,8 +1,8 @@
 package com.ulyp.core.recorders.bytes;
 
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
-import com.ulyp.core.bytes.PagedMemBinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.bytes.PagedMemBytesOut;
 import com.ulyp.core.mem.PageConstants;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Assert;
@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
-public class PagedMemBinaryOutputTest {
+public class PagedMemBytesOutTest {
 
     public static final int ITERATIONS = 100;
 
@@ -22,7 +22,7 @@ public class PagedMemBinaryOutputTest {
     public void testReadWriteInts() {
         for (int i = 0; i < ITERATIONS; i++) {
             List<Object> written = new ArrayList<>();
-            BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
+            BytesOut out = new PagedMemBytesOut(new TestPageAllocator());
 
             while (out.position() < PageConstants.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(5);
@@ -45,7 +45,7 @@ public class PagedMemBinaryOutputTest {
                 }
             }
 
-            BinaryInput input = out.flip();
+            BytesIn input = out.flip();
 
             for (Object value : written) {
                 if (value instanceof Character) {
@@ -69,7 +69,7 @@ public class PagedMemBinaryOutputTest {
     public void testReadWriteVariousObjects() {
         for (int i = 0; i < ITERATIONS; i++) {
             List<Object> written = new ArrayList<>();
-            BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
+            BytesOut out = new PagedMemBytesOut(new TestPageAllocator());
 
             while (out.position() < PageConstants.PAGE_SIZE * 30) {
                 int rnd = ThreadLocalRandom.current().nextInt(8);
@@ -111,7 +111,7 @@ public class PagedMemBinaryOutputTest {
                 }
             }
 
-            BinaryInput input = out.flip();
+            BytesIn input = out.flip();
 
             for (Object value : written) {
                 if (value instanceof Character) {
@@ -161,7 +161,7 @@ public class PagedMemBinaryOutputTest {
 
     private void testReadWriteAtArbitraryPosAllAddresses(int shift) {
         int writesCount = 3 * PageConstants.PAGE_SIZE / Integer.BYTES + 100;
-        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
+        BytesOut out = new PagedMemBytesOut(new TestPageAllocator());
 
         for (int b = 0; b < shift; b++) {
             out.write((byte) 5);
@@ -175,7 +175,7 @@ public class PagedMemBinaryOutputTest {
             out.writeAt(offsets[i], i + 1);
         }
 
-         BinaryInput input = out.flip();
+         BytesIn input = out.flip();
 
         for (int b = 0; b < shift; b++) {
             input.readByte();
@@ -188,7 +188,7 @@ public class PagedMemBinaryOutputTest {
     @Test
     public void testReadWriteAtArbitraryPos() {
         int intsPerPage = PageConstants.PAGE_SIZE / Integer.BYTES;
-        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
+        BytesOut out = new PagedMemBytesOut(new TestPageAllocator());
         for (int i = 0; i < intsPerPage - 1; i++) {
             out.write(i);
         }
@@ -200,7 +200,7 @@ public class PagedMemBinaryOutputTest {
 
         out.writeAt(offset, 55);
 
-        BinaryInput input = out.flip();
+        BytesIn input = out.flip();
         for (int i = 0; i < intsPerPage - 1; i++) {
             input.readInt();
         }
@@ -210,7 +210,7 @@ public class PagedMemBinaryOutputTest {
 
     @Test
     public void testByteArrayWriteSpanMultiplePages() {
-        BinaryOutput out = new PagedMemBinaryOutput(new TestPageAllocator());
+        BytesOut out = new PagedMemBytesOut(new TestPageAllocator());
         int intsCount = (PageConstants.PAGE_SIZE / (Integer.BYTES * 2)) + 1;
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
@@ -219,7 +219,7 @@ public class PagedMemBinaryOutputTest {
         ThreadLocalRandom.current().nextBytes(bytes);
         out.write(bytes);
 
-        BinaryInput input = out.flip();
+        BytesIn input = out.flip();
 
         for (int i = 0; i < intsCount; i++) {
             assertEquals(i, input.readInt());
@@ -229,11 +229,11 @@ public class PagedMemBinaryOutputTest {
 
     private void testWriteManyInts(int intsCount) {
         TestPageAllocator pageAllocator = new TestPageAllocator();
-        BinaryOutput out = new PagedMemBinaryOutput(pageAllocator);
+        BytesOut out = new PagedMemBytesOut(pageAllocator);
         for (int i = 0; i < intsCount; i++) {
             out.write(i);
         }
-        BinaryInput input = out.flip();
+        BytesIn input = out.flip();
 
         assertEquals(intsCount * Integer.BYTES, input.available());
         for (int i = 0; i < intsCount; i++) {
@@ -241,7 +241,7 @@ public class PagedMemBinaryOutputTest {
         }
     }
 
-    private static void assertBytesEquals(byte[] expected, BinaryInput actual) {
+    private static void assertBytesEquals(byte[] expected, BytesIn actual) {
         for (byte b : expected) {
             Assert.assertEquals(b, actual.readByte());
         }

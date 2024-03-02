@@ -5,8 +5,8 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.IdentityRecorder;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,13 +27,13 @@ public class ByteArrayRecorder extends IdentityRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BinaryInput input, ByIdTypeResolver typeResolver) {
+    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         ObjectRecord identityRecord = super.read(type, input, typeResolver);
         return new ByteArrayRecord(type, identityRecord.hashCode(), input.readInt());
     }
 
     @Override
-    public void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception {
+    public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         super.write(object, out, typeResolver);
         byte[] array = (byte[]) object;
         out.write(array.length);

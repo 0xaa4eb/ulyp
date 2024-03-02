@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 30)
 public class H2Benchmark extends RecordingBenchmark {
 
-    public static final int INSERTS_PER_INVOCATION = 100;
+    public static final int INSERTS_PER_INVOCATION = 500;
 
     private Connection connection;
     private int id = 0;
@@ -58,48 +58,28 @@ public class H2Benchmark extends RecordingBenchmark {
         connection.close();
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertNoAgent() {
+    public void baseline() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.asdasd",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.asdasd", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertInstrumented() {
+    public void instrumented() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.insertRow", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertRecord() {
+    public void record() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.H2DatabaseBenchmark.insertRow",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.insertRow", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void insertRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::insertRow);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::insertRow);
     }
 
     private void insertRow() {
@@ -119,6 +99,7 @@ public class H2Benchmark extends RecordingBenchmark {
                     prep.setString(11, String.valueOf(ThreadLocalRandom.current().nextLong()));
                     prep.execute();
                 }
+                connection.commit();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

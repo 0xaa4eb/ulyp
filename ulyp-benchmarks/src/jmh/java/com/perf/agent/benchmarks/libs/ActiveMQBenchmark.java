@@ -14,8 +14,10 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
-@Measurement(iterations = 30)
+@Measurement(iterations = 20)
 public class ActiveMQBenchmark extends RecordingBenchmark {
+
+    private static final int MESSAGE_COUNT = 5000;
 
     private ActiveMQConnectionFactory connectionFactory;
     private Connection connection;
@@ -32,55 +34,57 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
         session.close();
     }
 
+    @TearDown(Level.Invocation)
+    public void drainQueue() throws JMSException {
+        try {
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageConsumer consumer = session.createConsumer(queue);
+            for (int i = 0; i < MESSAGE_COUNT; i++) {
+                consumer.receive();
+            }
+            consumer.close();
+            session.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @TearDown(Level.Trial)
     public void teardown() throws JMSException {
         connection.close();
         connectionFactory = null;
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void sendMsgBaseline() {
+    public void baseline() {
+        sendMsg();
+    }
+
+    @Fork(jvmArgs = "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc", value = BenchmarkConstants.FORKS)
+    @Benchmark
+    public void instrumented() {
         sendMsg();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc",
-            "-Dulyp.constructors"
-    }, value = BenchmarkConstants.FORKS)
-    @Benchmark
-    public void sendMsgInstrumented() {
-        sendMsg();
-    }
-
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-            "-Dulyp.constructors",
             "-Dulyp.metrics",
-            "-Dulyp.collections=JAVA",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void sendMsgRecord() {
+    public void record() {
         sendMsg();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-            "-Dulyp.constructors",
-            "-Dulyp.collections=JAVA",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public void sendMsgRecordSync(Counters counters) {
-        execRecordAndSync(counters, this::sendMsg);
+    public void syncRecord(Counters counters) {
+        execSyncRecord(counters, this::sendMsg);
     }
 
     private void sendMsg() {
@@ -88,7 +92,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer producer = session.createProducer(queue);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < MESSAGE_COUNT; i++) {
                 ActiveMQTextMessage msg = new ActiveMQTextMessage();
                 msg.setText(String.valueOf(ThreadLocalRandom.current().nextInt()));
                 producer.send(msg);

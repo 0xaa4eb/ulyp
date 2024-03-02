@@ -1,18 +1,20 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.Method;
-import com.ulyp.core.bytes.BufferBinaryOutput;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.serializers.MethodSerializer;
+import lombok.Getter;
 import org.agrona.ExpandableDirectByteBuffer;
 
-public class MethodList {
+@Getter
+public class SerializedMethodList {
 
     public static final int WIRE_ID = 3;
 
-    private final OutputBinaryList bytes;
+    private final OutputBytesList bytes;
 
-    public MethodList() {
-        bytes = new OutputBinaryList(WIRE_ID, new BufferBinaryOutput(new ExpandableDirectByteBuffer()));
+    public SerializedMethodList() {
+        bytes = new OutputBytesList(WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()));
     }
 
     public void add(Method method) {
@@ -21,10 +23,6 @@ public class MethodList {
 
     public int size() {
         return bytes.size();
-    }
-
-    public OutputBinaryList getBytes() {
-        return bytes;
     }
 
     public int byteLength() {

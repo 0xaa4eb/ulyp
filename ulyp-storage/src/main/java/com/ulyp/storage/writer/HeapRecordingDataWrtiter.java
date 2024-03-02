@@ -12,9 +12,9 @@ import com.ulyp.storage.reader.RecordedMethodCalls;
 import lombok.Getter;
 import org.jetbrains.annotations.TestOnly;
 
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.storage.StorageException;
 
 @TestOnly
@@ -46,7 +46,7 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(TypeList types) throws StorageException {
+    public void write(SerializedTypeList types) throws StorageException {
         types.getBytes().flip().forEach(input -> {
             Type type = TypeSerializer.instance.deserialize(input);
             this.types.store(type.getId(), type);
@@ -54,12 +54,12 @@ public class HeapRecordingDataWrtiter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(MethodList methods) throws StorageException {
+    public void write(SerializedMethodList methods) throws StorageException {
         methods.getBytes().flip().forEach(input -> this.methods.add(MethodSerializer.instance.deserialize(input)));
     }
 
     @Override
-    public void write(RecordedMethodCallList callRecords) throws StorageException {
+    public void write(SerializedRecordedMethodCallList callRecords) throws StorageException {
         RecordedMethodCalls calls = new RecordedMethodCalls(callRecords.toBytes().flip());
         calls.iterator(types).forEachRemaining(this.callRecords::add);
     }

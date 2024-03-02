@@ -1,8 +1,8 @@
 package com.ulyp.core.serializers;
 
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
     public static final RecordingMetadataSerializer instance = new RecordingMetadataSerializer();
 
     @Override
-    public RecordingMetadata deserialize(BinaryInput input) {
+    public RecordingMetadata deserialize(BytesIn input) {
         int recordingId = input.readInt();
         long threadId = input.readLong();
         long recordingStartedEpochMillis = input.readLong();
@@ -38,7 +38,7 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
     }
 
     @Override
-    public void serialize(BinaryOutput out, RecordingMetadata recordingMetadata) {
+    public void serialize(BytesOut out, RecordingMetadata recordingMetadata) {
         out.write(recordingMetadata.getId());
         out.write(recordingMetadata.getThreadId());
         out.write(recordingMetadata.getRecordingStartedEpochMillis());

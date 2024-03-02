@@ -5,6 +5,8 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.exception.RecordingException;
 import com.ulyp.core.recorders.*;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.BinaryInput;
 import com.ulyp.core.bytes.BinaryOutput;
 import com.ulyp.core.recorders.*;
@@ -23,7 +25,7 @@ public class RecordedEnterMethodCallSerializer {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
 
-    public void serializeEnterMethodCall(BinaryOutput out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void serializeEnterMethodCall(BytesOut out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
         out.write(callId);
         out.write(methodId);
@@ -32,7 +34,7 @@ public class RecordedEnterMethodCallSerializer {
         serializeCallee(out, typeResolver, callee);
     }
 
-    private static void serializeCallee(BinaryOutput out, TypeResolver typeResolver, Object callee) {
+    private static void serializeCallee(BytesOut out, TypeResolver typeResolver, Object callee) {
         if (callee != null) {
 
             ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
@@ -56,7 +58,7 @@ public class RecordedEnterMethodCallSerializer {
         }
     }
 
-    private static void serializeArgs(BinaryOutput out, TypeResolver typeResolver, Object[] args) {
+    private static void serializeArgs(BytesOut out, TypeResolver typeResolver, Object[] args) {
         out.write(args.length);
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             Object argValue = args[argIndex];
@@ -79,7 +81,7 @@ public class RecordedEnterMethodCallSerializer {
         }
     }
 
-    private static ObjectRecord deserializeObject(BinaryInput input, ReadableRepository<Integer, Type> typeResolver) {
+    private static ObjectRecord deserializeObject(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
         int typeId = input.readInt();
         byte recorderId = input.readByte();
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
@@ -91,7 +93,7 @@ public class RecordedEnterMethodCallSerializer {
         );
     }
 
-    public static RecordedEnterMethodCall deserialize(BinaryInput input, ReadableRepository<Integer, Type> typeResolver) {
+    public static RecordedEnterMethodCall deserialize(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
         int callId = input.readInt();
         int methodId = input.readInt();
         long nanoTime = input.readLong();

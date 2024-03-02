@@ -1,7 +1,6 @@
 package com.ulyp.core.bytes;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +8,16 @@ import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-// writes to provided buffer
-public class BufferBinaryOutput extends AbstractBinaryOutput {
+/**
+ * Allows to write to direct buffer
+ */
+public class BufferBytesOut extends AbstractBytesOut {
 
     private final List<MarkImpl> unusedMarks = new ArrayList<>();
 
     protected final MutableDirectBuffer buffer;
 
-    public BufferBinaryOutput(MutableDirectBuffer buffer) {
+    public BufferBytesOut(MutableDirectBuffer buffer) {
         this.buffer = buffer;
     }
 
@@ -26,12 +27,12 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
 
         @Override
         public int writtenBytes() {
-            return BufferBinaryOutput.this.position - markPos;
+            return BufferBytesOut.this.position - markPos;
         }
 
         @Override
         public void rollback() {
-            BufferBinaryOutput.this.position = markPos;
+            BufferBytesOut.this.position = markPos;
         }
 
         @Override
@@ -61,7 +62,8 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
     }
 
     public void write(boolean value) {
-        write(value ? 1 : 0);
+        byte byteValue = value ? (byte) 1 : (byte) 0;
+        write(byteValue);
     }
 
     public void write(int value) {
@@ -106,7 +108,7 @@ public class BufferBinaryOutput extends AbstractBinaryOutput {
     }
 
     @Override
-    public int writeTo(BinaryOutputSink sink) throws IOException {
+    public int writeTo(BytesOutputSink sink) throws IOException {
         sink.write(buffer, position);
         return position;
     }

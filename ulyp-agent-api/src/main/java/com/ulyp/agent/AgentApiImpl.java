@@ -6,8 +6,8 @@ import com.ulyp.agent.api.RecordingEnabledResponse;
 import com.ulyp.agent.api.ResetRecordingFileRequest;
 import com.ulyp.agent.api.ResetRecordingFileResponse;
 import com.ulyp.core.*;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.ResetRequest;
@@ -50,7 +50,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
     @Override
     public void resetRecordingFile(ResetRecordingFileRequest request, StreamObserver<ResetRecordingFileResponse> responseObserver) {
         try {
-            MethodList methods = new MethodList();
+            SerializedMethodList methods = new SerializedMethodList();
             for (Method method : methodRepository.values()) {
                 methods.add(method);
                 if (LoggingSettings.DEBUG_ENABLED) {
@@ -58,7 +58,7 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
                 }
             }
 
-            TypeList types = new TypeList();
+            SerializedTypeList types = new SerializedTypeList();
             for (Type type : typeResolver.getAllResolved()) {
                 types.add(type);
                 if (LoggingSettings.DEBUG_ENABLED) {

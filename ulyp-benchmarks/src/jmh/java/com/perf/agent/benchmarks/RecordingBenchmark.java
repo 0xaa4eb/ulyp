@@ -1,5 +1,6 @@
 package com.perf.agent.benchmarks;
 
+import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.util.AgentHelper;
 import com.ulyp.core.metrics.Counter;
@@ -10,6 +11,14 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.function.Supplier;
 
+@Fork(jvmArgsPrepend = {
+        "-Xms6G",
+        "-Xmx6G",
+        BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
+        "-Dulyp.file=/tmp/test.dat",
+        "-Dulyp.constructors",
+        "-Dulyp.collections=JAVA"
+})
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
 
@@ -45,7 +54,7 @@ public class RecordingBenchmark {
         }
     }
 
-    public <T> void execRecordAndSync(Counters counters, Runnable runnable) {
+    public <T> void execSyncRecord(Counters counters, Runnable runnable) {
         Counter stallsCounter = AgentContext.getCtx().getMetrics().getOrCreateCounter("recording.queue.stalls");
         long stalls = stallsCounter.getValue();
         long bytes = AgentHelper.estimateBytesWritten();
@@ -55,7 +64,7 @@ public class RecordingBenchmark {
         counters.recordingQueueStalls = stallsCounter.getValue() - stalls;
     }
 
-    public <T> T execRecordAndSync(Counters counters, Supplier<T> supplier) {
+    public <T> T execSyncRecord(Counters counters, Supplier<T> supplier) {
         Counter stallsCounter = AgentContext.getCtx().getMetrics().getOrCreateCounter("recording.queue.stalls");
         long stalls = stallsCounter.getValue();
         long bytes = AgentHelper.estimateBytesWritten();

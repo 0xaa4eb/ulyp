@@ -1,13 +1,12 @@
 package com.ulyp.storage.writer;
 
 import java.time.Duration;
-import java.util.concurrent.TimeoutException;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.mem.MethodList;
-import com.ulyp.core.mem.RecordedMethodCallList;
-import com.ulyp.core.mem.TypeList;
+import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
+import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.storage.StorageException;
 
 public class BlackholeRecordingDataWriter implements RecordingDataWriter {
@@ -33,12 +32,12 @@ public class BlackholeRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(TypeList types) throws StorageException {
+    public void write(SerializedTypeList types) throws StorageException {
 
     }
 
     @Override
-    public void write(RecordedMethodCallList callRecords) throws StorageException {
+    public void write(SerializedRecordedMethodCallList callRecords) throws StorageException {
 
     }
 
@@ -48,7 +47,7 @@ public class BlackholeRecordingDataWriter implements RecordingDataWriter {
     }
 
     @Override
-    public void write(MethodList methods) throws StorageException {
+    public void write(SerializedMethodList methods) throws StorageException {
 
     }
 

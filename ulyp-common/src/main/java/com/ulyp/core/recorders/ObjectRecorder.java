@@ -3,8 +3,8 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.bytes.BinaryInput;
-import com.ulyp.core.bytes.BinaryOutput;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,9 +35,9 @@ public abstract class ObjectRecorder {
         return false;
     }
 
-    public abstract ObjectRecord read(@NotNull Type objectType, BinaryInput input, ByIdTypeResolver typeResolver);
+    public abstract ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver);
 
-    public abstract void write(Object object, BinaryOutput out, TypeResolver typeResolver) throws Exception;
+    public abstract void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception;
 
     @Override
     public String toString() {

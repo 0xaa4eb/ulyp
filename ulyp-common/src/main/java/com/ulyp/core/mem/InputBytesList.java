@@ -1,11 +1,11 @@
 package com.ulyp.core.mem;
 
 import com.ulyp.core.AddressableItemIterator;
-import com.ulyp.core.bytes.BinaryInput;
+import com.ulyp.core.bytes.BytesIn;
 
 import java.util.NoSuchElementException;
 
-public class InputBinaryList implements Iterable<BinaryInput> {
+public class InputBytesList implements Iterable<BytesIn> {
 
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int MAGIC_OFFSET = 0;
@@ -14,9 +14,9 @@ public class InputBinaryList implements Iterable<BinaryInput> {
     public static final int HEADER_LENGTH = ID_OFFSET + Integer.BYTES;
     private static final int RECORD_HEADER_LENGTH = Integer.BYTES;
 
-    private final BinaryInput bytesIn;
+    private final BytesIn bytesIn;
 
-    public InputBinaryList(BinaryInput bytesIn) {
+    public InputBytesList(BytesIn bytesIn) {
         this.bytesIn = bytesIn;
         if (bytesIn.readInt() != MAGIC) {
             throw new IllegalArgumentException("Magic is " + getMagic() + ", wrong buffer is provided");
@@ -36,7 +36,7 @@ public class InputBinaryList implements Iterable<BinaryInput> {
     }
 
     @Override
-    public AddressableItemIterator<BinaryInput> iterator() {
+    public AddressableItemIterator<BytesIn> iterator() {
         return new Iterator();
     }
 
@@ -44,7 +44,7 @@ public class InputBinaryList implements Iterable<BinaryInput> {
         return size() == 0;
     }
 
-    private class Iterator implements AddressableItemIterator<BinaryInput> {
+    private class Iterator implements AddressableItemIterator<BytesIn> {
 
         private int nextRecordAddress = HEADER_LENGTH;
         private int currentRecordAddress = -1;
@@ -59,13 +59,13 @@ public class InputBinaryList implements Iterable<BinaryInput> {
         }
 
         @Override
-        public BinaryInput next() {
+        public BytesIn next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             int pos = bytesIn.getPosition();
             int length = bytesIn.readInt();
-            BinaryInput wrappedBytes = bytesIn.readBytes(pos + RECORD_HEADER_LENGTH, length);
+            BytesIn wrappedBytes = bytesIn.readBytes(pos + RECORD_HEADER_LENGTH, length);
             currentRecordAddress = pos;
             nextRecordAddress += RECORD_HEADER_LENGTH + length;
             bytesIn.moveTo(nextRecordAddress);

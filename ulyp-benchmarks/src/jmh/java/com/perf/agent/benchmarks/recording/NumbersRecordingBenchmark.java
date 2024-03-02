@@ -21,25 +21,19 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         return x + y + z;
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public long computeBaseline() {
+    public long baseline() {
+        return doCompute();
+    }
+
+    @Fork(jvmArgs = "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
+    @Benchmark
+    public long instrumented() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.NumbersRecordingBenchmark.sdjfhgsdhjfsd"
-    }, value = BenchmarkConstants.FORKS)
-    @Benchmark
-    public long computeInstrumented() {
-        return doCompute();
-    }
-
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
@@ -47,21 +41,19 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    public long computeRecord() {
+    public long record() {
         return doCompute();
     }
 
     @Fork(jvmArgs = {
-        BenchmarkConstants.AGENT_PROP,
-        "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
         "-Dulyp.metrics",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
         "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public long computeRecordSync(Counters counters) {
-        return execRecordAndSync(counters, this::doCompute);
+    public long syncRecord(Counters counters) {
+        return execSyncRecord(counters, this::doCompute);
     }
 
     private Long doCompute() {

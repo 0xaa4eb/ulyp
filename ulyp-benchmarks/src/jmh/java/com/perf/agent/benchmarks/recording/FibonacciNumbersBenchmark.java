@@ -25,45 +25,35 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
         return compute(x - 2) + compute(x - 1);
     }
 
-    @Fork(value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeBaseline() {
+    public int baseline() {
+        return compute(18);
+    }
+
+    @Fork(jvmArgs = "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
+    @Benchmark
+    public int instrumented() {
         return compute(18);
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
-            "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd"
-    }, value = BenchmarkConstants.FORKS)
-    @Benchmark
-    public int computeInstrumented() {
-        return compute(18);
-    }
-
-    @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeAndRecord() {
+    public int record() {
         // TODO direct mem limit reached with 31
         return compute(18);
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
-            "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
             "-Dulyp.recording-queue.size=4194304"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
-    public int computeAndRecordSync(Counters counters) {
+    public int syncRecord(Counters counters) {
         // TODO direct mem limit reached with 31
-        return execRecordAndSync(counters, () -> compute(18));
+        return execSyncRecord(counters, () -> compute(18));
     }
 }

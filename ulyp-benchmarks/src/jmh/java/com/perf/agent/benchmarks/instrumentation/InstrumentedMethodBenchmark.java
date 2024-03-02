@@ -49,7 +49,7 @@ public class InstrumentedMethodBenchmark {
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
+            BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
@@ -61,7 +61,7 @@ public class InstrumentedMethodBenchmark {
     }
 
     @Fork(jvmArgs = {
-            BenchmarkConstants.AGENT_PROP,
+            BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
