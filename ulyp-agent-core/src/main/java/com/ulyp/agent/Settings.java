@@ -1,19 +1,18 @@
 package com.ulyp.agent;
 
+import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
+import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
-import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -121,6 +120,11 @@ public class Settings {
         String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
         String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
         StartRecordingMethods recordingStartMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
+        if (recordingStartMethods.isEmpty()) {
+            recordingStartMethods = StartRecordingMethods.of(
+                    new MethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
+            );
+        }
 
         String recordingDataFilePath = System.getProperty(FILE_PATH_PROPERTY);
         if (recordingDataFilePath == null) {
