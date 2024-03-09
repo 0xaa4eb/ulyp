@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -68,6 +69,30 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
         assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), is("-5112.9847"));
     }
 
+    @Test
+    public void testBoxedFloatSum() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("boxedFloatSum")
+        );
+
+        assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));
+        assertThat(((NumberRecord) root.getArgs().get(1)).getNumberPrintedText(), is("321.2453"));
+        assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), containsString("-5112.98"));
+    }
+
+    @Test
+    public void testPrimitiveFloatSum() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("primitiveFloatSum")
+        );
+
+        assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-5434.23"));
+        assertThat(((NumberRecord) root.getArgs().get(1)).getNumberPrintedText(), is("321.2453"));
+        assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), containsString("-5112.98"));
+    }
+
     public static class BoxedNumbersTestCases {
 
         public static int primitiveIntSum(int v1, int v2) {
@@ -78,7 +103,15 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
             return v1 + v2;
         }
 
+        public static float primitiveFloatSum(float v1, float v2) {
+            return v1 + v2;
+        }
+
         public static Integer boxedIntSum(Integer v1, Integer v2) {
+            return v1 + v2;
+        }
+
+        public static Float boxedFloatSum(Float v1, Float v2) {
             return v1 + v2;
         }
 
@@ -91,9 +124,11 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
         }
 
         public static void main(String[] args) {
-            System.out.println(BoxedNumbersTestCases.boxedIntSum(Integer.valueOf(-234), Integer.valueOf(23)));
-            System.out.println(BoxedNumbersTestCases.boxedDoubleSum(Double.valueOf(-5434.23), Double.valueOf(321.2453)));
-            System.out.println(BoxedNumbersTestCases.primitiveDoubleSum(Double.valueOf(-5434.23), Double.valueOf(321.2453)));
+            System.out.println(BoxedNumbersTestCases.boxedIntSum(-234, 23));
+            System.out.println(BoxedNumbersTestCases.boxedDoubleSum(-5434.23, 321.2453));
+            System.out.println(BoxedNumbersTestCases.boxedFloatSum(-5434.23f, 321.2453f));
+            System.out.println(BoxedNumbersTestCases.primitiveFloatSum(-5434.23f, 321.2453f));
+            System.out.println(BoxedNumbersTestCases.primitiveDoubleSum(-5434.23, 321.2453));
             System.out.println(BoxedNumbersTestCases.primitiveIntSum(-234, 23));
             BoxedNumbersTestCases.te(1L);
         }
