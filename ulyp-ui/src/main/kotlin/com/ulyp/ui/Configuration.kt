@@ -59,12 +59,8 @@ open class Configuration {
 
     @Bean
     @Lazy
-    open fun settingsView(
-        applicationContext: ApplicationContext,
-        settings: Settings,
-        themeManager: ThemeManager
-    ): SettingsView {
-        return SettingsView(settings, themeManager)
+    open fun settingsView(applicationContext: ApplicationContext, settings: Settings): SettingsView {
+        return SettingsView(settings)
     }
 
     @Bean

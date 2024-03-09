@@ -1,11 +1,8 @@
 package com.ulyp.ui
 
 import com.ulyp.ui.looknfeel.Theme
-import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.settings.Settings
-import com.ulyp.ui.settings.SimpleIntegerProperty
 import com.ulyp.ui.util.connect
-import javafx.beans.property.StringProperty
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
@@ -17,10 +14,7 @@ import java.net.URL
 import java.util.*
 
 
-class SettingsView(
-    private val settings: Settings,
-    private val themeManager: ThemeManager
-) : Initializable {
+class SettingsView(private val settings: Settings) : Initializable {
 
     @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>

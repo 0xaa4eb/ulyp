@@ -15,6 +15,8 @@ class ViewInitializer {
     @Autowired
     private lateinit var settings: Settings
     @Autowired
+    private lateinit var sceneRegistry: SceneRegistry
+    @Autowired
     private lateinit var themeManager: ThemeManager
     @Autowired
     private lateinit var fontStyleUpdater: FontStyleUpdater
@@ -23,33 +25,33 @@ class ViewInitializer {
 
     fun init() {
         settings.systemFontName.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.systemFontSize.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingTreeFontSpacing.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingTreeFontName.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingTreeFontSize.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingTreeBoldElements.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingTreeBoldElements.addListener { _, _, _ ->
-            fontStyleUpdater.update(UIApplication.stage.scene, settings)
+            fontStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
         settings.recordingListSpacing.addListener { _, _, _ ->
-            recordingListStyleUpdater.update(UIApplication.stage.scene, settings)
+            recordingListStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
 
         Platform.runLater {
             fontStyleUpdater.update(UIApplication.stage.scene, settings)
-            recordingListStyleUpdater.update(UIApplication.stage.scene, settings)
+            recordingListStyleUpdater.update(sceneRegistry.scenes(), settings)
         }
 
         themeManager.changeTheme(Theme.valueOf(settings.theme.get()))

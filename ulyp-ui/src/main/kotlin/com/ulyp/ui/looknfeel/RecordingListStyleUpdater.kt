@@ -54,4 +54,8 @@ class RecordingListStyleUpdater(private val applicationContext: ApplicationConte
             errorPopup.show()
         }
     }
+
+    fun update(scenes: List<Scene>, settings: Settings) {
+        scenes.forEach { update(it, settings) }
+    }
 }
