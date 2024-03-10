@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.agrona.concurrent.UnsafeBuffer;
 
+import com.ulyp.core.Resettable;
+
 @Getter
-public class MemPage {
+public class MemPage implements Resettable {
     private final int id;
     private final UnsafeBuffer buffer;
     @Setter

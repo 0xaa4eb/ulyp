@@ -1,6 +1,12 @@
 package com.ulyp.core.bytes;
 
-public interface Mark extends AutoCloseable {
+import com.ulyp.core.Resettable;
+
+public interface Mark extends AutoCloseable, Resettable {
+
+    default void reset() {
+
+    }
 
     int writtenBytes();
 

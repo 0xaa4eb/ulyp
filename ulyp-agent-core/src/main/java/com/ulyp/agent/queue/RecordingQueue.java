@@ -17,7 +17,7 @@ import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.SmallObjectPool;
+import com.ulyp.core.util.ConcurrentSimpleObjectPool;
 import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +45,7 @@ public class RecordingQueue implements AutoCloseable {
     private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.size", 16 * 1024);
     private static final int TMP_BUFFER_ENTRIES = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.entries", 8);
 
-    private final SmallObjectPool<byte[]> bufferPool;
+    private final ConcurrentSimpleObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -53,7 +53,7 @@ public class RecordingQueue implements AutoCloseable {
 
     public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
-        this.bufferPool = new SmallObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
+        this.bufferPool = new ConcurrentSimpleObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
         this.disruptor = new RecordingQueueDisruptor(
                 EventHolder::new,
                 RECORDING_QUEUE_SIZE,
@@ -148,7 +148,7 @@ public class RecordingQueue implements AutoCloseable {
                 return value;
             }
         } else {
-            try (SmallObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
+            try (ConcurrentSimpleObjectPool.ObjectPoolClaim<byte[]> buffer = bufferPool.claim()) {
                 BufferBytesOut output = new BufferBytesOut(new UnsafeBuffer(buffer.get()));
                 try {
                     recorder.write(value, output, typeResolver);

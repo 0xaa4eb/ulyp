@@ -2,7 +2,11 @@ package com.ulyp.core.util;
 
 import java.util.function.Supplier;
 
-public class SmallObjectPool<T> {
+/**
+ * Simplest object pool. The primary use case is short-term borrow and return pattern where same
+ * thread ideally
+ */
+public class ConcurrentSimpleObjectPool<T> {
 
     public static final int MAX_TRIES_BEFORE_ALLOC = 3;
 
@@ -11,7 +15,7 @@ public class SmallObjectPool<T> {
     private final ObjectPoolClaim<T>[] objectArray; // object array is read only and not padded
     private final PaddedAtomicIntegerArray slotsUsed;
 
-    public SmallObjectPool(int entriesCount, Supplier<T> supplier) {
+    public ConcurrentSimpleObjectPool(int entriesCount, Supplier<T> supplier) {
         if (Integer.bitCount(entriesCount) != 1) {
             throw new IllegalArgumentException("Entry count must be power of two, but was " + entriesCount);
         }
@@ -52,11 +56,11 @@ public class SmallObjectPool<T> {
     }
 
     public static class ObjectPoolClaim<T> implements AutoCloseable {
-        private final SmallObjectPool<T> pool;
+        private final ConcurrentSimpleObjectPool<T> pool;
         private final int slotIndex;
         private final T object;
 
-        public ObjectPoolClaim(SmallObjectPool<T> pool, int slotIndex, T object) {
+        public ObjectPoolClaim(ConcurrentSimpleObjectPool<T> pool, int slotIndex, T object) {
             this.pool = pool;
             this.slotIndex = slotIndex;
             this.object = object;

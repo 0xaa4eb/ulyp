@@ -3,7 +3,6 @@ package com.ulyp.core.util;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-
 public class ConcurrentArrayList<V> {
 
     static final int CHUNK_SIZE_BITS;
