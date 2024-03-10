@@ -240,10 +240,17 @@ public class PagedMemBytesOut extends AbstractBytesOut {
         }
     }
 
-    @Override
-    public void dispose() {
+    private void dispose() {
         for (MemPage page : pages) {
-            page.dispose();
+            pageAllocator.deallocate(page);
+        }
+        pages.clear();
+    }
+
+    public void close() {
+        recursionDepth--;
+        if (recursionDepth == 0) {
+            dispose();
         }
     }
 }

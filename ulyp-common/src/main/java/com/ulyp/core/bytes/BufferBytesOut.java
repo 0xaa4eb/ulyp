@@ -112,9 +112,4 @@ public class BufferBytesOut extends AbstractBytesOut {
     public void writeAt(int offset, int value) {
         buffer.putInt(offset, value);
     }
-
-    @Override
-    public void dispose() {
-
-    }
 }

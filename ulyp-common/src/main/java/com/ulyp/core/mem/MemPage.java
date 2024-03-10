@@ -18,11 +18,8 @@ public class MemPage implements Resettable {
         this.buffer = buffer;
     }
 
+    @Override
     public void reset() {
         unused = 0;
-    }
-
-    public void dispose() {
-        // NOP by default
     }
 }

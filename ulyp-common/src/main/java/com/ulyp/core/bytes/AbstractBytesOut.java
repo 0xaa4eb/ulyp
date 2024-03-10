@@ -15,7 +15,7 @@ public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
     private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
 
     protected int position = 0;
-    private int recursionDepth = 0;
+    protected int recursionDepth = 0;
 
     @Override
     public int position() {
