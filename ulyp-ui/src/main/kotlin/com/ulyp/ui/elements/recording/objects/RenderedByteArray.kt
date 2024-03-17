@@ -14,7 +14,7 @@ class RenderedByteArray(record: ByteArrayRecord) : RenderedObject() {
                         of(record.length.toString(), Style.CALL_TREE_TYPE_NAME),
                         of("]", Style.CALL_TREE_COLLECTION_BRACKET),
                         of("@", Style.CALL_TREE_IDENTITY, Style.SMALLER_TEXT),
-                        of(Integer.toHexString(record.hashCode), Style.CALL_TREE_IDENTITY, Style.SMALLER_TEXT)
+                        of(Integer.toHexString(record.identityRecord.hashCode), Style.CALL_TREE_IDENTITY, Style.SMALLER_TEXT)
                 )
         )
     }
