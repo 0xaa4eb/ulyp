@@ -249,7 +249,7 @@ public class PagedMemBytesOut extends AbstractBytesOut {
 
     public void close() {
         recursionDepth--;
-        if (recursionDepth == 0) {
+        if (recursionDepth < 0) {
             dispose();
         }
     }
