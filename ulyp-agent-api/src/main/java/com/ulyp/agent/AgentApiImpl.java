@@ -8,6 +8,7 @@ import com.ulyp.agent.api.ResetRecordingFileResponse;
 import com.ulyp.core.*;
 import com.ulyp.core.mem.SerializedMethodList;
 import com.ulyp.core.mem.SerializedTypeList;
+import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.ResetRequest;
@@ -59,10 +60,15 @@ public class AgentApiImpl extends AgentApiGrpc.AgentApiImplBase {
             }
 
             SerializedTypeList types = new SerializedTypeList();
-            for (Type type : typeResolver.getAllResolved()) {
-                types.add(type);
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Will write {} to storage", type);
+            ConcurrentArrayList<Type> resolvedTypes = typeResolver.values();
+            int size = resolvedTypes.size();
+            for (int i = 0; i < size; i++) {
+                Type type = resolvedTypes.get(i);
+                if (type != null) {
+                    types.add(resolvedTypes.get(i));
+                    if (LoggingSettings.DEBUG_ENABLED) {
+                        log.debug("Will write {} to storage", type);
+                    }
                 }
             }
 

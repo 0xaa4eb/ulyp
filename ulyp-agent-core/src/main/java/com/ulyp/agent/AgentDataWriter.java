@@ -85,7 +85,7 @@ public class AgentDataWriter {
         }
 
         SerializedTypeList typesList = new SerializedTypeList();
-        ConcurrentArrayList<Type> types = typeResolver.getAllResolvedAsConcurrentList();
+        ConcurrentArrayList<Type> types = typeResolver.values();
         upToExcluding = types.size() - 1;
         startFrom = lastIndexOfTypeWritten.get() + 1;
 
