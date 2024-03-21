@@ -31,7 +31,6 @@ public class ByteArrayRecorder extends ObjectRecorder {
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
-        System.out.println("writing byte array identity");
         ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, out, typeResolver);
         byte[] array = (byte[]) object;
         out.write(array.length);
