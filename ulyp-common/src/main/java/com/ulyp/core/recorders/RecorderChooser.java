@@ -1,15 +1,18 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.exception.RecordingException;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.Getter;
 
 /**
  * Finds {@link ObjectRecorder} that best matches for any given {@link Type}
  */
 public class RecorderChooser {
 
+    @Getter
     private static final RecorderChooser instance = new RecorderChooser();
     private static final ObjectRecorder[] allRecorders;
 
@@ -25,12 +28,6 @@ public class RecorderChooser {
         }
     }
 
-    public static RecorderChooser getInstance() {
-        return instance;
-    }
-
-    private final Map<Class<?>, ObjectRecorder> byTypeCache = new ConcurrentHashMap<>();
-
     public ObjectRecorder chooseForType(Class<?> type) {
         for (ObjectRecorder recorder : allRecorders) {
             if (recorder.supports(type)) {
@@ -38,6 +35,6 @@ public class RecorderChooser {
             }
         }
         // Should never happen
-        throw new RuntimeException("Could not find a suitable recorder for type " + type);
+        throw new RecordingException("Could not find a suitable recorder for type " + type);
     }
 }
