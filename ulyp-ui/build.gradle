@@ -50,10 +50,6 @@ dependencies {
 
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.20.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
 
 mainClassName = 'com.ulyp.ui.UIStarter'
