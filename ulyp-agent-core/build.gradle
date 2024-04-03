@@ -4,10 +4,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "2.0.4"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
@@ -38,10 +34,6 @@ if (project.hasProperty("apiBuild")) {
         implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 sourceSets {

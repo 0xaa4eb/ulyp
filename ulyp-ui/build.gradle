@@ -1,11 +1,3 @@
-buildscript {
-    repositories {
-        flatDir {
-            dirs 'ulyp-ui/fernflower.jar'
-        }
-    }
-}
-
 plugins {
     id 'java'
     id 'application'

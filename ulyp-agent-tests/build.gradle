@@ -11,10 +11,6 @@ plugins {
     id "io.freefair.lombok" version "6.0.0-m2"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-agent-core')
