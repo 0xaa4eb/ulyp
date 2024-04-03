@@ -18,12 +18,13 @@ javafx {
     modules = javafxModules
 }
 
+String platform = project.findProperty("platform")
+
 dependencies {
     javafxModules.each {
         def javafxModuleArtifact = it.replace(".", "-")
-
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:linux"
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:win"
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:mac"
+        if (platform != null) {
+            runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:$platform"
+        }
     }
 }
