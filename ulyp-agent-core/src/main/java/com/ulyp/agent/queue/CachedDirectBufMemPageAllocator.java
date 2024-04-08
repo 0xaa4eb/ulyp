@@ -25,21 +25,7 @@ public class CachedDirectBufMemPageAllocator implements MemPageAllocator {
             memPage.reset();
             return memPage;
         } else {
-            return new DirectMemPage(0, new UnsafeBuffer(ByteBuffer.allocateDirect(PageConstants.PAGE_SIZE)));
-        }
-    }
-
-    private class DirectMemPage extends MemPage {
-
-        public DirectMemPage(int id, UnsafeBuffer buffer) {
-            super(id, buffer);
-        }
-
-        @Override
-        public void dispose() {
-            super.dispose();
-
-            deallocate(this);
+            return new MemPage(0, new UnsafeBuffer(ByteBuffer.allocateDirect(PageConstants.PAGE_SIZE)));
         }
     }
 

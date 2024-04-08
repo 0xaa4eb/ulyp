@@ -12,7 +12,7 @@ import org.jetbrains.annotations.TestOnly;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-public class OutputBytesList {
+public class OutputBytesList implements AutoCloseable {
 
     private static final int MAGIC = Integer.MAX_VALUE / 3;
     private static final int SIZE_OFFSET = Integer.BYTES;
@@ -70,8 +70,8 @@ public class OutputBytesList {
         return size;
     }
 
-    public void dispose() {
-        this.bytesOut.dispose();
+    public void close() throws RuntimeException {
+        this.bytesOut.close();
     }
 
     @TestOnly
@@ -146,10 +146,6 @@ public class OutputBytesList {
 
         public void write(char val) {
             bytesOut.write(val);
-        }
-
-        public void dispose() {
-            bytesOut.dispose();
         }
 
         public DirectBuffer copy() {

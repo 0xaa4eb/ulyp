@@ -5,6 +5,10 @@ package com.ulyp.core.exception;
  */
 public class RecordingException extends UlypException {
 
+    public RecordingException(String message) {
+        super(message);
+    }
+
     public RecordingException(String message, Throwable cause) {
         super(message, cause);
     }

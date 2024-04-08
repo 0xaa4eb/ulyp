@@ -5,7 +5,6 @@ import com.ulyp.core.TypeResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,7 +20,7 @@ public class ReflectionBasedTypeResolver implements TypeResolver {
 
     private final ConcurrentMap<Class<?>, Type> map = new ConcurrentHashMap<>();
     private final AtomicInteger idGen = new AtomicInteger();
-    private final ConcurrentArrayList<Type> typesList = new ConcurrentArrayList<>();
+    private final ConcurrentArrayList<Type> allResolved = new ConcurrentArrayList<>();
 
     private Type build(Class<?> clazz) {
         Type.TypeBuilder type = Type.builder();
@@ -50,19 +49,14 @@ public class ReflectionBasedTypeResolver implements TypeResolver {
                 clazz,
                 klass -> {
                     Type newType = build(clazz);
-                    typesList.add(newType);
+                    allResolved.add(newType);
                     return newType;
                 }
         );
     }
 
     @Override
-    public @NotNull Collection<Type> getAllResolved() {
-        return map.values();
-    }
-
-    @Override
-    public @NotNull ConcurrentArrayList<Type> getAllResolvedAsConcurrentList() {
-        return typesList;
+    public @NotNull ConcurrentArrayList<Type> values() {
+        return allResolved;
     }
 }

@@ -1,19 +1,22 @@
 package com.ulyp.core.bytes;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
+
+import com.ulyp.core.util.FixedSizeObjectPool;
 
 /**
  * Allows to write to direct buffer
  */
 public class BufferBytesOut extends AbstractBytesOut {
 
-    private final List<MarkImpl> unusedMarks = new ArrayList<>();
+    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<MarkImpl>(
+            MarkImpl::new,
+            3
+    );
 
     protected final MutableDirectBuffer buffer;
 
@@ -37,21 +40,13 @@ public class BufferBytesOut extends AbstractBytesOut {
 
         @Override
         public void close() throws RuntimeException {
-            // return to pool
-            if (unusedMarks.size() < 3) {
-                unusedMarks.add(this);
-            }
+            marksPool.requite(this);
         }
     }
 
     @Override
     public Mark mark() {
-        MarkImpl newMark;
-        if (!unusedMarks.isEmpty()) {
-            newMark = unusedMarks.remove(unusedMarks.size() - 1);
-        } else {
-            newMark = new MarkImpl();
-        }
+        MarkImpl newMark = marksPool.borrow();
         newMark.markPos = this.position;
         return newMark;
     }
@@ -116,10 +111,5 @@ public class BufferBytesOut extends AbstractBytesOut {
     @Override
     public void writeAt(int offset, int value) {
         buffer.putInt(offset, value);
-    }
-
-    @Override
-    public void dispose() {
-
     }
 }

@@ -1,24 +1,25 @@
 package com.ulyp.core.recorders;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Number recorder. Handles everything including byte/short/int/long
+ * Number recorder. Handles doubles
  */
-public class IntegralRecorder extends ObjectRecorder {
+public class DoubleRecorder extends ObjectRecorder {
 
-    protected IntegralRecorder(byte id) {
+    protected DoubleRecorder(byte id) {
         super(id);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        return Long.class == type || Integer.class == type || Short.class == type;
+        return type == Double.class;
     }
 
     @Override
@@ -28,12 +29,12 @@ public class IntegralRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        return new NumberRecord(objectType, String.valueOf(input.readLong()));
+        return new NumberRecord(objectType, String.valueOf(Double.longBitsToDouble(input.readLong())));
     }
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
-        Number number = (Number) object;
-        out.write(number.longValue());
+        Double number = (Double) object;
+        out.write(Double.doubleToLongBits(number));
     }
 }

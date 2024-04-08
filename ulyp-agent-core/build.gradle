@@ -4,10 +4,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "2.0.4"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
@@ -22,7 +18,7 @@ dependencies {
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 }
@@ -38,10 +34,6 @@ if (project.hasProperty("apiBuild")) {
         implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 sourceSets {

@@ -64,15 +64,12 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
             return;
         }
         write(writer -> {
-            OutputBytesList bytes = new OutputBytesList(ProcessMetadata.WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()));
-            try {
+            try (OutputBytesList bytes = new OutputBytesList(ProcessMetadata.WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()))) {
                 bytes.add(out -> ProcessMetadataSerializer.instance.serialize(out, processMetadata));
                 writer.write(bytes);
                 if (LoggingSettings.DEBUG_ENABLED) {
                     log.debug("Has written {} to storage", processMetadata);
                 }
-            } finally {
-                bytes.dispose();
             }
         });
     }
@@ -80,11 +77,12 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
     @Override
     public synchronized void write(RecordingMetadata recordingMetadata) {
         write(writer -> {
-            OutputBytesList bytesOut = new OutputBytesList(RecordingMetadata.WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()));
-            bytesOut.add(out -> RecordingMetadataSerializer.instance.serialize(out, recordingMetadata));
-            writer.write(bytesOut);
-            if (LoggingSettings.DEBUG_ENABLED) {
-                log.debug("Has written {} to storage", processMetadata);
+            try (OutputBytesList bytesOut = new OutputBytesList(RecordingMetadata.WIRE_ID, new BufferBytesOut(new ExpandableDirectByteBuffer()))) {
+                bytesOut.add(out -> RecordingMetadataSerializer.instance.serialize(out, recordingMetadata));
+                writer.write(bytesOut);
+                if (LoggingSettings.DEBUG_ENABLED) {
+                    log.debug("Has written {} to storage", processMetadata);
+                }
             }
         });
     }
@@ -94,18 +92,14 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (types.size() == 0) {
             return;
         }
-        OutputBytesList bytes = types.getBytes();
-        try {
+        try (OutputBytesList bytes = types.getBytes()) {
             write(writer -> writer.write(bytes));
-        } finally {
-            bytes.dispose();
         }
     }
 
     @Override
     public synchronized void write(SerializedRecordedMethodCallList callRecords) {
-        OutputBytesList bytes = callRecords.toBytes();
-        try {
+        try (OutputBytesList bytes = callRecords.toBytes()) {
             if (bytes.isEmpty()) {
                 return;
             }
@@ -115,8 +109,6 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
                 log.debug("Has written {} recorded calls, {} bytes", callsBytes.size(), callsBytes.byteLength());
             }*/
             });
-        } finally {
-            bytes.dispose();
         }
     }
 
@@ -130,11 +122,8 @@ public class FileRecordingDataWriter implements RecordingDataWriter {
         if (methods.size() == 0) {
             return;
         }
-        OutputBytesList bytes = methods.getBytes();
-        try {
+        try (OutputBytesList bytes = methods.getBytes()) {
             write(writer -> writer.write(bytes));
-        } finally {
-            bytes.dispose();
         }
     }
 

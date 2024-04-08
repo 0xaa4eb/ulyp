@@ -14,7 +14,7 @@ import java.io.IOException;
  * methods for writing objects with help of recorders, primitive data, arrays etc. It also allows nesting one output into another with recursion
  * depth tracking (it actually uses same output under the hood) and write position rollback
  */
-public interface BytesOut extends AutoCloseable, Borrowable {
+public interface BytesOut extends AutoCloseable {
 
     int recursionDepth();
 

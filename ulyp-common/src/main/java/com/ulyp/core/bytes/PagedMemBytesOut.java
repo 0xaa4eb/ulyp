@@ -3,6 +3,8 @@ package com.ulyp.core.bytes;
 import com.ulyp.core.mem.PageConstants;
 import com.ulyp.core.mem.MemPage;
 import com.ulyp.core.mem.MemPageAllocator;
+import com.ulyp.core.util.FixedSizeObjectPool;
+
 import org.agrona.DirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -16,7 +18,10 @@ import java.util.List;
  */
 public class PagedMemBytesOut extends AbstractBytesOut {
 
-    private final List<MarkImpl> unusedMarks = new ArrayList<>();
+    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<MarkImpl>(
+            MarkImpl::new,
+            3
+    );
 
     private final MemPageAllocator pageAllocator;
     private final List<MemPage> pages;
@@ -44,20 +49,13 @@ public class PagedMemBytesOut extends AbstractBytesOut {
 
         @Override
         public void close() throws RuntimeException {
-            if (unusedMarks.size() < 3) {
-                unusedMarks.add(this);
-            }
+            marksPool.requite(this);
         }
     }
 
     @Override
     public Mark mark() {
-        MarkImpl newMark;
-        if (!unusedMarks.isEmpty()) {
-            newMark = unusedMarks.remove(unusedMarks.size() - 1);
-        } else {
-            newMark = new MarkImpl();
-        }
+        MarkImpl newMark = marksPool.borrow();
         newMark.markPos = this.position;
         newMark.writtenBytes = 0;
         return newMark;
@@ -242,10 +240,17 @@ public class PagedMemBytesOut extends AbstractBytesOut {
         }
     }
 
-    @Override
-    public void dispose() {
+    private void dispose() {
         for (MemPage page : pages) {
-            page.dispose();
+            pageAllocator.deallocate(page);
+        }
+        pages.clear();
+    }
+
+    public void close() {
+        recursionDepth--;
+        if (recursionDepth < 0) {
+            dispose();
         }
     }
 }

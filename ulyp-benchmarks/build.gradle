@@ -39,10 +39,6 @@ dependencies {
     jmhImplementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.0.Final'
 }
 
-repositories {
-    mavenCentral()
-}
-
 compileJava {
     dependsOn(':ulyp-agent:shadowJar')
 
@@ -55,7 +51,7 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     dependsOn = [':ulyp-agent:shadowJar']
     // To enable the built-in stacktrace sampling profiler
 //    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*', '-rf', 'json']
-    args = ['-prof', 'gc']
+    args = ['-prof', 'gc', '-gc', 'true']
 }
 
 classes.finalizedBy(jmhClasses)

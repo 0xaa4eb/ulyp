@@ -13,10 +13,6 @@ plugins {
 
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'

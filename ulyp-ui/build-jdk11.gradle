@@ -9,21 +9,26 @@ def openjfxVersion = "17.0.1"
 def javafxModules = [
         'javafx.controls',
         'javafx.fxml',
-        'javafx.swing',
         'javafx.web'
 ]
+
+String jarPlatform = project.findProperty("platform")
 
 javafx {
     version = openjfxVersion
     modules = javafxModules
 }
+if (jarPlatform != null) {
+    javafx {
+        platform = jarPlatform
+    }
+}
 
 dependencies {
     javafxModules.each {
         def javafxModuleArtifact = it.replace(".", "-")
-
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:linux"
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:win"
-        runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:mac"
+        if (jarPlatform != null) {
+            runtimeOnly "org.openjfx:$javafxModuleArtifact:$javafx.version:$jarPlatform"
+        }
     }
 }
