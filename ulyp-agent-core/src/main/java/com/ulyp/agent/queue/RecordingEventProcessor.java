@@ -58,7 +58,7 @@ public class RecordingEventProcessor {
         buffer.recordMethodEnter(
                 enterRecord.getCallId(),
                 typeResolver,
-                /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
+                enterRecord.getMethodId(),
                 cachedQueuedIdentityCallee,
                 enterRecord.getArgs(),
                 nanoTime

@@ -128,6 +128,9 @@ public class RecordingQueue implements AutoCloseable {
     }
 
     private Object[] convert(Object[] args) {
+        if (args == null) {
+            return null;
+        }
         for (int i = 0; i < args.length; i++) {
             args[i] = convert(args[i]);
         }

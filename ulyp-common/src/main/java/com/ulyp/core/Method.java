@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Builder
 @ToString
-@EqualsAndHashCode(exclude = "shouldStartRecording")
+@EqualsAndHashCode
 public class Method {
 
     private final int id;
@@ -15,15 +15,6 @@ public class Method {
     private final boolean isStatic;
     private final boolean isConstructor;
     private final boolean returnsSomething;
-    private volatile boolean shouldStartRecording;
-
-    public boolean shouldStartRecording() {
-        return shouldStartRecording;
-    }
-
-    public void setShouldStartRecording(boolean shouldStartRecording) {
-        this.shouldStartRecording = shouldStartRecording;
-    }
 
     public int getId() {
         return id;
