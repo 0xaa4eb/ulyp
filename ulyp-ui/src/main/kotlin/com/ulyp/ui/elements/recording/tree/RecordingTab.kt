@@ -4,6 +4,18 @@ import com.ulyp.core.ProcessMetadata
 import com.ulyp.storage.tree.CallRecord
 import com.ulyp.storage.tree.Recording
 import com.ulyp.ui.RenderSettings
+import com.ulyp.ui.code.SourceCode
+import com.ulyp.ui.code.SourceCodeView
+import com.ulyp.ui.code.find.SourceCodeFinder
+import com.ulyp.ui.looknfeel.FontStyleUpdater
+import com.ulyp.ui.settings.Settings
+import javafx.application.Platform
+import javafx.beans.value.ObservableValue
+import javafx.event.EventHandler
+import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Region
 import javafx.scene.layout.VBox
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +38,8 @@ class RecordingTab(
     private var root: CallRecord? = null
     private var treeView: RecordingTreeView? = null
 
+    @Autowired
+    private lateinit var sourceCodeView: SourceCodeView
     @Autowired
     private lateinit var renderSettings: RenderSettings
 
