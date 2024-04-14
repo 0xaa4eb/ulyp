@@ -3,7 +3,6 @@ package com.ulyp.ui
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.FontStyleUpdater
-import com.ulyp.ui.looknfeel.ThemeManager
 import com.ulyp.ui.reader.FilterRegistry
 import com.ulyp.ui.reader.RecordingReaderRegistry
 import com.ulyp.ui.settings.Settings
@@ -53,8 +52,8 @@ open class Configuration {
         return PrimaryView(
             applicationContext,
             viewInitializer,
-            recordingReaderRegistry,
             sourceCodeView,
+            recordingReaderRegistry,
             fileRecordingTabPane,
             settings
         ) { fileChooser.showOpenDialog(stage) }

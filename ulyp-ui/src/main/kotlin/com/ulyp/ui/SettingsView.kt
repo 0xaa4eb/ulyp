@@ -17,6 +17,8 @@ import java.util.*
 class SettingsView(private val settings: Settings) : Initializable {
 
     @FXML
+    lateinit var sourceCodeViewerEnabled: CheckBox
+    @FXML
     lateinit var themeChoiceBox: ChoiceBox<String>
     @FXML
     lateinit var systemFontChoiceBox: ChoiceBox<String>
@@ -44,6 +46,7 @@ class SettingsView(private val settings: Settings) : Initializable {
     lateinit var recordingListSpacingLabel: Label
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
+        sourceCodeViewerEnabled.selectedProperty().bindBidirectional(settings.sourceCodeViewerEnabled)
 
         themeChoiceBox.items.addAll(Theme.values().map { it.name }.toList())
         themeChoiceBox.connect(settings.theme)

@@ -9,6 +9,7 @@ def openjfxVersion = "17.0.1"
 def javafxModules = [
         'javafx.controls',
         'javafx.fxml',
+        'javafx.swing',
         'javafx.web'
 ]
 

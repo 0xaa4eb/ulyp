@@ -1,17 +1,22 @@
 package com.ulyp.core;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Builder
 @Getter
 @ToString
+@EqualsAndHashCode
 public class ProcessMetadata {
 
     public static final int WIRE_ID = 20;
 
     private final String mainClassName;
+    private final List<String> classpath;
     private final long pid;
 
     public static String getMainClassNameFromProp() {

@@ -42,6 +42,8 @@ class RecordingTab(
     private lateinit var sourceCodeView: SourceCodeView
     @Autowired
     private lateinit var renderSettings: RenderSettings
+    @Autowired
+    private lateinit var settings: Settings
 
     private var initialized = false
 
@@ -51,7 +53,7 @@ class RecordingTab(
             return
         }
 
-        treeView = RecordingTreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings))
+        treeView = RecordingTreeView(RecordedCallTreeItem(recording, root!!.id, renderSettings), settings, processMetadata, sourceCodeView)
 
         treeView!!.prefHeightProperty().bind(parent.heightProperty())
         treeView!!.prefWidthProperty().bind(parent.widthProperty())

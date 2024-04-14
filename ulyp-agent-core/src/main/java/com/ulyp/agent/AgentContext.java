@@ -11,6 +11,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.metrics.MetricsImpl;
 import com.ulyp.core.metrics.NullMetrics;
+import com.ulyp.core.util.Classpath;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
@@ -62,6 +63,7 @@ public class AgentContext {
         this.processMetadata = ProcessMetadata.builder()
                 .mainClassName(ProcessMetadata.getMainClassNameFromProp())
                 .pid(System.currentTimeMillis())
+                .classpath(new Classpath().toList())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
         this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);

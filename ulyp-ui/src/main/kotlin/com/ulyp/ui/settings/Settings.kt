@@ -15,6 +15,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Settings {
 
+    @Serializable(with = BooleanPropertySerializer::class)
+    val sourceCodeViewerEnabled: BooleanProperty = SimpleBooleanProperty(false)
     @Serializable(with = StringPropertySerializer::class)
     val theme: StringProperty = SimpleStringProperty(Theme.DARK.name)
     @Serializable(with = IntegerPropertySerializer::class)
@@ -35,6 +37,7 @@ class Settings {
     val recordingListSpacing = SimpleIntegerProperty(3)
 
     fun addListener(listener: ChangeListener<Any>) {
+        sourceCodeViewerEnabled.addListener(listener)
         theme.addListener(listener)
         systemFontSize.addListener(listener)
         systemFontName.addListener(listener)

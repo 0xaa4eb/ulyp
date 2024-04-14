@@ -1,17 +1,24 @@
 package com.ulyp.ui.elements.recording.tree
 
+import com.ulyp.core.ProcessMetadata
+import com.ulyp.ui.code.SourceCode
+import com.ulyp.ui.code.SourceCodeView
+import com.ulyp.ui.code.find.SourceCodeFinder
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.Style
+import javafx.application.Platform
+import javafx.beans.value.ObservableValue
 import javafx.event.EventHandler
+import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
-import org.springframework.beans.factory.annotation.Autowired
 
-class RecordingTreeView(recording: RecordedCallTreeItem) : TreeView<RecordedCallNodeContent>(recording) {
-
-    @Autowired
-    private lateinit var settings: Settings
+class RecordingTreeView(
+    recording: RecordedCallTreeItem,
+    private val settings: Settings,
+    processMetadata: ProcessMetadata,
+    private val sourceCodeView: SourceCodeView) : TreeView<RecordedCallNodeContent>(recording) {
 
     init {
         styleClass += "ulyp-call-tree-view"
@@ -26,10 +33,8 @@ class RecordingTreeView(recording: RecordedCallTreeItem) : TreeView<RecordedCall
             }
         }
 
-        /*
-        source code view Currently disabled
-        val sourceCodeFinder = SourceCodeFinder(processMetadata.classPathFiles)
-               treeView!!.selectionModel.selectedItemProperty()
+        val sourceCodeFinder = SourceCodeFinder(processMetadata.classpath)
+               selectionModel.selectedItemProperty()
                        .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
                            val selectedNode = newValue as RecordedCallTreeItem?
                            if (selectedNode?.callRecord != null) {
@@ -38,7 +43,7 @@ class RecordingTreeView(recording: RecordedCallTreeItem) : TreeView<RecordedCall
                                )
                                sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                                    Platform.runLater {
-                                       val currentlySelected = treeView!!.selectionModel.selectedItem
+                                       val currentlySelected = selectionModel.selectedItem
                                        val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
                                        if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
                                            sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
@@ -46,6 +51,6 @@ class RecordingTreeView(recording: RecordedCallTreeItem) : TreeView<RecordedCall
                                    }
                                }
                            }
-                       }*/
+                       }
     }
 }

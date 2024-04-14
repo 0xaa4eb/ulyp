@@ -16,6 +16,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Parent
+import javafx.scene.control.SplitPane
 import javafx.scene.image.Image
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
@@ -31,7 +32,6 @@ import kotlin.system.exitProcess
 class PrimaryView(
     private val applicationContext: ApplicationContext,
     private val viewInitializer: ViewInitializer,
-    private val recordingReaderRegistry: RecordingReaderRegistry,
     private val sourceCodeView: SourceCodeView,
     private val readerRegistry: RecordingReaderRegistry,
     private val fileRecordingTabPane: FileRecordingTabPane,
@@ -43,8 +43,8 @@ class PrimaryView(
     lateinit var primaryPane: VBox
     @FXML
     lateinit var fileTabPaneAnchorPane: AnchorPane
-//    @FXML
-//    lateinit var sourceCodeViewAnchorPane: AnchorPane
+    @FXML
+    lateinit var primarySplitPane: SplitPane
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         fileTabPaneAnchorPane.children.add(fileRecordingTabPane)
@@ -52,11 +52,15 @@ class PrimaryView(
         AnchorPane.setBottomAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setRightAnchor(fileRecordingTabPane, 0.0)
         AnchorPane.setLeftAnchor(fileRecordingTabPane, 0.0)
-//        sourceCodeViewAnchorPane.children.add(sourceCodeView)
-//        AnchorPane.setTopAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setRightAnchor(sourceCodeView, 0.0)
-//        AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
+        if (settings.sourceCodeViewerEnabled.get()) {
+            val sourceCodeViewerAnchorPane = AnchorPane()
+            primarySplitPane.items.add(sourceCodeViewerAnchorPane)
+            sourceCodeViewerAnchorPane.children.add(sourceCodeView)
+            AnchorPane.setTopAnchor(sourceCodeView, 0.0)
+            AnchorPane.setBottomAnchor(sourceCodeView, 0.0)
+            AnchorPane.setRightAnchor(sourceCodeView, 0.0)
+            AnchorPane.setLeftAnchor(sourceCodeView, 0.0)
+        }
 
         viewInitializer.init()
     }
