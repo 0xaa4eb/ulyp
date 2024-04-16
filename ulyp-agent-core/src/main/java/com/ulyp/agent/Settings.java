@@ -4,16 +4,13 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
-import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -21,6 +18,7 @@ import java.util.stream.Collectors;
  * Agent settings which define what packages to instrument, at which method recording should start, etc.
  * It's only possible to set settings via JMV system properties at the time.
  */
+@Getter
 public class Settings {
 
     public static final boolean TIMESTAMPS_ENABLED;
@@ -49,7 +47,6 @@ public class Settings {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
-    @Getter
     @NotNull
     private final String recordingDataFilePath;
     private final PackageList instrumentatedPackages;
@@ -58,17 +55,15 @@ public class Settings {
     private final StartRecordingMethods startRecordingMethods;
     private final Pattern startRecordingThreads;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
-    private final boolean instrumentConstructors;
-    private final boolean instrumentLambdas;
+    private final boolean instrumentConstructorsEnabled;
+    private final boolean instrumentLambdasEnabled;
     private final boolean instrumentTypeInitializers;
     private final String startRecordingPolicyPropertyValue;
     private final CollectionsRecordingMode collectionsRecordingMode;
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
     private final boolean agentEnabled;
-    @Getter
     private final boolean timestampsEnabled;
-    @Getter
     private final boolean metricsEnabled;
 
     public Settings(
@@ -77,8 +72,8 @@ public class Settings {
             PackageList excludedFromInstrumentationPackages,
             @NotNull StartRecordingMethods startRecordingMethods,
             Pattern startRecordingThreads,
-            boolean instrumentConstructors,
-            boolean instrumentLambdas,
+            boolean instrumentConstructorsEnabled,
+            boolean instrumentLambdasEnabled,
             boolean instrumentTypeInitializers,
             CollectionsRecordingMode collectionsRecordingMode,
             Set<TypeMatcher> typesToPrint,
@@ -93,8 +88,8 @@ public class Settings {
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.startRecordingMethods = startRecordingMethods;
         this.startRecordingThreads = startRecordingThreads;
-        this.instrumentConstructors = instrumentConstructors;
-        this.instrumentLambdas = instrumentLambdas;
+        this.instrumentConstructorsEnabled = instrumentConstructorsEnabled;
+        this.instrumentLambdasEnabled = instrumentLambdasEnabled;
         this.instrumentTypeInitializers = instrumentTypeInitializers;
         this.collectionsRecordingMode = collectionsRecordingMode;
         this.typesToPrint = typesToPrint;
@@ -182,18 +177,6 @@ public class Settings {
         return bindNetworkAddress;
     }
 
-    public PackageList getInstrumentatedPackages() {
-        return instrumentatedPackages;
-    }
-
-    public PackageList getExcludedFromInstrumentationPackages() {
-        return excludedFromInstrumentationPackages;
-    }
-
-    public boolean instrumentLambdas() {
-        return instrumentLambdas;
-    }
-
     @NotNull
     public StartRecordingMethods getRecordMethodList() {
         return startRecordingMethods;
@@ -204,32 +187,8 @@ public class Settings {
         return startRecordingThreads;
     }
 
-    public boolean instrumentConstructors() {
-        return instrumentConstructors;
-    }
-
     public boolean instrumentTypeInitializers() {
         return instrumentTypeInitializers;
-    }
-
-    public CollectionsRecordingMode getCollectionsRecordingMode() {
-        return collectionsRecordingMode;
-    }
-
-    public Set<TypeMatcher> getTypesToPrint() {
-        return typesToPrint;
-    }
-
-    public String getStartRecordingPolicyPropertyValue() {
-        return startRecordingPolicyPropertyValue;
-    }
-
-    public List<TypeMatcher> getExcludeFromInstrumentationClasses() {
-        return excludeFromInstrumentationClasses;
-    }
-
-    public boolean isAgentEnabled() {
-        return agentEnabled;
     }
 
     @Override
@@ -239,11 +198,11 @@ public class Settings {
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + startRecordingMethods +
                 (startRecordingThreads != null ? (",\nstart recording at threads: " + startRecordingThreads) : "") +
-                ",\ninstrument constructors: " + instrumentConstructors +
-                ",\ninstrument lambdas: " + instrumentLambdas +
+                ",\ninstrument constructors: " + instrumentConstructorsEnabled +
+                ",\ninstrument lambdas: " + instrumentLambdasEnabled +
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
-                ",\ntimstamps enabled: " + timestampsEnabled +
+                ",\ntimestamps enabled: " + timestampsEnabled +
                 ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 }

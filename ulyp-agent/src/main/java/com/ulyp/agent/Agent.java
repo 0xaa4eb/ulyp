@@ -89,7 +89,7 @@ public class Agent {
             .type(instrumentationMatcher)
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(methodCallAdvice));
 
-        if (settings.instrumentConstructors()) {
+        if (settings.isInstrumentConstructorsEnabled()) {
             AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
                     .bind(methodIdFactory)
                     .to(ConstructorCallRecordingAdvice.class)
@@ -99,7 +99,7 @@ public class Agent {
         }
 
         AgentBuilder agent = agentBuilder.with(AgentBuilder.TypeStrategy.Default.REDEFINE);
-        if (settings.instrumentLambdas()) {
+        if (settings.isInstrumentLambdasEnabled()) {
             agent = agent.with(AgentBuilder.LambdaInstrumentationStrategy.ENABLED);
         }
 
