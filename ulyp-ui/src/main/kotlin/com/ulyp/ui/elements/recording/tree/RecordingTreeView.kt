@@ -33,24 +33,26 @@ class RecordingTreeView(
             }
         }
 
-        val sourceCodeFinder = SourceCodeFinder(processMetadata.classpath)
-               selectionModel.selectedItemProperty()
-                       .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
-                           val selectedNode = newValue as RecordedCallTreeItem?
-                           if (selectedNode?.callRecord != null) {
-                               val sourceCodeFuture = sourceCodeFinder.find(
-                                       selectedNode.callRecord.method.declaringType.name
-                               )
-                               sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
-                                   Platform.runLater {
-                                       val currentlySelected = selectionModel.selectedItem
-                                       val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
-                                       if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
-                                           sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
-                                       }
-                                   }
-                               }
-                           }
-                       }
+        if (settings.sourceCodeViewerEnabled.get()) {
+            val sourceCodeFinder = SourceCodeFinder(processMetadata.classpath)
+            selectionModel.selectedItemProperty()
+                .addListener { observable: ObservableValue<out TreeItem<RecordedCallNodeContent>?>?, oldValue: TreeItem<RecordedCallNodeContent>?, newValue: TreeItem<RecordedCallNodeContent>? ->
+                    val selectedNode = newValue as RecordedCallTreeItem?
+                    if (selectedNode?.callRecord != null) {
+                        val sourceCodeFuture = sourceCodeFinder.find(
+                            selectedNode.callRecord.method.declaringType.name
+                        )
+                        sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
+                            Platform.runLater {
+                                val currentlySelected = selectionModel.selectedItem
+                                val currentlySelectedNode = currentlySelected as RecordedCallTreeItem
+                                if (selectedNode.callRecord.id == currentlySelectedNode.callRecord.id) {
+                                    sourceCodeView.setText(sourceCode, currentlySelectedNode.callRecord.method.name)
+                                }
+                            }
+                        }
+                    }
+                }
+        }
     }
 }
