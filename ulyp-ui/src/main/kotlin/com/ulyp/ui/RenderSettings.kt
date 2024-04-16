@@ -1,6 +1,6 @@
 package com.ulyp.ui
 
-import com.google.common.base.Preconditions
+import com.ulyp.core.util.Preconditions
 import com.ulyp.ui.settings.Settings
 import javafx.application.Platform
 import org.springframework.stereotype.Component
