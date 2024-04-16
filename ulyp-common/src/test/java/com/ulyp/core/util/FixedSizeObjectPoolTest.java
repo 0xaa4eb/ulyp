@@ -2,14 +2,11 @@ package com.ulyp.core.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.ulyp.core.Resettable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-
-public class FixedSizeObjectPoolTest {
+class FixedSizeObjectPoolTest {
 
     private static final AtomicInteger idGen = new AtomicInteger(-1);
 
@@ -28,33 +25,33 @@ public class FixedSizeObjectPoolTest {
     }
 
     @Test
-    public void testReuseSameItem() {
+    void testReuseSameItem() {
         FixedSizeObjectPool<Entry> pool = new FixedSizeObjectPool<>(
                 Entry::new,
                 3
         );
 
-        Assert.assertEquals(0, pool.size());
+        Assertions.assertEquals(0, pool.size());
 
         Entry borrow1 = pool.borrow();
         pool.requite(borrow1);
 
-        Assert.assertEquals(1, pool.size());
+        Assertions.assertEquals(1, pool.size());
 
         borrow1 = pool.borrow();
         pool.requite(borrow1);
 
-        Assert.assertEquals(1, pool.size());
+        Assertions.assertEquals(1, pool.size());
     }
 
     @Test
-    public void testPool() {
+    void testPool() {
         FixedSizeObjectPool<Entry> pool = new FixedSizeObjectPool<>(
                 Entry::new,
                 2
         );
 
-        Assert.assertEquals(0, pool.size());
+        Assertions.assertEquals(0, pool.size());
 
         Entry borrow1 = pool.borrow();
         Entry borrow2 = pool.borrow();
@@ -65,6 +62,6 @@ public class FixedSizeObjectPoolTest {
         pool.requite(borrow3);
 
         // the last one is discarded
-        Assert.assertEquals(2, pool.size());
+        Assertions.assertEquals(2, pool.size());
     }
 }

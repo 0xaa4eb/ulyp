@@ -6,40 +6,41 @@ import java.nio.file.Files;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.mem.SerializedTypeList;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
 
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
 
-public class AsyncRecordingDataWriterTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class AsyncRecordingDataWriterTest {
 
     private FileRecordingDataReader reader;
     private RecordingDataWriter writer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         File file = Files.createTempFile(AsyncRecordingDataWriterTest.class.getSimpleName(), "a").toFile();
         this.reader = new FileRecordingDataReaderBuilder(file).build();
         this.writer = new FileRecordingDataWriter(file);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         reader.close();
     }
 
     @Test
-    public void shouldReturnNullProcessMetadataIfNotWritten() {
-        Assert.assertNull(reader.getProcessMetadata());
+    void shouldReturnNullProcessMetadataIfNotWritten() {
+        assertNull(reader.getProcessMetadata());
     }
 
     @Test
-    public void shouldReturnNullIfProcessMetadataIsNotWrittenFirst() {
+    void shouldReturnNullIfProcessMetadataIsNotWrittenFirst() {
         writer.write(
             RecordingMetadata.builder()
                 .id(1)
@@ -56,11 +57,11 @@ public class AsyncRecordingDataWriterTest {
                 .build()
         );
 
-        Assert.assertNull(reader.getProcessMetadata());
+        assertNull(reader.getProcessMetadata());
     }
 
     @Test
-    public void shouldReturnProcessMetadataIfWrittenFirst() {
+    void shouldReturnProcessMetadataIfWrittenFirst() {
         writer.write(
             ProcessMetadata.builder()
                 .pid(5435L)
@@ -74,7 +75,7 @@ public class AsyncRecordingDataWriterTest {
 
         ProcessMetadata processMetadata = reader.getProcessMetadata();
 
-        Assert.assertEquals("a.b.c.D", processMetadata.getMainClassName());
-        Assert.assertEquals(5435L, processMetadata.getPid());
+        assertEquals("a.b.c.D", processMetadata.getMainClassName());
+        assertEquals(5435L, processMetadata.getPid());
     }
 }

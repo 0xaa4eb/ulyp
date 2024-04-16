@@ -1,16 +1,16 @@
 package com.ulyp.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Set;
 
-public class ConcurrentSimpleObjectPoolTest {
+class ConcurrentSimpleObjectPoolTest {
 
     @Test
-    public void testReuseSameEntryOnSubsequentAccess() {
+    void testReuseSameEntryOnSubsequentAccess() {
         Set<byte[]> allClaimedArrays = Collections.newSetFromMap(new IdentityHashMap<>());
         ConcurrentSimpleObjectPool<byte[]> buf = new ConcurrentSimpleObjectPool<>(8, () -> new byte[1024]);
 
@@ -20,6 +20,6 @@ public class ConcurrentSimpleObjectPoolTest {
             claim.close();
         }
 
-        Assert.assertEquals(1, allClaimedArrays.size());
+        Assertions.assertEquals(1, allClaimedArrays.size());
     }
 }

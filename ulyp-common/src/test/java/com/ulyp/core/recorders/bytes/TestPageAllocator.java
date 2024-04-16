@@ -9,9 +9,9 @@ import org.agrona.concurrent.UnsafeBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class TestPageAllocator implements MemPageAllocator {
 
-    @Getter
     private final List<MemPage> pages = new ArrayList<>();
 
     @Override

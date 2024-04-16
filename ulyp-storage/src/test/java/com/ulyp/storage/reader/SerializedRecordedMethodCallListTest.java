@@ -8,21 +8,18 @@ import com.ulyp.core.bytes.PagedMemBytesOut;
 import com.ulyp.core.repository.InMemoryRepository;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-public class SerializedRecordedMethodCallListTest {
+class SerializedRecordedMethodCallListTest {
 
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     @Test
-    public void testReadWriteRecordedCallsList() throws IOException {
+    void testReadWriteRecordedCallsList() {
         for (int iter = 0; iter < 500; iter++) {
             OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
             SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
@@ -39,7 +36,7 @@ public class SerializedRecordedMethodCallListTest {
             InputBytesList read = out.flip();
 
             RecordedMethodCalls list = new RecordedMethodCalls(read);
-            Assert.assertEquals(callsCount * 2, list.size());
+            assertEquals(callsCount * 2, list.size());
             AddressableItemIterator<RecordedMethodCall> it = list.iterator(new InMemoryRepository<>());
 
             for (int i = 0; i < callsCount * 2; i++) {
@@ -49,7 +46,7 @@ public class SerializedRecordedMethodCallListTest {
     }
 
     @Test
-    public void testAddAndIterate() throws IOException {
+    void testAddAndIterate() {
         OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(pageAllocator()));
         SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
 
@@ -83,7 +80,6 @@ public class SerializedRecordedMethodCallListTest {
 
             @Override
             public MemPage allocate() {
-                System.out.println("allocated a new page");
                 return new MemPage(0, new UnsafeBuffer(new byte[PageConstants.PAGE_SIZE]));
             }
 

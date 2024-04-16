@@ -1,8 +1,9 @@
 package com.ulyp.ui.code.util;
 
 import com.ulyp.ui.code.SourceCode;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MethodLineNumberFinderTest {
 
@@ -23,10 +24,10 @@ public class MethodLineNumberFinderTest {
 
         int fooLine = methodFinder.getLine("foo", 0);
 
-        Assert.assertEquals(4, fooLine);
+        assertEquals(4, fooLine);
 
         int notFoundLine = methodFinder.getLine("abc", 1099999);
 
-        Assert.assertEquals(1099999, notFoundLine);
+        assertEquals(1099999, notFoundLine);
     }
 }

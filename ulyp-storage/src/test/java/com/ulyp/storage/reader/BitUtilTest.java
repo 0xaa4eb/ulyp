@@ -3,14 +3,14 @@ package com.ulyp.storage.reader;
 import com.ulyp.core.util.BitUtil;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BitUtilTest {
+class BitUtilTest {
 
     @Test
-    public void testBytesToLong() {
+    void testBytesToLong() {
         LongList r = new LongArrayList();
         r.add(5L);
         r.add(Long.MAX_VALUE);
@@ -25,7 +25,7 @@ public class BitUtilTest {
     }
 
     @Test
-    public void testBytesToInt() {
+    void testBytesToInt() {
         byte[] buf = new byte[4];
         BitUtil.intToBytes(4523432, buf, 0);
 

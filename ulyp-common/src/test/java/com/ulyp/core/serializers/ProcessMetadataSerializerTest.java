@@ -3,18 +3,17 @@ package com.ulyp.core.serializers;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.bytes.BufferBytesOut;
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProcessMetadataSerializerTest {
+class ProcessMetadataSerializerTest {
 
     @Test
-    public void test() {
+    void test() {
 
         ProcessMetadataSerializer serializer = new ProcessMetadataSerializer();
 
@@ -35,6 +34,6 @@ public class ProcessMetadataSerializerTest {
 
         ProcessMetadata deserialized = serializer.deserialize(out.flip());
 
-        Assert.assertEquals(deserialized, testObject);
+        assertEquals(deserialized, testObject);
     }
 }

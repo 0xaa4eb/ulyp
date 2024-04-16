@@ -1,35 +1,34 @@
 package com.ulyp.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-
-public class ConcurrentArrayListTest {
+class ConcurrentArrayListTest {
 
     static {
         System.setProperty("ConcurrentArrayList.BITS", "3");
     }
 
     @Test
-    public void testSizeMethod() {
+    void testSizeMethod() {
         ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
-        assertEquals(0, map.size());
+        Assertions.assertEquals(0, map.size());
 
         for (int i = 0; i < 10; i++) {
             map.add(i);
         }
 
-        assertEquals(10, map.size());
+        Assertions.assertEquals(10, map.size());
 
         for (int i = 0; i < 10; i++) {
-            assertEquals((Integer) i, map.get(i));
+            Assertions.assertEquals((Integer) i, map.get(i));
         }
 
     }
 
     @Test
-    public void testPutAndGetSingleChunk() {
+    void testPutAndGetSingleChunk() {
         int items = ConcurrentArrayList.CHUNK_SIZE / 2;
         ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
@@ -37,17 +36,17 @@ public class ConcurrentArrayListTest {
             map.add(i);
         }
 
-        assertEquals(items, map.size());
+        Assertions.assertEquals(items, map.size());
 
         for (int i = 0; i < items; i++) {
-            assertEquals((Integer) i, map.get(i));
+            Assertions.assertEquals((Integer) i, map.get(i));
         }
 
-        assertEquals(items, map.size());
+        Assertions.assertEquals(items, map.size());
     }
 
     @Test
-    public void testPutAndGetMultipleChunks() {
+    void testPutAndGetMultipleChunks() {
         int items = ConcurrentArrayList.CHUNK_SIZE * 10;
         ConcurrentArrayList<Integer> map = new ConcurrentArrayList<>(100000);
 
@@ -55,12 +54,12 @@ public class ConcurrentArrayListTest {
             map.add(i);
         }
 
-        assertEquals(items, map.size());
+        Assertions.assertEquals(items, map.size());
 
         for (int i = 0; i < items; i++) {
-            assertEquals((Integer) i, map.get(i));
+            Assertions.assertEquals((Integer) i, map.get(i));
         }
 
-        assertEquals(items, map.size());
+        Assertions.assertEquals(items, map.size());
     }
 }
