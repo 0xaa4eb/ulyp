@@ -7,16 +7,16 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTest {
+class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldNotExcludeAnyClassesIfOptionIsNotSet() {
+    void shouldNotExcludeAnyClassesIfOptionIsNotSet() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -29,7 +29,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     }
 
     @Test
-    public void shouldExcludeFromInstrumentationOneClass() {
+    void shouldExcludeFromInstrumentationOneClass() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -41,9 +41,9 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
         assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is(C.class.getName()));
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void shouldExcludeFromInstrumentationOneClassByInterface() {
+    void shouldExcludeFromInstrumentationOneClassByInterface() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -56,7 +56,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     }
 
     @Test
-    public void shouldExcludeTwoClassesFromInstrumentation() {
+    void shouldExcludeTwoClassesFromInstrumentation() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -68,7 +68,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     }
 
     @Test
-    public void shouldExcludeOneClassFromInstrumentationByAntPattern() {
+    void shouldExcludeOneClassFromInstrumentationByAntPattern() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -80,7 +80,7 @@ public class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTe
     }
 
     @Test
-    public void shouldExcludeTwoClassesFromInstrumentationByAntPattern() {
+    void shouldExcludeTwoClassesFromInstrumentationByAntPattern() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)

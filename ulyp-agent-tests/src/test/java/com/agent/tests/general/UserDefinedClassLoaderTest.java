@@ -3,7 +3,7 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -11,14 +11,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
+class UserDefinedClassLoaderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testUserDefinedClassLoader() {
+    void testUserDefinedClassLoader() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()

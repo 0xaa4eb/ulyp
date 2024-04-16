@@ -6,15 +6,15 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
+class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldInstrumentAndTraceAllClasses() {
+    void shouldInstrumentAndTraceAllClasses() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -27,7 +27,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
     }
 
     @Test
-    public void shouldExcludeInstrumentationPackage() {
+    void shouldExcludeInstrumentationPackage() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)
@@ -46,7 +46,7 @@ public class PackageFilterInstrumentationTest extends AbstractInstrumentationTes
     }
 
     @Test
-    public void shouldExcludeTwoPackages() {
+    void shouldExcludeTwoPackages() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(A.class)

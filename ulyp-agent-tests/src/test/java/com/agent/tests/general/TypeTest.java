@@ -5,15 +5,15 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class TypeTest extends AbstractInstrumentationTest {
+class TypeTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldProvideArgumentTypes() {
+    void shouldProvideArgumentTypes() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

@@ -3,16 +3,16 @@ package com.agent.tests.recording;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TimestampRecordingTest extends AbstractInstrumentationTest {
+class TimestampRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordTimestamp() {
+    void shouldRecordTimestamp() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -20,12 +20,11 @@ public class TimestampRecordingTest extends AbstractInstrumentationTest {
                         .withRecordTimestamps(true)
         );
 
-        System.out.println(root.getNanosDuration());
         assertTrue(root.getNanosDuration() > 0);
     }
 
     @Test
-    public void shouldRecordTimestampLongerTime() {
+    void shouldRecordTimestampLongerTime() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -33,7 +32,6 @@ public class TimestampRecordingTest extends AbstractInstrumentationTest {
                         .withRecordTimestamps(true)
         );
 
-        System.out.println(root.getNanosDuration());
         assertTrue(root.getNanosDuration() > Duration.ofMillis(100).getNano());
     }
 

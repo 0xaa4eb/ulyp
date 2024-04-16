@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -20,13 +20,13 @@ import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
 
-public class HibernateRecordingTest extends AbstractInstrumentationTest {
+class HibernateRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testSaveEntityWithHibernate() {
+    void testSaveEntityWithHibernate() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -64,12 +64,12 @@ public class HibernateRecordingTest extends AbstractInstrumentationTest {
 
             List<Department> allDepartments = departmentService.findAll();
 
-            Assert.assertEquals(1, allDepartments.size());
+            Assertions.assertEquals(1, allDepartments.size());
 
             Department departmentFromDb = allDepartments.get(0);
             Set<Person> people = departmentFromDb.getPeople();
             for (Person p : people) {
-                Assert.assertNotNull(p.getId());
+                Assertions.assertNotNull(p.getId());
             }
         }
     }

@@ -5,16 +5,16 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.Recording;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ThreadNameRecordingTest extends AbstractInstrumentationTest {
+class ThreadNameRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordAllMethodsIfThreadsPropNotSpecified() {
+    void shouldRecordAllMethodsIfThreadsPropNotSpecified() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -27,7 +27,7 @@ public class ThreadNameRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordAllMethodsIfThreadsPropMatchesAllThreads() {
+    void shouldRecordAllMethodsIfThreadsPropMatchesAllThreads() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -41,7 +41,7 @@ public class ThreadNameRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordOnlyOneMethodWithSpecifiedThreadName() {
+    void shouldRecordOnlyOneMethodWithSpecifiedThreadName() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -55,7 +55,7 @@ public class ThreadNameRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldNotStartRecordingIfThreadNameDoesntMatch() {
+    void shouldNotStartRecordingIfThreadNameDoesntMatch() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

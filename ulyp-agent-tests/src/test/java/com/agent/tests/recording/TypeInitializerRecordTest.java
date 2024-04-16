@@ -2,8 +2,9 @@ package com.agent.tests.recording;
 
 import java.util.List;
 
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
@@ -14,13 +15,13 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.Recording;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class TypeInitializerRecordTest extends AbstractInstrumentationTest {
+class TypeInitializerRecordTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordTypeInitializer() {
+    void shouldRecordTypeInitializer() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(ClassWithStaticInitializer.class)
@@ -54,7 +55,7 @@ public class TypeInitializerRecordTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordAllMethods2() {
+    void shouldRecordAllMethods2() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(ClassWhichUsesFailureTypeInitializer.class)

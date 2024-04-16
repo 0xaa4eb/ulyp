@@ -1,19 +1,20 @@
 package com.agent.tests.recorders;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.BooleanRecord;
 import com.ulyp.storage.tree.CallRecord;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BooleanRecorderTest extends AbstractInstrumentationTest {
+class BooleanRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordBoxedBooleanTrue() {
+    void shouldRecordBoxedBooleanTrue() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -26,7 +27,7 @@ public class BooleanRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordBoxedBooleanFalse() {
+    void shouldRecordBoxedBooleanFalse() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)
@@ -39,7 +40,7 @@ public class BooleanRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordPrimitiveBooleanTrue() {
+    void shouldRecordPrimitiveBooleanTrue() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)
@@ -52,7 +53,7 @@ public class BooleanRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordPrimitiveBooleanFalse() {
+    void shouldRecordPrimitiveBooleanFalse() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)

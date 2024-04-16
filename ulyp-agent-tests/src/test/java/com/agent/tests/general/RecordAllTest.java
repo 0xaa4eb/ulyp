@@ -4,12 +4,12 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class RecordAllTest extends AbstractInstrumentationTest {
+class RecordAllTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordAllMethods() {
+    void shouldRecordAllMethods() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(MultithreadedExample.class)

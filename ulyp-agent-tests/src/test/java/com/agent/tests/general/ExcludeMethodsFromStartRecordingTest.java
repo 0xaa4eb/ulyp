@@ -1,14 +1,14 @@
 package com.agent.tests.general;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 
-public class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
+class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
 
     public static class A {
 
@@ -27,7 +27,7 @@ public class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentatio
     }
 
     @Test
-    public void shouldRecordNormalCase() {
+    void shouldRecordNormalCase() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(A.class)
@@ -38,7 +38,7 @@ public class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentatio
     }
 
     @Test
-    public void shouldNotStartRecordingIfMethodExcluded() {
+    void shouldNotStartRecordingIfMethodExcluded() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(A.class)
@@ -50,7 +50,7 @@ public class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentatio
     }
 
     @Test
-    public void shouldNotStartRecordingIfMethodExcluded2() {
+    void shouldNotStartRecordingIfMethodExcluded2() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(A.class)
@@ -58,6 +58,6 @@ public class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentatio
                 .withExcludeStartRecordingMethods("**.A.main")
         );
 
-        Assert.assertEquals(2, recordingResult.recordings().size());
+        Assertions.assertEquals(2, recordingResult.recordings().size());
     }
 }

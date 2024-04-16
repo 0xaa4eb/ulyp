@@ -6,7 +6,6 @@ import javax.jms.IllegalStateException;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.junit.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.DebugCallRecordTreePrinter;
@@ -14,14 +13,15 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
 
-public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
+class ActiveMQRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testProduceAndConsumerWithActiveMQ() {
+    void testProduceAndConsumerWithActiveMQ() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -33,15 +33,11 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot.getSubtreeSize(),
-                greaterThan(3000)
-        );
+        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot.getSubtreeSize(), greaterThan(3000));
     }
 
     @Test
-    public void testProduceAndConsumerWithActiveMQWithCollections() {
+    void testProduceAndConsumerWithActiveMQWithCollections() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -54,11 +50,7 @@ public class ActiveMQRecordingTest extends AbstractInstrumentationTest {
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot.getSubtreeSize(),
-                greaterThan(3000)
-        );
+        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot.getSubtreeSize(), greaterThan(3000));
     }
 
     public static class ActiveMQTestCase {
