@@ -1,9 +1,8 @@
 package com.agent.tests.util;
 
-import com.ulyp.core.util.LoggingSettings;
 import org.buildobjects.process.ProcBuilder;
 import org.buildobjects.process.ProcResult;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -41,10 +40,9 @@ public class TestUtil {
             System.out.println("Proc run time: " + result.getExecutionTime() + " ms");
 
             if (result.getExitValue() != 0) {
-                Assert.fail("Process exit code is not 0, proc string " + result.getProcString());
+                Assertions.fail("Process exit code is not 0, proc string " + result.getProcString());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new AssertionError("Process ended unsuccessfully", e);
         }
     }
