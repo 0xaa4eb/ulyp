@@ -17,10 +17,10 @@ import java.util.concurrent.ExecutionException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-public class SourceCodeFinderTest {
+class SourceCodeFinderTest {
 
     @Test
-    public void shouldNotThrowExceptionIfJarFileCantBeOpened() throws IOException, ExecutionException, InterruptedException {
+    void shouldNotThrowExceptionIfJarFileCantBeOpened() throws IOException, ExecutionException, InterruptedException {
         Path tmpEmptyFile = Files.createTempFile("a", ".jar");
 
         SourceCodeFinder sourceCodeFinder = new SourceCodeFinder(new Classpath().add(tmpEmptyFile.toString()).toList());
@@ -32,7 +32,7 @@ public class SourceCodeFinderTest {
     }
 
     @Test
-    public void shouldFindSourceCodeFromJunitLibraryInCurrentClasspath() throws ExecutionException, InterruptedException {
+    void shouldFindSourceCodeFromJunitLibraryInCurrentClasspath() throws ExecutionException, InterruptedException {
         SourceCodeFinder sourceCodeFinder = new SourceCodeFinder(new Classpath().toList());
 
         CompletableFuture<SourceCode> sourceCodeFuture = sourceCodeFinder.find("org.junit.jupiter.api.Test");
@@ -46,7 +46,7 @@ public class SourceCodeFinderTest {
     }
 
     @Test
-    public void shouldFindBytecodeAndDecompile() throws ExecutionException, InterruptedException {
+    void shouldFindBytecodeAndDecompile() throws ExecutionException, InterruptedException {
         SourceCodeFinder sourceCodeFinder = new SourceCodeFinder(Arrays.asList(Paths.get("src", "test", "resources", "ProcessTab.jar").toString()));
 
         CompletableFuture<SourceCode> sourceCodeFuture = sourceCodeFinder.find("com.ulyp.ui.ProcessTab");

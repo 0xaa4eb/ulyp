@@ -21,7 +21,7 @@ class ReflectionBasedMethodResolverTest {
             T.class.getDeclaredMethod("get", Integer.class)
         );
 
-        Assertions.assertEquals(method.getName(), "get");
+        Assertions.assertEquals("get", method.getName());
         Assertions.assertFalse(method.isStatic());
 
         Type declaringType = method.getDeclaringType();

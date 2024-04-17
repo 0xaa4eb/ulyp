@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MethodLineNumberFinderTest {
+class MethodLineNumberFinderTest {
 
     @Test
-    public void test() {
+    void test() {
 
         MethodLineNumberFinder methodFinder = new MethodLineNumberFinder(
                 new SourceCode(
