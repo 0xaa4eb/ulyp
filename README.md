@@ -46,11 +46,11 @@ The data is dropped to the specified file.
 Build with gradle:
     `./gradlew build`
 
-Build without tests:
-`./gradlew build -x test`
+Build UI jar file (Java 11+ is preferable) :
+    `./gradlew :ulyp-ui:fatJar`
 
-Run UI:
-    `./gradlew :ulyp-ui:run`
+UI jar file for a particular platform can be built as follows:
+`./gradlew :ulyp-ui:fatJar -Pplatform=mac`
 
 ## Similar projects
 
