@@ -6,14 +6,14 @@ import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IdentityRecorderTest extends AbstractInstrumentationTest {
+class IdentityRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testIdentityRepresentation() {
+    void testIdentityRepresentation() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -32,7 +32,7 @@ public class IdentityRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testIdentityRepresentationOfCallee() {
+    void testIdentityRepresentationOfCallee() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

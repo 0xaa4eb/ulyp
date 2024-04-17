@@ -2,7 +2,6 @@ package com.agent.tests.recording;
 
 import java.util.List;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 

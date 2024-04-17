@@ -1,6 +1,5 @@
 package com.agent.tests.recorders;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;

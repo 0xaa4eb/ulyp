@@ -5,17 +5,16 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.PrintedObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class PrintingRecorderTest extends AbstractInstrumentationTest {
+class PrintingRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldNotPrintObjectIfSettingNotSet() {
+    void shouldNotPrintObjectIfSettingNotSet() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -28,7 +27,7 @@ public class PrintingRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldPrintObjectIfSettingSet() {
+    void shouldPrintObjectIfSettingSet() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -47,7 +46,7 @@ public class PrintingRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordAtLeastIdentityIfToStringCallFailed() {
+    void shouldRecordAtLeastIdentityIfToStringCallFailed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -60,7 +59,7 @@ public class PrintingRecorderTest extends AbstractInstrumentationTest {
         assertThat(root.getReturnValue(), instanceOf(IdentityObjectRecord.class));
 
         IdentityObjectRecord printed = (IdentityObjectRecord) root.getReturnValue();
-        assertThat(printed.getType().getName(), Matchers.is(ToStringThrowingClass.class.getName()));
+        assertThat(printed.getType().getName(), is(ToStringThrowingClass.class.getName()));
     }
 
     static class X {

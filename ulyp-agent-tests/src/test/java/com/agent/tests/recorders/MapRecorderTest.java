@@ -7,16 +7,19 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapEntryRecord;
 import com.ulyp.core.recorders.collections.MapRecord;
 import com.ulyp.storage.tree.CallRecord;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-public class MapRecorderTest extends AbstractInstrumentationTest {
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class MapRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordSimpleMap() {
+    void shouldRecordSimpleMap() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -27,18 +30,18 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
 
         MapRecord collection = (MapRecord) root.getReturnValue();
 
-        Assert.assertEquals(2, collection.getSize());
+        assertEquals(2, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
         MapEntryRecord firstEntry = entries.get(0);
         StringObjectRecord key = (StringObjectRecord) firstEntry.getKey();
-        Assert.assertEquals("a", key.value());
+        assertEquals("a", key.value());
         StringObjectRecord value = (StringObjectRecord) firstEntry.getValue();
-        Assert.assertEquals("b", value.value());
+        assertEquals("b", value.value());
     }
 
     @Test
-    public void shouldNotRecordCustomMapIfOnlyJavaMapsAreRecorded() {
+    void shouldNotRecordCustomMapIfOnlyJavaMapsAreRecorded() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -47,11 +50,11 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
-    public void shouldFallbackToIdentityIfRecordingFailed() {
+    void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -60,11 +63,11 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
-    public void shouldFallbackToIdentityIfRecordingOfMapValueFailed() {
+    void shouldFallbackToIdentityIfRecordingOfMapValueFailed() {
 
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
@@ -76,11 +79,11 @@ public class MapRecorderTest extends AbstractInstrumentationTest {
 
         MapRecord collection = (MapRecord) root.getReturnValue();
 
-        Assert.assertEquals(2, collection.getSize());
+        assertEquals(2, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
         MapEntryRecord firstEntry = entries.get(0);
-        Assert.assertTrue(firstEntry.getValue() instanceof IdentityObjectRecord);
+        assertInstanceOf(IdentityObjectRecord.class, firstEntry.getValue());
     }
 
     static class XYZ {

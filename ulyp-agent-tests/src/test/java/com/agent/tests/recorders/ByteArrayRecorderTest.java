@@ -2,18 +2,20 @@ package com.agent.tests.recorders;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.arrays.ByteArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 
-public class ByteArrayRecorderTest extends AbstractInstrumentationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ByteArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordByteArray() {
+    void shouldRecordByteArray() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -22,11 +24,11 @@ public class ByteArrayRecorderTest extends AbstractInstrumentationTest {
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();
 
-        Assert.assertEquals(4, value.getLength());
+        assertEquals(4, value.getLength());
     }
 
     @Test
-    public void shouldRecordEmptyByteArray() {
+    void shouldRecordEmptyByteArray() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)
@@ -35,7 +37,7 @@ public class ByteArrayRecorderTest extends AbstractInstrumentationTest {
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();
 
-        Assert.assertEquals(0, value.getLength());
+        assertEquals(0, value.getLength());
     }
 
     public static class TestCase {

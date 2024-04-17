@@ -3,7 +3,9 @@ package com.agent.tests.util;
 import com.ulyp.core.util.TempFile;
 import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
 import com.ulyp.storage.reader.RecordingDataReader;
+import lombok.Getter;
 
+@Getter
 public class OutputFile {
 
     private final TempFile file;
@@ -14,10 +16,6 @@ public class OutputFile {
 
     public RecordingDataReader toReader() {
         return new FileRecordingDataReaderBuilder(file.toPath().toFile()).build();
-    }
-
-    public TempFile getFile() {
-        return file;
     }
 
     @Override

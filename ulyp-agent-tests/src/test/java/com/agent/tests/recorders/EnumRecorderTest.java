@@ -5,18 +5,18 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.EnumRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class EnumRecorderTest extends AbstractInstrumentationTest {
+class EnumRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldPrintEnumNames() {
+    void shouldPrintEnumNames() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(EnumTestCases.class)

@@ -7,16 +7,16 @@ import com.ulyp.core.recorders.NullObjectRecord;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 
-public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
+class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldPrintObjects() {
+    void shouldPrintObjects() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)
@@ -29,7 +29,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldChooseValidRecorderForJavaLangObjectAtRuntime() {
+    void shouldChooseValidRecorderForJavaLangObjectAtRuntime() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)
@@ -42,7 +42,7 @@ public class ObjectInstrumentationTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldPrintNullArguments() {
+    void shouldPrintNullArguments() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ObjectTestCases.class)

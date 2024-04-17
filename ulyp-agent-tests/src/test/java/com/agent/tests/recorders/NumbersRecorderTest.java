@@ -4,16 +4,16 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class NumbersRecorderTest extends AbstractInstrumentationTest {
+class NumbersRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testBoxedLong() {
+    void testBoxedLong() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("te")
@@ -24,7 +24,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testPrimitiveIntSum() {
+    void testPrimitiveIntSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("primitiveIntSum")
@@ -36,7 +36,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testBoxedIntSum() {
+    void testBoxedIntSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("boxedIntSum")
@@ -46,7 +46,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testPrimitiveDoubleSum() {
+    void testPrimitiveDoubleSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("primitiveDoubleSum")
@@ -58,7 +58,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testBoxedDoubleSum() {
+    void testBoxedDoubleSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("boxedDoubleSum")
@@ -70,7 +70,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testBoxedFloatSum() {
+    void testBoxedFloatSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("boxedFloatSum")
@@ -82,7 +82,7 @@ public class NumbersRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testPrimitiveFloatSum() {
+    void testPrimitiveFloatSum() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
                         .withMethodToRecord("primitiveFloatSum")

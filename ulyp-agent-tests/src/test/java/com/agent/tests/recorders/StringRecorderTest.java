@@ -4,16 +4,16 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
 
-public class StringRecorderTest extends AbstractInstrumentationTest {
+class StringRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordShortString() {
+    void shouldRecordShortString() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(StringTestCases.class)
@@ -25,7 +25,7 @@ public class StringRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldCutLongStringWhileRecording() {
+    void shouldCutLongStringWhileRecording() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(StringTestCases.class)

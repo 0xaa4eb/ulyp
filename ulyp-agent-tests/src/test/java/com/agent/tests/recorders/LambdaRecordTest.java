@@ -3,20 +3,19 @@ package com.agent.tests.recorders;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
-public class LambdaRecordTest extends AbstractInstrumentationTest {
+class LambdaRecordTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordLambdaCall() {
+    void shouldRecordLambdaCall() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

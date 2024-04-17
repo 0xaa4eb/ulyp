@@ -5,15 +5,15 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class GenericsRecorderTest extends AbstractInstrumentationTest {
+class GenericsRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testAtomicIntegerSum() {
+    void testAtomicIntegerSum() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()

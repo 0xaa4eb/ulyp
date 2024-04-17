@@ -9,9 +9,8 @@ import java.util.stream.Collectors;
 import com.ulyp.agent.queue.RecordingQueue;
 import com.ulyp.core.metrics.NullMetrics;
 import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
 
 import com.ulyp.agent.policy.EnabledRecordingPolicy;
 import com.ulyp.core.Method;
@@ -21,10 +20,10 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class RecorderTest {
+class RecorderTest {
 
     private static class X {
         public String foo(Integer s) {
@@ -45,7 +44,7 @@ public class RecorderTest {
     private Method method;
     private int methodIdx;
 
-    @Before
+    @BeforeEach
     public void setUp() throws NoSuchMethodException {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
         methodIdx = methodRepository.putAndGetId(method);
@@ -53,13 +52,13 @@ public class RecorderTest {
         callRecordQueue.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         callRecordQueue.close();
     }
 
     @Test
-    public void shouldRecordDataWhenRecordingIsFinished() throws InterruptedException, TimeoutException {
+    void shouldRecordDataWhenRecordingIsFinished() throws InterruptedException, TimeoutException {
         X recorded = new X();
         int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
         recorder.onMethodExit(methodIdx, "ABC", null, callId);
@@ -70,7 +69,7 @@ public class RecorderTest {
     }
 
     @Test
-    public void testTemporaryRecordingDisableWithOngoingRecording() throws InterruptedException, TimeoutException {
+    void testTemporaryRecordingDisableWithOngoingRecording() throws InterruptedException, TimeoutException {
         Recorder.recordingIdGenerator.set(0);
 
         X recorded = new X();
@@ -92,12 +91,11 @@ public class RecorderTest {
         assertEquals(new HashSet<>(Collections.singletonList((long) callId1)), storage.getCallRecords()
             .stream()
             .map(RecordedMethodCall::getCallId)
-            .collect(Collectors.toSet())
-        );
+            .collect(Collectors.toSet()));
     }
 
     @Test
-    public void testTemporaryRecordingDisableWithNoOngoingRecording() {
+    void testTemporaryRecordingDisableWithNoOngoingRecording() {
         recorder.disableRecording();
 
         recorder.enableRecording();

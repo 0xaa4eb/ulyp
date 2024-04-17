@@ -6,17 +6,17 @@ import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.OptionalRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
-public class OptionalRecorderTest extends AbstractInstrumentationTest {
+class OptionalRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testReturnOptionalWithSomeString() {
+    void testReturnOptionalWithSomeString() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -36,7 +36,7 @@ public class OptionalRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testReturnEmptyOptional() {
+    void testReturnEmptyOptional() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase2.class)

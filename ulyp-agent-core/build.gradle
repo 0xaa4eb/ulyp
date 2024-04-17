@@ -4,6 +4,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "2.0.4"
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
@@ -19,8 +23,9 @@ dependencies {
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 if (project.hasProperty("apiBuild")) {
