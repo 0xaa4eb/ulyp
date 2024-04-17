@@ -13,17 +13,13 @@ import com.ulyp.storage.reader.RecordingDataReaderJob;
 
 import lombok.Getter;
 
+@Getter
 public class StubRecordingDataReaderJob implements RecordingDataReaderJob {
 
-    @Getter
     private ProcessMetadata processMetadata;
-    @Getter
     private final Map<Integer, RecordingMetadata> recordingMetadatas = new HashMap<>();
-    @Getter
     private final Map<Integer, Method> methods = new HashMap<>();
-    @Getter
     private final Map<Integer, List<RecordedMethodCall>> recordedCalls = new HashMap<>();
-    @Getter
     private final InMemoryRepository<Integer, Type> types = new InMemoryRepository<>();
 
     @Override

@@ -5,18 +5,18 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class TypeInfoTest extends AbstractInstrumentationTest {
+class TypeInfoTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldProvideArgumentTypes() {
+    void shouldProvideArgumentTypes() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder().withMainClassName(TestCases.class)
                         .withMethodToRecord("intSum")

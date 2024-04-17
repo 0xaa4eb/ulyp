@@ -1,21 +1,20 @@
 package com.ulyp.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.*;
-
-public class PaddedAtomicIntegerArrayTest {
+class PaddedAtomicIntegerArrayTest {
 
     @Test
-    public void testIndex() {
+    void testIndex() {
         PaddedAtomicIntegerArray array = new PaddedAtomicIntegerArray(64);
 
         for (int index = 0; index < 64; index++) {
             int value = ThreadLocalRandom.current().nextInt();
             array.set(index, value);
-            assertEquals(value, array.get(index));
+            Assertions.assertEquals(value, array.get(index));
         }
     }
 }

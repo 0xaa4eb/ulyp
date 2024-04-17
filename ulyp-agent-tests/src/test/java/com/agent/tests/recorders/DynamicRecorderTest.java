@@ -6,13 +6,19 @@ import com.ulyp.core.recorders.BooleanRecord;
 import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Assert;
-import org.junit.Test;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class DynamicRecorderTest extends AbstractInstrumentationTest {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DynamicRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldUseBooleanRecorderIfBooleanIsPassed() {
+    void shouldUseBooleanRecorderIfBooleanIsPassed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -22,11 +28,11 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         BooleanRecord repr = (BooleanRecord) root.getArgs().get(0);
 
-        Assert.assertTrue(repr.getValue());
+        assertTrue(repr.getValue());
     }
 
     @Test
-    public void shouldUseStringRecorderIfBooleanIsPassed() {
+    void shouldUseStringRecorderIfBooleanIsPassed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -36,11 +42,11 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
 
         StringObjectRecord objectRepresentation = (StringObjectRecord) root.getArgs().get(0);
 
-        Assert.assertEquals("ABC", objectRepresentation.value());
+        assertEquals("ABC", objectRepresentation.value());
     }
 
     @Test
-    public void shouldUseClassRecorderIfClassIsPassed() {
+    void shouldUseClassRecorderIfClassIsPassed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -48,7 +54,7 @@ public class DynamicRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("passClass")
         );
 
-        ClassObjectRecord record = (ClassObjectRecord) root.getArgs().get(0);
+        assertThat(root.getArgs().get(0), CoreMatchers.instanceOf(ClassObjectRecord.class));
     }
 
     static class TestCase {

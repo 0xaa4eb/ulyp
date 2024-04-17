@@ -4,80 +4,63 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
-public class RecordingMatcherTest extends AbstractInstrumentationTest {
+class RecordingMatcherTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldNotRecordWithInvalidMatcher() {
+    void shouldNotRecordWithInvalidMatcher() {
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("**.TestCasesAZASdasd.main"))
-                ).recordings(),
-                Matchers.empty()
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.TestCasesAZASdasd.main"))
+        ).recordings(), Matchers.empty());
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("a.b.c.RecordingMatcherTest.TestCases.main"))
-                ).recordings(),
-                Matchers.empty()
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("a.b.c.RecordingMatcherTest.TestCases.main"))
+        ).recordings(), Matchers.empty());
     }
 
     @Test
-    public void shouldRecordMainMethodIfMatcherIsNotSpecified() {
+    void shouldRecordMainMethodIfMatcherIsNotSpecified() {
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("*.*"))
-                ).recordings(),
-                hasSize(1)
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("*.*"))
+        ).recordings(), hasSize(1));
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("**.TestCases.main"))
-                ).recordings(),
-                hasSize(1)
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.TestCases.main"))
+        ).recordings(), hasSize(1));
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("com.agent.tests.general.RecordingMatcherTest.TestCases.main"))
-                ).recordings(),
-                hasSize(1)
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("com.agent.tests.general.RecordingMatcherTest.TestCases.main"))
+        ).recordings(), hasSize(1));
 
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("**.RecordingMatcherTest.TestCases.main"))
-                ).recordings(),
-                hasSize(1)
-        );
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.RecordingMatcherTest.TestCases.main"))
+        ).recordings(), hasSize(1));
     }
 
     @Test
     // Not yet supported with default methods
-    public void shouldBeAbleToMatchInterfaceMethodUsingImplementingClassName() {
+    void shouldBeAbleToMatchInterfaceMethodUsingImplementingClassName() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -85,16 +68,13 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
                         .withMethodToRecord(MethodMatcher.parse("**.Clazz.bar"))
         );
 
-        assertThat(
-                recordingResult.recordings(),
-                hasSize(1)
-        );
+        assertThat(recordingResult.recordings(), hasSize(1));
     }
 
     @Test
-    @Ignore
+    @Disabled
     // Not yet supported with default methods
-    public void shouldBeAbleToMatchDefaultMethod() {
+    void shouldBeAbleToMatchDefaultMethod() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -102,26 +82,20 @@ public class RecordingMatcherTest extends AbstractInstrumentationTest {
                         .withMethodToRecord(MethodMatcher.parse("**.Clazz.foo"))
         );
 
-        assertThat(
-                recordingResult.recordings(),
-                hasSize(3)
-        );
+        assertThat(recordingResult.recordings(), hasSize(3));
     }
 
     @Test
-    public void testRecordViaInterfaceMatcher() {
-        assertThat(
-                runSubprocess(
-                        new ForkProcessBuilder()
-                                .withMainClassName(TestCases.class)
-                                .withMethodToRecord(MethodMatcher.parse("**.Interface.foo"))
-                ).recordings(),
-                hasSize(1)
-        );
+    void testRecordViaInterfaceMatcher() {
+        assertThat(runSubprocess(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCases.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.Interface.foo"))
+        ).recordings(), hasSize(1));
     }
 
     @Test
-    public void shouldRecordAllMethods() {
+    void shouldRecordAllMethods() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(MultithreadedExample.class)

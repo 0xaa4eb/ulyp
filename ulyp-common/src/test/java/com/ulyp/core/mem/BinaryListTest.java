@@ -3,15 +3,16 @@ package com.ulyp.core.mem;
 import com.ulyp.core.AddressableItemIterator;
 import com.ulyp.core.bytes.*;
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class BinaryListTest {
+class BinaryListTest {
 
     private MemPageAllocator allocator() {
         return new MemPageAllocator() {
@@ -29,7 +30,7 @@ public class BinaryListTest {
     }
 
     @Test
-    public void testBasicSize() {
+    void testBasicSize() {
         OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         OutputBytesList.Writer writer = out.writer();
@@ -38,11 +39,11 @@ public class BinaryListTest {
 
         InputBytesList inputList = out.flip();
 
-        Assert.assertEquals(1, inputList.size());
+        assertEquals(1, inputList.size());
     }
 
     @Test
-    public void testWriteByUsingWriter() {
+    void testWriteByUsingWriter() {
         OutputBytesList out = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         OutputBytesList.Writer writer = out.writer();
@@ -52,11 +53,11 @@ public class BinaryListTest {
         InputBytesList inputList = out.flip();
 
         BytesIn in = inputList.iterator().next();
-        Assert.assertEquals("AVBACAS", in.readString());
+        assertEquals("AVBACAS", in.readString());
     }
 
     @Test
-    public void testByAddressAccess() throws IOException {
+    void testByAddressAccess() throws IOException {
         OutputBytesList bytesOut = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         bytesOut.add(out -> {
@@ -92,7 +93,7 @@ public class BinaryListTest {
     }
 
     @Test
-    public void testSimpleReadWrite() {
+    void testSimpleReadWrite() {
         OutputBytesList bytesOut = new OutputBytesList(SerializedRecordedMethodCallList.WIRE_ID, new PagedMemBytesOut(allocator()));
 
         bytesOut.add(out -> {
@@ -112,7 +113,7 @@ public class BinaryListTest {
 
         AddressableItemIterator<BytesIn> iterator = inputList.iterator();
 
-        assertTrue(iterator.hasNext());
+        Assertions.assertTrue(iterator.hasNext());
 
         BytesIn next = iterator.next();
         assertEquals(2, next.available());

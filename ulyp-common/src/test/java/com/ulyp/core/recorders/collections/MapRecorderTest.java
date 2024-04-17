@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.IdentityObjectRecord;
@@ -21,9 +22,9 @@ import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.core.util.TypeMatcher;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MapRecorderTest {
+class MapRecorderTest {
 
     static class XYZ {
         @Override
@@ -40,7 +41,7 @@ public class MapRecorderTest {
     private final PrintingRecorder printingRecorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         printingRecorder.addClassesToPrint(new HashSet<>(Arrays.asList(TypeMatcher.parse("**.XYZ"))));
         Map<String, XYZ> map = new HashMap<>();
         map.put("ABC", new XYZ());
@@ -54,11 +55,11 @@ public class MapRecorderTest {
 
         List<MapEntryRecord> entries = mapRecord.getEntries();
         MapEntryRecord mapEntryRecord = entries.get(0);
-        assertTrue(mapEntryRecord.getValue() instanceof IdentityObjectRecord);
+        Assertions.assertInstanceOf(IdentityObjectRecord.class, mapEntryRecord.getValue());
     }
 
     @Test
-    public void test2() throws Exception {
+    void test2() throws Exception {
         Map<String, XYZ> map = new HashMap<String, XYZ>() {
             @Override
             public Set<Entry<String, XYZ>> entrySet() {

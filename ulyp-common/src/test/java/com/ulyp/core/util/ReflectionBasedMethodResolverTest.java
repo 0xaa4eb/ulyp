@@ -1,14 +1,12 @@
 package com.ulyp.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-public class ReflectionBasedMethodResolverTest {
+class ReflectionBasedMethodResolverTest {
 
     public static class T {
 
@@ -18,15 +16,15 @@ public class ReflectionBasedMethodResolverTest {
     }
 
     @Test
-    public void testBasic() throws NoSuchMethodException {
+    void testBasic() throws NoSuchMethodException {
         Method method = new ReflectionBasedMethodResolver().resolve(
             T.class.getDeclaredMethod("get", Integer.class)
         );
 
-        assertEquals(method.getName(), "get");
-        assertFalse(method.isStatic());
+        Assertions.assertEquals("get", method.getName());
+        Assertions.assertFalse(method.isStatic());
 
         Type declaringType = method.getDeclaringType();
-        assertEquals("com.ulyp.core.util.ReflectionBasedMethodResolverTest$T", declaringType.getName());
+        Assertions.assertEquals("com.ulyp.core.util.ReflectionBasedMethodResolverTest$T", declaringType.getName());
     }
 }

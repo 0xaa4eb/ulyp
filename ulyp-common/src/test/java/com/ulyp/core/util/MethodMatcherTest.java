@@ -2,14 +2,13 @@ package com.ulyp.core.util;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-
-public class MethodMatcherTest {
+class MethodMatcherTest {
 
     @Test
-    public void testMatching() {
+    void testMatching() {
 
         Type type = Type.builder()
                 .name("com.pckg.SomeClass")
@@ -20,21 +19,21 @@ public class MethodMatcherTest {
                 .name("run")
                 .build();
 
-        assertTrue(MethodMatcher.parse("com.pckg.SomeClass.run").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("com.pckg.SomeClass.run").matches(method));
 
-        assertTrue(MethodMatcher.parse("com.pckg.SomeClass.*").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("com.pckg.SomeClass.*").matches(method));
 
-        assertTrue(MethodMatcher.parse("com.*.SomeClass.run").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("com.*.SomeClass.run").matches(method));
 
-        assertTrue(MethodMatcher.parse("*.*").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("*.*").matches(method));
 
-        assertTrue(MethodMatcher.parse("**.*").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("**.*").matches(method));
 
-        assertTrue(MethodMatcher.parse("**.SomeClass.run").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("**.SomeClass.run").matches(method));
     }
 
     @Test
-    public void testMatchingWithNestedClass() {
+    void testMatchingWithNestedClass() {
 
         Type type = Type.builder()
             .name("com.pckg.SomeClass$Nested")
@@ -45,10 +44,10 @@ public class MethodMatcherTest {
             .name("run")
             .build();
 
-        assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.run").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.run").matches(method));
 
-        assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.*").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("com.pckg.SomeClass$Nested.*").matches(method));
 
-        assertTrue(MethodMatcher.parse("**.SomeClass$Nested.run").matches(method));
+        Assertions.assertTrue(MethodMatcher.parse("**.SomeClass$Nested.run").matches(method));
     }
 }

@@ -26,6 +26,10 @@ if (javaVersion >= JavaVersion.VERSION_1_7 && javaVersion < JavaVersion.VERSION_
     throw new GradleException("JITWatch is unsupported on Java $javaVersion")
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation project(':ulyp-common')
     implementation project(':ulyp-storage')
@@ -51,9 +55,9 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: '2.20.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.4'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 mainClassName = 'com.ulyp.ui.UIStarter'

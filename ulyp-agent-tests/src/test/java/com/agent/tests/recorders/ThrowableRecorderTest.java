@@ -6,13 +6,14 @@ import com.ulyp.core.recorders.NullObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.ThrowableRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ThrowableRecorderTest extends AbstractInstrumentationTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordThrowableWithMessage() {
+    void shouldRecordThrowableWithMessage() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ThrowableTestCases.class)
@@ -21,11 +22,11 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
         ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();
         StringObjectRecord representation = (StringObjectRecord) returnValue.getMessage();
-        Assert.assertEquals("some exception message", representation.value());
+        assertEquals("some exception message", representation.value());
     }
 
     @Test
-    public void shouldHandleNullMessageInThrowable() {
+    void shouldHandleNullMessageInThrowable() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(ThrowableTestCases.class)
@@ -34,7 +35,7 @@ public class ThrowableRecorderTest extends AbstractInstrumentationTest {
 
         ThrowableRecord returnValue = (ThrowableRecord) root.getReturnValue();
         NullObjectRecord representation = (NullObjectRecord) returnValue.getMessage();
-        Assert.assertNotNull(representation);
+        assertNotNull(representation);
     }
 
     public static class ThrowableTestCases {

@@ -34,9 +34,13 @@ public class ProcessMetadataSerializer implements Serializer<ProcessMetadata> {
         out.write(object.getMainClassName());
 
         List<String> classpath = object.getClasspath();
-        out.write(classpath.size());
-        for (String jarFilePath : classpath) {
-            out.write(jarFilePath);
+        if (classpath != null) {
+            out.write(classpath.size());
+            for (String jarFilePath : classpath) {
+                out.write(jarFilePath);
+            }
+        } else {
+            out.write(0);
         }
     }
 }

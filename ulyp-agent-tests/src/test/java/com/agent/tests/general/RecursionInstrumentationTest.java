@@ -3,15 +3,15 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class RecursionInstrumentationTest extends AbstractInstrumentationTest {
+class RecursionInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testFibonacciMethodCall() {
+    void testFibonacciMethodCall() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(RecursionTestCases.class)

@@ -6,11 +6,10 @@ import java.nio.file.Files;
 import java.util.concurrent.ExecutionException;
 
 import com.ulyp.storage.util.TestMemPageAllocator;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.RecordingMetadata;
@@ -25,8 +24,11 @@ import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
 import com.ulyp.storage.reader.RecordingDataReader;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
+import org.junit.jupiter.api.BeforeEach;
 
-public class CallRecordTreeTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class CallRecordTreeTest {
 
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
@@ -50,7 +52,7 @@ public class CallRecordTreeTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         File file = Files.createTempFile(CallRecordTreeTest.class.getSimpleName(), "a").toFile();
         reader = new FileRecordingDataReaderBuilder(file).build();
@@ -59,25 +61,25 @@ public class CallRecordTreeTest {
         methods.add(method);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         reader.close();
         writer.close();
     }
 
     @Test
-    public void testEmptyTree() throws Exception {
+    void testEmptyTree() throws Exception {
         try (CallRecordTree tree = new CallRecordTreeBuilder(reader)
             .setIndexSupplier(InMemoryIndex::new)
             .setReadInfinitely(false)
             .build()) {
 
-            Assert.assertEquals(0, tree.getRecordings().size());
+            assertEquals(0, tree.getRecordings().size());
         }
     }
 
     @Test
-    public void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
+    void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
         SerializedRecordedMethodCallList calls = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
         calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
         calls.addExitMethodCall(0, typeResolver, "CDE");
@@ -94,18 +96,18 @@ public class CallRecordTreeTest {
             .build();
         tree.getCompleteFuture().get();
 
-        Assert.assertEquals(1, tree.getRecordings().size());
+        assertEquals(1, tree.getRecordings().size());
 
         Recording recording = tree.getRecordings().iterator().next();
         CallRecord root = recording.getRoot();
-        Assert.assertTrue(root.isFullyRecorded());
+        assertTrue(root.isFullyRecorded());
 
         StringObjectRecord returnValue = (StringObjectRecord) root.getReturnValue();
-        Assert.assertThat(returnValue.value(), Matchers.is("CDE"));
+        MatcherAssert.assertThat(returnValue.value(), Matchers.is("CDE"));
     }
 
     @Test
-    public void testNotFinishedRecording() throws ExecutionException, InterruptedException {
+    void testNotFinishedRecording() throws ExecutionException, InterruptedException {
         SerializedRecordedMethodCallList calls = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
         calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
 
@@ -118,10 +120,10 @@ public class CallRecordTreeTest {
         CallRecordTree tree = new CallRecordTree(reader, RecordingListener.empty(), InMemoryIndex::new, true);
         tree.getCompleteFuture().get();
 
-        Assert.assertEquals(1, tree.getRecordings().size());
+        assertEquals(1, tree.getRecordings().size());
 
         Recording recording = tree.getRecordings().iterator().next();
         CallRecord root = recording.getRoot();
-        Assert.assertFalse(root.isFullyRecorded());
+        assertFalse(root.isFullyRecorded());
     }
 }

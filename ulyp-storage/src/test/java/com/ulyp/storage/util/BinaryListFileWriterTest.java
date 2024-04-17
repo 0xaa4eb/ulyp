@@ -8,16 +8,16 @@ import com.ulyp.core.mem.InputBytesList;
 import com.ulyp.core.mem.OutputBytesList;
 import com.ulyp.storage.reader.BinaryListWithAddress;
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BinaryListFileWriterTest {
+class BinaryListFileWriterTest {
 
     private final byte[] buffer = new byte[16 * 1024];
 
@@ -25,7 +25,7 @@ public class BinaryListFileWriterTest {
     private BinaryListFileReader reader;
     private ByAddressFileReader byAddressFileReader;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         File file = Files.createTempFile("BinaryListFileWriterTest", "a").toFile();
         this.writer = new BinaryListFileWriter(file);
@@ -40,7 +40,7 @@ public class BinaryListFileWriterTest {
     }
 
     @Test
-    public void shouldReadSingleList() throws IOException {
+    void shouldReadSingleList() throws IOException {
         assertNull(reader.read());
 
         OutputBytesList bytesOut = new OutputBytesList(5, new BufferBytesOut(new UnsafeBuffer(buffer)));
@@ -63,7 +63,7 @@ public class BinaryListFileWriterTest {
     }
 
     @Test
-    public void shouldReadMultipleLists() throws IOException {
+    void shouldReadMultipleLists() throws IOException {
         OutputBytesList bytesOut1 = new OutputBytesList(5, new BufferBytesOut(new UnsafeBuffer(buffer)));
         bytesOut1.add(out -> out.write(1));
         bytesOut1.add(out -> out.write(2));
@@ -83,7 +83,7 @@ public class BinaryListFileWriterTest {
     }
 
     @Test
-    public void shouldAllowToNavigateToArbitraryListInFile() throws IOException {
+    void shouldAllowToNavigateToArbitraryListInFile() throws IOException {
         OutputBytesList bytesOut1 = new OutputBytesList(5, new BufferBytesOut(new UnsafeBuffer(buffer)));
         bytesOut1.add(out -> out.write(4356274L));
         bytesOut1.add(out -> out.write(7643565L));

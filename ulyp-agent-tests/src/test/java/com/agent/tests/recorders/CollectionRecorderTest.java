@@ -6,20 +6,23 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.collections.CollectionRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class CollectionRecorderTest extends AbstractInstrumentationTest {
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class CollectionRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordSimpleItemsProperly() {
+    void shouldRecordSimpleItemsProperly() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -33,14 +36,14 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
         List<ObjectRecord> items = collection.getRecordedItems();
 
         StringObjectRecord firstItemRepr = (StringObjectRecord) items.get(0);
-        Assert.assertEquals("a", firstItemRepr.value());
+        assertEquals("a", firstItemRepr.value());
 
         StringObjectRecord secondItemRepr = (StringObjectRecord) items.get(1);
-        Assert.assertEquals("b", secondItemRepr.value());
+        assertEquals("b", secondItemRepr.value());
     }
 
     @Test
-    public void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
+    void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -49,11 +52,11 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
-    public void shouldRecordSimpleListIfJavaCollectionsAreRecorded() {
+    void shouldRecordSimpleListIfJavaCollectionsAreRecorded() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -62,11 +65,11 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
-    public void shouldNotRecordAnythingIfSpecifiedToRecordOnlyJavaCollection() {
+    void shouldNotRecordAnythingIfSpecifiedToRecordOnlyJavaCollection() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -75,11 +78,11 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
-    public void shouldRecordCustomListIfSpecifiedAllCollectionsToRecord() {
+    void shouldRecordCustomListIfSpecifiedAllCollectionsToRecord() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -88,11 +91,11 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
     }
 
     @Test
-    public void shouldFallbackToIdentityIfRecordingFailed() {
+    void shouldFallbackToIdentityIfRecordingFailed() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -101,7 +104,7 @@ public class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        Assert.assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
     }
 
     static class TestCase {

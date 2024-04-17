@@ -5,9 +5,8 @@ import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.CallRecordTree;
 import com.ulyp.storage.tree.CallRecordTreeBuilder;
 
-import junit.framework.AssertionFailedError;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,11 +36,11 @@ public class AbstractInstrumentationTest {
             try {
                 tree.getCompleteFuture().get(200, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                Assert.fail("Thread is interrupted");
+                Assertions.fail("Thread is interrupted");
             } catch (ExecutionException ee) {
                 throw new RuntimeException("Failed", ee);
             } catch (TimeoutException e) {
-                Assert.fail("Timed out waiting for process to finish");
+                Assertions.fail("Timed out waiting for process to finish");
             }
             System.out.println("Got " + tree.getRecordings().size() + " recordings");
             return tree;

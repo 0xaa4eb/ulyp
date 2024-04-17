@@ -1,20 +1,20 @@
 package com.ulyp.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class ConcurrentArrayListMultithreadedTest {
+class ConcurrentArrayListMultithreadedTest {
 
     static {
         System.setProperty("ConcurrentArrayList.BITS", "3");
     }
 
     @Test
-    public void testPutAndGetSingleChunk() throws InterruptedException {
+    void testPutAndGetSingleChunk() throws InterruptedException {
         int threads = 4;
         int putsPerThread = 1_000_000;
         ConcurrentArrayList<Integer> list = new ConcurrentArrayList<>(
@@ -57,14 +57,14 @@ public class ConcurrentArrayListMultithreadedTest {
                 for (int j = 0; j < keys.length; j++) {
                     int actualValue = list.get(keys[j]);
                     int expectedValue = j * (threads + 1) + threadOffset;
-                    Assert.assertEquals(expectedValue, actualValue);
+                    Assertions.assertEquals(expectedValue, actualValue);
                 }
             } catch (Exception e) {
-                Assert.fail("Test failed: " + e.getMessage());
+                Assertions.fail("Test failed: " + e.getMessage());
             }
         }
 
-        Assert.assertEquals(putsPerThread * threads, list.size());
+        Assertions.assertEquals(putsPerThread * threads, list.size());
 
         executorService.shutdownNow();
         executorService.awaitTermination(5, TimeUnit.SECONDS);

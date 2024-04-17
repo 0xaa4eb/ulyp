@@ -7,21 +7,22 @@ import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.ExcerptAppender;
-import org.junit.Test;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import static com.agent.tests.util.RecordingMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
 
-public class ChronicleRecordingTest extends AbstractInstrumentationTest {
+class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testChronicleLibraryWithSingleMessage() {
+    void testChronicleLibraryWithSingleMessage() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -35,17 +36,15 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
         assertThat(errMsg, root.getSubtreeSize(), greaterThan(100));
 
-        assertThat(errMsg, root,
-                allOf(
-                        hasChildCall(hasMethod(hasName("startExcerpt"))),
-                        hasChildCall(hasMethod(hasName("writeInt"))),
-                        hasChildCall(hasMethod(hasName("readInt")))
-                )
-        );
+        assertThat(errMsg, root, allOf(
+                hasChildCall(hasMethod(hasName("startExcerpt"))),
+                hasChildCall(hasMethod(hasName("writeInt"))),
+                hasChildCall(hasMethod(hasName("readInt")))
+        ));
     }
 
     @Test
-    public void testChronicleLibraryWithSingleMessage2() {
+    void testChronicleLibraryWithSingleMessage2() {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
@@ -57,21 +56,13 @@ public class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot.getSubtreeSize(),
-                greaterThan(300)
-        );
+        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot.getSubtreeSize(), greaterThan(300));
 
-        assertThat(
-                DebugCallRecordTreePrinter.printTree(singleRoot),
-                singleRoot,
-                allOf(
-                        hasChildCall(hasMethod(hasName("startExcerpt"))),
-                        hasChildCall(hasMethod(hasName("writeInt"))),
-                        hasChildCall(hasMethod(hasName("readInt")))
-                )
-        );
+        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot, allOf(
+                hasChildCall(hasMethod(hasName("startExcerpt"))),
+                hasChildCall(hasMethod(hasName("writeInt"))),
+                hasChildCall(hasMethod(hasName("readInt")))
+        ));
     }
 
     public static class TestCase {

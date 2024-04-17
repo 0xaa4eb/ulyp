@@ -4,19 +4,19 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.FileRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class FileRecorderTest extends AbstractInstrumentationTest {
+class FileRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordFileObject() {
+    void shouldRecordFileObject() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -29,7 +29,7 @@ public class FileRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordPathObject() {
+    void shouldRecordPathObject() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)

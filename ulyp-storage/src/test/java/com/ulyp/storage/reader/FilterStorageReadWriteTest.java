@@ -11,10 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.ulyp.storage.util.TestMemPageAllocator;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.RecordedMethodCall;
@@ -28,8 +26,11 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.util.StubRecordingDataReaderJob;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
+import org.junit.jupiter.api.BeforeEach;
 
-public class FilterStorageReadWriteTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class FilterStorageReadWriteTest {
 
     private final T callee = new T();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
@@ -54,7 +55,7 @@ public class FilterStorageReadWriteTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         file = Files.createTempFile(FilterStorageReadWriteTest.class.getSimpleName(), "a").toFile();
         writer = new FileRecordingDataWriter(file);
@@ -62,14 +63,14 @@ public class FilterStorageReadWriteTest {
         methods.add(method);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws InterruptedException {
         reader.close();
         writer.close();
     }
 
     @Test
-    public void testReaderJobSubmit() throws ExecutionException, InterruptedException, TimeoutException {
+    void testReaderJobSubmit() throws ExecutionException, InterruptedException, TimeoutException {
         this.reader = new FileRecordingDataReaderBuilder(file)
             .build();
 
@@ -96,18 +97,18 @@ public class FilterStorageReadWriteTest {
         CompletableFuture<Void> voidCompletableFuture = reader.submitReaderJob(job);
         voidCompletableFuture.get(1, TimeUnit.MINUTES);
 
-        Assert.assertEquals(1, job.getRecordingMetadatas().size());
+        assertEquals(1, job.getRecordingMetadatas().size());
 
         Type typeDeserialized = job.getTypes().get(type.getId());
-        Assert.assertEquals(typeDeserialized, type);
+        assertEquals(typeDeserialized, type);
 
-        Assert.assertEquals(1, job.getMethods().size());
+        assertEquals(1, job.getMethods().size());
         Method methodDeserialized = job.getMethods().get(method.getId());
-        Assert.assertEquals(methodDeserialized, method);
+        assertEquals(methodDeserialized, method);
 
         Map<Integer, List<RecordedMethodCall>> recordedCalls = job.getRecordedCalls();
         List<RecordedMethodCall> calls = recordedCalls.get(1);
 
-        Assert.assertEquals(6, calls.size());
+        assertEquals(6, calls.size());
     }
 }

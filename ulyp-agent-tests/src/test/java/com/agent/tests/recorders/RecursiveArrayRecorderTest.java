@@ -4,15 +4,15 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
 
-public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
+class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldStopRecordingInfiniteRecursionAtSomeLevel() {
+    void shouldStopRecordingInfiniteRecursionAtSomeLevel() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -22,7 +22,7 @@ public class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
         ObjectArrayRecord repr = (ObjectArrayRecord) root.getReturnValue();
 
-        Assert.assertThat(repr.getLength(), is(1));
+        assertThat(repr.getLength(), is(1));
 
         ObjectArrayRecord item = (ObjectArrayRecord) repr.getRecordedItems().get(0);
 

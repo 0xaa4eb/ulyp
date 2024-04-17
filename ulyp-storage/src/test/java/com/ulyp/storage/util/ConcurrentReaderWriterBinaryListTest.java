@@ -6,10 +6,9 @@ import com.ulyp.core.mem.OutputBytesList;
 import lombok.Builder;
 import lombok.Value;
 import org.agrona.ExpandableDirectByteBuffer;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,24 +16,26 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.concurrent.*;
 
-public class ConcurrentReaderWriterBinaryListTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ConcurrentReaderWriterBinaryListTest {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     private File file;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         file = Files.createTempFile(ConcurrentReaderWriterBinaryListTest.class.getSimpleName(), "a").toFile();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws InterruptedException {
         executorService.shutdownNow();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
     }
 
     @Test
-    public void shouldBeAbleToConcurrentlyWriteAndRead() throws Exception {
+    void shouldBeAbleToConcurrentlyWriteAndRead() throws Exception {
         verify(500, Duration.ofMillis(0));
 
         verify(500, Duration.ofMillis(1));
@@ -49,7 +50,7 @@ public class ConcurrentReaderWriterBinaryListTest {
         WriteResult writeResult = writeResultFuture.get(10, TimeUnit.SECONDS);
         ReadResult readResult = readResultFuture.get(10, TimeUnit.SECONDS);
 
-        Assert.assertEquals(writeResult.getItemsWritten(), readResult.getItemsCount());
+        assertEquals(writeResult.getItemsWritten(), readResult.getItemsCount());
     }
 
     @Value

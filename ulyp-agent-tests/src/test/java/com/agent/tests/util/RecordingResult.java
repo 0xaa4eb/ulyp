@@ -4,8 +4,7 @@ import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.CallRecordTree;
 import com.ulyp.storage.tree.Recording;
 import com.ulyp.storage.StorageException;
-
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,33 +33,25 @@ public class RecordingResult {
 
     public void assertHasRecordings() {
         List<Recording> recordings = aggregateByRecordings();
-        Assert.assertTrue(
-            "Expect to have at least one recording session, but got " + recordings.size(),
-            !recordings.isEmpty()
+        Assertions.assertTrue(
+                !recordings.isEmpty(),
+                "Expect to have at least one recording session, but got " + recordings.size()
         );
     }
 
     public void assertHasSingleRecording() {
         List<Recording> recordings = aggregateByRecordings();
-        Assert.assertEquals(
-                "Expect single recording session, but got " + recordings.size(),
-                1, recordings.size()
-        );
-    }
-
-    public void assertNoRecordings() {
-        List<Recording> recordings = aggregateByRecordings();
-        Assert.assertEquals(
-            "Expect no recording sessions, but got " + recordings.size(),
-            0, recordings.size()
+        Assertions.assertEquals(
+                1, recordings.size(),
+                "Expect single recording session, but got " + recordings.size()
         );
     }
 
     public void assertRecordingSessionCount(int count) {
         List<Recording> recordings = aggregateByRecordings();
-        Assert.assertEquals(
-                "Expect " + count + " recording session, but got " + recordings.size(),
-                count, recordings.size()
+        Assertions.assertEquals(
+                count, recordings.size(),
+                "Expect " + count + " recording session, but got " + recordings.size()
         );
     }
 

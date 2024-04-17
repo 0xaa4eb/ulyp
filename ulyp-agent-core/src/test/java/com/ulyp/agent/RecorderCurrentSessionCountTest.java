@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.ulyp.core.metrics.NullMetrics;
-import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -26,7 +27,9 @@ import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.BlackholeRecordingDataWriter;
 import com.ulyp.storage.writer.StatsRecordingDataWriter;
 
-public class RecorderCurrentSessionCountTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class RecorderCurrentSessionCountTest {
 
     private static final int THREADS = 10;
     private static final int RECORDINGS_PER_THREAD = 20000;
@@ -47,7 +50,7 @@ public class RecorderCurrentSessionCountTest {
     private int methodIdx;
     private ExecutorService executor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws NoSuchMethodException {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
         methodIdx = methodRepository.putAndGetId(method);
@@ -55,7 +58,7 @@ public class RecorderCurrentSessionCountTest {
         recordingQueue.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws InterruptedException {
         recordingQueue.close();
 
@@ -80,9 +83,8 @@ public class RecorderCurrentSessionCountTest {
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
                 int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
-                Assert.assertTrue("Since at least one recording session is active, " +
-                    "Recorder.currentRecordingSessionCount must be positive",
-                    Recorder.currentRecordingSessionCount.get() > 0);
+                Assertions.assertTrue(Recorder.currentRecordingSessionCount.get() > 0, "Since at least one recording session is active, " +
+                    "Recorder.currentRecordingSessionCount must be positive");
 
                 recorder.onMethodExit(methodIdx, "ABC", null, callId);
             }
@@ -90,8 +92,8 @@ public class RecorderCurrentSessionCountTest {
     }
 
     @Test
-    @Ignore
-    public void testCurrentRecordingSessionCountValueUnderConcurrentRecordings() throws ExecutionException, InterruptedException, TimeoutException {
+    @Disabled
+    void testCurrentRecordingSessionCountValueUnderConcurrentRecordings() throws ExecutionException, InterruptedException, TimeoutException {
         ((SimpleLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory()).setCurrentLogLevel(LocationAwareLogger.ERROR_INT);
 
         List<Future<?>> futures = new ArrayList<>();
@@ -103,6 +105,6 @@ public class RecorderCurrentSessionCountTest {
         }
 
         recordingQueue.sync(Duration.ofMinutes(3));
-        Assert.assertEquals(0, Recorder.currentRecordingSessionCount.get());
+        assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }

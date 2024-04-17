@@ -3,15 +3,15 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 // TODO investigate OOM
-public class DirectMemLeakTest extends AbstractInstrumentationTest {
+class DirectMemLeakTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldWithstandLongRecording() {
+    void shouldWithstandLongRecording() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(FibonacciTestCase.class)

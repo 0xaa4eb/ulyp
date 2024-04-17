@@ -3,18 +3,18 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MultipleCallsInstrumentationTest extends AbstractInstrumentationTest {
+class MultipleCallsInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldMake1000Calls() {
+    void shouldMake1000Calls() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -25,7 +25,7 @@ public class MultipleCallsInstrumentationTest extends AbstractInstrumentationTes
     }
 
     @Test
-    public void shouldHaveCompleteTree() {
+    void shouldHaveCompleteTree() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
@@ -36,14 +36,14 @@ public class MultipleCallsInstrumentationTest extends AbstractInstrumentationTes
 
         for (CallRecord child : children) {
 
-            Assert.assertEquals(10, child.getChildren().size());
+            assertEquals(10, child.getChildren().size());
 
             for (CallRecord child2 : child.getChildren()) {
 
-                Assert.assertEquals(10, child2.getChildren().size());
+                assertEquals(10, child2.getChildren().size());
 
                 for (CallRecord child3 : child2.getChildren()) {
-                    Assert.assertEquals(1000, child3.getChildren().size());
+                    assertEquals(1000, child3.getChildren().size());
                 }
             }
         }

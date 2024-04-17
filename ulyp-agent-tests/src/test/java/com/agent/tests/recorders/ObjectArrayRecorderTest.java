@@ -6,19 +6,18 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
+class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldProvideArgumentTypes() {
+    void shouldProvideArgumentTypes() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesEmptyObjectArray.class)
@@ -34,7 +33,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void shouldRecordSimpleArrayWithString() {
+    void shouldRecordSimpleArrayWithString() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesStringArrayWithSomeString.class)
@@ -62,7 +61,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testUserDefinedClassArrayWith3Elements() {
+    void testUserDefinedClassArrayWith3Elements() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesVariousItemsArray.class)
@@ -77,7 +76,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         List<ObjectRecord> items = objectRepresentation.getRecordedItems();
 
         IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
-        assertThat(arg0.getType().getName(), Matchers.is(X.class.getName()));
+        assertThat(arg0.getType().getName(), is(X.class.getName()));
 
         NumberRecord arg1 = (NumberRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
@@ -87,7 +86,7 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testVarargs() {
+    void testVarargs() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(VaragsTestCase.class)
@@ -97,9 +96,9 @@ public class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         ObjectArrayRecord arrayRecord = (ObjectArrayRecord) root.getArgs().get(0);
 
-        Assert.assertThat(arrayRecord.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
-        Assert.assertThat(arrayRecord.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
-        Assert.assertThat(arrayRecord.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(arrayRecord.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(arrayRecord.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(arrayRecord.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
     }
 
     public static class TakesEmptyObjectArray {

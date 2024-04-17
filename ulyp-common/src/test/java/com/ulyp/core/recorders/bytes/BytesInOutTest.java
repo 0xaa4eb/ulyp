@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.Mark;
 import com.ulyp.core.mem.PageConstants;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public abstract class BytesInOutTest {
+abstract class BytesInOutTest {
 
     public static final int ITERATIONS = 100;
 
@@ -53,17 +53,17 @@ public abstract class BytesInOutTest {
 
             for (Object value : written) {
                 if (value instanceof Character) {
-                    Assert.assertEquals(value, input.readChar());
+                    assertEquals(value, input.readChar());
                 } else if (value instanceof Integer) {
-                    Assert.assertEquals(value, input.readInt());
+                    assertEquals(value, input.readInt());
                 } else if (value instanceof Long) {
-                    Assert.assertEquals(value, input.readLong());
+                    assertEquals(value, input.readLong());
                 } else if (value instanceof Boolean) {
-                    Assert.assertEquals(value, input.readBoolean());
+                    assertEquals(value, input.readBoolean());
                 } else if (value instanceof String) {
-                    Assert.assertEquals(value, input.readString());
+                    assertEquals(value, input.readString());
                 } else {
-                    Assert.assertEquals(value, input.readByte());
+                    assertEquals(value, input.readByte());
                 }
             }
         }
@@ -119,17 +119,17 @@ public abstract class BytesInOutTest {
 
             for (Object value : written) {
                 if (value instanceof Character) {
-                    Assert.assertEquals(value, input.readChar());
+                    assertEquals(value, input.readChar());
                 } else if (value instanceof Integer) {
-                    Assert.assertEquals(value, input.readInt());
+                    assertEquals(value, input.readInt());
                 } else if (value instanceof Long) {
-                    Assert.assertEquals(value, input.readLong());
+                    assertEquals(value, input.readLong());
                 } else if (value instanceof Boolean) {
-                    Assert.assertEquals(value, input.readBoolean());
+                    assertEquals(value, input.readBoolean());
                 } else if (value instanceof String) {
-                    Assert.assertEquals(value, input.readString());
+                    assertEquals(value, input.readString());
                 } else if (value instanceof Byte) {
-                    Assert.assertEquals(value, input.readByte());
+                    assertEquals(value, input.readByte());
                 } else if (value instanceof byte[]) {
                     assertBytesEquals((byte[]) value, input.readBytes());
                 } else if (value instanceof UnsafeBuffer) {
@@ -185,7 +185,7 @@ public abstract class BytesInOutTest {
             input.readByte();
         }
         for (int i = 0; i < writesCount; i++) {
-            Assert.assertEquals(i + 1, input.readInt());
+            assertEquals(i + 1, input.readInt());
         }
     }
 
@@ -209,7 +209,7 @@ public abstract class BytesInOutTest {
             input.readInt();
         }
         input.readByte();
-        Assert.assertEquals(55, input.readInt());
+        assertEquals(55, input.readInt());
     }
 
     @Test
@@ -241,7 +241,7 @@ public abstract class BytesInOutTest {
 
         BytesIn bytesInResult = out.flip().readBytes();
         for (int i = 0; i < buf.length; i++) {
-            Assert.assertEquals(buf[i], bytesInResult.readByte());
+            assertEquals(buf[i], bytesInResult.readByte());
         }
     }
 
@@ -404,7 +404,7 @@ public abstract class BytesInOutTest {
 
     private static void assertBytesEquals(byte[] expected, BytesIn actual) {
         for (byte b : expected) {
-            Assert.assertEquals(b, actual.readByte());
+            assertEquals(b, actual.readByte());
         }
     }
 }

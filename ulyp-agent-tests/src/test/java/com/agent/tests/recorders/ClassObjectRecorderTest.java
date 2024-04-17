@@ -4,15 +4,15 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
+class ClassObjectRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    public void testClassTypeReturning() {
+    void testClassTypeReturning() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -26,7 +26,7 @@ public class ClassObjectRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testClassTypePassing() {
+    void testClassTypePassing() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()

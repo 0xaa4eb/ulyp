@@ -4,16 +4,16 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class ConcurrentRecordingTest extends AbstractInstrumentationTest {
+class ConcurrentRecordingTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldRecordInConcurrentMode() {
+    void shouldRecordInConcurrentMode() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(MultithreadedExample.class)

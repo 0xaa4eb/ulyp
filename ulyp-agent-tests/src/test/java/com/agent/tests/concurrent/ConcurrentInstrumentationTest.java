@@ -4,8 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -16,10 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
 
     @Test
-    public void shouldInstrumentConcurrently() {
+    void shouldInstrumentConcurrently() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
                         .withMainClassName(TestRunner.class)
@@ -27,7 +28,7 @@ public class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
                         .withLogLevel("OFF")
         );
 
-        Assert.assertEquals(0, recordingResult.recordings().size());
+        assertEquals(0, recordingResult.recordings().size());
     }
 
     public static class TestRunner {

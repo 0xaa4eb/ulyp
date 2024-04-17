@@ -1,18 +1,18 @@
 package com.agent.tests.recording;
 
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.SystemProp;
 import com.ulyp.storage.tree.CallRecord;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-public class AggressiveRecordingTest extends AbstractInstrumentationTest {
+class AggressiveRecordingTest extends AbstractInstrumentationTest {
 
     public static class X {
 
@@ -32,7 +32,7 @@ public class AggressiveRecordingTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    public void testAggresiveRecording() {
+    void testAggresiveRecording() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withSystemProp(SystemProp.builder().key("ulyp.aggressive").build())
