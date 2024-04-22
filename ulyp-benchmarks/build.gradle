@@ -26,7 +26,7 @@ dependencies {
     jmhImplementation group: 'org.buildobjects', name: 'jproc', version: '2.8.2'
     jmhImplementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
     jmhImplementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-    jmhImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
+    jmhImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.0.1'
     jmhImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     jmhImplementation group: 'com.hazelcast', name: 'hazelcast', version: '5.3.6'
