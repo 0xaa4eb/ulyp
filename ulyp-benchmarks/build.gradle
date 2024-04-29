@@ -53,7 +53,7 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
 //    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*', '-rf', 'json']
     args = ['-prof', 'async:libPath=~/Programs/async-profiler-3.0-linux-x64/lib/libasyncProfiler.so;verbose=true;event=cpu;output=flamegraph;dir=profile-results',
             '-gc', 'true',
-            '.*SpringHibernateBenchmark.record']
+            '.*H2Benchmark.record']
 }
 
 classes.finalizedBy(jmhClasses)

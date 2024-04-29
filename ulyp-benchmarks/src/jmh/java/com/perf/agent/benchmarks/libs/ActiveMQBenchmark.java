@@ -70,7 +70,6 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
             "-Dulyp.metrics",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
@@ -79,8 +78,7 @@ public class ActiveMQBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
-            "-Dulyp.metrics",
-            "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
+            "-Dulyp.metrics"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void syncRecord(Counters counters) {
