@@ -146,9 +146,9 @@ public class Agent {
             .or(ElementMatchers.nameStartsWith("javax."))
             .or(ElementMatchers.nameStartsWith("jdk."))
             .or(ElementMatchers.nameStartsWith("sun"))
-            .or(ElementMatchers.nameStartsWith("shadowed"))
+            .or(ElementMatchers.nameStartsWith("shadowed2"))
             .or(ElementMatchers.nameStartsWith("com.sun"))
-            .or(ElementMatchers.nameStartsWith("com.ulyp"));
+            .or(ElementMatchers.nameStartsWith("com.ulyp2"));
 
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);
         if (instrumentationMatcher != ElementMatchers.<TypeDescription>any()) {

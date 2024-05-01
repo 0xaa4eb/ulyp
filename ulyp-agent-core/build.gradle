@@ -56,13 +56,14 @@ jar {
 }
 
 shadowJar {
-    relocate 'org.agrona', 'shadowed.org.agrona'
-    relocate 'org.slf4j', 'com.ulyp.slf4j'
-    relocate 'io', 'shadowed.io'
-    relocate 'com.google', 'shadowed.com.google'
-    relocate 'javax.annotation', 'shadowed.javax.annotation'
-    relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
-    relocate 'com.lmax', 'shadowed.com.lmax'
+    relocate 'com.ulyp', 'com.ulyp2'
+    relocate 'org.agrona', 'shadowed2.org.agrona'
+    relocate 'org.slf4j', 'com.ulyp2.slf4j'
+    relocate 'io', 'shadowed2.io'
+    relocate 'com.google', 'shadowed2.com.google'
+    relocate 'javax.annotation', 'shadowed2.javax.annotation'
+    relocate 'net.bytebuddy', 'shadowed2.net.bytebuddy'
+    relocate 'com.lmax', 'shadowed2.com.lmax'
 
     archiveName = "${rootProject.name}-agent-core-${rootProject.version}.jar"
 
@@ -84,7 +85,7 @@ tasks.register('copyShadowJar', Copy) {
     into layout.buildDirectory.file('libs')
     rename { String fileName ->
         fileName = fileName.replace("-$project.version", "")
-        fileName + "r"
+        fileName + "rr"
     }
     dependsOn('shadowJar')
 }

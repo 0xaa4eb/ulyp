@@ -7,7 +7,7 @@ plugins {
 dependencies {
     implementation project(':ulyp-common')
     compileOnly project(':ulyp-agent-core')
-    runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarr')
+    runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarrr')
 
     implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
 
@@ -37,7 +37,7 @@ sourceSets {
 
 task createProperties(dependsOn: processResources) {
     doLast {
-        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+        new File("$buildDir/resources/main/version2.properties").withWriter { w ->
             Properties p = new Properties()
             p['version'] = project.version.toString()
             p['build_time'] = String.valueOf(System.currentTimeMillis())
@@ -64,12 +64,13 @@ shadowJar {
     dependsOn(':ulyp-agent-core:shadowJar')
     dependsOn(':ulyp-agent-core:copyShadowJar')
 
-    relocate 'org.agrona', 'shadowed.org.agrona'
-    relocate 'org.slf4j', 'com.ulyp.slf4j'
-    relocate 'io', 'shadowed.io'
-    relocate 'com.google', 'shadowed.com.google'
-    relocate 'javax.annotation', 'shadowed.javax.annotation'
-    relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
+    relocate 'com.ulyp', 'com.ulyp2'
+    relocate 'org.agrona', 'shadowed2.org.agrona'
+    relocate 'org.slf4j', 'com.ulyp2.slf4j'
+    relocate 'io', 'shadowed2.io'
+    relocate 'com.google', 'shadowed2.com.google'
+    relocate 'javax.annotation', 'shadowed2.javax.annotation'
+    relocate 'net.bytebuddy', 'shadowed2.net.bytebuddy'
 
     archiveName = "${rootProject.name}-agent-${rootProject.version}.jar"
 
@@ -78,8 +79,8 @@ shadowJar {
     manifest {
         attributes(
                 'Main-Class': 'com.ulyp.agent.Main',
-                'Premain-Class': 'com.ulyp.agent.AgentBootstrap',
-                'Agent-Class': 'com.ulyp.agent.AgentBootstrap',
+                'Premain-Class': 'com.ulyp2.agent.AgentBootstrap',
+                'Agent-Class': 'com.ulyp2.agent.AgentBootstrap',
                 'Can-Redefine-Classes': 'true',
                 'Can-Retransform-Classes': 'true',
                 'Can-Set-Native-Method-Prefix': 'true',

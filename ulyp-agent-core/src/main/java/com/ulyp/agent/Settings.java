@@ -23,24 +23,24 @@ public class Settings {
 
     public static final boolean TIMESTAMPS_ENABLED;
 
-    public static final String PACKAGES_PROPERTY = "ulyp.packages";
-    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
-    public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
-    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
-    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
-    public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
-    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String START_RECORDING_THREADS_PROPERTY = "ulyp.threads";
-    public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
-    public static final String FILE_PATH_PROPERTY = "ulyp.file";
-    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
-    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
-    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
-    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
-    public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
-    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
-    public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
-    public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
+    public static final String PACKAGES_PROPERTY = "ulyp2.packages";
+    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp2.policy";
+    public static final String BIND_NETWORK_ADDRESS = "ulyp2.bind";
+    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp2.exclude-packages";
+    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp2.exclude-classes";
+    public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp2.exclude-methods";
+    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp2.methods";
+    public static final String START_RECORDING_THREADS_PROPERTY = "ulyp2.threads";
+    public static final String PRINT_TYPES_PROPERTY = "ulyp2.print";
+    public static final String FILE_PATH_PROPERTY = "ulyp2.file";
+    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp2.constructors";
+    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp2.lambdas";
+    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp2.type-initializers";
+    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp2.collections";
+    public static final String AGGRESSIVE_PROPERTY = "ulyp2.aggressive";
+    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp2.timestamps";
+    public static final String AGENT_DISABLED_PROPERTY = "ulyp2.off";
+    public static final String METRICS_ENABLED_PROPERTY = "ulyp2.metrics";
 
     static {
         // make 'static final'. bytecode will be thrown off if the feature is disabled

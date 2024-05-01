@@ -18,7 +18,7 @@ import java.util.jar.JarFile;
  */
 public class AgentBootstrap {
 
-    private static final String AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME = "ulyp-agent-core.jarr";
+    private static final String AGENT_CLASSES_JAR_INTERNAL_RESOURCE_NAME = "ulyp-agent-core.jarrr";
     private static final String ULYP_TMP_DIR_PROPERTY = "ulyp.tmp-dir";
     private static final Class<?> thisClass = AgentBootstrap.class;
 
