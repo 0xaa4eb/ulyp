@@ -52,6 +52,7 @@ Build UI jar file (Java 11+ is preferable) :
 UI jar file for a particular platform can be built as follows:
 `./gradlew :ulyp-ui:fatJar -Pplatform=mac`
 
+Available platforms for the build are: `linux`, `linux-aarch64`, `win`, `mac`, `mac-aarch64`
 ## Similar projects
 
 Ulyp is POC and unstable all the time since the beginning. There are already similar projects which you might consider to use before Ulyp.
