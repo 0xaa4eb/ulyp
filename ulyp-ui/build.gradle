@@ -42,7 +42,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.8.RELEASE'
     implementation group: 'org.springframework', name: 'spring-core', version: '5.2.8.RELEASE'
 
-    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '7.2.2'
+    implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.1.1'
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
 
@@ -89,7 +89,40 @@ task fatJar(type: Jar) {
                 'Built-JDK': System.getProperty('java.version')
         )
     }
-
+    filesMatching(['*.dll'], { fileCopyDetails ->
+        if (platform != null && platform != "win") {
+            fileCopyDetails.exclude()
+        }
+    })
+    filesMatching(['*.so', '*.jnilib'], { fileCopyDetails ->
+        def fileName = fileCopyDetails.name
+        if (platform != null && fileName.startsWith("librocksdbjni")) {
+            if (fileName.contains("librocksdbjni-linux32") && platform != "linux") {
+                fileCopyDetails.exclude()
+            }
+            if (fileName.contains("librocksdbjni-linux64") && platform != "linux") {
+                fileCopyDetails.exclude()
+            }
+            if (fileName.contains("librocksdbjni-linux-aarch64") && platform != "linux-aarch64") {
+                fileCopyDetails.exclude()
+            }
+            if (fileName.contains("librocksdbjni-osx-x86_64") && platform != "mac") {
+                fileCopyDetails.exclude()
+            }
+            if (fileName.contains("librocksdbjni-osx-arm64") && platform != "mac-aarch64") {
+                fileCopyDetails.exclude()
+            }
+            // unsupported platforms
+            if (fileName.contains("librocksdbjni-linux-s390x") || fileName.contains("librocksdbjni-linux-ppc64le")) {
+                fileCopyDetails.exclude()
+            }
+        }
+    })
+    filesMatching(['librocksdbjni-linux-aarch64.*'], { fileCopyDetails ->
+        if (platform != null && platform != "linux-aarch64") {
+            fileCopyDetails.exclude()
+        }
+    })
     group = 'build'
     archiveFileName = jarName
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
