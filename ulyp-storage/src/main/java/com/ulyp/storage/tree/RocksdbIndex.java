@@ -19,7 +19,6 @@ public class RocksdbIndex implements Index {
     private final WriteOptions writeOptions;
     private final ThreadLocal<MutableDirectBuffer> tempBuffer = ThreadLocal.withInitial(() -> new ExpandableDirectByteBuffer(64 * 1024));
     private final ThreadLocal<byte[]> keyBuffer = ThreadLocal.withInitial(() -> new byte[Long.BYTES]);
-    private final ThreadLocal<byte[]> valueBuffer = ThreadLocal.withInitial(() -> new byte[64 * 1024]);
 
     public RocksdbIndex(Path indexFolder) throws StorageException {
         try {
@@ -62,22 +61,13 @@ public class RocksdbIndex implements Index {
         BitUtil.longToBytes(id, keyBytes, 0);
 
         int bytesWritten = binaryOutput.position();
-        byte[] valueBytes = getValueBuffer(bytesWritten);
+        byte[] valueBytes = new byte[bytesWritten];
         buffer.getBytes(0, valueBytes);
         try {
             db.put(writeOptions, keyBytes, 0, keyBytes.length, valueBytes, 0, bytesWritten);
         } catch (RocksDBException e) {
             throw new StorageException("Could not write", e);
         }
-    }
-
-    private byte[] getValueBuffer(int requiredCapacity) {
-        byte[] buf = valueBuffer.get();
-        if (requiredCapacity > buf.length) {
-            buf = new byte[requiredCapacity];
-            valueBuffer.set(buf);
-        }
-        return buf;
     }
 
     @Override
