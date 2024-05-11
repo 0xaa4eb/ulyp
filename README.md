@@ -6,7 +6,9 @@
 
 ## TL;DR
 
-Ulyp instruments all third-party library classes and record their method calls, so that you can have a better understanding of what your code does.
+Ulyp instruments all third-party library classes and record their method calls including return values and 
+arguments, so that you can have a better understanding of what your code does. Instrumentation is done by [byte-buddy](https://github.com/raphw/byte-buddy) library. 
+UI is written using JavaFX.
 
 ## Example of usage
 
