@@ -39,6 +39,7 @@ public class Settings {
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
+    public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
     public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
 
@@ -65,6 +66,7 @@ public class Settings {
     private final boolean agentEnabled;
     private final boolean timestampsEnabled;
     private final boolean metricsEnabled;
+    private final boolean typeValidationEnabled;
 
     public Settings(
             @NotNull String recordingDataFilePath,
@@ -82,7 +84,8 @@ public class Settings {
             String bindNetworkAddress,
             boolean agentEnabled,
             boolean timestampsEnabled,
-            boolean metricsEnabled) {
+            boolean metricsEnabled,
+            boolean typeValidationEnabled) {
         this.recordingDataFilePath = recordingDataFilePath;
         this.instrumentatedPackages = instrumentedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
@@ -99,6 +102,7 @@ public class Settings {
         this.agentEnabled = agentEnabled;
         this.timestampsEnabled = timestampsEnabled;
         this.metricsEnabled = metricsEnabled;
+        this.typeValidationEnabled = typeValidationEnabled;
     }
 
     public static Settings fromSystemProperties() {
@@ -145,6 +149,7 @@ public class Settings {
 
         boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
         boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;
+        boolean typeValidationEnabled = System.getProperty(TYPE_VALIDATION_ENABLED_PROPERTY) != null;
 
         Set<TypeMatcher> typesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
@@ -168,7 +173,8 @@ public class Settings {
                 bindNetworkAddress,
                 agentEnabled,
                 timestampsEnabled,
-                metricsEnabled
+                metricsEnabled,
+                typeValidationEnabled
         );
     }
 
@@ -203,6 +209,7 @@ public class Settings {
                 ",\nrecording policy: " + startRecordingPolicyPropertyValue +
                 ",\nrecord collections: " + collectionsRecordingMode +
                 ",\ntimestamps enabled: " + timestampsEnabled +
+                ",\ntype validation enabled: " + typeValidationEnabled +
                 ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 }
