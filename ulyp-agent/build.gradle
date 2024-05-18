@@ -9,8 +9,6 @@ dependencies {
     compileOnly project(':ulyp-agent-core')
     runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarr')
 
-    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
-
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
@@ -21,6 +19,16 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+}
+
+if (project.hasProperty("customByteBuddy")) {
+    dependencies {
+        implementation files('libs/byte-buddy-1.14.16-ulyp.jar')
+    }
+} else {
+    dependencies {
+        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
+    }
 }
 
 repositories {
