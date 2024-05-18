@@ -2,15 +2,13 @@ package com.ulyp.storage.tree;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class CallRecordIndexState {
 
     // uniqueId is combined from both recordingId and callId and used as PK in Rocksdb index

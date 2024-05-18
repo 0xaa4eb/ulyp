@@ -15,11 +15,13 @@ import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
+import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.asm.AsmVisitorWrapper;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 
@@ -84,7 +86,9 @@ public class Agent {
                 .to(MethodCallRecordingAdvice.class)
                 .on(buildMethodsMatcher(settings));
 
-        AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default()
+        TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
+
+        AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default(new ByteBuddy().with(typeValidation))
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(methodCallAdvice));

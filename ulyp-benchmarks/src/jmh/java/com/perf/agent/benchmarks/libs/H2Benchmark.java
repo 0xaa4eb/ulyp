@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 30)
 public class H2Benchmark extends RecordingBenchmark {
 
-    public static final int INSERTS_PER_INVOCATION = 500;
+    public static final int INSERTS_PER_INVOCATION = 300;
 
     private Connection connection;
     private int id = 0;
@@ -70,7 +70,7 @@ public class H2Benchmark extends RecordingBenchmark {
         insertRow();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.insertRow", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = {"-Dulyp.methods=**.H2Benchmark.insertRow", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
         insertRow();
