@@ -17,8 +17,8 @@
                 <TextField fx:id="searchTextField" prefHeight="20.0" prefWidth="300.0">
                     <tooltip>
                         <Tooltip text="Specify a search query to match against the recorded data.
-                        Query text can match a method name, a type name, an argument values and return values (like string text),
-                        or even identity hash code of a particular object"/>
+Query text can match a method name, a type name, an argument values and return values (like string text),
+or even identity hash code of a particular object"/>
                     </tooltip>
                 </TextField>
             </children>
