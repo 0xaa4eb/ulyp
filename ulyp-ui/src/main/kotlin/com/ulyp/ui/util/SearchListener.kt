@@ -6,25 +6,28 @@ import com.ulyp.storage.search.SearchResultListener
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTab
 import javafx.application.Platform
 
-class SearchListener(private val fileRecordingsTab: FileRecordingsTab) :
-    SearchResultListener {
+class SearchListener(private val fileRecordingsTab: FileRecordingsTab) : SearchResultListener {
 
     private val map: MutableSet<Int> = mutableSetOf()
 
     override fun onStart() {
-
+        fileRecordingsTab.recordingList.clearHighlights();
     }
 
-    override fun onMatch(enterMethodCall: RecordedEnterMethodCall) {
-/*        if (map.add(enterMethodCall.recordingId)) {
+    override fun onMatch(recordingId: Int, enterMethodCall: RecordedEnterMethodCall) {
+        if (map.add(recordingId)) {
             Platform.runLater {
-                fileRecordingsTab.recordingList.highlight(enterMethodCall.recordingId)
+                fileRecordingsTab.recordingList.highlight(recordingId)
             }
-        }*/
+        }
     }
 
-    override fun onMatch(exitMethodCall: RecordedExitMethodCall) {
-
+    override fun onMatch(recordingId: Int, exitMethodCall: RecordedExitMethodCall) {
+        if (map.add(recordingId)) {
+            Platform.runLater {
+                fileRecordingsTab.recordingList.highlight(recordingId)
+            }
+        }
     }
 
     override fun onEnd() {

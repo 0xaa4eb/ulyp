@@ -3,7 +3,7 @@ package com.ulyp.ui.elements.recording.tree
 import com.ulyp.core.ProcessMetadata
 import java.io.File
 
-class FileRecordingsTabName(private val file: File, private val processMetadata: ProcessMetadata) {
+class FileRecordingsTabName(val file: File, val processMetadata: ProcessMetadata) {
     override fun toString(): String {
         return String.format("%s: %s", file.absolutePath, processMetadata.mainClassName)
     }
