@@ -1,6 +1,7 @@
 package com.ulyp.ui
 
 import com.ulyp.ui.looknfeel.Theme
+import com.ulyp.ui.settings.RecordedCallWeightType
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.connect
 import javafx.fxml.FXML
@@ -44,6 +45,8 @@ class SettingsView(private val settings: Settings) : Initializable {
     lateinit var recordingListSpacingSlider: Slider
     @FXML
     lateinit var recordingListSpacingLabel: Label
+    @FXML
+    lateinit var recordedCallWeightTypeChoiceBox: ChoiceBox<String>
 
     override fun initialize(url: URL, rb: ResourceBundle?) {
         sourceCodeViewerEnabled.selectedProperty().bindBidirectional(settings.sourceCodeViewerEnabled)
@@ -56,6 +59,9 @@ class SettingsView(private val settings: Settings) : Initializable {
 
         recordingTreeFontChoiceBox.items.addAll(Font.getFamilies())
         recordingTreeFontChoiceBox.connect(settings.recordingTreeFontName)
+
+        recordedCallWeightTypeChoiceBox.items.addAll(RecordedCallWeightType.values().map { it.name })
+        recordedCallWeightTypeChoiceBox.connect(settings.recordedCallWeightType)
 
         systemFontSizeSlider.connect(systemFontSizeLabel, settings.systemFontSize)
         recordingTreeFontSizeSlider.connect(recordingTreeFontSizeLabel, settings.recordingTreeFontSize)

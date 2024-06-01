@@ -29,6 +29,10 @@ public class Recording {
         return recordingState.callCount();
     }
 
+    public Duration rootDuration() {
+        return Duration.ofNanos(getRoot().getNanosDuration());
+    }
+
     @NotNull
     public RecordingMetadata getMetadata() {
         return recordingState.getMetadata();

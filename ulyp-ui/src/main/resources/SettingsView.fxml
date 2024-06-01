@@ -218,6 +218,33 @@
                                                 <Insets left="20.0" top="20.0"/>
                                             </VBox.margin>
                                         </HBox>
+                                        <HBox prefHeight="20.0" prefWidth="200.0">
+                                            <children>
+                                                <Label text="Recording tree">
+                                                    <HBox.margin>
+                                                        <Insets left="20.0"/>
+                                                    </HBox.margin>
+                                                    <font>
+                                                        <Font name="System Bold" size="15.0"/>
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <opaqueInsets>
+                                                <Insets/>
+                                            </opaqueInsets>
+                                            <VBox.margin>
+                                                <Insets top="40.0"/>
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox prefWidth="200.0">
+                                            <children>
+                                                <Label prefWidth="200.0" text="Call weight*"/>
+                                                <ChoiceBox fx:id="recordedCallWeightTypeChoiceBox" prefWidth="200.0"/>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets left="20.0" top="20.0"/>
+                                            </VBox.margin>
+                                        </HBox>
                                     </children>
                                 </VBox>
                             </children>

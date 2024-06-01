@@ -14,7 +14,8 @@ class RecordedCallTreeItem(private val recording: Recording, private val callRec
                 RecordedCallNodeContent(
                         recording.getCallRecord(callRecordId),
                         renderSettings,
-                        recording.callCount()
+                        recording.callCount(),
+                        recording.rootDuration()
                 )
         ) {
 
@@ -30,7 +31,7 @@ class RecordedCallTreeItem(private val recording: Recording, private val callRec
 
     fun refresh() {
         currentCallRecord = recording.getCallRecord(callRecordId)
-        value = RecordedCallNodeContent(currentCallRecord, renderSettings, recording.callCount())
+        value = RecordedCallNodeContent(currentCallRecord, renderSettings, recording.callCount(), recording.rootDuration())
 
         if (loaded) {
             val newChildren = currentCallRecord.childrenCallIds

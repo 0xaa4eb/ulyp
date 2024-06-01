@@ -35,6 +35,8 @@ class Settings {
     val recordingTreeBoldElements: BooleanProperty = SimpleBooleanProperty(true)
     @Serializable(with = IntegerPropertySerializer::class)
     val recordingListSpacing = SimpleIntegerProperty(3)
+    @Serializable(with = StringPropertySerializer::class)
+    val recordedCallWeightType: StringProperty = SimpleStringProperty(RecordedCallWeightType.CALLS.name)
 
     fun addListener(listener: ChangeListener<Any>) {
         sourceCodeViewerEnabled.addListener(listener)
@@ -47,5 +49,10 @@ class Settings {
         recordingListShowThreads.addListener(listener)
         recordingTreeBoldElements.addListener(listener)
         recordingListSpacing.addListener(listener)
+        recordedCallWeightType.addListener(listener)
+    }
+
+    fun getRecordedCallWeightType(): RecordedCallWeightType {
+        return RecordedCallWeightType.valueOf(recordedCallWeightType.get())
     }
 }
