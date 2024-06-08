@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
-import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.RecordingTimeBenchmark;
 import com.perf.agent.benchmarks.libs.util.ApplicationConfiguration;
 import com.perf.agent.benchmarks.libs.util.Department;
 import com.perf.agent.benchmarks.libs.util.DepartmentService;
@@ -15,16 +15,15 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Warmup(iterations = 10)
-@Measurement(iterations = 30)
-public class SpringHibernateBenchmark extends RecordingBenchmark {
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Warmup(iterations = 0)
+@Measurement(iterations = 1)
+public class SpringHibernateBootstrapTimeBenchmark extends RecordingTimeBenchmark {
 
-    private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "20"));
-    private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "10"));
+    private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));
+    private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "20"));
     private DepartmentService departmentService;
 
-    @Setup(Level.Trial)
     public void setup() {
         ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         departmentService = context.getBean(DepartmentService.class);
@@ -45,7 +44,6 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
         }
     }
 
-    @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         int peopleCount = departmentService.countPeople();
         if (peopleCount != DEPT_COUNT * PEOPLE_PER_DEPT) {
@@ -58,24 +56,34 @@ public class SpringHibernateBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void baseline() {
-        departmentService.shufflePeople();
+        runTest();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.asdasd", value = 3)
     @Benchmark
     public void instrumented() {
-        departmentService.shufflePeople();
+        runTest();
     }
 
-    @Fork(jvmArgs = {"-Dulyp.methods=**.DepartmentService.shufflePeople", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest", value = 3)
     @Benchmark
     public void record() {
-        departmentService.shufflePeople();
+        runTest();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.DepartmentService.shufflePeople", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=" + METHOD_MATCHERS + ",**.SpringHibernateBootstrapBenchmark.runTest", value = 3)
     @Benchmark
     public void syncRecord(Counters counters) {
-        execSyncRecord(counters, () -> departmentService.shufflePeople());
+        execSyncRecord(counters, this::runTest);
+    }
+
+    private void runTest() {
+        try {
+            setup();
+            departmentService.shufflePeople();
+            tearDown();
+        } catch (Exception e) {
+            throw new RuntimeException("Test failed", e);
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
-import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.RecordingTimeBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
 @Measurement(iterations = 20)
-public class ActiveMQBenchmark extends RecordingBenchmark {
+public class ActiveMQTimeBenchmark extends RecordingTimeBenchmark {
 
     private static final int MESSAGE_COUNT = 5000;
 

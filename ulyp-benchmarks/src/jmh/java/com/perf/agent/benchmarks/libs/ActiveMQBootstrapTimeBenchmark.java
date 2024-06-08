@@ -1,7 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
-import com.perf.agent.benchmarks.RecordingBenchmark;
-import com.perf.agent.benchmarks.util.BenchmarkConstants;
+import com.perf.agent.benchmarks.RecordingTimeBenchmark;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.openjdk.jmh.annotations.*;
@@ -13,7 +12,7 @@ import javax.jms.*;
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class ActiveMQBootstrapBenchmark extends RecordingBenchmark {
+public class ActiveMQBootstrapTimeBenchmark extends RecordingTimeBenchmark {
 
     private ActiveMQConnectionFactory connectionFactory;
     private Connection connection;

@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks.recording;
 
-import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.RecordingTimeBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 30)
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class StringsRecordingBenchmark extends RecordingBenchmark {
+public class StringsRecordingTimeBenchmark extends RecordingTimeBenchmark {
 
     @Param({"50000"})
     private int callCount;
