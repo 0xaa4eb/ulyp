@@ -1,7 +1,6 @@
 package com.ulyp.ui.reader
 
 import com.ulyp.core.util.FileUtil
-import com.ulyp.storage.tree.Filter
 import com.ulyp.storage.reader.RecordingDataReader
 import com.ulyp.storage.reader.FileRecordingDataReaderBuilder
 import com.ulyp.storage.tree.CallRecordTree
@@ -14,16 +13,16 @@ import org.springframework.stereotype.Component
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
 
 @Component
-class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
+class ReaderRegistry(private val filterRegistry: FilterRegistry) {
 
-    private val readers = mutableSetOf<RecordingDataReader>()
+    private val readersMap = ConcurrentHashMap<Path, RecordingDataReader>()
 
     @Synchronized
     fun newCallRecordTree(file: File): CallRecordTree? {
         val recordingDataReader = FileRecordingDataReaderBuilder(file).build()
-        val processMetadata = recordingDataReader.processMetadata ?: return null
 
         val rocksdbAvailable = RocksdbChecker.checkRocksdbAvailable()
         val readerDirectory = Files.createTempDirectory("ulyp.Reader")
@@ -33,9 +32,7 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
             InMemoryIndex()
         }
 
-        val storageFilter = filterRegistry.filter?.toStorageFilter() ?: Filter.defaultFilter()
-
-        readers.add(recordingDataReader)
+        readersMap[file.toPath().toAbsolutePath()] = recordingDataReader
 
         val callRecordTree = CallRecordTreeBuilder(recordingDataReader)
             .setReadInfinitely(true)
@@ -44,6 +41,10 @@ class RecordingReaderRegistry(private val filterRegistry: FilterRegistry) {
         CloseReaderOnExitHook.add(Pair(readerDirectory, callRecordTree))
 
         return callRecordTree
+    }
+
+    fun getByFile(file: File): RecordingDataReader? {
+        return readersMap[file.toPath().toAbsolutePath()]
     }
 
     fun dispose(callTree: CallRecordTree) {
