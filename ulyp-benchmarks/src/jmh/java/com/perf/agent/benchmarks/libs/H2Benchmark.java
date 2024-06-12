@@ -1,6 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
-import com.perf.agent.benchmarks.RecordingTimeBenchmark;
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
 @Measurement(iterations = 30)
-public class H2TimeBenchmark extends RecordingTimeBenchmark {
+public class H2Benchmark extends RecordingBenchmark {
 
     public static final int INSERTS_PER_INVOCATION = 300;
 

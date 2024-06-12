@@ -3,7 +3,7 @@ package com.perf.agent.benchmarks.libs;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.perf.agent.benchmarks.RecordingTimeBenchmark;
+import com.perf.agent.benchmarks.RecordingBenchmark;
 import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
 @Measurement(iterations = 30)
-public class HazelcastTimeBenchmark extends RecordingTimeBenchmark {
+public class HazelcastBenchmark extends RecordingBenchmark {
 
     public static final int PUTS_PER_INVOCATION = 100;
     public static final int KEYS_COUNT = 50000;

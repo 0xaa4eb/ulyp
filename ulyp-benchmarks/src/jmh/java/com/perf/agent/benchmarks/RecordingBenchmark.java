@@ -20,7 +20,7 @@ import java.util.function.Supplier;
         "-Dulyp.collections=JAVA"
 })
 @State(Scope.Benchmark)
-public class RecordingTimeBenchmark {
+public class RecordingBenchmark {
 
     // additional non-existent methods to make instrumentation matcher do more work
     protected static final String METHOD_MATCHERS =

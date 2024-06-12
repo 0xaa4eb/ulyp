@@ -3,7 +3,8 @@ package com.perf.agent.benchmarks.libs;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.perf.agent.benchmarks.RecordingTimeBenchmark;
+import com.perf.agent.benchmarks.RecordingBenchmark;
+import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.SECONDS)
 @Warmup(iterations = 0)
 @Measurement(iterations = 1)
-public class HazelcastBootstrapTimeBenchmark extends RecordingTimeBenchmark {
+public class HazelcastBootstrapBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = "-Dulyp.off", value = 3)
     @Benchmark
