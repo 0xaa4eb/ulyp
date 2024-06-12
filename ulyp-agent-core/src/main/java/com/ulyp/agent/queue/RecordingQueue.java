@@ -79,41 +79,21 @@ public class RecordingQueue implements AutoCloseable {
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args) {
-        int calleeTypeId;
-        int calleeIdentityHashCode;
-        if (callee != null) {
-            calleeTypeId = typeResolver.get(callee).getId();
-            calleeIdentityHashCode = System.identityHashCode(callee);
-        } else {
-            calleeTypeId = -1;
-            calleeIdentityHashCode = 0;
-        }
         disruptor.publish(new EnterRecordQueueEvent(
                 recordingId,
                 callId,
                 methodId,
-                calleeTypeId,
-                calleeIdentityHashCode,
+                callee,
                 convert(args))
         );
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        int calleeTypeId;
-        int calleeIdentityHashCode;
-        if (callee != null) {
-            calleeTypeId = typeResolver.get(callee).getId();
-            calleeIdentityHashCode = System.identityHashCode(callee);
-        } else {
-            calleeTypeId = -1;
-            calleeIdentityHashCode = 0;
-        }
         disruptor.publish(new TimestampedEnterRecordQueueEvent(
                 recordingId,
                 callId,
                 methodId,
-                calleeTypeId,
-                calleeIdentityHashCode,
+                callee,
                 convert(args),
                 nanoTime)
         );

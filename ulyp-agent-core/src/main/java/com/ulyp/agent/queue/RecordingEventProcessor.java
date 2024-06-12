@@ -5,10 +5,7 @@ import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
 import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
 import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
-import com.ulyp.core.CallRecordBuffer;
-import com.ulyp.core.MethodRepository;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.core.TypeResolver;
+import com.ulyp.core.*;
 
 import com.ulyp.core.mem.MemPageAllocator;
 import com.ulyp.core.recorders.QueuedIdentityObject;
@@ -51,15 +48,21 @@ public class RecordingEventProcessor {
         if (buffer == null) {
             buffer = new CallRecordBuffer(enterRecord.getRecordingId(), pageAllocator);
         }
-        cachedQueuedIdentityCallee.setTypeId(enterRecord.getCalleeTypeId());
-        cachedQueuedIdentityCallee.setIdentityHashCode(enterRecord.getCalleeIdentityHashCode());
+
+        Object callee = enterRecord.getCallee();
+        if (callee != null) {
+            Type calleeType = typeResolver.get(callee);
+            cachedQueuedIdentityCallee.setTypeId(calleeType.getId());
+            cachedQueuedIdentityCallee.setIdentityHashCode(System.identityHashCode(callee));
+            callee = cachedQueuedIdentityCallee;
+        }
 
         long nanoTime = (enterRecord instanceof TimestampedEnterRecordQueueEvent) ? ((TimestampedEnterRecordQueueEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
                 enterRecord.getCallId(),
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
-                cachedQueuedIdentityCallee,
+                callee,
                 enterRecord.getArgs(),
                 nanoTime
         );

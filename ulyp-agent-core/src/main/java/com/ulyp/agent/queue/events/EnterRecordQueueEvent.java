@@ -10,16 +10,14 @@ public class EnterRecordQueueEvent {
     protected final int recordingId;
     protected final int callId;
     protected final int methodId;
-    protected final int calleeTypeId;
-    protected final int calleeIdentityHashCode;
+    protected final Object callee;
     protected final Object[] args;
 
-    public EnterRecordQueueEvent(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args) {
+    public EnterRecordQueueEvent(int recordingId, int callId, int methodId, Object callee, Object[] args) {
         this.recordingId = recordingId;
         this.callId = callId;
         this.methodId = methodId;
-        this.calleeTypeId = calleeTypeId;
-        this.calleeIdentityHashCode = calleeIdentityHashCode;
+        this.callee = callee;
         this.args = args;
     }
 
@@ -29,8 +27,7 @@ public class EnterRecordQueueEvent {
                 "recordingId=" + recordingId +
                 ", callId=" + callId +
                 ", methodId=" + methodId +
-                ", calleeTypeId=" + calleeTypeId +
-                ", calleeIdentityHashCode=" + calleeIdentityHashCode +
+                ", callee=" + callee +
                 ", args=" + Arrays.toString(args) +
                 '}';
     }
