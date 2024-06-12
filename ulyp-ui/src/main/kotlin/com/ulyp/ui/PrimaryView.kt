@@ -9,7 +9,7 @@ import com.ulyp.ui.elements.controls.ErrorModalView
 import com.ulyp.ui.elements.misc.ExceptionAsTextView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
-import com.ulyp.ui.reader.RecordingReaderRegistry
+import com.ulyp.ui.reader.ReaderRegistry
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
 import javafx.fxml.FXML
@@ -33,7 +33,7 @@ class PrimaryView(
     private val applicationContext: ApplicationContext,
     private val viewInitializer: ViewInitializer,
     private val sourceCodeView: SourceCodeView,
-    private val readerRegistry: RecordingReaderRegistry,
+    private val readerRegistry: ReaderRegistry,
     private val fileRecordingTabPane: FileRecordingTabPane,
     private val settings: Settings,
     private val fileChooser: Supplier<File?>
@@ -101,7 +101,7 @@ class PrimaryView(
         val stage = Stage()
         stage.scene = scene
         stage.isMaximized = false
-        stage.title = "Search"
+        stage.title = "Search (Experimental)"
         val iconStream = UIApplication::class.java.classLoader.getResourceAsStream("icons/settings-icon.png") ?: throw UlypException("Icon not found")
         stage.icons.add(Image(iconStream))
         stage.show()

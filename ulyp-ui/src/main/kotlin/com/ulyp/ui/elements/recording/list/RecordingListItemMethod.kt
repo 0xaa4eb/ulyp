@@ -18,7 +18,6 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
     }
 
     private var showThreadName: Boolean = false
-    val recordingId = recording.id
 
     init {
         this.showThreadName = settings.recordingListShowThreads.get()
@@ -86,5 +85,13 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
             " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
             Style.RECORDING_LIST_ITEM
         )
+    }
+
+    fun markHighlighted() {
+        children.forEach { it.styleClass.add("search-highlighted") }
+    }
+
+    fun clearHighlight() {
+        children.forEach { it.styleClass.remove("search-highlighted") }
     }
 }

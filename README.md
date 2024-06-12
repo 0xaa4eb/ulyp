@@ -43,6 +43,20 @@ The data is dropped to the specified file.
 
 ![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
+## Similar projects
+
+Ulyp is POC and unstable all the time since the beginning. There are already similar projects which you might consider to use before Ulyp.
+<table border="1">
+<tr>
+		<th>Project</th>
+		<th>Link</th>
+		<th>Source</th>
+</tr>
+<tr><td>Bugjail</td><td>bugjail.com</td><td>Closed source</td></tr>
+<tr><td>Findtheflow</td><td>findtheflow.io</td><td>Closed source</td></tr>
+<tr><td>javaflame</td><td>[github](https://github.com/beothorn/javaflame)</td><td>Open source, uses byte-buddy as well</td></tr>
+</table>
+
 ## Build from source
 
 Build with gradle:
@@ -55,18 +69,6 @@ UI jar file for a particular platform can be built as follows:
 `./gradlew :ulyp-ui:fatJar -Pplatform=mac`
 
 Available platforms for the build are: `linux`, `linux-aarch64`, `win`, `mac`, `mac-aarch64`
-## Similar projects
-
-Ulyp is POC and unstable all the time since the beginning. There are already similar projects which you might consider to use before Ulyp.
-<table border="1">
-<tr>
-		<th>Project</th>
-		<th>Link</th>
-		<th>Source</th>
-</tr>
-<tr><td>Bugjail</td><td>bugjail.com</td><td>Closed source</td></tr>
-<tr><td>Findtheflow</td><td>findtheflow.io</td><td>Closed source</td></tr>
-</table>
 
 ## Key details
 

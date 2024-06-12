@@ -109,6 +109,8 @@ public class FileRecordingDataReader implements RecordingDataReader {
         @Override
         public void run() {
             try (BinaryListFileReader reader = new BinaryListFileReader(file)) {
+                job.onStart();
+
                 while (!Thread.currentThread().isInterrupted()) {
 
                     try {

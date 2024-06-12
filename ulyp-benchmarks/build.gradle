@@ -45,15 +45,27 @@ compileJava {
     options.debug = true
 }
 
+def jmhArgs = []
+if (project.hasProperty('jmhProf')) {
+    jmhArgs.add('-prof')
+    jmhArgs.add(project.findProperty('jmhProf'))
+}
+if (project.hasProperty('jmhGc')) {
+    jmhArgs.add('-gc')
+    jmhArgs.add(project.findProperty('jmhGc'))
+}
+if (project.hasProperty('jmhBench')) {
+    jmhArgs.add(project.findProperty('jmhBench'))
+}
+if (project.hasProperty('jmhFormat')) {
+    jmhArgs.add('-rf')
+    jmhArgs.add(project.findProperty('jmhFormat'))
+}
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
     dependsOn = [':ulyp-agent:shadowJar']
-    // To enable the built-in stacktrace sampling profiler
-//    args = ['-prof', 'gc', '.*H2DatabaseBenchmark.*', '-rf', 'json']
-    args = ['-prof', 'async:libPath=~/Programs/async-profiler-3.0-linux-x64/lib/libasyncProfiler.so;verbose=true;event=cpu;output=flamegraph;dir=profile-results',
-            '-gc', 'true',
-            '.*H2Benchmark.record']
+    args = jmhArgs
 }
 
 classes.finalizedBy(jmhClasses)

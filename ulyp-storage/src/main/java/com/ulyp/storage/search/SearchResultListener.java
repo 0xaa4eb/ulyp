@@ -7,9 +7,9 @@ public interface SearchResultListener {
 
     void onStart();
 
-    void onMatch(RecordedEnterMethodCall enterMethodCall);
+    void onMatch(int recordingId, RecordedEnterMethodCall enterMethodCall);
 
-    void onMatch(RecordedExitMethodCall exitMethodCall);
+    void onMatch(int recordingId, RecordedExitMethodCall exitMethodCall);
 
     void onEnd();
 }

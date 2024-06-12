@@ -4,7 +4,7 @@ import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.recording.tree.FileRecordingTabPane
 import com.ulyp.ui.looknfeel.FontStyleUpdater
 import com.ulyp.ui.reader.FilterRegistry
-import com.ulyp.ui.reader.RecordingReaderRegistry
+import com.ulyp.ui.reader.ReaderRegistry
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.settings.SettingsFileStorage
 import com.ulyp.ui.settings.defaults.SettingsFileProvider
@@ -39,7 +39,7 @@ open class Configuration {
     @Lazy
     open fun primaryView(
         applicationContext: ApplicationContext,
-        recordingReaderRegistry: RecordingReaderRegistry,
+        readerRegistry: ReaderRegistry,
         sourceCodeView: SourceCodeView,
         fileRecordingTabPane: FileRecordingTabPane,
         settings: Settings,
@@ -53,7 +53,7 @@ open class Configuration {
             applicationContext,
             viewInitializer,
             sourceCodeView,
-            recordingReaderRegistry,
+            readerRegistry,
             fileRecordingTabPane,
             settings
         ) { fileChooser.showOpenDialog(stage) }

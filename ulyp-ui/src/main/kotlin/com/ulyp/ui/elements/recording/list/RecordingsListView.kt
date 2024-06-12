@@ -43,4 +43,12 @@ class RecordingsListView(val settings: Settings) : ListView<RecordingListItem>()
         }
         fromStateItem.update(recording)
     }
+
+    fun highlight(recordingId: Int) {
+        recordings[recordingId]?.markHighlighted()
+    }
+
+    fun clearHighlights() {
+        recordings.forEach { recordingId, recordingListItem -> recordingListItem.clearHighlight() }
+    }
 }
