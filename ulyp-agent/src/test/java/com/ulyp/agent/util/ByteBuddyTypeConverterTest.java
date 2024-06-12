@@ -1,207 +1,38 @@
-/*
 package com.ulyp.agent.util;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 import com.ulyp.core.Type;
-import com.ulyp.core.TypeTrait;
 
-import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+class ByteBuddyTypeConverterTest {
 
-public class ByteBuddyTypeConverterTest {
-
-    private final ByteBuddyTypeConverter typeResolver = new ByteBuddyTypeConverter();
-
-    public static <T> void takesGenericArray(T[] array) {
-
-    }
-
-    public static void takesObjectArray(Object[] array) {
-
-    }
-
-    public static void takesClass(Class<?> x) {
-
-    }
-
-    private
+    private final ByteBuddyTypeConverter typeResolver = new ByteBuddyTypeConverter(true);
 
     @Test
-    public void testTakesGenericArray() throws NoSuchMethodException {
-        MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod method = new MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod(
-            this.getClass().getDeclaredMethod("takesGenericArray", Object[].class)
-        );
-        TypeDescription.Generic firstArgType = method.getParameters().asTypeList().get(0);
+    public void testNameResolve() {
+        Type type = typeResolver.convert(TypeDescription.ForLoadedType.of(TestClass.class).asGenericType());
 
-
-        Type byteBuddyType = typeResolver.convert(firstArgType);
-
-
-        assertThat(byteBuddyType.getTraits(), hasItems(TypeTrait.NON_PRIMITIVE_ARRAY));
-    }
-
-    @Test
-    public void testForChar() {
-
-        Type byteBuddyType = typeResolver.get(char.class);
-
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.CHAR));
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.PRIMITIVE));
-
-        byteBuddyType = typeResolver.get(Character.class);
-
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.CHAR));
-        assertThat(byteBuddyType.getTraits(), not(hasItem(TypeTrait.PRIMITIVE)));
-    }
-
-    @Test
-    public void testTraitsForPrimitiveArray() {
-
-
-        Type byteBuddyType = typeResolver.convert(new byte[]{45});
-
-
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.PRIMITIVE_BYTE_ARRAY));
-    }
-
-    @Test
-    public void testTraitsForObjectArray() {
-
-
-        Type byteBuddyType = typeResolver.get(new String[]{"A"});
-
-
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.NON_PRIMITIVE_ARRAY));
-    }
-
-    @Test
-    public void testObjectArrayTraitsWhenUsedAsParameter() throws NoSuchMethodException {
-        MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod method = new MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod(
-            this.getClass().getDeclaredMethod("takesObjectArray", Object[].class)
-        );
-        TypeDescription.Generic firstArgType = method.getParameters().asTypeList().get(0);
-
-
-        Type byteBuddyType = typeResolver.convert(firstArgType);
-
-
-        assertThat(byteBuddyType.getTraits(), hasItem(TypeTrait.NON_PRIMITIVE_ARRAY));
-    }
-
-    @Test
-    public void testClassTypeTraits() throws NoSuchMethodException {
-        MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod method = new MethodDescription.ForLoadedMethod.InDefinedShape.ForLoadedMethod(
-            this.getClass().getDeclaredMethod("takesClass", Class.class)
-        );
-
-        TypeDescription.Generic firstArgType = method.getParameters().asTypeList().get(0);
-
-        Type type = typeResolver.convert(firstArgType);
-
-        assertThat(type.getTraits(), hasItem(TypeTrait.CLASS_OBJECT));
-
-        assertThat(type.getTraits(), hasItem(TypeTrait.CONCRETE_CLASS));
-    }
-
-    @Test
-    public void testNumberTypeTraits() {
-
-        assertThat(typeResolver.get(Integer.class).getTraits(), hasItem(TypeTrait.NUMBER));
-
-        assertThat(typeResolver.get(Long.class).getTraits(), hasItem(TypeTrait.NUMBER));
-    }
-
-    @Test
-    public void testThrowableTraits() {
-
-        assertThat(typeResolver.get(Throwable.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-
-        assertThat(typeResolver.get(VerifyError.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-
-        assertThat(typeResolver.get(Error.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-
-        assertThat(typeResolver.get(Exception.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-
-        assertThat(typeResolver.get(FileNotFoundException.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-
-        assertThat(typeResolver.get(RuntimeException.class).getTraits(), hasItem(TypeTrait.THROWABLE));
-    }
-
-    @Test
-    public void testCollectionTraits() {
-
-        assertThat(typeResolver.get(Collection.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(Queue.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(ConcurrentLinkedQueue.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(List.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(ArrayList.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(Set.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(HashSet.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-
-        assertThat(typeResolver.get(CustomList.class).getTraits(), hasItem(TypeTrait.COLLECTION));
-    }
-
-    @Test
-    public void testMapTraits() {
-
-        assertThat(typeResolver.get(Map.class).getTraits(), hasItem(TypeTrait.MAP));
-
-        assertThat(typeResolver.get(HashMap.class).getTraits(), hasItem(TypeTrait.MAP));
-
-        assertThat(typeResolver.get(LinkedHashMap.class).getTraits(), hasItem(TypeTrait.MAP));
+        Assertions.assertEquals("com.ulyp.agent.util.ByteBuddyTypeConverterTest$TestClass", type.getName());
     }
 
     @Test
     public void testBaseClassNamesResolve() {
-        Type type = typeResolver.get(TestClass.class);
+        Type type = typeResolver.convert(TypeDescription.ForLoadedType.of(TestClass.class).asGenericType());
 
-        Assert.assertEquals(
+        Assertions.assertEquals(
             new HashSet<String>() {{
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.BaseClass");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I1");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I2");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I3");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I4");
-                add("com.ulyp.agent.util.ByteBuddyTypeResolverTest.I5");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.BaseClass");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.I1");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.I2");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.I3");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.I4");
+                add("com.ulyp.agent.util.ByteBuddyTypeConverterTest.I5");
             }},
             type.getSuperTypeNames()
-        );
-
-        Assert.assertEquals(
-            new HashSet<String>() {{
-                add("BaseClass");
-                add("I1");
-                add("I2");
-                add("I3");
-                add("I4");
-                add("I5");
-            }},
-            type.getSuperTypeSimpleNames()
         );
     }
 
@@ -232,8 +63,4 @@ public class ByteBuddyTypeConverterTest {
     static class TestClass extends BaseClass implements I1 {
 
     }
-
-    public abstract class CustomList implements List<String> {
-
-    }
-}*/
+}
