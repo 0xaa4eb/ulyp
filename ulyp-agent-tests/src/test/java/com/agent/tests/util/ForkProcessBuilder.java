@@ -172,6 +172,7 @@ public class ForkProcessBuilder {
             params.add("-D" + Settings.TIMESTAMPS_ENABLED_PROPERTY);
         }
 
+        params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 256);
         params.add("-D" + Settings.TYPE_VALIDATION_ENABLED_PROPERTY);
         params.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + logLevel);
         params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
