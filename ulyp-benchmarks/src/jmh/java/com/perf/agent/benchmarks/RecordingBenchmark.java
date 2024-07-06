@@ -17,7 +17,7 @@ import java.util.function.Supplier;
         BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.constructors",
-        "-Dulyp.collections=NONE"
+        "-Dulyp.collections=JAVA"
 })
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
