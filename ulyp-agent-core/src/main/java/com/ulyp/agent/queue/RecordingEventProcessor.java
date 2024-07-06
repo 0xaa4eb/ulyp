@@ -41,15 +41,13 @@ public class RecordingEventProcessor {
         if (buffer == null) {
             buffer = new CallRecordBuffer(recordingId, pageAllocator);
         }
-        cachedQueuedIdentityCallee.setTypeId(enterRecord.getCalleeTypeId());
-        cachedQueuedIdentityCallee.setIdentityHashCode(enterRecord.getCalleeIdentityHashCode());
 
         long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
                 enterRecord.getCallId(),
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
-                cachedQueuedIdentityCallee,
+                enterRecord.getCallee(),
                 enterRecord.getArgs(),
                 nanoTime
         );
