@@ -5,6 +5,7 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,19 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         assertThat(objectRepresentation.getLength(), is(0));
         assertThat(objectRepresentation.getRecordedItems(), Matchers.empty());
+    }
+
+    @Test
+    void shouldNotRecordObjectArrayItemsInPerformanceMode() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TakesEmptyObjectArray.class)
+                        .withMethodToRecord("accept")
+                        .withPerformanceMode(true)
+        );
+
+
+        assertThat(root.getArgs().get(0), CoreMatchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test

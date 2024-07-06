@@ -4,6 +4,7 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
+import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * It's only possible to set settings via JMV system properties at the time.
  */
 @Getter
+@Builder
 public class Settings {
 
     public static final boolean TIMESTAMPS_ENABLED;
@@ -37,7 +39,7 @@ public class Settings {
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
-    public static final String AGGRESSIVE_PROPERTY = "ulyp.aggressive";
+    public static final String PERFORMANCE_PROPERTY = "ulyp.performance";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
@@ -48,11 +50,9 @@ public class Settings {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
-    @NotNull
     private final String recordingDataFilePath;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
-    @NotNull
     private final StartRecordingMethods startRecordingMethods;
     private final Pattern startRecordingThreads;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
@@ -67,43 +67,11 @@ public class Settings {
     private final boolean timestampsEnabled;
     private final boolean metricsEnabled;
     private final boolean typeValidationEnabled;
-
-    public Settings(
-            @NotNull String recordingDataFilePath,
-            PackageList instrumentedPackages,
-            PackageList excludedFromInstrumentationPackages,
-            @NotNull StartRecordingMethods startRecordingMethods,
-            Pattern startRecordingThreads,
-            boolean instrumentConstructorsEnabled,
-            boolean instrumentLambdasEnabled,
-            boolean instrumentTypeInitializers,
-            CollectionsRecordingMode collectionsRecordingMode,
-            Set<TypeMatcher> typesToPrint,
-            String startRecordingPolicyPropertyValue,
-            List<TypeMatcher> excludeFromInstrumentationClasses,
-            String bindNetworkAddress,
-            boolean agentEnabled,
-            boolean timestampsEnabled,
-            boolean metricsEnabled,
-            boolean typeValidationEnabled) {
-        this.recordingDataFilePath = recordingDataFilePath;
-        this.instrumentatedPackages = instrumentedPackages;
-        this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
-        this.startRecordingMethods = startRecordingMethods;
-        this.startRecordingThreads = startRecordingThreads;
-        this.instrumentConstructorsEnabled = instrumentConstructorsEnabled;
-        this.instrumentLambdasEnabled = instrumentLambdasEnabled;
-        this.instrumentTypeInitializers = instrumentTypeInitializers;
-        this.collectionsRecordingMode = collectionsRecordingMode;
-        this.typesToPrint = typesToPrint;
-        this.startRecordingPolicyPropertyValue = startRecordingPolicyPropertyValue;
-        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
-        this.bindNetworkAddress = bindNetworkAddress;
-        this.agentEnabled = agentEnabled;
-        this.timestampsEnabled = timestampsEnabled;
-        this.metricsEnabled = metricsEnabled;
-        this.typeValidationEnabled = typeValidationEnabled;
-    }
+    /**
+     * In performance mode collection and array recorders are disabled, and most objects are passed by reference to the
+     * background thread. This may lower performance impact on application's client threads
+     */
+    private final boolean performanceModeEnabled;
 
     public static Settings fromSystemProperties() {
 
@@ -119,7 +87,7 @@ public class Settings {
 
         String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
         String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
-        StartRecordingMethods recordingStartMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
+        StartRecordingMethods startRecordingMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
 
         String recordingDataFilePath = System.getProperty(FILE_PATH_PROPERTY);
         if (recordingDataFilePath == null) {
@@ -130,15 +98,15 @@ public class Settings {
                 .map(Pattern::compile)
                 .orElse(null);
 
-        boolean aggressive = System.getProperty(AGGRESSIVE_PROPERTY) != null;
-        boolean recordConstructors = aggressive || System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
-        boolean instrumentLambdas = aggressive || System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
-        boolean instrumentTypeInitializers = aggressive || System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
+        boolean performanceModeEnabled = System.getProperty(PERFORMANCE_PROPERTY) != null;
+        boolean recordConstructors = System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
+        boolean instrumentLambdas = System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
+        boolean instrumentTypeInitializers = System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
         boolean timestampsEnabled = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
 
         String recordCollectionsProp;
-        if (aggressive) {
-            recordCollectionsProp = CollectionsRecordingMode.JAVA.name();
+        if (performanceModeEnabled) {
+            recordCollectionsProp = CollectionsRecordingMode.NONE.name();
         } else {
             recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
             if (recordCollectionsProp.isEmpty()) {
@@ -157,25 +125,26 @@ public class Settings {
                         .map(TypeMatcher::parse)
                         .collect(Collectors.toSet());
 
-        return new Settings(
-                recordingDataFilePath,
-                instrumentationPackages,
-                excludedPackages,
-                recordingStartMethods,
-                recordThreads,
-                recordConstructors,
-                instrumentLambdas,
-                instrumentTypeInitializers,
-                collectionsRecordingMode,
-                typesToPrint,
-                startRecordingPolicy,
-                excludeClassesFromInstrumentation,
-                bindNetworkAddress,
-                agentEnabled,
-                timestampsEnabled,
-                metricsEnabled,
-                typeValidationEnabled
-        );
+        return Settings.builder()
+                .recordingDataFilePath(recordingDataFilePath)
+                .instrumentatedPackages(instrumentationPackages)
+                .excludedFromInstrumentationPackages(excludedPackages)
+                .startRecordingMethods(startRecordingMethods)
+                .startRecordingThreads(recordThreads)
+                .instrumentConstructorsEnabled(recordConstructors)
+                .instrumentLambdasEnabled(instrumentLambdas)
+                .instrumentTypeInitializers(instrumentTypeInitializers)
+                .collectionsRecordingMode(collectionsRecordingMode)
+                .typesToPrint(typesToPrint)
+                .startRecordingPolicyPropertyValue(startRecordingPolicy)
+                .excludeFromInstrumentationClasses(excludeClassesFromInstrumentation)
+                .bindNetworkAddress(bindNetworkAddress)
+                .agentEnabled(agentEnabled)
+                .timestampsEnabled(timestampsEnabled)
+                .metricsEnabled(metricsEnabled)
+                .typeValidationEnabled(typeValidationEnabled)
+                .performanceModeEnabled(performanceModeEnabled)
+                .build();
     }
 
     @Nullable

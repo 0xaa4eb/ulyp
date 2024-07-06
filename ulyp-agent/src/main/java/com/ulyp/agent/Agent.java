@@ -8,6 +8,7 @@ import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
+import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
@@ -67,6 +68,7 @@ public class Agent {
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + settings);
 
+        // TODO should have a recorder context with all recorders properly set up
         CollectionRecorder recorder = (CollectionRecorder) ObjectRecorderRegistry.COLLECTION_RECORDER.getInstance();
         recorder.setMode(settings.getCollectionsRecordingMode());
 
@@ -75,6 +77,11 @@ public class Agent {
 
         PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getTypesToPrint());
+
+        ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
+        if (settings.isPerformanceModeEnabled()) {
+            objectArrayRecorder.setEnabled(false);
+        }
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);

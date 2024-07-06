@@ -15,6 +15,8 @@ import java.util.List;
 
 public class ObjectArrayRecorder extends ObjectRecorder {
 
+    private volatile boolean enabled = true;
+
     public ObjectArrayRecorder(byte id) {
         super(id);
     }
@@ -26,7 +28,7 @@ public class ObjectArrayRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return Object[].class.isAssignableFrom(type);
+        return enabled && Object[].class.isAssignableFrom(type);
     }
 
     @Override
@@ -51,5 +53,9 @@ public class ObjectArrayRecorder extends ObjectRecorder {
         for (int i = 0; i < itemsToRecord; i++) {
             out.write(array[i], typeResolver);
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
