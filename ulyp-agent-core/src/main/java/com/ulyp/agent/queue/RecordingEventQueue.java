@@ -184,9 +184,6 @@ public class RecordingEventQueue implements AutoCloseable {
      * Collections have a few of their items recorded (if enabled), so the recording must happen here.
      */
     private Object convert(Object value) {
-        if (true) {
-            throw new RuntimeException("ASD");
-        }
         Type type = typeResolver.get(value);
         ObjectRecorder recorder = type.getRecorderHint();
         if (value != null && recorder == null) {

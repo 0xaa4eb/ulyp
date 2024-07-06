@@ -50,11 +50,9 @@ public class Settings {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
-    @NotNull
     private final String recordingDataFilePath;
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
-    @NotNull
     private final StartRecordingMethods startRecordingMethods;
     private final Pattern startRecordingThreads;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
