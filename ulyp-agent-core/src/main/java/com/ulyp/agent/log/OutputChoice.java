@@ -2,6 +2,9 @@ package com.ulyp.agent.log;
 
 import java.io.PrintStream;
 
+/**
+ * Forked from slf4j-simple
+ */
 class OutputChoice {
 
     enum OutputChoiceType {

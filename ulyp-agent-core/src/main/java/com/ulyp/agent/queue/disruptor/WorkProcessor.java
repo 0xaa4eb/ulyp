@@ -102,7 +102,7 @@ public final class WorkProcessor<T> implements EventProcessor {
                 if (!running.get()) {
                     break;
                 }
-            } catch (final Throwable ex) {
+            } catch (Exception ex) {
                 // handle, mark as processed, unless the exception handler threw an exception
                 exceptionHandler.handleEventException(ex, nextSequence, event);
                 processedSequence = true;
@@ -128,7 +128,7 @@ public final class WorkProcessor<T> implements EventProcessor {
         if (workHandler instanceof LifecycleAware) {
             try {
                 ((LifecycleAware) workHandler).onStart();
-            } catch (final Throwable ex) {
+            } catch (Exception ex) {
                 exceptionHandler.handleOnStartException(ex);
             }
         }
@@ -138,7 +138,7 @@ public final class WorkProcessor<T> implements EventProcessor {
         if (workHandler instanceof LifecycleAware) {
             try {
                 ((LifecycleAware) workHandler).onShutdown();
-            } catch (final Throwable ex) {
+            } catch (Exception ex) {
                 exceptionHandler.handleOnShutdownException(ex);
             }
         }

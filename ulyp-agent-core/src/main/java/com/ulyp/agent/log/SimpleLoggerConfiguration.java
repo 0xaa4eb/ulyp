@@ -12,43 +12,37 @@ import java.util.Properties;
 
 import org.slf4j.helpers.Util;
 
+/**
+ * Forked from slf4j-simple
+ */
 public class SimpleLoggerConfiguration {
 
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
 
-    static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
-    int defaultLogLevel = DEFAULT_LOG_LEVEL_DEFAULT;
-
+    private static final boolean SHOW_THREAD_NAME_DEFAULT = true;
     private static final boolean SHOW_DATE_TIME_DEFAULT = false;
-    boolean showDateTime = SHOW_DATE_TIME_DEFAULT;
-
     private static final String DATE_TIME_FORMAT_STR_DEFAULT = null;
     private static String dateTimeFormatStr = DATE_TIME_FORMAT_STR_DEFAULT;
-
-    DateFormat dateFormatter = null;
-
-    private static final boolean SHOW_THREAD_NAME_DEFAULT = true;
-    boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
-
-    final static boolean SHOW_LOG_NAME_DEFAULT = true;
-    boolean showLogName = SHOW_LOG_NAME_DEFAULT;
-
+    private static int DEFAULT_LOG_LEVEL_DEFAULT = SimpleLogger.LOG_LEVEL_INFO;
+    private final static boolean SHOW_LOG_NAME_DEFAULT = true;
     private static final boolean SHOW_SHORT_LOG_NAME_DEFAULT = false;
-    boolean showShortLogName = SHOW_SHORT_LOG_NAME_DEFAULT;
-
     private static final boolean LEVEL_IN_BRACKETS_DEFAULT = false;
-    boolean levelInBrackets = LEVEL_IN_BRACKETS_DEFAULT;
-
     private static String LOG_FILE_DEFAULT = "System.err";
+    private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
+    private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
+
+    int defaultLogLevel = DEFAULT_LOG_LEVEL_DEFAULT;
+    boolean showDateTime = SHOW_DATE_TIME_DEFAULT;
+    DateFormat dateFormatter = null;
+    boolean showThreadName = SHOW_THREAD_NAME_DEFAULT;
+    boolean showLogName = SHOW_LOG_NAME_DEFAULT;
+    boolean showShortLogName = SHOW_SHORT_LOG_NAME_DEFAULT;
+    boolean levelInBrackets = LEVEL_IN_BRACKETS_DEFAULT;
     private String logFile = LOG_FILE_DEFAULT;
     OutputChoice outputChoice = null;
-
-    private static final boolean CACHE_OUTPUT_STREAM_DEFAULT = false;
-    private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
-
-    private static final String WARN_LEVELS_STRING_DEFAULT = "WARN";
     String warnLevelString = WARN_LEVELS_STRING_DEFAULT;
 
+    private boolean cacheOutputStream = CACHE_OUTPUT_STREAM_DEFAULT;
     private final Properties properties = new Properties();
 
     void init() {
@@ -122,7 +116,7 @@ public class SimpleLoggerConfiguration {
         try {
             prop = System.getProperty(name);
         } catch (SecurityException e) {
-            ; // Ignore
+            // Ignore
         }
         return (prop == null) ? properties.getProperty(name) : prop;
     }

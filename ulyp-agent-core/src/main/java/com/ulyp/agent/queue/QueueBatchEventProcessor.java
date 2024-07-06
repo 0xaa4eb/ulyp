@@ -94,12 +94,12 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                 sequence.set(availableSequence);
             } catch (final AlertException ex) {
                 if (status.get() != RUNNING) {
-                    break;
+                    return;
                 }
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
-                break;
-            } catch (final Throwable ex) {
+                return;
+            } catch (Exception ex) {
                 sequence.set(nextSequence);
                 nextSequence++;
             }
