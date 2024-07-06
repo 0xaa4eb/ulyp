@@ -24,7 +24,7 @@ public class MapRecorder extends ObjectRecorder {
     private static final int RECORDED_ITEMS_FLAG = 1;
     private static final int RECORDED_IDENTITY_ONLY = 0;
     @Setter
-    private volatile CollectionsRecordingMode mode;
+    private volatile CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
     private volatile boolean active = true;
 
     public MapRecorder(byte id) {

@@ -47,6 +47,8 @@ class MapRecorderTest {
         map.put("ABC", new XYZ());
         map.put("ZXC", new XYZ());
 
+        mapRecorder.setMode(CollectionsRecordingMode.ALL);
+
         mapRecorder.write(map, out, typeResolver);
 
         MapRecord mapRecord = (MapRecord) mapRecorder.read(typeResolver.get(map), in, typeResolver::get);
