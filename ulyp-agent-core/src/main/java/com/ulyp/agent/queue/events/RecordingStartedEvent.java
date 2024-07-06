@@ -1,4 +1,4 @@
-package com.ulyp.agent.queue;
+package com.ulyp.agent.queue.events;
 
 import com.ulyp.core.RecordingMetadata;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-class RecordingMetadataQueueEvent {
+public class RecordingStartedEvent implements RecordingEvent {
 
     private final RecordingMetadata recordingMetadata;
 }

@@ -1,18 +1,15 @@
 package com.ulyp.agent.queue;
 
 import com.ulyp.agent.AgentDataWriter;
-import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
+import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
+import com.ulyp.core.mem.DirectBufMemPageAllocator;
 import com.ulyp.core.mem.MemPageAllocator;
 import com.ulyp.core.recorders.QueuedIdentityObject;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,8 +20,6 @@ public class RecordingEventProcessor {
     private final MethodRepository methodRepository;
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
-    @Getter
-    private boolean complete = false;
     private MemPageAllocator pageAllocator;
     private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
@@ -35,26 +30,18 @@ public class RecordingEventProcessor {
         this.pageAllocator = new DirectBufMemPageAllocator();
     }
 
-    void onRecordingMetadataUpdate(RecordingMetadataQueueEvent update) {
+    void onRecordingStarted(RecordingStartedEvent update) {
         recordingMetadata = update.getRecordingMetadata();
     }
 
-    void onEventBatchStart() {
-        // not used yet
-    }
-
-    void onEventBatchEnd() {
-        // not used yet
-    }
-
-    void onEnterCallRecord(EnterRecordQueueEvent enterRecord) {
+    void onEnterCallRecord(int recordingId, EnterMethodRecordingEvent enterRecord) {
         if (buffer == null) {
-            buffer = new CallRecordBuffer(enterRecord.getRecordingId(), pageAllocator);
+            buffer = new CallRecordBuffer(recordingId, pageAllocator);
         }
         cachedQueuedIdentityCallee.setTypeId(enterRecord.getCalleeTypeId());
         cachedQueuedIdentityCallee.setIdentityHashCode(enterRecord.getCalleeIdentityHashCode());
 
-        long nanoTime = (enterRecord instanceof TimestampedEnterRecordQueueEvent) ? ((TimestampedEnterRecordQueueEvent) enterRecord).getNanoTime() : -1;
+        long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
                 enterRecord.getCallId(),
                 typeResolver,
@@ -65,21 +52,26 @@ public class RecordingEventProcessor {
         );
     }
 
-    void onExitCallRecord(ExitRecordQueueEvent exitRecord) {
-        int recordingId = exitRecord.getRecordingId();
+    public void onRecordingFinished(RecordingFinishedEvent event) {
+        recordingMetadata = recordingMetadata.withCompleteTime(event.getFinishTimeMillis());
+        agentDataWriter.write(typeResolver, recordingMetadata, this.buffer);
+        this.buffer = null;
+    }
+
+    void onExitCallRecord(int recordingId, ExitMethodRecordingEvent exitRecord) {
         CallRecordBuffer currentBuffer = this.buffer;
         if (currentBuffer == null) {
             log.debug("Call record buffer not found for recording id " + recordingId);
             return;
         }
-        long nanoTime = (exitRecord instanceof TimestampedExitRecordQueueEvent) ? ((TimestampedExitRecordQueueEvent) exitRecord).getNanoTime() : -1;
+        long nanoTime = (exitRecord instanceof TimestampedExitMethodRecordingEvent) ? ((TimestampedExitMethodRecordingEvent) exitRecord).getNanoTime() : -1;
         if (exitRecord.isThrown()) {
             currentBuffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), nanoTime);
         } else {
             currentBuffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
         }
 
-        if (currentBuffer.isComplete() || currentBuffer.estimateBytesSize() > 32 * 1024 * 1024) {
+        if (currentBuffer.estimateBytesSize() > 32 * 1024 * 1024 /* TODO configurable */) {
 
             if (!currentBuffer.isComplete()) {
                 this.buffer = currentBuffer.cloneWithoutData();
@@ -89,7 +81,6 @@ public class RecordingEventProcessor {
 
             if (currentBuffer.isComplete()) {
                 this.buffer = null;
-                this.complete = true;
             }
         }
     }

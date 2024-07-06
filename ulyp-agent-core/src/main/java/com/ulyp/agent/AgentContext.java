@@ -2,7 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.bootstrap.RecordingDataWriterFactory;
 import com.ulyp.agent.policy.*;
-import com.ulyp.agent.queue.RecordingQueue;
+import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.agent.util.MetricDumper;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.ProcessMetadata;
@@ -38,7 +38,7 @@ public class AgentContext {
     @Getter
     private final MethodRepository methodRepository;
     @Getter
-    private final RecordingQueue recordingQueue;
+    private final RecordingEventQueue recordingEventQueue;
     @Getter
     private final Recorder recorder;
     @Nullable
@@ -66,8 +66,8 @@ public class AgentContext {
                 .classpath(new Classpath().toList())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
-        this.recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
-        this.recorder = new Recorder(methodRepository, startRecordingPolicy, recordingQueue, metrics);
+        this.recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
+        this.recorder = new Recorder(methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
 
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
@@ -116,7 +116,7 @@ public class AgentContext {
             Thread shutdown = new Thread(new AgentShutdownHook());
             Runtime.getRuntime().addShutdownHook(shutdown);
 
-            ctx.getRecordingQueue().start();
+            ctx.getRecordingEventQueue().start();
         }
 
         agentLoaded = true;

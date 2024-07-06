@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A collection of enter and exit recorded method calls for a certain recording session.
+ * TODO remove this class?
  */
 @NotThreadSafe
 @Slf4j

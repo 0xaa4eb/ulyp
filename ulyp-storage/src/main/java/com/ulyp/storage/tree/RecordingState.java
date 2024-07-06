@@ -95,8 +95,8 @@ public class RecordingState {
     }
 
     public synchronized void update(RecordingMetadata metadata) {
-        if (metadata.getRecordingCompletedEpochMillis() > 0) {
-            this.metadata.setRecordingCompletedEpochMillis(metadata.getRecordingCompletedEpochMillis());
+        if (metadata.getRecordingFinishedMillis() > 0) {
+            this.metadata.setRecordingFinishedMillis(metadata.getRecordingFinishedMillis());
         }
     }
 
@@ -143,8 +143,8 @@ public class RecordingState {
 
     public synchronized Duration getLifetime() {
         RecordingMetadata metadata = getMetadata();
-        if (metadata.getRecordingCompletedEpochMillis() > 0) {
-            return Duration.ofMillis(metadata.getRecordingCompletedEpochMillis() - metadata.getRecordingStartedEpochMillis());
+        if (metadata.getRecordingFinishedMillis() > 0) {
+            return Duration.ofMillis(metadata.getRecordingFinishedMillis() - metadata.getRecordingStartedMillis());
         } else {
             return Duration.ofSeconds(0);
         }

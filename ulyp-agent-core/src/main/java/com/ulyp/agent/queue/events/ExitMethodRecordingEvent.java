@@ -3,15 +3,13 @@ package com.ulyp.agent.queue.events;
 import lombok.Getter;
 
 @Getter
-public class ExitRecordQueueEvent {
+public class ExitMethodRecordingEvent implements RecordingEvent {
 
-    protected final int recordingId;
     protected final int callId;
     protected final Object returnValue;
     protected final boolean thrown;
 
-    public ExitRecordQueueEvent(int recordingId, int callId, Object returnValue, boolean thrown) {
-        this.recordingId = recordingId;
+    public ExitMethodRecordingEvent(int callId, Object returnValue, boolean thrown) {
         this.callId = callId;
         this.returnValue = returnValue;
         this.thrown = thrown;
@@ -20,8 +18,7 @@ public class ExitRecordQueueEvent {
     @Override
     public String toString() {
         return "ExitRecordQueueEvent{" +
-                "recordingId=" + recordingId +
-                ", callId=" + callId +
+                "callId=" + callId +
                 ", returnValue=" + returnValue +
                 ", thrown=" + thrown +
                 '}';

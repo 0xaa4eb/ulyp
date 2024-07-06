@@ -9,10 +9,7 @@ import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
-import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedEnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.TimestampedExitRecordQueueEvent;
+import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.bytes.BufferBytesOut;
@@ -31,31 +28,35 @@ import com.ulyp.core.util.NamedThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Main entry point for recorded calls. For most of the objects only their identity is recorded (identity hash code and type id).
+ * Main entry point for recorded call events. For most of the objects only their identity is recorded (identity hash code and type id).
  * Other objects like strings and numbers are immutable, so we can only pass a reference to object and
  * avoid serialization/recording. The state of object is then recorded to bytes in the background. For objects like collections
  * we must record in the caller thread and pass a buffer.
- *
  * Currently, it has fixed capacity which should be addressed in near future
  */
 @Slf4j
-public class RecordingQueue implements AutoCloseable {
+public class RecordingEventQueue implements AutoCloseable {
 
-    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 1024 * 1024);
+    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 16 * 1024);
     private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.size", 16 * 1024);
     private static final int TMP_BUFFER_ENTRIES = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.entries", 8);
 
+    private final ThreadLocal<RecordingEventBatch> batchEventThreadLocal = ThreadLocal.withInitial(() -> {
+        RecordingEventBatch eventBatch = new RecordingEventBatch();
+        eventBatch.resetForUpcomingEvents();
+        return eventBatch;
+    });
     private final ConcurrentSimpleObjectPool<byte[]> bufferPool;
     private final TypeResolver typeResolver;
     private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
     private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
-    public RecordingQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
+    public RecordingEventQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ConcurrentSimpleObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
         this.disruptor = new RecordingQueueDisruptor(
-                EventHolder::new,
+                RecordingEventBatch::new,
                 RECORDING_QUEUE_SIZE,
                 new QueueEventHandlerThreadFactory(),
                 new SleepingWaitStrategy(3, TimeUnit.MILLISECONDS.toNanos(1)),
@@ -74,8 +75,12 @@ public class RecordingQueue implements AutoCloseable {
         this.disruptor.start();
     }
 
-    public void enqueueRecordingMetadataUpdate(RecordingMetadata recordingMetadata) {
-        disruptor.publish(new RecordingMetadataQueueEvent(recordingMetadata));
+    public void enqueueRecordingStarted(RecordingMetadata recordingMetadata) {
+        appendEvent(recordingMetadata.getId(), new RecordingStartedEvent(recordingMetadata));
+    }
+
+    public void enqueueRecordingFinished(int recordingId, long recordingFinishedTimeMillis) {
+        appendEvent(recordingId, new RecordingFinishedEvent(recordingFinishedTimeMillis));
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args) {
@@ -88,14 +93,13 @@ public class RecordingQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
-        disruptor.publish(new EnterRecordQueueEvent(
-                recordingId,
+
+        appendEvent(recordingId, new EnterMethodRecordingEvent(
                 callId,
                 methodId,
                 calleeTypeId,
                 calleeIdentityHashCode,
-                convert(args))
-        );
+                convert(args)));
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
@@ -108,23 +112,40 @@ public class RecordingQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
-        disruptor.publish(new TimestampedEnterRecordQueueEvent(
-                recordingId,
+        appendEvent(recordingId, new TimestampedEnterMethodRecordingEvent(
                 callId,
                 methodId,
                 calleeTypeId,
                 calleeIdentityHashCode,
                 convert(args),
-                nanoTime)
-        );
+                nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
-        disruptor.publish(new ExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown));
+        appendEvent(recordingId, new ExitMethodRecordingEvent(callId, convert(returnValue), thrown));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        disruptor.publish(new TimestampedExitRecordQueueEvent(recordingId, callId, convert(returnValue), thrown, nanoTime));
+        appendEvent(recordingId, new TimestampedExitMethodRecordingEvent(callId, convert(returnValue), thrown, nanoTime));
+    }
+
+    public void flush(int recordingId) {
+        RecordingEventBatch eventBatch = batchEventThreadLocal.get();
+        if (!eventBatch.isEmpty()) {
+            eventBatch.setRecordingId(recordingId);
+            disruptor.publish(eventBatch);
+            eventBatch.resetForUpcomingEvents();
+        }
+    }
+
+    private void appendEvent(int recordingId, RecordingEvent event) {
+        RecordingEventBatch eventBatch = batchEventThreadLocal.get();
+        eventBatch.add(event);
+        if (eventBatch.isFull()) {
+            eventBatch.setRecordingId(recordingId);
+            disruptor.publish(eventBatch);
+            eventBatch.resetForUpcomingEvents();
+        }
     }
 
     private Object[] convert(Object[] args) {

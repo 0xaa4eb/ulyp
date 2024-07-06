@@ -1,7 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.policy.StartRecordingPolicy;
-import com.ulyp.agent.queue.RecordingQueue;
+import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
@@ -44,16 +44,16 @@ public class Recorder {
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
     private final StartRecordingPolicy startRecordingPolicy;
     @Getter
-    private final RecordingQueue recordingQueue;
+    private final RecordingEventQueue recordingEventQueue;
     private final Counter recordingsCounter;
 
     public Recorder(
         MethodRepository methodRepository,
         StartRecordingPolicy startRecordingPolicy,
-        RecordingQueue recordingQueue,
+        RecordingEventQueue recordingEventQueue,
         Metrics metrics) {
         this.methodRepository = methodRepository;
-        this.recordingQueue = recordingQueue;
+        this.recordingEventQueue = recordingEventQueue;
         this.startRecordingPolicy = startRecordingPolicy;
         this.recordingsCounter = metrics.getOrCreateCounter("recorder.count");
     }
@@ -107,7 +107,7 @@ public class Recorder {
                 }
                 recordingsCounter.inc();
                 recordingState.setEnabled(true);
-                recordingQueue.enqueueRecordingMetadataUpdate(recordingMetadata);
+                recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
             }
 
             return onMethodEnter(recordingState, methodId, callee, args);
@@ -132,7 +132,7 @@ public class Recorder {
                 }
                 recordingsCounter.inc();
                 recordingState.setEnabled(true);
-                recordingQueue.enqueueRecordingMetadataUpdate(recordingMetadata);
+                recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
             }
 
             return onConstructorEnter(recordingState, methodId, args);
@@ -163,9 +163,9 @@ public class Recorder {
                 recordingState.setEnabled(false);
                 int callId = recordingState.nextCallId();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    recordingQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args, System.nanoTime());
+                    recordingEventQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args, System.nanoTime());
                 } else {
-                    recordingQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
+                    recordingEventQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
                 }
                 return callId;
             } finally {
@@ -189,20 +189,16 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
 
-                if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
-                    recordingQueue.enqueueRecordingMetadataUpdate(
-                        recordingState.getRecordingMetadata().withCompleteTime(System.currentTimeMillis())
-                    );
-                }
-
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    recordingQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
+                    recordingEventQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
                 } else {
-                    recordingQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
+                    recordingEventQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
                 }
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
                     int recordingId = recordingState.getRecordingId();
+                    recordingEventQueue.enqueueRecordingFinished(recordingId, System.currentTimeMillis());
+                    recordingEventQueue.flush(recordingId);
                     threadLocalRecordingState.set(null);
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
@@ -230,7 +226,7 @@ public class Recorder {
 
         return RecordingMetadata.builder()
             .id(recordingIdGenerator.incrementAndGet())
-            .recordingStartedEpochMillis(System.currentTimeMillis())
+            .recordingStartedMillis(System.currentTimeMillis())
             .logCreatedEpochMillis(System.currentTimeMillis())
             .threadId(Thread.currentThread().getId())
             .threadName(Thread.currentThread().getName())

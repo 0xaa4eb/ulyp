@@ -19,19 +19,19 @@ public class RecordingMetadata {
     private int id;
     private long threadId;
     private String threadName;
-    private long recordingStartedEpochMillis;
+    private long recordingStartedMillis;
     private long logCreatedEpochMillis; // TODO remove
-    private long recordingCompletedEpochMillis;
+    private long recordingFinishedMillis;
     @Builder.Default @ToString.Exclude
     private List<String> stackTraceElements = Collections.emptyList();
 
-    public RecordingMetadata withCompleteTime(long recordingCompletedEpochMillis) {
+    public RecordingMetadata withCompleteTime(long recordingFinishedMillis) {
         return RecordingMetadata.builder()
             .id(id)
             .threadId(threadId)
             .threadName(threadName)
-            .recordingStartedEpochMillis(recordingStartedEpochMillis)
-            .recordingCompletedEpochMillis(recordingCompletedEpochMillis)
+            .recordingStartedMillis(recordingStartedMillis)
+            .recordingFinishedMillis(recordingFinishedMillis)
             .stackTraceElements(stackTraceElements)
             .build();
     }

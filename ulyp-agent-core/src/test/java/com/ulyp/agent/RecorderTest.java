@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import com.ulyp.agent.queue.RecordingQueue;
+import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.metrics.NullMetrics;
 import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 import org.junit.jupiter.api.*;
@@ -34,7 +34,7 @@ class RecorderTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final HeapRecordingDataWrtiter storage = new HeapRecordingDataWrtiter();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
-    private final RecordingQueue callRecordQueue = new RecordingQueue(typeResolver, new AgentDataWriter(storage, methodRepository), new NullMetrics());
+    private final RecordingEventQueue callRecordQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(storage, methodRepository), new NullMetrics());
     private final Recorder recorder = new Recorder(
             methodRepository,
             new EnabledRecordingPolicy(),
