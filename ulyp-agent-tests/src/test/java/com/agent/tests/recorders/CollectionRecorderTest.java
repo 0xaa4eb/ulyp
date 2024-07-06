@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.collections.CollectionRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class CollectionRecorderTest extends AbstractInstrumentationTest {
 
@@ -40,6 +42,20 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         StringObjectRecord secondItemRepr = (StringObjectRecord) items.get(1);
         assertEquals("b", secondItemRepr.value());
+    }
+
+    @Test
+    void shouldNotRecordCollectionsInPerformanceMode() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
+                        .withPerformanceMode(true)
+        );
+
+        assertThat(root.getReturnValue(), CoreMatchers.instanceOf(IdentityObjectRecord.class));
     }
 
     @Test

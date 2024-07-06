@@ -8,6 +8,7 @@ import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
+import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
@@ -75,6 +76,10 @@ public class Agent {
 
         PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addClassesToPrint(settings.getTypesToPrint());
+
+        // TODO should have a recorder context with all recorders properly set up
+        ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
+        objectArrayRecorder.setEnabled(false);
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(settings);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(settings);

@@ -17,7 +17,6 @@ import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.regex.Pattern;
 
@@ -66,7 +65,7 @@ public class AgentContext {
                 .classpath(new Classpath().toList())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
-        this.recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
+        this.recordingEventQueue = new RecordingEventQueue(settings, typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
         this.recorder = new Recorder(methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
 
         if (settings.getBindNetworkAddress() != null) {

@@ -28,6 +28,7 @@ public class ForkProcessBuilder {
     private Boolean instrumentLambdas = null;
     private Boolean instrumentTypeInitializers = null;
     private Boolean recordTimestamps = null;
+    private Boolean performanceMode = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -96,6 +97,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withLogLevel(String logLevel) {
         this.logLevel = logLevel;
+        return this;
+    }
+
+    public ForkProcessBuilder withPerformanceMode(boolean performanceMode) {
+        this.performanceMode = performanceMode;
         return this;
     }
 
@@ -170,6 +176,9 @@ public class ForkProcessBuilder {
         }
         if (recordTimestamps != null) {
             params.add("-D" + Settings.TIMESTAMPS_ENABLED_PROPERTY);
+        }
+        if (performanceMode != null) {
+            params.add("-D" + Settings.PERFORMANCE_PROPERTY);
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);

@@ -43,7 +43,7 @@ class RecorderCurrentSessionCountTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
-    private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
+    private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(Settings.builder().build(), typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
     private final Recorder recorder = new Recorder(methodRepository, new EnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;

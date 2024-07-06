@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
 import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.Settings;
 import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
 import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.metrics.Metrics;
@@ -32,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
  * Other objects like strings and numbers are immutable, so we can only pass a reference to object and
  * avoid serialization/recording. The state of object is then recorded to bytes in the background. For objects like collections
  * we must record in the caller thread and pass a buffer.
- * Currently, it has fixed capacity which should be addressed in near future
  */
 @Slf4j
 public class RecordingEventQueue implements AutoCloseable {
@@ -41,18 +41,19 @@ public class RecordingEventQueue implements AutoCloseable {
     private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.size", 16 * 1024);
     private static final int TMP_BUFFER_ENTRIES = SystemPropertyUtil.getInt("ulyp.recording-queue.tmp-buffer.entries", 8);
 
+    private final boolean performanceMode;
+    private final TypeResolver typeResolver;
+    private final RecordingQueueDisruptor disruptor;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final QueueBatchEventProcessorFactory eventProcessorFactory;
+    private final ConcurrentSimpleObjectPool<byte[]> bufferPool;
     private final ThreadLocal<RecordingEventBatch> batchEventThreadLocal = ThreadLocal.withInitial(() -> {
         RecordingEventBatch eventBatch = new RecordingEventBatch();
         eventBatch.resetForUpcomingEvents();
         return eventBatch;
     });
-    private final ConcurrentSimpleObjectPool<byte[]> bufferPool;
-    private final TypeResolver typeResolver;
-    private final RecordingQueueDisruptor disruptor;
-    private final ScheduledExecutorService scheduledExecutorService;
-    private final QueueBatchEventProcessorFactory eventProcessorFactory;
 
-    public RecordingEventQueue(TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
+    public RecordingEventQueue(Settings settings, TypeResolver typeResolver, AgentDataWriter agentDataWriter, Metrics metrics) {
         this.typeResolver = typeResolver;
         this.bufferPool = new ConcurrentSimpleObjectPool<>(TMP_BUFFER_ENTRIES, () -> new byte[TMP_BUFFER_SIZE]);
         this.disruptor = new RecordingQueueDisruptor(
@@ -63,6 +64,7 @@ public class RecordingEventQueue implements AutoCloseable {
                 metrics
         );
         this.eventProcessorFactory = new QueueBatchEventProcessorFactory(typeResolver, agentDataWriter);
+        this.performanceMode = settings.isPerformanceModeEnabled();
         this.scheduledExecutorService = Executors.newScheduledThreadPool(
             1,
             NamedThreadFactory.builder().name("ulyp-recorder-queue-stats-reporter").daemon(true).build()
@@ -94,12 +96,14 @@ public class RecordingEventQueue implements AutoCloseable {
             calleeIdentityHashCode = 0;
         }
 
-        appendEvent(recordingId, new EnterMethodRecordingEvent(
-                callId,
-                methodId,
-                calleeTypeId,
-                calleeIdentityHashCode,
-                convert(args)));
+        Object[] argsPrepared;
+        if (performanceMode) {
+            argsPrepared = args;
+        } else {
+            argsPrepared = convert(args);
+        }
+
+        appendEvent(recordingId, new EnterMethodRecordingEvent(callId, methodId, calleeTypeId, calleeIdentityHashCode, argsPrepared));
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
@@ -112,21 +116,40 @@ public class RecordingEventQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
+        Object[] argsPrepared;
+        if (performanceMode) {
+            argsPrepared = args;
+        } else {
+            argsPrepared = convert(args);
+        }
+
         appendEvent(recordingId, new TimestampedEnterMethodRecordingEvent(
                 callId,
                 methodId,
                 calleeTypeId,
                 calleeIdentityHashCode,
-                convert(args),
+                argsPrepared,
                 nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
-        appendEvent(recordingId, new ExitMethodRecordingEvent(callId, convert(returnValue), thrown));
+        Object returnValuePrepared;
+        if (performanceMode) {
+            returnValuePrepared = convert(returnValue);
+        } else {
+            returnValuePrepared = returnValue;
+        }
+        appendEvent(recordingId, new ExitMethodRecordingEvent(callId, returnValuePrepared, thrown));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        appendEvent(recordingId, new TimestampedExitMethodRecordingEvent(callId, convert(returnValue), thrown, nanoTime));
+        Object returnValuePrepared;
+        if (performanceMode) {
+            returnValuePrepared = convert(returnValue);
+        } else {
+            returnValuePrepared = returnValue;
+        }
+        appendEvent(recordingId, new TimestampedExitMethodRecordingEvent(callId, returnValuePrepared, thrown, nanoTime));
     }
 
     public void flush(int recordingId) {
@@ -155,6 +178,11 @@ public class RecordingEventQueue implements AutoCloseable {
         return args;
     }
 
+    /**
+     * Resolves type for an object, then checks if it can be recorded asynchronously in a background thread. Most objects
+     * have only their identity hash code and type id recorded, so it can be safely done concurrently in some other thread.
+     * Collections have a few of their items recorded (if enabled), so the recording must happen here.
+     */
     private Object convert(Object value) {
         Type type = typeResolver.get(value);
         ObjectRecorder recorder = type.getRecorderHint();

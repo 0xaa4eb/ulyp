@@ -33,7 +33,7 @@ public class MapRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return Map.class.isAssignableFrom(type) && mode.supports(type);
+        return mode.supports(type) && Map.class.isAssignableFrom(type);
     }
 
     @Override
