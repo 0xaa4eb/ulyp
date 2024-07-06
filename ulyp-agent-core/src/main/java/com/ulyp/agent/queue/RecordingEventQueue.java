@@ -135,9 +135,9 @@ public class RecordingEventQueue implements AutoCloseable {
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
         Object returnValuePrepared;
         if (performanceMode) {
-            returnValuePrepared = convert(returnValue);
-        } else {
             returnValuePrepared = returnValue;
+        } else {
+            returnValuePrepared = convert(returnValue);
         }
         appendEvent(recordingId, new ExitMethodRecordingEvent(callId, returnValuePrepared, thrown));
     }
@@ -145,9 +145,9 @@ public class RecordingEventQueue implements AutoCloseable {
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
         Object returnValuePrepared;
         if (performanceMode) {
-            returnValuePrepared = convert(returnValue);
-        } else {
             returnValuePrepared = returnValue;
+        } else {
+            returnValuePrepared = convert(returnValue);
         }
         appendEvent(recordingId, new TimestampedExitMethodRecordingEvent(callId, returnValuePrepared, thrown, nanoTime));
     }
@@ -184,6 +184,9 @@ public class RecordingEventQueue implements AutoCloseable {
      * Collections have a few of their items recorded (if enabled), so the recording must happen here.
      */
     private Object convert(Object value) {
+        if (true) {
+            throw new RuntimeException("ASD");
+        }
         Type type = typeResolver.get(value);
         ObjectRecorder recorder = type.getRecorderHint();
         if (value != null && recorder == null) {
