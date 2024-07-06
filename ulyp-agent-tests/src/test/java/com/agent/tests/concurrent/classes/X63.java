@@ -1,6 +1,6 @@
 package com.agent.tests.concurrent.classes;
 
-// Automatically generated and only used for instrumentation tests
+// Automatically generated and only used for instrumentation tests. The code is meaningless and has only single purpose - code analysis should not hate it too much
 @SuppressWarnings("unused")
 public class X63 {
     public int m1(int a, int b, int c) {
@@ -30,27 +30,27 @@ public class X63 {
 
     public String m8(Integer x, Long y, Long z) {
         System.out.println("1");
-        return String.valueOf(y + z);
+        return String.valueOf(y + z + x);
     }
 
     public String m9(Integer x, Long y, Long z, String suffix) {
         System.out.println("1");
-        return y + z + suffix;
+        return x + y + z + suffix;
     }
 
     public String m10(String prefix, Integer x, Long y, Long z, String suffix) {
         System.out.println("1");
-        return prefix + y + z + suffix;
+        return prefix + x + y + z + suffix;
     }
 
-    public String m11(Integer x, Long y, Long z) {
+    public String m11(Float x, Double y, Double z) {
         System.out.println("1");
-        return String.valueOf(y + z);
+        return String.valueOf(y + z + x);
     }
 
     public String m12(Integer x, Long y, Long z) {
         System.out.println("1");
-        return String.valueOf(y + z);
+        return String.valueOf(y + z) + x;
     }
 
     public void m13() {
