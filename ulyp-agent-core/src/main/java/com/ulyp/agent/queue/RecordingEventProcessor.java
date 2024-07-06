@@ -10,10 +10,13 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.DirectBufMemPageAllocator;
 import com.ulyp.core.mem.MemPageAllocator;
 import com.ulyp.core.recorders.QueuedIdentityObject;
+import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RecordingEventProcessor {
+
+    private static final int FLUSH_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.serialization-buffer-size", 256 * 1024);
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
@@ -71,7 +74,7 @@ public class RecordingEventProcessor {
             currentBuffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
         }
 
-        if (currentBuffer.estimateBytesSize() > 32 * 1024 * 1024 /* TODO configurable */) {
+        if (currentBuffer.estimateBytesSize() > FLUSH_BUFFER_SIZE) {
 
             if (!currentBuffer.isComplete()) {
                 this.buffer = currentBuffer.cloneWithoutData();
