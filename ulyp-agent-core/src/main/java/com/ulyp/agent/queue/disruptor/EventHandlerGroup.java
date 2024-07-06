@@ -3,18 +3,18 @@ package com.ulyp.agent.queue.disruptor;
 import com.lmax.disruptor.EventProcessor;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.WorkHandler;
-import com.ulyp.agent.queue.EventHolder;
+import com.ulyp.agent.queue.RecordingEventBatch;
 
 import java.util.Arrays;
 
 public class EventHandlerGroup {
     private final RecordingQueueDisruptor disruptor;
-    private final ConsumerRepository<EventHolder> consumerRepository;
+    private final ConsumerRepository<RecordingEventBatch> consumerRepository;
     private final Sequence[] sequences;
 
     EventHandlerGroup(
             final RecordingQueueDisruptor disruptor,
-            final ConsumerRepository<EventHolder> consumerRepository,
+            final ConsumerRepository<RecordingEventBatch> consumerRepository,
             final Sequence[] sequences) {
         this.disruptor = disruptor;
         this.consumerRepository = consumerRepository;
@@ -43,7 +43,7 @@ public class EventHandlerGroup {
     }
 
     @SafeVarargs
-    public final EventHandlerGroup handleEventsWithWorkerPool(final WorkHandler<EventHolder>... handlers) {
+    public final EventHandlerGroup handleEventsWithWorkerPool(final WorkHandler<RecordingEventBatch>... handlers) {
         return disruptor.createWorkerPool(sequences, handlers);
     }
 }

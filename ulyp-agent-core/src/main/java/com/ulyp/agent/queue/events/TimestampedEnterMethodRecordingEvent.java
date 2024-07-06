@@ -5,20 +5,19 @@ import lombok.Getter;
 import java.util.Arrays;
 
 @Getter
-public class TimestampedEnterRecordQueueEvent extends EnterRecordQueueEvent {
+public class TimestampedEnterMethodRecordingEvent extends EnterMethodRecordingEvent {
 
     private final long nanoTime;
 
-    public TimestampedEnterRecordQueueEvent(int recordingId, int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args, long nanoTime) {
-        super(recordingId, callId, methodId, calleeTypeId, calleeIdentityHashCode, args);
+    public TimestampedEnterMethodRecordingEvent(int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args, long nanoTime) {
+        super(callId, methodId, calleeTypeId, calleeIdentityHashCode, args);
         this.nanoTime = nanoTime;
     }
 
     @Override
     public String toString() {
         return "EnterRecordQueueEvent{" +
-                "recordingId=" + recordingId +
-                ", callId=" + callId +
+                "callId=" + callId +
                 ", methodId=" + methodId +
                 ", calleeTypeId=" + calleeTypeId +
                 ", calleeIdentityHashCode=" + calleeIdentityHashCode +
