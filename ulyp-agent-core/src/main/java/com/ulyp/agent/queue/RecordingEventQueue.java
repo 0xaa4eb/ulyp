@@ -96,12 +96,7 @@ public class RecordingEventQueue implements AutoCloseable {
             calleeIdentityHashCode = 0;
         }
 
-        Object[] argsPrepared;
-        if (performanceMode) {
-            argsPrepared = args;
-        } else {
-            argsPrepared = convert(args);
-        }
+        Object[] argsPrepared = prepareArgs(args);
 
         appendEvent(recordingId, new EnterMethodRecordingEvent(callId, methodId, calleeTypeId, calleeIdentityHashCode, argsPrepared));
     }
@@ -116,12 +111,7 @@ public class RecordingEventQueue implements AutoCloseable {
             calleeTypeId = -1;
             calleeIdentityHashCode = 0;
         }
-        Object[] argsPrepared;
-        if (performanceMode) {
-            argsPrepared = args;
-        } else {
-            argsPrepared = convert(args);
-        }
+        Object[] argsPrepared = prepareArgs(args);
 
         appendEvent(recordingId, new TimestampedEnterMethodRecordingEvent(
                 callId,
@@ -169,6 +159,16 @@ public class RecordingEventQueue implements AutoCloseable {
             disruptor.publish(eventBatch);
             eventBatch.resetForUpcomingEvents();
         }
+    }
+
+    private Object[] prepareArgs(Object[] args) {
+        Object[] argsPrepared;
+        if (performanceMode) {
+            argsPrepared = args;
+        } else {
+            argsPrepared = convert(args);
+        }
+        return argsPrepared;
     }
 
     private Object[] convert(Object[] args) {
