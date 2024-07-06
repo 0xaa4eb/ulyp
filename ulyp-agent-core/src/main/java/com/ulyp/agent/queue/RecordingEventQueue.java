@@ -123,22 +123,12 @@ public class RecordingEventQueue implements AutoCloseable {
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
-        Object returnValuePrepared;
-        if (performanceMode) {
-            returnValuePrepared = returnValue;
-        } else {
-            returnValuePrepared = convert(returnValue);
-        }
+        Object returnValuePrepared = prepareReturnValue(returnValue);
         appendEvent(recordingId, new ExitMethodRecordingEvent(callId, returnValuePrepared, thrown));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown, long nanoTime) {
-        Object returnValuePrepared;
-        if (performanceMode) {
-            returnValuePrepared = returnValue;
-        } else {
-            returnValuePrepared = convert(returnValue);
-        }
+        Object returnValuePrepared = prepareReturnValue(returnValue);
         appendEvent(recordingId, new TimestampedExitMethodRecordingEvent(callId, returnValuePrepared, thrown, nanoTime));
     }
 
@@ -159,6 +149,16 @@ public class RecordingEventQueue implements AutoCloseable {
             disruptor.publish(eventBatch);
             eventBatch.resetForUpcomingEvents();
         }
+    }
+
+    private Object prepareReturnValue(Object returnValue) {
+        Object returnValuePrepared;
+        if (performanceMode) {
+            returnValuePrepared = returnValue;
+        } else {
+            returnValuePrepared = convert(returnValue);
+        }
+        return returnValuePrepared;
     }
 
     private Object[] prepareArgs(Object[] args) {
