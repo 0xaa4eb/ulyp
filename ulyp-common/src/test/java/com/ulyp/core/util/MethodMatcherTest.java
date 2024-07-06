@@ -56,7 +56,7 @@ class MethodMatcherTest {
     }
 
     @Test
-    public void testMatchingByPackage() {
+    void testMatchingByPackage() {
         // Typical usage for recording all methods for certain package/framework
         MethodMatcher methodMatcher = MethodMatcher.parse("org.apache.kafka.**.*");
 
