@@ -8,22 +8,22 @@ public class X18 {
         return a + b + c;
     }
 
-    public String m2(String a, String b, String c) {
+    public float m2(float a, float b, float c) {
         System.out.println("1");
         return a + b + c;
     }
 
-    public String m3(String a, String b, String c) {
+    public Object m3() {
         System.out.println("1");
-        return a + b + c;
+        return new Object();
     }
 
-    public String m4(String a, String b, String c) {
+    public float m4(float a, float b, float c, float d) {
         System.out.println("1");
-        return a + b + c;
+        return a * b * c * d;
     }
 
-    public String m5(String a, String b, String c) {
+    public int m5(short a, short b, short c) {
         System.out.println("1");
         return a + b + c;
     }
