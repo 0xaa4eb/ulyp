@@ -54,7 +54,6 @@ Ulyp is POC and unstable all the time since the beginning. There are already sim
 </tr>
 <tr><td>Bugjail</td><td>bugjail.com</td><td>Closed source</td></tr>
 <tr><td>Findtheflow</td><td>findtheflow.io</td><td>Closed source</td></tr>
-<tr><td>javaflame</td><td>[github](https://github.com/beothorn/javaflame)</td><td>Open source, uses byte-buddy as well</td></tr>
 </table>
 
 ## Build from source
@@ -113,7 +112,7 @@ Try running some code with additional properties `-Dulyp.constructors -Dulyp.col
 		<th>Action</th>
 </tr>
 <tr><td>Hold Shift</td><td>Show full type names</td></tr>
-<tr><td>Hold X</td><td>Show method call duration (if enabled with -Dulyp.timestamps)</td></tr>
+<tr><td>Hold X</td><td>Show method call duration (if enabled with -Dulyp.timestamps while recording)</td></tr>
 <tr><td>Press =</td><td>Increase font size</td></tr>
 <tr><td>Press -</td><td>Decrease font size</td></tr>
 </table>
