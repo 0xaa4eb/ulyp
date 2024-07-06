@@ -94,8 +94,6 @@ public class AgentContext {
             policy = new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
         } else if (value.equals("api")) {
             policy = new DisabledRecordingPolicy();
-        } else if (value.startsWith("file:")) {
-            policy = new FileBasedStartRecordingPolicy(Paths.get(value.replace("file:", "")));
         } else {
             throw new IllegalArgumentException("Unsupported recording policy: " + value);
         }

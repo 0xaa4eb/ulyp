@@ -35,7 +35,6 @@ import org.slf4j.spi.LocationAwareLogger;
 import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.RecorderInstance;
 
-
 /**
  * Forked from slf4j-simple
  *

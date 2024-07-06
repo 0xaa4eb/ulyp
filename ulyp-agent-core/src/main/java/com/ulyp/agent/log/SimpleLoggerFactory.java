@@ -31,6 +31,9 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
+/**
+ * Forked from slf4j-simple
+ */
 public class SimpleLoggerFactory implements ILoggerFactory {
 
     ConcurrentMap<String, SimpleLogger> loggerMap;
