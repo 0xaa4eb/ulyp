@@ -1,6 +1,6 @@
 package com.agent.tests.concurrent.classes;
 
-// Automatically generated and only used for tests
+// Automatically generated and only used for instrumentation tests
 @SuppressWarnings("unused")
 public class X13 {
     public int m1(int a, int b, int c) {
@@ -33,14 +33,14 @@ public class X13 {
         return String.valueOf(y + z);
     }
 
-    public String m9(Integer x, Long y, Long z) {
+    public String m9(Integer x, Long y, Long z, String suffix) {
         System.out.println("1");
-        return String.valueOf(y + z);
+        return y + z + suffix;
     }
 
-    public String m10(Integer x, Long y, Long z) {
+    public String m10(String prefix, Integer x, Long y, Long z, String suffix) {
         System.out.println("1");
-        return String.valueOf(y + z);
+        return prefix + y + z + suffix;
     }
 
     public String m11(Integer x, Long y, Long z) {
@@ -54,19 +54,19 @@ public class X13 {
     }
 
     public void m13() {
-        System.out.println("1");
+        System.out.println("hello");
     }
 
     public void m14() {
-        System.out.println("1");
+        System.out.println("2");
     }
 
     public void m15() {
-        System.out.println("1");
+        System.out.println("3");
     }
 
     public void m6() {
-        System.out.println("1");
+        System.out.println("4");
     }
 
     public void m7() {
