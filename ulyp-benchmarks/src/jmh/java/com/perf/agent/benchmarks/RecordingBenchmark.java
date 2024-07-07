@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 @Fork(jvmArgsPrepend = {
         "-Xms6G",
         "-Xmx6G",
+        "-XX:+AlwaysPreTouch",
         BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
         "-Dulyp.file=/tmp/test.dat",
         "-Dulyp.constructors",
