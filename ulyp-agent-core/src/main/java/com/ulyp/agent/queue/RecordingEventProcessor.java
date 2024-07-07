@@ -9,7 +9,6 @@ import com.ulyp.core.TypeResolver;
 
 import com.ulyp.core.mem.DirectBufMemPageAllocator;
 import com.ulyp.core.mem.MemPageAllocator;
-import com.ulyp.core.recorders.QueuedIdentityObject;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +23,6 @@ public class RecordingEventProcessor {
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
     private MemPageAllocator pageAllocator;
-    private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
@@ -41,15 +39,13 @@ public class RecordingEventProcessor {
         if (buffer == null) {
             buffer = new CallRecordBuffer(recordingId, pageAllocator);
         }
-        cachedQueuedIdentityCallee.setTypeId(enterRecord.getCalleeTypeId());
-        cachedQueuedIdentityCallee.setIdentityHashCode(enterRecord.getCalleeIdentityHashCode());
 
         long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
                 enterRecord.getCallId(),
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
-                cachedQueuedIdentityCallee,
+                enterRecord.getCallee(),
                 enterRecord.getArgs(),
                 nanoTime
         );

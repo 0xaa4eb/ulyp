@@ -86,40 +86,15 @@ public class RecordingEventQueue implements AutoCloseable {
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args) {
-        int calleeTypeId;
-        int calleeIdentityHashCode;
-        if (callee != null) {
-            calleeTypeId = typeResolver.get(callee).getId();
-            calleeIdentityHashCode = System.identityHashCode(callee);
-        } else {
-            calleeTypeId = -1;
-            calleeIdentityHashCode = 0;
-        }
-
         Object[] argsPrepared = prepareArgs(args);
 
-        appendEvent(recordingId, new EnterMethodRecordingEvent(callId, methodId, calleeTypeId, calleeIdentityHashCode, argsPrepared));
+        appendEvent(recordingId, new EnterMethodRecordingEvent(callId, methodId, callee, argsPrepared));
     }
 
     public void enqueueMethodEnter(int recordingId, int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
-        int calleeTypeId;
-        int calleeIdentityHashCode;
-        if (callee != null) {
-            calleeTypeId = typeResolver.get(callee).getId();
-            calleeIdentityHashCode = System.identityHashCode(callee);
-        } else {
-            calleeTypeId = -1;
-            calleeIdentityHashCode = 0;
-        }
         Object[] argsPrepared = prepareArgs(args);
 
-        appendEvent(recordingId, new TimestampedEnterMethodRecordingEvent(
-                callId,
-                methodId,
-                calleeTypeId,
-                calleeIdentityHashCode,
-                argsPrepared,
-                nanoTime));
+        appendEvent(recordingId, new TimestampedEnterMethodRecordingEvent(callId, methodId, callee, argsPrepared, nanoTime));
     }
 
     public void enqueueMethodExit(int recordingId, int callId, Object returnValue, boolean thrown) {
