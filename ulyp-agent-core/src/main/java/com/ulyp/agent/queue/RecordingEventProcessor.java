@@ -9,7 +9,6 @@ import com.ulyp.core.TypeResolver;
 
 import com.ulyp.core.mem.DirectBufMemPageAllocator;
 import com.ulyp.core.mem.MemPageAllocator;
-import com.ulyp.core.recorders.QueuedIdentityObject;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
