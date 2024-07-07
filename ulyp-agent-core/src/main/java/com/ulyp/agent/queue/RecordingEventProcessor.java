@@ -24,7 +24,6 @@ public class RecordingEventProcessor {
     private RecordingMetadata recordingMetadata;
     private CallRecordBuffer buffer;
     private MemPageAllocator pageAllocator;
-    private QueuedIdentityObject cachedQueuedIdentityCallee = new QueuedIdentityObject();
 
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
