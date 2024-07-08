@@ -63,6 +63,15 @@ public class Recorder {
         return recordingState != null && recordingState.isEnabled();
     }
 
+    public RecordingState getCurrentRecordingState() {
+        RecordingState recordingState = threadLocalRecordingState.get();
+        if (recordingState != null && recordingState.isEnabled()) {
+            return recordingState;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Allows disabling recording temporary so that no recording is done. Currently, is only used in logging
      * facilities in order to avoid unneeded recording calls while logging.

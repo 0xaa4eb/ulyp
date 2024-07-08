@@ -29,9 +29,12 @@ public class MethodCallRecordingAdvice {
             callId = RecorderInstance.instance.startOrContinueRecordingOnMethodEnter(methodId, callee, arguments);
         } else {
 
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                //noinspection UnusedAssignment
-                callId = RecorderInstance.instance.onMethodEnter(methodId, callee, arguments);
+            if (Recorder.currentRecordingSessionCount.get() > 0) {
+                RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
+                if (recordingState != null) {
+                    //noinspection UnusedAssignment
+                    callId = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arguments);
+                }
             }
         }
     }

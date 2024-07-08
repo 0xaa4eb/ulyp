@@ -2,13 +2,12 @@ package com.ulyp.agent;
 
 import javax.annotation.Nullable;
 
+import com.ulyp.agent.queue.RecordingEventBatch;
 import com.ulyp.core.RecordingMetadata;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Getter
 public class RecordingState {
 
@@ -21,6 +20,13 @@ public class RecordingState {
     private int callId = ROOT_CALL_RECORDING_ID;
     @Setter
     private boolean enabled;
+    @Getter
+    @Setter
+    private RecordingEventBatch eventBatch;
+
+    public RecordingState() {
+
+    }
 
     public int nextCallId() {
         return callId++;
