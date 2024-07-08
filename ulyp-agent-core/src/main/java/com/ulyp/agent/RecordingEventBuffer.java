@@ -58,11 +58,11 @@ public class RecordingEventBuffer {
         this.events.add(event);
     }
 
-    public void enqueueRecordingStarted(RecordingMetadata recordingMetadata) {
+    public void addRecordingStartedEvent(RecordingMetadata recordingMetadata) {
         add(new RecordingStartedEvent(recordingMetadata));
     }
 
-    public void enqueueRecordingFinished(long recordingFinishedTimeMillis) {
+    public void addRecordingFinishedEvent(long recordingFinishedTimeMillis) {
         add(new RecordingFinishedEvent(recordingFinishedTimeMillis));
     }
 

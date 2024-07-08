@@ -2,9 +2,11 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
+import com.ulyp.agent.util.RecordingStateStore;
 import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
+import com.ulyp.core.util.BitUtil;
 import com.ulyp.core.util.LoggingSettings;
 
 import lombok.Getter;
@@ -26,7 +28,6 @@ import org.jetbrains.annotations.TestOnly;
 @ThreadSafe
 public class Recorder {
 
-    public static final AtomicInteger recordingIdGenerator = new AtomicInteger(-1);
     /**
     * Keeps current active recording session count. Based on the fact that most of the time there is no
     * recording sessions and this counter is equal to 0, it's possible to make a small performance optimization.
@@ -40,6 +41,7 @@ public class Recorder {
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
+    private final RecordingStateStore recordingStateStore = new RecordingStateStore();
     private final StartRecordingPolicy startRecordingPolicy;
     @Getter
     private final RecordingEventQueue recordingEventQueue;
@@ -93,7 +95,7 @@ public class Recorder {
     public void enableRecording() {
         RecordingState recordingState = threadLocalRecordingState.get();
         if (recordingState != null) {
-            if (recordingState.getRecordingId() >= 0) {
+            if (recordingState.getRecordingId() > 0) {
                 recordingState.setEnabled(true);
             } else {
                 threadLocalRecordingState.set(null);
@@ -101,7 +103,7 @@ public class Recorder {
         }
     }
 
-    public int startRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
+    public long startRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             RecordingState recordingState = initializeRecordingState(methodId);
 
@@ -117,7 +119,8 @@ public class Recorder {
         if (recordingState == null) {
             recordingState = new RecordingState();
             recordingState.setEnabled(false);
-            RecordingMetadata recordingMetadata = generateRecordingMetadata();
+            int recordingId = recordingStateStore.add(recordingState);
+            RecordingMetadata recordingMetadata = generateRecordingMetadata(recordingId);
             recordingState.setRecordingMetadata(recordingMetadata);
             threadLocalRecordingState.set(recordingState);
             RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), settings, typeResolver);
@@ -129,16 +132,16 @@ public class Recorder {
             }
             recordingsCounter.inc();
             recordingState.setEnabled(true);
-            recordingEventBuffer.enqueueRecordingStarted(recordingMetadata);
+            recordingEventBuffer.addRecordingStartedEvent(recordingMetadata);
         }
         return recordingState;
     }
 
-    public int onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
-        return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, args);
-    }
-
-    public int onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {
+    /**
+     * @return call token which should be passed back to method {@link Recorder#onMethodEnter} when the corresponding
+     * method completes
+     */
+    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {
         try {
             if (recordingState == null || !recordingState.isEnabled()) {
                 return -1;
@@ -157,7 +160,7 @@ public class Recorder {
                     recordingEventQueue.enqueue(eventBuffer);
                     eventBuffer.reset();
                 }
-                return callId;
+                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
             } finally {
                 recordingState.setEnabled(true);
             }
@@ -167,13 +170,11 @@ public class Recorder {
         }
     }
 
-    public void onConstructorExit(int methodId, Object result, int callId) {
-        onMethodExit(methodId, result, null, callId);
-    }
-
-    public void onMethodExit(int methodId, Object result, Throwable thrown, int callId) {
+    public void onMethodExit(int methodId, Object result, Throwable thrown, long callToken) {
         try {
-            RecordingState recordingState = threadLocalRecordingState.get();
+            int recordingId = recordingId(callToken);
+            int callId = callId(callToken);
+            RecordingState recordingState = recordingStateStore.get(recordingId);
             if (recordingState == null || !recordingState.isEnabled()) return;
 
             try {
@@ -187,8 +188,9 @@ public class Recorder {
                 }
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
-                    eventBuffer.enqueueRecordingFinished(System.currentTimeMillis());
+                    eventBuffer.addRecordingFinishedEvent(System.currentTimeMillis());
                     recordingEventQueue.enqueue(eventBuffer);
+                    recordingStateStore.remove(recordingId);
                     threadLocalRecordingState.set(null);
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
@@ -213,20 +215,37 @@ public class Recorder {
         }
     }
 
-    private RecordingMetadata generateRecordingMetadata() {
+    private int recordingId(long callToken) {
+        return (int) (callToken >> 32);
+    }
+
+    private int callId(long callToken) {
+        return (int) callToken;
+    }
+
+    private RecordingMetadata generateRecordingMetadata(int recordingId) {
         List<String> stackTraceElements = Stream.of(new Exception().getStackTrace())
             .skip(2)
             .map(StackTraceElement::toString)
             .collect(Collectors.toList());
 
         return RecordingMetadata.builder()
-            .id(recordingIdGenerator.incrementAndGet())
+            .id(recordingId)
             .recordingStartedMillis(System.currentTimeMillis())
             .logCreatedEpochMillis(System.currentTimeMillis())
             .threadId(Thread.currentThread().getId())
             .threadName(Thread.currentThread().getName())
             .stackTraceElements(stackTraceElements)
             .build();
+    }
+
+    /**
+     * @return call token which should be passed back to method {@link Recorder#onMethodEnter} when the corresponding
+     * method completes
+     */
+    @TestOnly
+    public long onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
+        return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, args);
     }
 
     @TestOnly

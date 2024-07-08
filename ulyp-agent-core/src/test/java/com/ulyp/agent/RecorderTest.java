@@ -66,24 +66,27 @@ class RecorderTest {
     @Test
     void shouldRecordDataWhenRecordingIsFinished() throws InterruptedException, TimeoutException {
         X recorded = new X();
-        int callId = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
-        recorder.onMethodExit(methodIdx, "ABC", null, callId);
+        long callToken = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
+        recorder.onMethodExit(methodIdx, "ABC", null, callToken);
+        callRecordQueue.sync(Duration.ofSeconds(5));
+
+        long callToken2 = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
+        recorder.onMethodExit(methodIdx, "ABC", null, callToken2);
         callRecordQueue.sync(Duration.ofSeconds(5));
 
         assertNull(recorder.getRecordingState());
-        assertEquals(2, storage.getCallRecords().size());
+        assertEquals(4, storage.getCallRecords().size());
     }
 
     @Test
     void testTemporaryRecordingDisableWithOngoingRecording() throws InterruptedException, TimeoutException {
-        Recorder.recordingIdGenerator.set(0);
-
         X recorded = new X();
-        int callId1 = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
+        long callId1 = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
 
         recorder.disableRecording();
 
-        int callId2 = recorder.onMethodEnter(methodIdx, recorded, new Object[]{10});
+        long callId2 = recorder.onMethodEnter(methodIdx, recorded, new Object[]{10});
+        Assertions.assertEquals(-1, callId2);
         recorder.onMethodExit(methodIdx, "CDE", null, callId2);
 
         recorder.enableRecording();
@@ -94,9 +97,9 @@ class RecorderTest {
         assertEquals(2, storage.getCallRecords().size());
 
         // only the callId1 calls are recorded
-        assertEquals(new HashSet<>(Collections.singletonList((long) callId1)), storage.getCallRecords()
+        assertEquals(new HashSet<>(Collections.singletonList((int) callId1)), storage.getCallRecords()
             .stream()
-            .map(RecordedMethodCall::getCallId)
+            .map(call -> (int) call.getCallId())
             .collect(Collectors.toSet()));
     }
 
