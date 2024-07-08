@@ -154,7 +154,7 @@ public class Recorder {
                     eventBuffer.addMethodEnterEvent(callId, methodId, callee, args);
                 }
                 if (eventBuffer.isFull()) {
-                    recordingEventQueue.enqueueBatch(eventBuffer);
+                    recordingEventQueue.enqueue(eventBuffer);
                     eventBuffer.reset();
                 }
                 return callId;
@@ -188,7 +188,7 @@ public class Recorder {
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
                     eventBuffer.enqueueRecordingFinished(System.currentTimeMillis());
-                    recordingEventQueue.enqueueBatch(eventBuffer);
+                    recordingEventQueue.enqueue(eventBuffer);
                     threadLocalRecordingState.set(null);
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
@@ -201,7 +201,7 @@ public class Recorder {
                     }
                 } else {
                     if (eventBuffer.isFull()) {
-                        recordingEventQueue.enqueueBatch(eventBuffer);
+                        recordingEventQueue.enqueue(eventBuffer);
                         eventBuffer.reset();
                     }
                 }

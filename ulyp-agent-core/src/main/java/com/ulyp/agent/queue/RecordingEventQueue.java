@@ -55,7 +55,7 @@ public class RecordingEventQueue implements AutoCloseable {
         this.disruptor.start();
     }
 
-    public void enqueueBatch(RecordingEventBuffer eventBuffer) {
+    public void enqueue(RecordingEventBuffer eventBuffer) {
         disruptor.publish(eventBuffer);
     }
 

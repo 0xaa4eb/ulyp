@@ -62,8 +62,8 @@ public class RecordingQueueDisruptor {
     public void publish(RecordingEventBuffer eventBuffer) {
         long next = ringBuffer.next(1);
         try {
-            RecordingEventDisruptorEntry ringEvent = get(next);
-            ringEvent.moveFrom(eventBuffer);
+            RecordingEventDisruptorEntry ringEntry = get(next);
+            ringEntry.moveFrom(eventBuffer);
         } finally {
             ringBuffer.publish(next);
         }
