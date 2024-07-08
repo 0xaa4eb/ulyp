@@ -43,7 +43,7 @@ public class RecordingEventBuffer {
     }
 
     public void reset() {
-        events.clear();
+        events = new ArrayList<>(MAX_BUFFER_SIZE);
     }
 
     public boolean isEmpty() {
