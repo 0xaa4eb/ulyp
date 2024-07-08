@@ -23,10 +23,14 @@ public class ConstructorCallRecordingAdvice {
 
         // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
-            callId = RecorderInstance.instance.startRecordingOnConstructorEnter(methodId, arguments);
+            callId = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, null, arguments);
         } else {
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                callId = RecorderInstance.instance.onConstructorEnter(methodId, arguments);
+            if (Recorder.currentRecordingSessionCount.get() > 0) {
+                RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
+                if (recordingState != null) {
+                    //noinspection UnusedAssignment
+                    callId = RecorderInstance.instance.onMethodEnter(recordingState, methodId, null, arguments);
+                }
             }
         }
     }

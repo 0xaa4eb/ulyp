@@ -2,7 +2,6 @@ package com.ulyp.agent;
 
 import javax.annotation.Nullable;
 
-import com.ulyp.agent.queue.RecordingEventBatch;
 import com.ulyp.core.RecordingMetadata;
 
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class RecordingState {
     private boolean enabled;
     @Getter
     @Setter
-    private RecordingEventBatch eventBatch;
+    private RecordingEventBuffer eventBuffer;
 
     public RecordingState() {
 

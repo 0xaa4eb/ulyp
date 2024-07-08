@@ -35,7 +35,6 @@ class RecorderTest {
     private final HeapRecordingDataWrtiter storage = new HeapRecordingDataWrtiter();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final RecordingEventQueue callRecordQueue = new RecordingEventQueue(
-            Settings.builder().build(),
             typeResolver,
             new AgentDataWriter(storage, methodRepository),
             new NullMetrics()

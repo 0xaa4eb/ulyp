@@ -1,9 +1,7 @@
 package com.ulyp.agent.queue;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lmax.disruptor.AlertException;
@@ -29,15 +27,15 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private final AgentDataWriter agentDataWriter;
     private final Map<Integer, RecordingEventProcessor> recordingQueueProcessors = new HashMap<>();
     private final AtomicInteger status = new AtomicInteger(IDLE);
-    private final DataProvider<RecordingEventBatch> dataProvider;
+    private final DataProvider<RecordingEventDisruptorEntry> dataProvider;
     private final SequenceBarrier sequenceBarrier;
     private final Sequence sequence = new Sequence(Sequencer.INITIAL_CURSOR_VALUE);
 
     public QueueBatchEventProcessor(
-        DataProvider<RecordingEventBatch> dataProvider,
-        SequenceBarrier sequenceBarrier,
-        TypeResolver typeResolver,
-        AgentDataWriter agentDataWriter) {
+            DataProvider<RecordingEventDisruptorEntry> dataProvider,
+            SequenceBarrier sequenceBarrier,
+            TypeResolver typeResolver,
+            AgentDataWriter agentDataWriter) {
         this.dataProvider = dataProvider;
         this.sequenceBarrier = sequenceBarrier;
         this.typeResolver = typeResolver;
@@ -107,7 +105,7 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     }
 
     private void processAtSeq(long sequence) {
-        RecordingEventBatch batch = dataProvider.get(sequence);
+        RecordingEventDisruptorEntry batch = dataProvider.get(sequence);
         try {
             int recordingId = batch.getRecordingId();
             RecordingEventProcessor processor = recordingQueueProcessors.get(batch.getRecordingId());

@@ -36,6 +36,8 @@ public class Recorder {
     */
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
 
+    private final Settings settings;
+    private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
     private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
     private final StartRecordingPolicy startRecordingPolicy;
@@ -44,10 +46,14 @@ public class Recorder {
     private final Counter recordingsCounter;
 
     public Recorder(
-        MethodRepository methodRepository,
-        StartRecordingPolicy startRecordingPolicy,
-        RecordingEventQueue recordingEventQueue,
-        Metrics metrics) {
+            Settings settings,
+            TypeResolver typeResolver,
+            MethodRepository methodRepository,
+            StartRecordingPolicy startRecordingPolicy,
+            RecordingEventQueue recordingEventQueue,
+            Metrics metrics) {
+        this.settings = settings;
+        this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
         this.recordingEventQueue = recordingEventQueue;
         this.startRecordingPolicy = startRecordingPolicy;
@@ -105,16 +111,6 @@ public class Recorder {
         }
     }
 
-    public int startRecordingOnConstructorEnter(int methodId, Object[] args) {
-        if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = initializeRecordingState(methodId);
-
-            return onConstructorEnter(recordingState, methodId, args);
-        } else {
-            return -1;
-        }
-    }
-
     @NotNull
     private RecordingState initializeRecordingState(int methodId) {
         RecordingState recordingState = threadLocalRecordingState.get();
@@ -124,6 +120,8 @@ public class Recorder {
             RecordingMetadata recordingMetadata = generateRecordingMetadata();
             recordingState.setRecordingMetadata(recordingMetadata);
             threadLocalRecordingState.set(recordingState);
+            RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), settings, typeResolver);
+            recordingState.setEventBuffer(recordingEventBuffer);
 
             currentRecordingSessionCount.incrementAndGet();
             if (LoggingSettings.DEBUG_ENABLED) {
@@ -131,17 +129,9 @@ public class Recorder {
             }
             recordingsCounter.inc();
             recordingState.setEnabled(true);
-            recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
+            recordingEventBuffer.enqueueRecordingStarted(recordingMetadata);
         }
         return recordingState;
-    }
-
-    public int onConstructorEnter(int methodId, Object[] args) {
-        return onMethodEnter(threadLocalRecordingState.get(), methodId, null, args);
-    }
-
-    public int onConstructorEnter(RecordingState recordingState, int methodId, Object[] args) {
-        return onMethodEnter(recordingState, methodId, null, args);
     }
 
     public int onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
@@ -157,10 +147,15 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
                 int callId = recordingState.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    recordingEventQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args, System.nanoTime());
+                    eventBuffer.addMethodEnterEvent(callId, methodId, callee, args, System.nanoTime());
                 } else {
-                    recordingEventQueue.enqueueMethodEnter(recordingState.getRecordingId(), callId, methodId, callee, args);
+                    eventBuffer.addMethodEnterEvent(callId, methodId, callee, args);
+                }
+                if (eventBuffer.isFull()) {
+                    recordingEventQueue.enqueueBatch(eventBuffer);
+                    eventBuffer.reset();
                 }
                 return callId;
             } finally {
@@ -184,16 +179,16 @@ public class Recorder {
             try {
                 recordingState.setEnabled(false);
 
+                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    recordingEventQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
+                    eventBuffer.addMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
                 } else {
-                    recordingEventQueue.enqueueMethodExit(recordingState.getRecordingId(), callId, thrown != null ? thrown : result, thrown != null);
+                    eventBuffer.addMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);
                 }
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
-                    int recordingId = recordingState.getRecordingId();
-                    recordingEventQueue.enqueueRecordingFinished(recordingId, System.currentTimeMillis());
-                    recordingEventQueue.flush(recordingId);
+                    eventBuffer.enqueueRecordingFinished(System.currentTimeMillis());
+                    recordingEventQueue.enqueueBatch(eventBuffer);
                     threadLocalRecordingState.set(null);
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
@@ -203,6 +198,11 @@ public class Recorder {
                             method.toShortString(),
                             recordingState.getCallId()
                         );
+                    }
+                } else {
+                    if (eventBuffer.isFull()) {
+                        recordingEventQueue.enqueueBatch(eventBuffer);
+                        eventBuffer.reset();
                     }
                 }
             } finally {
