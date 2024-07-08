@@ -65,7 +65,7 @@ class RecorderTest {
     @Test
     void shouldRecordDataWhenRecordingIsFinished() throws InterruptedException, TimeoutException {
         X recorded = new X();
-        int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
+        int callId = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
         recorder.onMethodExit(methodIdx, "ABC", null, callId);
         callRecordQueue.sync(Duration.ofSeconds(5));
 
@@ -78,7 +78,7 @@ class RecorderTest {
         Recorder.recordingIdGenerator.set(0);
 
         X recorded = new X();
-        int callId1 = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
+        int callId1 = recorder.startRecordingOnMethodEnter(methodIdx, recorded, new Object[] {5});
 
         recorder.disableRecording();
 

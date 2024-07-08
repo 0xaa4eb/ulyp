@@ -81,7 +81,7 @@ class RecorderCurrentSessionCountTest {
             X callee = new X();
 
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
-                int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
+                int callId = recorder.startRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
                 Assertions.assertTrue(Recorder.currentRecordingSessionCount.get() > 0, "Since at least one recording session is active, " +
                     "Recorder.currentRecordingSessionCount must be positive");
