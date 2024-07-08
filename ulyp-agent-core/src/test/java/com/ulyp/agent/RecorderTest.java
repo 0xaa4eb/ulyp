@@ -40,6 +40,8 @@ class RecorderTest {
             new NullMetrics()
     );
     private final Recorder recorder = new Recorder(
+            Settings.builder().build(),
+            typeResolver,
             methodRepository,
             new EnabledRecordingPolicy(),
             callRecordQueue,
