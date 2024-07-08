@@ -6,7 +6,6 @@ import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.SystemPropertyUtil;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
@@ -26,11 +26,7 @@ import org.jetbrains.annotations.TestOnly;
 @ThreadSafe
 public class Recorder {
 
-    private static final int RECORD_BUFFER_FLUSH_BYTE_SIZE = SystemPropertyUtil.getInt("ulyp.record.buffer-flush-byte-size", 16 * 1024 * 1024);
-    private static final int RECORD_BUFFER_FLUSH_LIFETIME_MS = SystemPropertyUtil.getInt("ulyp.record.buffer-flush-lifetime-milli", 50);
-
     public static final AtomicInteger recordingIdGenerator = new AtomicInteger(-1);
-
     /**
     * Keeps current active recording session count. Based on the fact that most of the time there is no
     * recording sessions and this counter is equal to 0, it's possible to make a small performance optimization.
@@ -99,25 +95,9 @@ public class Recorder {
         }
     }
 
-    public int startOrContinueRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
+    public int startRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = threadLocalRecordingState.get();
-            if (recordingState == null) {
-                recordingState = new RecordingState();
-                RecordingMetadata recordingMetadata = generateRecordingMetadata();
-                recordingState.setRecordingMetadata(recordingMetadata);
-                recordingState.setEnabled(false);
-
-                threadLocalRecordingState.set(recordingState);
-
-                currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId));
-                }
-                recordingsCounter.inc();
-                recordingState.setEnabled(true);
-                recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
-            }
+            RecordingState recordingState = initializeRecordingState(methodId);
 
             return onMethodEnter(recordingState, methodId, callee, args);
         } else {
@@ -125,29 +105,35 @@ public class Recorder {
         }
     }
 
-    public int startOrContinueRecordingOnConstructorEnter(int methodId, Object[] args) {
+    public int startRecordingOnConstructorEnter(int methodId, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = threadLocalRecordingState.get();
-            if (recordingState == null) {
-                recordingState = new RecordingState();
-                recordingState.setEnabled(false);
-                RecordingMetadata recordingMetadata = generateRecordingMetadata();
-                recordingState.setRecordingMetadata(recordingMetadata);
-                threadLocalRecordingState.set(recordingState);
-
-                currentRecordingSessionCount.incrementAndGet();
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId).toShortString());
-                }
-                recordingsCounter.inc();
-                recordingState.setEnabled(true);
-                recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
-            }
+            RecordingState recordingState = initializeRecordingState(methodId);
 
             return onConstructorEnter(recordingState, methodId, args);
         } else {
             return -1;
         }
+    }
+
+    @NotNull
+    private RecordingState initializeRecordingState(int methodId) {
+        RecordingState recordingState = threadLocalRecordingState.get();
+        if (recordingState == null) {
+            recordingState = new RecordingState();
+            recordingState.setEnabled(false);
+            RecordingMetadata recordingMetadata = generateRecordingMetadata();
+            recordingState.setRecordingMetadata(recordingMetadata);
+            threadLocalRecordingState.set(recordingState);
+
+            currentRecordingSessionCount.incrementAndGet();
+            if (LoggingSettings.DEBUG_ENABLED) {
+                log.debug("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId));
+            }
+            recordingsCounter.inc();
+            recordingState.setEnabled(true);
+            recordingEventQueue.enqueueRecordingStarted(recordingMetadata);
+        }
+        return recordingState;
     }
 
     public int onConstructorEnter(int methodId, Object[] args) {

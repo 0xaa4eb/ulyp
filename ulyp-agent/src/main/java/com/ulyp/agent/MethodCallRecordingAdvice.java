@@ -26,7 +26,7 @@ public class MethodCallRecordingAdvice {
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
 
             // noinspection UnusedAssignment local variable callId is used by exit() method
-            callId = RecorderInstance.instance.startOrContinueRecordingOnMethodEnter(methodId, callee, arguments);
+            callId = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, callee, arguments);
         } else {
 
             if (Recorder.currentRecordingSessionCount.get() > 0) {
