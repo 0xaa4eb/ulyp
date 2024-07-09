@@ -132,7 +132,7 @@ public class Recorder {
             }
             recordingsCounter.inc();
             recordingState.setEnabled(true);
-            recordingEventBuffer.addRecordingStartedEvent(recordingMetadata);
+            recordingEventBuffer.appendRecordingStartedEvent(recordingMetadata);
         }
         return recordingState;
     }
@@ -152,9 +152,9 @@ public class Recorder {
                 int callId = recordingState.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    eventBuffer.addMethodEnterEvent(callId, methodId, callee, args, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(callId, methodId, callee, args, System.nanoTime());
                 } else {
-                    eventBuffer.addMethodEnterEvent(callId, methodId, callee, args);
+                    eventBuffer.appendMethodEnterEvent(callId, methodId, callee, args);
                 }
                 if (eventBuffer.isFull()) {
                     recordingEventQueue.enqueue(eventBuffer);
@@ -182,13 +182,13 @@ public class Recorder {
 
                 RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    eventBuffer.addMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
+                    eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
                 } else {
-                    eventBuffer.addMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);
+                    eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);
                 }
 
                 if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
-                    eventBuffer.addRecordingFinishedEvent(System.currentTimeMillis());
+                    eventBuffer.appendRecordingFinishedEvent(System.currentTimeMillis());
                     recordingEventQueue.enqueue(eventBuffer);
                     recordingStateStore.remove(recordingId);
                     threadLocalRecordingState.set(null);

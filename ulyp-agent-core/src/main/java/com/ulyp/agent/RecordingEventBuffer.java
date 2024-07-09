@@ -58,32 +58,32 @@ public class RecordingEventBuffer {
         this.events.add(event);
     }
 
-    public void addRecordingStartedEvent(RecordingMetadata recordingMetadata) {
+    public void appendRecordingStartedEvent(RecordingMetadata recordingMetadata) {
         add(new RecordingStartedEvent(recordingMetadata));
     }
 
-    public void addRecordingFinishedEvent(long recordingFinishedTimeMillis) {
+    public void appendRecordingFinishedEvent(long recordingFinishedTimeMillis) {
         add(new RecordingFinishedEvent(recordingFinishedTimeMillis));
     }
 
-    public void addMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args) {
+    public void appendMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args) {
         Object[] argsPrepared = prepareArgs(args);
 
         events.add(new EnterMethodRecordingEvent(callId, methodId, callee, argsPrepared));
     }
 
-    public void addMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+    public void appendMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         Object[] argsPrepared = prepareArgs(args);
 
         events.add(new TimestampedEnterMethodRecordingEvent(callId, methodId, callee, argsPrepared, nanoTime));
     }
 
-    public void addMethodExitEvent(int callId, Object returnValue, boolean thrown) {
+    public void appendMethodExitEvent(int callId, Object returnValue, boolean thrown) {
         Object returnValuePrepared = prepareReturnValue(returnValue);
         events.add(new ExitMethodRecordingEvent(callId, returnValuePrepared, thrown));
     }
 
-    public void addMethodExitEvent(int callId, Object returnValue, boolean thrown, long nanoTime) {
+    public void appendMethodExitEvent(int callId, Object returnValue, boolean thrown, long nanoTime) {
         Object returnValuePrepared = prepareReturnValue(returnValue);
         events.add(new TimestampedExitMethodRecordingEvent(callId, returnValuePrepared, thrown, nanoTime));
     }

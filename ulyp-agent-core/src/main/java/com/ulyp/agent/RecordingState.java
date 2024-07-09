@@ -7,6 +7,9 @@ import com.ulyp.core.RecordingMetadata;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Single state for recording session. There is only single {@link ThreadLocal#get()} call for every recorded method
+ */
 @Getter
 public class RecordingState {
 
