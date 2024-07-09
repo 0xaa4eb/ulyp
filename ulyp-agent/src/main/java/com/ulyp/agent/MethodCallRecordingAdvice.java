@@ -18,7 +18,7 @@ public class MethodCallRecordingAdvice {
     @Advice.OnMethodEnter
     static void enter(
             @MethodId int methodId,
-            @Advice.Local("callId") int callId,
+            @Advice.Local("callToken") long callToken,
             @Advice.This(optional = true) Object callee,
             @Advice.AllArguments Object[] arguments) {
 
@@ -26,12 +26,15 @@ public class MethodCallRecordingAdvice {
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
 
             // noinspection UnusedAssignment local variable callId is used by exit() method
-            callId = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, callee, arguments);
+            callToken = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, callee, arguments);
         } else {
 
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                //noinspection UnusedAssignment
-                callId = RecorderInstance.instance.onMethodEnter(methodId, callee, arguments);
+            if (Recorder.currentRecordingSessionCount.get() > 0) {
+                RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
+                if (recordingState != null) {
+                    //noinspection UnusedAssignment
+                    callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arguments);
+                }
             }
         }
     }
@@ -44,11 +47,11 @@ public class MethodCallRecordingAdvice {
     @Advice.OnMethodExit(onThrowable = Throwable.class)
     static void exit(
             @MethodId int methodId,
-            @Advice.Local("callId") int callId,
+            @Advice.Local("callToken") long callToken,
             @Advice.Thrown Throwable throwable,
             @Advice.Return(typing = Assigner.Typing.DYNAMIC) Object returnValue) {
-        if (callId > 0) {
-            RecorderInstance.instance.onMethodExit(methodId, returnValue, throwable, callId);
+        if (callToken > 0) {
+            RecorderInstance.instance.onMethodExit(methodId, returnValue, throwable, callToken);
         }
     }
 }
