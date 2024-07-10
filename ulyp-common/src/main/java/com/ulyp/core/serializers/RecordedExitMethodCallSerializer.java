@@ -21,12 +21,12 @@ public class RecordedExitMethodCallSerializer {
 
     public void serializeExitMethodCall(BytesOut out, int callId, TypeResolver typeResolver, boolean thrown, Object returnValue, long nanoTime) {
         out.write(EXIT_METHOD_CALL_ID);
-        out.write(callId);
+        out.writeVarInt(callId);
         out.write(thrown);
         out.write(nanoTime);
 
         Type type = typeResolver.get(returnValue);
-        out.write(type.getId());
+        out.writeVarInt(type.getId());
 
         ObjectRecorder recorderHint = type.getRecorderHint();
         if (returnValue != null && recorderHint == null) {
@@ -48,7 +48,7 @@ public class RecordedExitMethodCallSerializer {
     }
 
     private static ObjectRecord deserializeObject(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
-        int typeId = input.readInt();
+        int typeId = input.readVarInt();
         byte recorderId = input.readByte();
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
         ObjectRecorder objectRecorder = ObjectRecorderRegistry.recorderForId(recorderId);
@@ -61,7 +61,7 @@ public class RecordedExitMethodCallSerializer {
 
     public static RecordedExitMethodCall deserialize(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
 
-        int callId = input.readInt();
+        int callId = input.readVarInt();
         boolean thrown = input.readBoolean();
         long nanoTime = input.readLong();
 

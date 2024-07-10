@@ -21,8 +21,8 @@ public class RecordedEnterMethodCallSerializer {
 
     public void serializeEnterMethodCall(BytesOut out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
-        out.write(callId);
-        out.write(methodId);
+        out.writeVarInt(callId);
+        out.writeVarInt(methodId);
         out.write(nanoTime);
         serializeArgs(out, typeResolver, args);
         serializeCallee(out, typeResolver, callee);
@@ -53,7 +53,7 @@ public class RecordedEnterMethodCallSerializer {
     }
 
     private static void serializeArgs(BytesOut out, TypeResolver typeResolver, Object[] args) {
-        out.write(args.length);
+        out.writeVarInt(args.length);
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             Object argValue = args[argIndex];
             Type argType = typeResolver.get(argValue);
@@ -65,7 +65,7 @@ public class RecordedEnterMethodCallSerializer {
 
             ObjectRecorder recorder = argValue != null ? recorderHint : ObjectRecorderRegistry.NULL_RECORDER.getInstance();
 
-            out.write(argType.getId());
+            out.writeVarInt(argType.getId());
             out.write(recorder.getId());
             try {
                 recorder.write(argValue, out, typeResolver);
@@ -76,7 +76,7 @@ public class RecordedEnterMethodCallSerializer {
     }
 
     private static ObjectRecord deserializeObject(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
-        int typeId = input.readInt();
+        int typeId = input.readVarInt();
         byte recorderId = input.readByte();
         Type type = Optional.ofNullable(typeResolver.get(typeId)).orElse(Type.unknown());
         ObjectRecorder objectRecorder = ObjectRecorderRegistry.recorderForId(recorderId);
@@ -88,10 +88,10 @@ public class RecordedEnterMethodCallSerializer {
     }
 
     public static RecordedEnterMethodCall deserialize(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
-        int callId = input.readInt();
-        int methodId = input.readInt();
+        int callId = input.readVarInt();
+        int methodId = input.readVarInt();
         long nanoTime = input.readLong();
-        int argsCount = input.readInt();
+        int argsCount = input.readVarInt();
 
         List<ObjectRecord> arguments = new ArrayList<>(argsCount);
 
