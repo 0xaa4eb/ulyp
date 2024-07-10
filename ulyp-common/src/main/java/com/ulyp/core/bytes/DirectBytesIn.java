@@ -51,6 +51,37 @@ public class DirectBytesIn implements BytesIn {
         return val;
     }
 
+    public int readVarInt() {
+        byte tmp;
+        if ((tmp = readByte()) >= 0) {
+            return tmp;
+        }
+        int result = tmp & 0x7f;
+        if ((tmp = readByte()) >= 0) {
+            result |= tmp << 7;
+        } else {
+            result |= (tmp & 0x7f) << 7;
+            if ((tmp = readByte()) >= 0) {
+                result |= tmp << 14;
+            } else {
+                result |= (tmp & 0x7f) << 14;
+                if ((tmp = readByte()) >= 0) {
+                    result |= tmp << 21;
+                } else {
+                    result |= (tmp & 0x7f) << 21;
+                    result |= (tmp = readByte()) << 28;
+                    while (tmp < 0) {
+                        // We get into this loop only in the case of overflow.
+                        // By doing this, we can call getVarInt() instead of
+                        // getVarLong() when we only need an int.
+                        tmp = readByte();
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     @Override
     public int readInt(int offset) {
         return buffer.getInt(offset);

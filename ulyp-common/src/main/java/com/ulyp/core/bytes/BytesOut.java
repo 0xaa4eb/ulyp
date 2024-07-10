@@ -32,6 +32,8 @@ public interface BytesOut extends AutoCloseable {
 
     void write(int value);
 
+    void writeVarInt(int v);
+
     void write(long value);
 
     void write(byte c);

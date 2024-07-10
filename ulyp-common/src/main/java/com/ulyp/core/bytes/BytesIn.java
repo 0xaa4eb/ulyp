@@ -13,6 +13,8 @@ public interface BytesIn {
 
     int readInt();
 
+    int readVarInt();
+
     int readInt(int offset);
 
     char readChar();
