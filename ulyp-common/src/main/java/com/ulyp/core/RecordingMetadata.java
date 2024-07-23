@@ -20,7 +20,6 @@ public class RecordingMetadata {
     private long threadId;
     private String threadName;
     private long recordingStartedMillis;
-    private long logCreatedEpochMillis; // TODO remove
     private long recordingFinishedMillis;
     @Builder.Default @ToString.Exclude
     private List<String> stackTraceElements = Collections.emptyList();

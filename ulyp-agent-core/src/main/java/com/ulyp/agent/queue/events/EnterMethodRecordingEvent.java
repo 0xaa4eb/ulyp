@@ -9,15 +9,13 @@ public class EnterMethodRecordingEvent implements RecordingEvent {
 
     protected final int callId;
     protected final int methodId;
-    protected final int calleeTypeId;
-    protected final int calleeIdentityHashCode;
+    protected final Object callee;
     protected final Object[] args;
 
-    public EnterMethodRecordingEvent(int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args) {
+    public EnterMethodRecordingEvent(int callId, int methodId, Object callee, Object[] args) {
         this.callId = callId;
         this.methodId = methodId;
-        this.calleeTypeId = calleeTypeId;
-        this.calleeIdentityHashCode = calleeIdentityHashCode;
+        this.callee = callee;
         this.args = args;
     }
 
@@ -26,8 +24,7 @@ public class EnterMethodRecordingEvent implements RecordingEvent {
         return "EnterRecordQueueEvent{" +
                 "callId=" + callId +
                 ", methodId=" + methodId +
-                ", calleeTypeId=" + calleeTypeId +
-                ", calleeIdentityHashCode=" + calleeIdentityHashCode +
+                ", callee=" + callee +
                 ", args=" + Arrays.toString(args) +
                 '}';
     }

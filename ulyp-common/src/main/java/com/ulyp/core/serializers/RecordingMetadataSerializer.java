@@ -16,7 +16,6 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
         int recordingId = input.readInt();
         long threadId = input.readLong();
         long recordingStartedEpochMillis = input.readLong();
-        long logCreatedEpochMillis = input.readLong();
         long recordingCompletedEpochMillis = input.readLong();
         String threadName = input.readString();
 
@@ -28,7 +27,6 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
 
         return RecordingMetadata.builder()
                 .recordingStartedMillis(recordingStartedEpochMillis)
-                .logCreatedEpochMillis(logCreatedEpochMillis)
                 .recordingFinishedMillis(recordingCompletedEpochMillis)
                 .id(recordingId)
                 .threadId(threadId)
@@ -42,7 +40,6 @@ public class RecordingMetadataSerializer implements Serializer<RecordingMetadata
         out.write(recordingMetadata.getId());
         out.write(recordingMetadata.getThreadId());
         out.write(recordingMetadata.getRecordingStartedMillis());
-        out.write(recordingMetadata.getLogCreatedEpochMillis());
         out.write(recordingMetadata.getRecordingFinishedMillis());
         out.write(recordingMetadata.getThreadName());
         out.write(recordingMetadata.getStackTraceElements().size());
