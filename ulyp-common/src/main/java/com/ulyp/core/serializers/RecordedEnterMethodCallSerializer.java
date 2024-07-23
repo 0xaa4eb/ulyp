@@ -33,7 +33,7 @@ public class RecordedEnterMethodCallSerializer {
 
             ObjectRecorder recorder = callee instanceof QueuedIdentityObject ? ObjectRecorderRegistry.QUEUE_IDENTITY_RECORDER.getInstance() : ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance();
 
-            out.write(typeResolver.get(callee).getId());
+            out.writeVarInt(typeResolver.get(callee).getId());
             out.write(recorder.getId());
             try {
                 recorder.write(callee, out, typeResolver);
@@ -42,7 +42,7 @@ public class RecordedEnterMethodCallSerializer {
             }
         } else {
             ObjectRecorder recorder = ObjectRecorderRegistry.NULL_RECORDER.getInstance();
-            out.write(Type.unknown().getId());
+            out.writeVarInt(Type.unknown().getId());
             out.write(recorder.getId());
             try {
                 recorder.write(null, out, typeResolver);
