@@ -1,0 +1,29 @@
+name: Lines of code badge
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_loc_badge:
+    runs-on: ubuntu-latest
+    name: Build LoC Badge
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Generate Badge
+        uses: shadowmoose/GHA-LoC-Badge@1.0.0
+        id: badge
+        with:
+          debug: true
+          directory: ./
+          badge: ./output/loc-badge.svg
+          ignore: '**/js/libs/**|**/web/img/**|*.zip|**/alertify.css'
+          badge_label: 'Lines of Code'
+
+      - name: Print the output
+        run: |
+          echo "Scanned: ${{ steps.badge.outputs.counted_files }}";
+          echo "Line Count: ${{ steps.badge.outputs.total_lines }}";
