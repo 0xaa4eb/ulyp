@@ -5,10 +5,11 @@ import javax.annotation.Nullable;
 import com.ulyp.core.RecordingMetadata;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
+/**
+ * Single state for recording session. There is only single {@link ThreadLocal#get()} call for every recorded method
+ */
 @Getter
 public class RecordingState {
 
@@ -21,6 +22,13 @@ public class RecordingState {
     private int callId = ROOT_CALL_RECORDING_ID;
     @Setter
     private boolean enabled;
+    @Getter
+    @Setter
+    private RecordingEventBuffer eventBuffer;
+
+    public RecordingState() {
+
+    }
 
     public int nextCallId() {
         return callId++;

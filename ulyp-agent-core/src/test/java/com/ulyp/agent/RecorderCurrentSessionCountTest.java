@@ -43,8 +43,8 @@ class RecorderCurrentSessionCountTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
-    private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(Settings.builder().build(), typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
-    private final Recorder recorder = new Recorder(methodRepository, new EnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
+    private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
+    private final Recorder recorder = new Recorder(Settings.builder().build(), typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -81,7 +81,7 @@ class RecorderCurrentSessionCountTest {
             X callee = new X();
 
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
-                int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
+                long callId = recorder.startRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
                 Assertions.assertTrue(Recorder.currentRecordingSessionCount.get() > 0, "Since at least one recording session is active, " +
                     "Recorder.currentRecordingSessionCount must be positive");

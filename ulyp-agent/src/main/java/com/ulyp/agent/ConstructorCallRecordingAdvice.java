@@ -17,16 +17,20 @@ public class ConstructorCallRecordingAdvice {
     @SuppressWarnings("UnusedAssignment")
     @Advice.OnMethodEnter
     static void enter(
-            @Advice.Local("callId") int callId,
+            @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
             @Advice.AllArguments Object[] arguments) {
 
         // This if check is ugly, but the code is wired into bytecode, so it's more efficient to check right away instead of calling a method
         if (methodId >= MethodRepository.RECORD_METHODS_MIN_ID) {
-            callId = RecorderInstance.instance.startOrContinueRecordingOnConstructorEnter(methodId, arguments);
+            callToken = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, null, arguments);
         } else {
-            if (Recorder.currentRecordingSessionCount.get() > 0 && RecorderInstance.instance.recordingIsActiveInCurrentThread()) {
-                callId = RecorderInstance.instance.onConstructorEnter(methodId, arguments);
+            if (Recorder.currentRecordingSessionCount.get() > 0) {
+                RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
+                if (recordingState != null) {
+                    //noinspection UnusedAssignment
+                    callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, null, arguments);
+                }
             }
         }
     }
@@ -38,11 +42,11 @@ public class ConstructorCallRecordingAdvice {
      */
     @Advice.OnMethodExit
     static void exit(
-            @Advice.Local("callId") int callId,
+            @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
             @Advice.This Object returnValue) {
-        if (callId > 0) {
-            RecorderInstance.instance.onConstructorExit(methodId, returnValue, callId);
+        if (callToken > 0) {
+            RecorderInstance.instance.onMethodExit(methodId, returnValue, null, callToken);
         }
     }
 }

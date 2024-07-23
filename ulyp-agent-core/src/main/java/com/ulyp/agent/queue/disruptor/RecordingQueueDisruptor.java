@@ -4,7 +4,8 @@ import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.BasicExecutor;
 import com.lmax.disruptor.dsl.ExceptionHandlerWrapper;
 import com.lmax.disruptor.util.Util;
-import com.ulyp.agent.queue.RecordingEventBatch;
+import com.ulyp.agent.RecordingEventBuffer;
+import com.ulyp.agent.queue.RecordingEventDisruptorEntry;
 import com.ulyp.core.metrics.Metrics;
 
 import java.util.concurrent.Executor;
@@ -17,14 +18,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * provide additional methods
  */
 public class RecordingQueueDisruptor {
-    private final RingBuffer<RecordingEventBatch> ringBuffer;
+    private final RingBuffer<RecordingEventDisruptorEntry> ringBuffer;
     private final Executor executor;
-    private final ConsumerRepository<RecordingEventBatch> consumerRepository = new ConsumerRepository<>();
+    private final ConsumerRepository<RecordingEventDisruptorEntry> consumerRepository = new ConsumerRepository<>();
     private final AtomicBoolean started = new AtomicBoolean(false);
-    private final ExceptionHandler<RecordingEventBatch> exceptionHandler = new ExceptionHandlerWrapper<>();
+    private final ExceptionHandler<RecordingEventDisruptorEntry> exceptionHandler = new ExceptionHandlerWrapper<>();
 
     public RecordingQueueDisruptor(
-            final EventFactory<RecordingEventBatch> eventFactory,
+            final EventFactory<RecordingEventDisruptorEntry> eventFactory,
             final int ringBufferSize,
             final ThreadFactory threadFactory,
             final WaitStrategy waitStrategy,
@@ -32,13 +33,13 @@ public class RecordingQueueDisruptor {
         this(RingBuffer.create(eventFactory, ringBufferSize, waitStrategy, metrics), new BasicExecutor(threadFactory));
     }
 
-    private RecordingQueueDisruptor(final RingBuffer<RecordingEventBatch> ringBuffer, final Executor executor) {
+    private RecordingQueueDisruptor(final RingBuffer<RecordingEventDisruptorEntry> ringBuffer, final Executor executor) {
         this.ringBuffer = ringBuffer;
         this.executor = executor;
     }
 
     @SafeVarargs
-    public final EventHandlerGroup handleEventsWith(final EventProcessorFactory<RecordingEventBatch>... eventProcessorFactories) {
+    public final EventHandlerGroup handleEventsWith(final EventProcessorFactory<RecordingEventDisruptorEntry>... eventProcessorFactories) {
         final Sequence[] barrierSequences = new Sequence[0];
         return createEventProcessors(barrierSequences, eventProcessorFactories);
     }
@@ -58,17 +59,17 @@ public class RecordingQueueDisruptor {
         return new EventHandlerGroup(this, consumerRepository, Util.getSequencesFor(processors));
     }
 
-    public void publish(RecordingEventBatch event) {
+    public void publish(RecordingEventBuffer eventBuffer) {
         long next = ringBuffer.next(1);
         try {
-            RecordingEventBatch ringEvent = get(next);
-            ringEvent.moveFrom(event);
+            RecordingEventDisruptorEntry ringEntry = get(next);
+            ringEntry.moveFrom(eventBuffer);
         } finally {
             ringBuffer.publish(next);
         }
     }
 
-    public RingBuffer<RecordingEventBatch> start() {
+    public RingBuffer<RecordingEventDisruptorEntry> start() {
         checkOnlyStartedOnce();
         for (final ConsumerInfo consumerInfo : consumerRepository) {
             consumerInfo.start(executor);
@@ -106,7 +107,7 @@ public class RecordingQueueDisruptor {
         return ringBuffer.getCursor();
     }
 
-    public RecordingEventBatch get(final long sequence) {
+    public RecordingEventDisruptorEntry get(final long sequence) {
         return ringBuffer.get(sequence);
     }
 
@@ -122,16 +123,16 @@ public class RecordingQueueDisruptor {
 
     EventHandlerGroup createEventProcessors(
             final Sequence[] barrierSequences,
-            final EventHandler<RecordingEventBatch>[] eventHandlers) {
+            final EventHandler<RecordingEventDisruptorEntry>[] eventHandlers) {
         checkNotStarted();
 
         final Sequence[] processorSequences = new Sequence[eventHandlers.length];
         final SequenceBarrier barrier = ringBuffer.newBarrier(barrierSequences);
 
         for (int i = 0, eventHandlersLength = eventHandlers.length; i < eventHandlersLength; i++) {
-            final EventHandler<RecordingEventBatch> eventHandler = eventHandlers[i];
+            final EventHandler<RecordingEventDisruptorEntry> eventHandler = eventHandlers[i];
 
-            final BatchEventProcessor<RecordingEventBatch> batchEventProcessor =
+            final BatchEventProcessor<RecordingEventDisruptorEntry> batchEventProcessor =
                     new BatchEventProcessor<>(ringBuffer, barrier, eventHandler);
 
             batchEventProcessor.setExceptionHandler(exceptionHandler);
@@ -155,7 +156,7 @@ public class RecordingQueueDisruptor {
     }
 
     EventHandlerGroup createEventProcessors(
-            final Sequence[] barrierSequences, final EventProcessorFactory<RecordingEventBatch>[] processorFactories) {
+            final Sequence[] barrierSequences, final EventProcessorFactory<RecordingEventDisruptorEntry>[] processorFactories) {
         final EventProcessor[] eventProcessors = new EventProcessor[processorFactories.length];
         for (int i = 0; i < processorFactories.length; i++) {
             eventProcessors[i] = processorFactories[i].createEventProcessor(ringBuffer, barrierSequences);
@@ -165,9 +166,9 @@ public class RecordingQueueDisruptor {
     }
 
     EventHandlerGroup createWorkerPool(
-            final Sequence[] barrierSequences, final WorkHandler<RecordingEventBatch>[] workHandlers) {
+            final Sequence[] barrierSequences, final WorkHandler<RecordingEventDisruptorEntry>[] workHandlers) {
         final SequenceBarrier sequenceBarrier = ringBuffer.newBarrier(barrierSequences);
-        final WorkerPool<RecordingEventBatch> workerPool = new WorkerPool<>(ringBuffer, sequenceBarrier, exceptionHandler, workHandlers);
+        final WorkerPool<RecordingEventDisruptorEntry> workerPool = new WorkerPool<>(ringBuffer, sequenceBarrier, exceptionHandler, workHandlers);
 
 
         consumerRepository.add(workerPool, sequenceBarrier);

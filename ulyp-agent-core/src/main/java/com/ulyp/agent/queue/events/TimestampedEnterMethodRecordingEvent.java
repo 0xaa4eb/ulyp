@@ -9,8 +9,8 @@ public class TimestampedEnterMethodRecordingEvent extends EnterMethodRecordingEv
 
     private final long nanoTime;
 
-    public TimestampedEnterMethodRecordingEvent(int callId, int methodId, int calleeTypeId, int calleeIdentityHashCode, Object[] args, long nanoTime) {
-        super(callId, methodId, calleeTypeId, calleeIdentityHashCode, args);
+    public TimestampedEnterMethodRecordingEvent(int callId, int methodId, Object callee, Object[] args, long nanoTime) {
+        super(callId, methodId, callee, args);
         this.nanoTime = nanoTime;
     }
 
@@ -19,8 +19,7 @@ public class TimestampedEnterMethodRecordingEvent extends EnterMethodRecordingEv
         return "EnterRecordQueueEvent{" +
                 "callId=" + callId +
                 ", methodId=" + methodId +
-                ", calleeTypeId=" + calleeTypeId +
-                ", calleeIdentityHashCode=" + calleeIdentityHashCode +
+                ", callee=" + callee +
                 ", args=" + Arrays.toString(args) +
                 ", nanoTime=" + nanoTime +
                 '}';

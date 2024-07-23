@@ -65,8 +65,8 @@ public class AgentContext {
                 .classpath(new Classpath().toList())
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
-        this.recordingEventQueue = new RecordingEventQueue(settings, typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
-        this.recorder = new Recorder(methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
+        this.recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
+        this.recorder = new Recorder(settings, typeResolver, methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
 
         if (settings.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
