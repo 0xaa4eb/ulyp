@@ -232,7 +232,6 @@ public class Recorder {
         return RecordingMetadata.builder()
             .id(recordingId)
             .recordingStartedMillis(System.currentTimeMillis())
-            .logCreatedEpochMillis(System.currentTimeMillis())
             .threadId(Thread.currentThread().getId())
             .threadName(Thread.currentThread().getName())
             .stackTraceElements(stackTraceElements)
