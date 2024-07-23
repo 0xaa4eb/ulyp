@@ -58,10 +58,10 @@ Ulyp is POC and unstable all the time since the beginning. There are already sim
 
 ## Build from source
 
-Build with gradle:
-    `./gradlew build`
+Build agent (no tests):
+    `./gradlew :ulyp-agent:shadowJar`
 
-Build UI jar file (Java 11+ is preferable) :
+Build UI jar file (Java 11+ (preferred) or Java 8 Oracle with Java FX bundled) :
     `./gradlew :ulyp-ui:fatJar`
 
 UI jar file for a particular platform can be built as follows:
