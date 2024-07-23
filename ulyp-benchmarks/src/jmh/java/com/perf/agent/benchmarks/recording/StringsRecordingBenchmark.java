@@ -35,7 +35,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String record() {
@@ -44,7 +44,7 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String syncRecord(Counters counters) {
