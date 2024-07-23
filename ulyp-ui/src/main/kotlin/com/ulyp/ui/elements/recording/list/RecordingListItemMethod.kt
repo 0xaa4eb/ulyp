@@ -53,7 +53,7 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
         val recordingMetadata = recording.metadata
         val rootCallRecord = recording.root
         children.add(EnhancedText(
-            Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter),
+            Timestamp(recordingMetadata.recordingStartedMillis).toLocalDateTime().format(dateTimeFormatter),
             Style.RECORDING_LIST_ITEM)
         )
         children.add(Text(" "))
