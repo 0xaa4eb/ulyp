@@ -100,7 +100,7 @@ public class BufferBytesOut extends AbstractBytesOut {
 
     @Override
     public void write(DirectBuffer buffer) {
-        write(buffer.capacity());
+        writeVarInt(buffer.capacity());
         this.buffer.putBytes(position, buffer, 0, buffer.capacity());
         position += buffer.capacity();
     }
