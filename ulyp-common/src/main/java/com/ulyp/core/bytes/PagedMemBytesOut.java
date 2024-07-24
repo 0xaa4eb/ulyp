@@ -190,7 +190,7 @@ public class PagedMemBytesOut extends AbstractBytesOut {
     @Override
     public void write(DirectBuffer buffer) {
         int bytesLength = buffer.capacity();
-        write(bytesLength);
+        writeVarInt(bytesLength);
         int offset = 0;
         while (bytesLength > 0) {
             MemPage page = currentPage();
@@ -205,7 +205,7 @@ public class PagedMemBytesOut extends AbstractBytesOut {
 
     public void write(byte[] value) {
         int bytesLength = value.length;
-        write(bytesLength);
+        writeVarInt(bytesLength);
         int offset = 0;
         while (bytesLength > 0) {
             MemPage page = currentPage();

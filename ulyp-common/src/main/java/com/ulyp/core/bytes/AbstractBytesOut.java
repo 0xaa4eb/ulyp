@@ -33,19 +33,19 @@ public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
             }
 
             byte[] bytes = toPrint.getBytes(StandardCharsets.UTF_8);
-            write(bytes.length);
+            writeVarInt(bytes.length);
             for (byte b : bytes) {
                 write(b);
             }
         } else {
-            write(-1);
+            writeVarInt(-1);
         }
     }
 
     public void write(Object object, TypeResolver typeResolver) throws Exception {
         try (BytesOut nestedOut = nest()) {
             Type itemType = typeResolver.get(object);
-            write(itemType.getId());
+            writeVarInt(itemType.getId());
             ObjectRecorder recorder;
             if (object != null) {
                 // Simply stop recursively write objects if it's too deep

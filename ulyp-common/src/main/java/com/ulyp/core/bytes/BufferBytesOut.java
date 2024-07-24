@@ -106,7 +106,7 @@ public class BufferBytesOut extends AbstractBytesOut {
     }
 
     public void write(byte[] bytes) {
-        write(bytes.length);
+        writeVarInt(bytes.length);
         buffer.putBytes(position, bytes);
         position += bytes.length;
     }

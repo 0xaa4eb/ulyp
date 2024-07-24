@@ -103,7 +103,7 @@ public class DirectBytesIn implements BytesIn {
 
     @Override
     public BytesIn readBytes() {
-        int length = readInt();
+        int length = readVarInt();
         UnsafeBuffer newBuf = new UnsafeBuffer();
         newBuf.wrap(buffer, pos, length);
         pos += length;
@@ -119,7 +119,7 @@ public class DirectBytesIn implements BytesIn {
 
     @Override
     public ObjectRecord readObject(ByIdTypeResolver typeResolver) {
-        Type itemClassType = typeResolver.getType(readInt());
+        Type itemClassType = typeResolver.getType(readVarInt());
         ObjectRecorder recorder = ObjectRecorderRegistry.recorderForId(readByte());
         return recorder.read(itemClassType, this, typeResolver);
     }
@@ -141,7 +141,7 @@ public class DirectBytesIn implements BytesIn {
 
     @Override
     public String readString() {
-        int length = readInt();
+        int length = readVarInt();
         if (length >= 0) {
             byte[] buf = new byte[length];
             this.buffer.getBytes(pos, buf);
