@@ -28,7 +28,7 @@ public class ClassObjectRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        return new ClassObjectRecord(objectType, typeResolver.getType(input.readInt()));
+        return new ClassObjectRecord(objectType, typeResolver.getType(input.readVarInt()));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ClassObjectRecorder extends ObjectRecorder {
         Class<?> clazz = (Class<?>) object;
 
         int typeId = typeResolver.get(clazz).getId();
-        out.write(typeId);
+        out.writeVarInt(typeId);
 
         if (LoggingSettings.TRACE_ENABLED) {
             log.trace("Writing typeId={} for {}", typeId, object);
