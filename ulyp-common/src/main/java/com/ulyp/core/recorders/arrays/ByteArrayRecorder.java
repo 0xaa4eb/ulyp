@@ -26,13 +26,13 @@ public class ByteArrayRecorder extends ObjectRecorder {
     @Override
     public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         IdentityObjectRecord identityRecord = (IdentityObjectRecord) ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
-        return new ByteArrayRecord(type, identityRecord, input.readInt());
+        return new ByteArrayRecord(type, identityRecord, input.readVarInt());
     }
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, out, typeResolver);
         byte[] array = (byte[]) object;
-        out.write(array.length);
+        out.writeVarInt(array.length);
     }
 }

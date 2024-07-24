@@ -125,6 +125,17 @@ public class PagedMemBytesOut extends AbstractBytesOut {
         addWrittenBytes(Integer.BYTES);
     }
 
+    @Override
+    public void writeVarInt(int v) {
+        // TODO 99..99999% writes hit same page, optimize this
+        do {
+            int bits = v & 0x7F;
+            v >>>= 7;
+            byte b = (byte) (bits + ((v != 0) ? 0x80 : 0));
+            write(b);
+        } while (v != 0);
+    }
+
     public void write(long value) {
         MemPage page = currentPage();
         int remainingBytes = currentPageRemainingBytes();
@@ -179,7 +190,7 @@ public class PagedMemBytesOut extends AbstractBytesOut {
     @Override
     public void write(DirectBuffer buffer) {
         int bytesLength = buffer.capacity();
-        write(bytesLength);
+        writeVarInt(bytesLength);
         int offset = 0;
         while (bytesLength > 0) {
             MemPage page = currentPage();
@@ -194,7 +205,7 @@ public class PagedMemBytesOut extends AbstractBytesOut {
 
     public void write(byte[] value) {
         int bytesLength = value.length;
-        write(bytesLength);
+        writeVarInt(bytesLength);
         int offset = 0;
         while (bytesLength > 0) {
             MemPage page = currentPage();

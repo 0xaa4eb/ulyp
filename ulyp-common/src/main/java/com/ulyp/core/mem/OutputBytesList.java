@@ -120,6 +120,11 @@ public class OutputBytesList implements AutoCloseable {
             bytesOut.write(value);
         }
 
+        @Override
+        public void writeVarInt(int v) {
+            bytesOut.writeVarInt(v);
+        }
+
         public void write(long value) {
             bytesOut.write(value);
         }
