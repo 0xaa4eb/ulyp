@@ -29,7 +29,7 @@ class SerializedRecordedMethodCallListTest {
 
             int callsCount = 10000;
             for (int i = 0; i < callsCount; i++) {
-                serializedRecordedMethodCallList.addEnterMethodCall(i, method.getId(), typeResolver, new A(), new Object[]{5});
+                serializedRecordedMethodCallList.addEnterMethodCall(method.getId(), typeResolver, new A(), new Object[]{5});
                 serializedRecordedMethodCallList.addExitMethodCall(i, typeResolver, "ABC");
             }
 
@@ -53,8 +53,8 @@ class SerializedRecordedMethodCallListTest {
         Type type = typeResolver.get(A.class);
         Method method = Method.builder().id(5).name("convert").declaringType(type).build();
 
-        serializedRecordedMethodCallList.addEnterMethodCall(134, method.getId(), typeResolver, new A(), new Object[]{5});
-        serializedRecordedMethodCallList.addExitMethodCall(134, typeResolver, "ABC");
+        serializedRecordedMethodCallList.addEnterMethodCall(method.getId(), typeResolver, new A(), new Object[]{5});
+        serializedRecordedMethodCallList.addExitMethodCall(1, typeResolver, "ABC");
 
         InputBytesList read = out.flip();
         RecordedMethodCalls list = new RecordedMethodCalls(read);
@@ -63,7 +63,6 @@ class SerializedRecordedMethodCallListTest {
 
         RecordedEnterMethodCall enterCall = (RecordedEnterMethodCall) it.next();
 
-        assertEquals(134, enterCall.getCallId());
         assertEquals(5, enterCall.getMethodId());
         List<ObjectRecord> arguments = enterCall.getArguments();
         assertEquals(1, arguments.size());
@@ -72,7 +71,7 @@ class SerializedRecordedMethodCallListTest {
 
         RecordedExitMethodCall exitCall = (RecordedExitMethodCall) it.next();
 
-        assertEquals(134, exitCall.getCallId());
+        assertEquals(1, exitCall.getCallId());
     }
 
     private MemPageAllocator pageAllocator() {

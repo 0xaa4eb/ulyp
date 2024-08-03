@@ -76,10 +76,10 @@ class FilterStorageReadWriteTest {
 
         SerializedRecordedMethodCallList methodCalls1 = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
 
-        methodCalls1.addEnterMethodCall(0, method.getId(), typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(1, method.getId(), typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(2, method.getId(), typeResolver, callee, new Object[]{"ABC"});
-        methodCalls1.addEnterMethodCall(3, method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(method.getId(), typeResolver, callee, new Object[]{"ABC"});
+        methodCalls1.addEnterMethodCall(method.getId(), typeResolver, callee, new Object[]{"ABC"});
 
         SerializedRecordedMethodCallList methodCalls2 = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
         methodCalls2.addExitMethodCall(3, typeResolver, "BVBC");
