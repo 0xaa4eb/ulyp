@@ -19,9 +19,8 @@ public class RecordedEnterMethodCallSerializer {
 
     public static final byte ENTER_METHOD_CALL_ID = 1;
 
-    public void serializeEnterMethodCall(BytesOut out, int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void serializeEnterMethodCall(BytesOut out, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         out.write(ENTER_METHOD_CALL_ID);
-        out.writeVarInt(callId);
         out.writeVarInt(methodId);
         out.write(nanoTime);
         serializeArgs(out, typeResolver, args);
@@ -88,7 +87,6 @@ public class RecordedEnterMethodCallSerializer {
     }
 
     public static RecordedEnterMethodCall deserialize(BytesIn input, ReadableRepository<Integer, Type> typeResolver) {
-        int callId = input.readVarInt();
         int methodId = input.readVarInt();
         long nanoTime = input.readLong();
         int argsCount = input.readVarInt();
@@ -102,7 +100,6 @@ public class RecordedEnterMethodCallSerializer {
         ObjectRecord callee = deserializeObject(input, typeResolver);
 
         return RecordedEnterMethodCall.builder()
-                .callId(callId)
                 .methodId(methodId)
                 .nanoTime(nanoTime)
                 .callee(callee)

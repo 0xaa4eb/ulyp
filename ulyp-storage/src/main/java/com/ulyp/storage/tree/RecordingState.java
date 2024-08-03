@@ -21,6 +21,7 @@ public class RecordingState {
     @Getter
     private volatile boolean published = false;
 
+    private int nextCallId = 1;
     private long rootUniqueId = -1;
 
     public RecordingState(
@@ -41,8 +42,9 @@ public class RecordingState {
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
-            long uniqueId = BitUtil.longFromInts(metadata.getId(), (int) value.getCallId());
+
             if (value instanceof RecordedEnterMethodCall) {
+                long uniqueId = BitUtil.longFromInts(metadata.getId(), nextCallId++);
                 if (rootUniqueId < 0) {
                     rootUniqueId = uniqueId;
                 }
@@ -53,6 +55,8 @@ public class RecordingState {
                 memCallStack.push(callState);
             } else {
 
+                RecordedExitMethodCall exitMethodCall = (RecordedExitMethodCall) value;
+                long uniqueId = BitUtil.longFromInts(metadata.getId(), (int) exitMethodCall.getCallId());
                 CallRecordIndexState lastCallState = memCallStack.peek();
                 if (lastCallState == null || lastCallState.getId() != uniqueId) {
 /*

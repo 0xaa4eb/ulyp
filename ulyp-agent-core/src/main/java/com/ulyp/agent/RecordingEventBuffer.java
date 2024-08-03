@@ -66,16 +66,16 @@ public class RecordingEventBuffer {
         add(new RecordingFinishedEvent(recordingFinishedTimeMillis));
     }
 
-    public void appendMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args) {
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object[] args) {
         Object[] argsPrepared = prepareArgs(args);
 
-        events.add(new EnterMethodRecordingEvent(callId, methodId, callee, argsPrepared));
+        events.add(new EnterMethodRecordingEvent(methodId, callee, argsPrepared));
     }
 
-    public void appendMethodEnterEvent(int callId, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         Object[] argsPrepared = prepareArgs(args);
 
-        events.add(new TimestampedEnterMethodRecordingEvent(callId, methodId, callee, argsPrepared, nanoTime));
+        events.add(new TimestampedEnterMethodRecordingEvent(methodId, callee, argsPrepared, nanoTime));
     }
 
     public void appendMethodExitEvent(int callId, Object returnValue, boolean thrown) {
