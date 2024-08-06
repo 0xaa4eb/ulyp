@@ -7,16 +7,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import com.ulyp.agent.queue.RecordingEventQueue;
+import com.ulyp.core.*;
 import com.ulyp.core.metrics.NullMetrics;
 import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.AfterEach;
 
 import com.ulyp.agent.policy.EnabledRecordingPolicy;
-import com.ulyp.core.Method;
-import com.ulyp.core.MethodRepository;
-import com.ulyp.core.RecordedMethodCall;
-import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
@@ -99,7 +96,8 @@ class RecorderTest {
         // only the callId1 calls are recorded
         assertEquals(new HashSet<>(Collections.singletonList((int) callId1)), storage.getCallRecords()
             .stream()
-            .map(call -> (int) call.getCallId())
+            .filter(call -> call instanceof RecordedExitMethodCall)
+            .map(call -> (int) ((RecordedExitMethodCall) call).getCallId())
             .collect(Collectors.toSet()));
     }
 

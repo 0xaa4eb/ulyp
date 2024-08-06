@@ -42,7 +42,6 @@ public class RecordingEventProcessor {
 
         long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
         buffer.recordMethodEnter(
-                enterRecord.getCallId(),
                 typeResolver,
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
                 enterRecord.getCallee(),

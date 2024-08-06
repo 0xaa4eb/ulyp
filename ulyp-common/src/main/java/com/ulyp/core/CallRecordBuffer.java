@@ -36,9 +36,9 @@ public class CallRecordBuffer {
         return recordedCalls.bytesWritten();
     }
 
-    public void recordMethodEnter(int callId, TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
+    public void recordMethodEnter(TypeResolver typeResolver, int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         try {
-            recordedCalls.addEnterMethodCall(callId, methodId, typeResolver, callee, args, nanoTime);
+            recordedCalls.addEnterMethodCall(methodId, typeResolver, callee, args, nanoTime);
         } catch (Throwable err) {
             // catch Throwable intentionally. While recording is done anything can happen, but the app which uses ulyp should not be disrupted
             log.error("Error while recording", err);

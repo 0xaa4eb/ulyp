@@ -152,9 +152,9 @@ public class Recorder {
                 int callId = recordingState.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(callId, methodId, callee, args, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, args, System.nanoTime());
                 } else {
-                    eventBuffer.appendMethodEnterEvent(callId, methodId, callee, args);
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, args);
                 }
                 if (eventBuffer.isFull()) {
                     recordingEventQueue.enqueue(eventBuffer);

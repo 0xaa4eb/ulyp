@@ -47,13 +47,13 @@ public class SerializedRecordedMethodCallList {
         writer.commit();
     }
 
-    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
-        addEnterMethodCall(callId, methodId, typeResolver, callee, args, -1L);
+    public void addEnterMethodCall(int methodId, TypeResolver typeResolver, Object callee, Object[] args) {
+        addEnterMethodCall(methodId, typeResolver, callee, args, -1L);
     }
 
-    public void addEnterMethodCall(int callId, int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
+    public void addEnterMethodCall(int methodId, TypeResolver typeResolver, Object callee, Object[] args, long nanoTime) {
         OutputBytesList.Writer writer = out.writer();
-        RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, callId, methodId, typeResolver, callee, args, nanoTime);
+        RecordedEnterMethodCallSerializer.instance.serializeEnterMethodCall(writer, methodId, typeResolver, callee, args, nanoTime);
         writer.commit();
     }
 
