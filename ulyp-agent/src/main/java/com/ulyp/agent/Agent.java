@@ -129,7 +129,6 @@ public class Agent {
         agent.installOn(instrumentation);
     }
 
-    // TODO reduce convertions to domain model
     private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(Settings settings) {
         return ElementMatchers.isConstructor().and(
                 methodDescription -> settings.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
@@ -158,18 +157,6 @@ public class Agent {
         ElementMatcher.Junction<MethodDescription> methodMatcher = ElementMatchers.isMethod()
                 .and(ElementMatchers.not(ElementMatchers.isAbstract()))
                 .and(ElementMatchers.not(ElementMatchers.isConstructor()));
-
-        if (settings.instrumentTypeInitializers()) {
-            return methodMatcher.or(ElementMatchers.isTypeInitializer());
-        } else {
-            return methodMatcher;
-        }
-    }
-
-    private static ElementMatcher.Junction<MethodDescription> buildMethodsMatcher(Settings settings) {
-        ElementMatcher.Junction<MethodDescription> methodMatcher = ElementMatchers.isMethod()
-            .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-            .and(ElementMatchers.not(ElementMatchers.isConstructor()));
 
         if (settings.instrumentTypeInitializers()) {
             return methodMatcher.or(ElementMatchers.isTypeInitializer());
