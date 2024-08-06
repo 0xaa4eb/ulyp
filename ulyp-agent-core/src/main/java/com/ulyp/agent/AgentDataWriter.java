@@ -2,13 +2,13 @@ package com.ulyp.agent;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
@@ -31,7 +31,7 @@ public class AgentDataWriter {
         this.methodRepository = methodRepository;
     }
 
-    public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
+    public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, SerializedRecordedMethodCallList recordedCalls) {
 
         SerializedMethodList methodsList = new SerializedMethodList();
 
@@ -110,6 +110,6 @@ public class AgentDataWriter {
         }
 
         recordingDataWriter.write(recordingMetadata);
-        recordingDataWriter.write(callRecordBuffer.getRecordedCalls());
+        recordingDataWriter.write(recordedCalls);
     }
 }

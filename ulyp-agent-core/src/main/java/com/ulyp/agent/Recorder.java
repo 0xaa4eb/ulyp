@@ -62,11 +62,6 @@ public class Recorder {
         this.recordingsCounter = metrics.getOrCreateCounter("recorder.count");
     }
 
-    public boolean recordingIsActiveInCurrentThread() {
-        RecordingState recordingState = threadLocalRecordingState.get();
-        return recordingState != null && recordingState.isEnabled();
-    }
-
     public RecordingState getCurrentRecordingState() {
         RecordingState recordingState = threadLocalRecordingState.get();
         if (recordingState != null && recordingState.isEnabled()) {
@@ -103,6 +98,11 @@ public class Recorder {
         }
     }
 
+    /**
+     * Starts recording (if possible)
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
     public long startRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
             RecordingState recordingState = initializeRecordingState(methodId);
@@ -138,7 +138,7 @@ public class Recorder {
     }
 
     /**
-     * @return call token which should be passed back to method {@link Recorder#onMethodEnter} when the corresponding
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
     public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {

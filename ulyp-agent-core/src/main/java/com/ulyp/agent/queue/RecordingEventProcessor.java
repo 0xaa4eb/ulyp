@@ -1,14 +1,15 @@
 package com.ulyp.agent.queue;
 
 import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.RecordingState;
 import com.ulyp.agent.queue.events.*;
-import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
 import com.ulyp.core.mem.DirectBufMemPageAllocator;
 import com.ulyp.core.mem.MemPageAllocator;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,9 +21,10 @@ public class RecordingEventProcessor {
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
     private final MethodRepository methodRepository;
+    private int recordingId;
     private RecordingMetadata recordingMetadata;
-    private CallRecordBuffer buffer;
     private MemPageAllocator pageAllocator;
+    private SerializedRecordedMethodCallList recordedCalls;
 
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
@@ -36,14 +38,15 @@ public class RecordingEventProcessor {
     }
 
     void onEnterCallRecord(int recordingId, EnterMethodRecordingEvent enterRecord) {
-        if (buffer == null) {
-            buffer = new CallRecordBuffer(recordingId, pageAllocator);
+        if (recordedCalls == null) {
+            this.recordingId = recordingId;
+            recordedCalls = new SerializedRecordedMethodCallList(recordingId, pageAllocator);
         }
 
         long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
-        buffer.recordMethodEnter(
-                typeResolver,
+        recordedCalls.addEnterMethodCall(
                 /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
+                typeResolver,
                 enterRecord.getCallee(),
                 enterRecord.getArgs(),
                 nanoTime
@@ -52,33 +55,34 @@ public class RecordingEventProcessor {
 
     public void onRecordingFinished(RecordingFinishedEvent event) {
         recordingMetadata = recordingMetadata.withCompleteTime(event.getFinishTimeMillis());
-        agentDataWriter.write(typeResolver, recordingMetadata, this.buffer);
-        this.buffer = null;
+        agentDataWriter.write(typeResolver, recordingMetadata, recordedCalls);
+        this.recordedCalls = null;
     }
 
     void onExitCallRecord(int recordingId, ExitMethodRecordingEvent exitRecord) {
-        CallRecordBuffer currentBuffer = this.buffer;
-        if (currentBuffer == null) {
+        SerializedRecordedMethodCallList recordedCalls = this.recordedCalls;
+        if (recordedCalls == null) {
             log.debug("Call record buffer not found for recording id " + recordingId);
             return;
         }
+        int callId = exitRecord.getCallId();
         long nanoTime = (exitRecord instanceof TimestampedExitMethodRecordingEvent) ? ((TimestampedExitMethodRecordingEvent) exitRecord).getNanoTime() : -1;
         if (exitRecord.isThrown()) {
-            currentBuffer.recordMethodExit(typeResolver, null, (Throwable) exitRecord.getReturnValue(), exitRecord.getCallId(), nanoTime);
+            recordedCalls.addExitMethodThrow(callId, typeResolver, exitRecord.getReturnValue(), nanoTime);
         } else {
-            currentBuffer.recordMethodExit(typeResolver, exitRecord.getReturnValue(), null, exitRecord.getCallId(), nanoTime);
+            recordedCalls.addExitMethodCall(callId, typeResolver, exitRecord.getReturnValue(), nanoTime);
         }
 
-        if (currentBuffer.estimateBytesSize() > FLUSH_BUFFER_SIZE) {
+        if (recordedCalls.bytesWritten() > FLUSH_BUFFER_SIZE) {
 
-            if (!currentBuffer.isComplete()) {
-                this.buffer = currentBuffer.cloneWithoutData();
+            if (callId != RecordingState.ROOT_CALL_RECORDING_ID) {
+                this.recordedCalls = new SerializedRecordedMethodCallList(this.recordingId, pageAllocator);
             }
 
-            agentDataWriter.write(typeResolver, recordingMetadata, currentBuffer);
+            agentDataWriter.write(typeResolver, recordingMetadata, recordedCalls);
 
-            if (currentBuffer.isComplete()) {
-                this.buffer = null;
+            if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
+                this.recordedCalls = null;
             }
         }
     }

@@ -31,6 +31,11 @@ public abstract class ObjectRecorder {
 
     public abstract boolean supports(Class<?> type);
 
+    /**
+     * @return true if recording can be done in the background thread. This is usually the case if the supported type
+     * is immutable, or the recorder does not access object fields (i.e. only identity hash code and type id is recorded).
+     * Returns false otherwise
+     */
     public boolean supportsAsyncRecording() {
         return false;
     }
