@@ -84,6 +84,8 @@ public class AgentDataWriter {
         }
 
         recordingDataWriter.write(recordingMetadata);
-        recordingDataWriter.write(recordedCalls);
+        if (recordedCalls != null) {
+            recordingDataWriter.write(recordedCalls);
+        }
     }
 }
