@@ -14,7 +14,7 @@ public class MethodSerializer implements Serializer<Method> {
                 .id(input.readInt())
                 .returnsSomething(input.readBoolean())
                 .isStatic(input.readBoolean())
-                .isConstructor(input.readBoolean())
+                .constructor(input.readBoolean())
                 .name(input.readString())
                 .declaringType(TypeSerializer.instance.deserialize(input))
                 .build();

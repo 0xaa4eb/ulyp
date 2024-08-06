@@ -1,6 +1,8 @@
 package com.ulyp.agent;
 
+import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
+import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
@@ -88,6 +90,11 @@ public class Settings {
         String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
         String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
         StartRecordingMethods startRecordingMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
+        if (startRecordingMethods.isEmpty()) {
+            startRecordingMethods = StartRecordingMethods.of(
+                    new MethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
+            );
+        }
 
         String recordingDataFilePath = System.getProperty(FILE_PATH_PROPERTY);
         if (recordingDataFilePath == null) {

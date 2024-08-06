@@ -3,7 +3,6 @@ package com.ulyp.agent.queue;
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.RecordingState;
 import com.ulyp.agent.queue.events.*;
-import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 
@@ -20,7 +19,6 @@ public class RecordingEventProcessor {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
-    private final MethodRepository methodRepository;
     private int recordingId;
     private RecordingMetadata recordingMetadata;
     private MemPageAllocator pageAllocator;
@@ -29,7 +27,6 @@ public class RecordingEventProcessor {
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
         this.agentDataWriter = agentDataWriter;
-        this.methodRepository = agentDataWriter.getMethodRepository();
         this.pageAllocator = new DirectBufMemPageAllocator();
     }
 
@@ -45,7 +42,7 @@ public class RecordingEventProcessor {
 
         long nanoTime = (enterRecord instanceof TimestampedEnterMethodRecordingEvent) ? ((TimestampedEnterMethodRecordingEvent) enterRecord).getNanoTime() : -1;
         recordedCalls.addEnterMethodCall(
-                /* TODO remove after advice split */methodRepository.get(enterRecord.getMethodId()).getId(),
+                enterRecord.getMethodId(),
                 typeResolver,
                 enterRecord.getCallee(),
                 enterRecord.getArgs(),

@@ -36,7 +36,7 @@ class CallRecordTreeTest {
         .declaringType(type)
         .name("run")
         .id(1000)
-        .isConstructor(false)
+        .constructor(false)
         .isStatic(false)
         .returnsSomething(true)
         .build();
