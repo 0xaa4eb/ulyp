@@ -39,7 +39,7 @@ Usage is relatively simple.
     
     
 Whenever methods with name `save` and class name `**.HibernateShowcase` (inheritors including) are called, recording will start. 
-The data is dropped to the specified file.
+The data is written to the specified file which can later be opened in the UI.
 
 ## Similar projects
 
