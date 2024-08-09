@@ -4,6 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -23,6 +24,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesEmptyObjectArray.class)
                         .withMethodToRecord("accept")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
 
@@ -39,6 +41,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesStringArrayWithSomeString.class)
                         .withMethodToRecord("accept")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
 
@@ -67,6 +70,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesVariousItemsArray.class)
                         .withMethodToRecord("accept")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
 
@@ -92,6 +96,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(VaragsTestCase.class)
                         .withMethodToRecord("takeVararg")
+                        .withRecordCollections(CollectionsRecordingMode.JAVA)
         );
 
 
