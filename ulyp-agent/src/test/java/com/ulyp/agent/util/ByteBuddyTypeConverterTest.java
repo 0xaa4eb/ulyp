@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 class ByteBuddyTypeConverterTest {
 
-    private final ByteBuddyTypeConverter typeResolver = new ByteBuddyTypeConverter(true);
+    private final ByteBuddyTypeConverter typeResolver = new ByteBuddyTypeConverter();
 
     @Test
     public void testNameResolve() {

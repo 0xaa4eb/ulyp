@@ -13,16 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ByteBuddyTypeConverter {
 
-    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter(false);
-    public static final ByteBuddyTypeConverter SUPER_TYPE_DERIVING_INSTANCE = new ByteBuddyTypeConverter(true);
+    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter();
 
     private static final AtomicInteger typeIdGenerator = new AtomicInteger(0);
-
-    private final boolean deriveSuperTypes;
-
-    public ByteBuddyTypeConverter(boolean deriveSuperTypes) {
-        this.deriveSuperTypes = deriveSuperTypes;
-    }
 
     public Type convert(TypeDescription.Generic type) {
         try {
@@ -31,9 +24,7 @@ public class ByteBuddyTypeConverter {
                 .id(typeIdGenerator.incrementAndGet())
                 .name(trimGenerics(type.getActualName()));
 
-            if (deriveSuperTypes) {
-                typeBuilder.superTypeNames(deriveSuperTypes(type));
-            }
+            typeBuilder.superTypeNames(deriveSuperTypes(type));
 
             return typeBuilder.build();
         } catch (Throwable ex) {

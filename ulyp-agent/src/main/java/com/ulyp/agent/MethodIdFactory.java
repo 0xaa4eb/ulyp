@@ -1,5 +1,7 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.advice.ConstructorAdvice;
+import com.ulyp.agent.advice.MethodAdvice;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.core.Method;
@@ -13,7 +15,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
 
 /**
- * Allows wiring method id into advice classes {@link ConstructorCallRecordingAdvice} and {@link MethodCallRecordingAdvice}
+ * Allows wiring method id into advice classes {@link ConstructorAdvice} and {@link MethodAdvice}
  * <p>
  * Uses a singleton instance of {@link MethodRepository} to store methods into it.
  */
@@ -21,12 +23,9 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
     private final ForMethodIdOffsetMapping instance;
 
-    public MethodIdFactory(MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
-        ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver(
-            ByteBuddyTypeConverter.INSTANCE,
-            ByteBuddyTypeConverter.SUPER_TYPE_DERIVING_INSTANCE
-        );
-        this.instance = new ForMethodIdOffsetMapping(byteBuddyMethodResolver, methodRepository, startRecordingMethods);
+    public MethodIdFactory(MethodRepository methodRepository) {
+        ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver(ByteBuddyTypeConverter.INSTANCE);
+        this.instance = new ForMethodIdOffsetMapping(byteBuddyMethodResolver, methodRepository);
     }
 
     @Override
@@ -55,12 +54,10 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
         private final MethodRepository methodRepository;
         private final ThreadLocal<IdMapping> lastMethod = new ThreadLocal<>();
         private final ByteBuddyMethodResolver byteBuddyMethodResolver;
-        private final StartRecordingMethods startRecordingMethods;
 
-        ForMethodIdOffsetMapping(ByteBuddyMethodResolver byteBuddyMethodResolver, MethodRepository methodRepository, StartRecordingMethods startRecordingMethods) {
+        ForMethodIdOffsetMapping(ByteBuddyMethodResolver byteBuddyMethodResolver, MethodRepository methodRepository) {
             this.byteBuddyMethodResolver = byteBuddyMethodResolver;
             this.methodRepository = methodRepository;
-            this.startRecordingMethods = startRecordingMethods;
         }
 
         public Target resolve(TypeDescription instrumentedType,
@@ -80,9 +77,6 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
                 id = idMapping.methodId;
             } else {
                 Method method = byteBuddyMethodResolver.resolve(instrumentedMethod);
-                if (startRecordingMethods.shouldStartRecording(method)) {
-                    method.setShouldStartRecording(true);
-                }
                 id = methodRepository.putAndGetId(method);
                 lastMethod.set(new IdMapping(instrumentedMethod, id));
             }

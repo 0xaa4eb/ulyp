@@ -23,7 +23,6 @@ public class AgentDataWriter {
     @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
     public AgentDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
@@ -41,7 +40,7 @@ public class AgentDataWriter {
 
         for (int i = startFrom; i <= upToExcluding; i++) {
             Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
+            log.debug("Will write method {} to storage", method);
             methodsList.add(method);
         }
         if (methodsList.size() > 0) {
@@ -59,31 +58,6 @@ public class AgentDataWriter {
             }
         }
 
-        methodsList = new SerializedMethodList();
-        methods = methodRepository.getRecordingStartMethods();
-        upToExcluding = methods.size() - 1;
-        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            recordingDataWriter.write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodToRecordWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
         SerializedTypeList typesList = new SerializedTypeList();
         ConcurrentArrayList<Type> types = typeResolver.values();
         upToExcluding = types.size() - 1;
@@ -91,7 +65,7 @@ public class AgentDataWriter {
 
         for (int i = startFrom; i <= upToExcluding; i++) {
             Type type = types.get(i);
-            log.debug("Will write {} to storage", type);
+            log.debug("Will write type {} to storage", type);
             typesList.add(type);
         }
         if (typesList.size() > 0) {
@@ -110,6 +84,8 @@ public class AgentDataWriter {
         }
 
         recordingDataWriter.write(recordingMetadata);
-        recordingDataWriter.write(recordedCalls);
+        if (recordedCalls != null) {
+            recordingDataWriter.write(recordedCalls);
+        }
     }
 }
