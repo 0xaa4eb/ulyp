@@ -10,6 +10,17 @@ Ulyp instruments all third-party library classes and record their method calls i
 arguments, so that you can have a better understanding of what your code does. Instrumentation is done by [byte-buddy](https://github.com/raphw/byte-buddy) library. 
 UI is written using JavaFX.
 
+Here is the example of recorded execution of Hibernate framework
+
+    ```
+    @Transactional
+    public void save(Person person) {
+        personRepository.save(person);
+    }
+    ```
+
+![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
+
 ## Example of usage
 
 Usage is relatively simple.
@@ -21,27 +32,14 @@ Usage is relatively simple.
     ```
     -javaagent:~/Work/ulyp/ulyp-agent/build/libs/ulyp-agent-0.2.1.0.jar
     -Dulyp.methods=**.HibernateShowcase.save
+    -Dulyp.collections=JAVA
+    -Dulyp.constructors
     -Dulyp.file=/tmp/hibernate-recording.dat
     ```
     
     
 Whenever methods with name `save` and class name `**.HibernateShowcase` (inheritors including) are called, recording will start. 
 The data is dropped to the specified file.
-
-* Run your code with system properties set.
-    
-    
-    ```
-    @Transactional
-    public void save() throws Exception {
-        User user = new User("Test", "User");
-        saver.save(user);
-    }
-    ```
-
-* Run the UI and open the recording file
-
-![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
 ## Similar projects
 
@@ -78,29 +76,6 @@ values into bytes.
 Note that Ulyp doesn't fully serialize objects. Let's say, for `String` the first couple of hundred symbols are only recorded. 
 
 All data is written to file in a flat format. UI later uses [RocksDB](https://github.com/facebook/rocksdb) in order to build the index
-
-## What's not recorded
-
-Currently, none of java standard library classes are instrumented. This means calls of, let's say, `add` method of java
-collections are not recorded. However, Ulyp does record **object values** of java system library classes like strings, numbers,
-collections (more on that below) etc.
-
-Type initializers (`static` blocks) are not recorded and there are no plans to support this.
-
-Constructors are not recorded by default (which may distort the view), but may be recorded by specifying system prop `-Dulyp.constructors`. The reason why constructors
-are not recorded by default, is simply that it's not possible to instrument constructors in such fashion that any exception thrown inside the constructor
-is caught and rethrown. But this is exactly what should be done, but is not possible. Therefore, when such case happens, the corresponding recording file 
-may become invalid. In that case UI will show error, and a user should disable the option and run the code again without constructors recorded.
-
-Collections are not recorded by default but can be with system prop `-Dulyp.collections`. The available values are `JAVA` 
-and `ALL`. When set to `ALL` all collection values will be recorded (actually only first three items are recorded). This means Ulyp
-will iterate any object which implements `java.util.Collection` interface. This may be too much especially for certain programs
-where there are a lot of proxy collections (like Hibernate or Hazelcast proxy collections when iteration triggers network calls).
-Hence the `JAVA` option value which only records Java collections.
-
-Try running some code with additional properties `-Dulyp.constructors -Dulyp.collections=JAVA` to see the difference:
-
-![Hibernate call recorded with constructors](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate_constructors.png)
 
 # UI
 
