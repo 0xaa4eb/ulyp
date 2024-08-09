@@ -5,6 +5,7 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class ForkProcessBuilder {
     private Class<?> mainClassName;
     private MethodMatcher methodToRecord;
     private String excludeRecordingMethods;
+    @Getter
     private OutputFile outputFile = new OutputFile();
     private PackageList instrumentedPackages = new PackageList();
     private String excludeClassesProperty = null;
@@ -28,7 +30,6 @@ public class ForkProcessBuilder {
     private Boolean instrumentLambdas = null;
     private Boolean instrumentTypeInitializers = null;
     private Boolean recordTimestamps = null;
-    private Boolean performanceMode = null;
 
     public Class<?> getMainClassName() {
         return mainClassName;
@@ -100,11 +101,6 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public ForkProcessBuilder withPerformanceMode(boolean performanceMode) {
-        this.performanceMode = performanceMode;
-        return this;
-    }
-
     public ForkProcessBuilder withMethodToRecord(String startMethod) {
         if (mainClassName != null) {
             this.methodToRecord = new MethodMatcher(mainClassName, startMethod);
@@ -112,10 +108,6 @@ public class ForkProcessBuilder {
             throw new IllegalArgumentException("Please set main class name first");
         }
         return this;
-    }
-
-    public OutputFile getOutputFile() {
-        return outputFile;
     }
 
     public ForkProcessBuilder withOutputFile(OutputFile outputFile) {
@@ -176,9 +168,6 @@ public class ForkProcessBuilder {
         }
         if (recordTimestamps != null) {
             params.add("-D" + Settings.TIMESTAMPS_ENABLED_PROPERTY);
-        }
-        if (performanceMode != null) {
-            params.add("-D" + Settings.PERFORMANCE_PROPERTY);
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);

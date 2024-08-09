@@ -34,19 +34,6 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    void shouldNotRecordObjectArrayItemsInPerformanceMode() {
-        CallRecord root = runSubprocessAndReadFile(
-                new ForkProcessBuilder()
-                        .withMainClassName(TakesEmptyObjectArray.class)
-                        .withMethodToRecord("accept")
-                        .withPerformanceMode(true)
-        );
-
-
-        assertThat(root.getArgs().get(0), CoreMatchers.instanceOf(IdentityObjectRecord.class));
-    }
-
-    @Test
     void shouldRecordSimpleArrayWithString() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()

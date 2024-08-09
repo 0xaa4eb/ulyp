@@ -98,22 +98,17 @@ public class Settings {
                 .map(Pattern::compile)
                 .orElse(null);
 
-        boolean performanceModeEnabled = System.getProperty(PERFORMANCE_PROPERTY) != null;
+        boolean performanceModeEnabled = true;
         boolean recordConstructors = System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
         boolean instrumentLambdas = System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
         boolean instrumentTypeInitializers = System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
         boolean timestampsEnabled = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
 
-        String recordCollectionsProp;
-        if (performanceModeEnabled) {
-            recordCollectionsProp = CollectionsRecordingMode.NONE.name();
-        } else {
-            recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
-            if (recordCollectionsProp.isEmpty()) {
-                recordCollectionsProp = CollectionsRecordingMode.ALL.name();
-            }
-        }
+        String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
         CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
+        if (collectionsRecordingMode != CollectionsRecordingMode.NONE) {
+            performanceModeEnabled = false;
+        }
 
         boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
         boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;

@@ -45,20 +45,6 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
-    void shouldNotRecordCollectionsInPerformanceMode() {
-
-        CallRecord root = runSubprocessAndReadFile(
-                new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
-                        .withRecordCollections(CollectionsRecordingMode.ALL)
-                        .withPerformanceMode(true)
-        );
-
-        assertThat(root.getReturnValue(), CoreMatchers.instanceOf(IdentityObjectRecord.class));
-    }
-
-    @Test
     void shouldRecordSimpleListIfAllCollectionsAreRecorded() {
 
         CallRecord root = runSubprocessAndReadFile(

@@ -93,7 +93,7 @@ public class Recorder {
             if (recordingState.getRecordingId() > 0) {
                 recordingState.setEnabled(true);
             } else {
-                threadLocalRecordingState.set(null);
+                threadLocalRecordingState.remove();
             }
         }
     }
@@ -191,7 +191,7 @@ public class Recorder {
                     eventBuffer.appendRecordingFinishedEvent(System.currentTimeMillis());
                     recordingEventQueue.enqueue(eventBuffer);
                     recordingStateStore.remove(recordingId);
-                    threadLocalRecordingState.set(null);
+                    threadLocalRecordingState.remove();
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
                         Method method = methodRepository.get(methodId);
