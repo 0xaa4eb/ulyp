@@ -9,21 +9,17 @@ import java.util.Arrays;
  * while recording is active.
  */
 @Getter
-public class EnterMethodRecordingEvent extends AbstractEnterMethodRecordingEvent {
+public class EnterMethodNoArgsRecordingEvent extends AbstractEnterMethodRecordingEvent {
 
-    protected final Object[] args;
-
-    public EnterMethodRecordingEvent(int methodId, Object callee, Object[] args) {
+    public EnterMethodNoArgsRecordingEvent(int methodId, Object callee) {
         super(methodId, callee);
-        this.args = args;
     }
 
     @Override
     public String toString() {
-        return "EnterRecordQueueEvent{" +
+        return "EnterMethodNoArgsRecordingEvent{" +
                 "methodId=" + methodId +
                 ", callee=" + callee +
-                ", args=" + Arrays.toString(args) +
                 '}';
     }
 }

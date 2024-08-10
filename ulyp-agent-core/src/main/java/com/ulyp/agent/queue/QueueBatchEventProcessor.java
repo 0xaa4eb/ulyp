@@ -116,6 +116,8 @@ public final class QueueBatchEventProcessor implements EventProcessor {
             for (RecordingEvent event : batch.getEvents()) {
                 if (event instanceof EnterMethodRecordingEvent) {
                     processor.onEnterCallRecord(recordingId, (EnterMethodRecordingEvent) event);
+                } else if (event instanceof EnterMethodNoArgsRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodNoArgsRecordingEvent) event);
                 } else if (event instanceof ExitMethodRecordingEvent) {
                     processor.onExitCallRecord(recordingId, (ExitMethodRecordingEvent) event);
                 } else if (event instanceof RecordingStartedEvent) {

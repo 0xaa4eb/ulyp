@@ -50,6 +50,22 @@ public class RecordingEventProcessor {
         );
     }
 
+    void onEnterCallRecord(int recordingId, EnterMethodNoArgsRecordingEvent enterRecord) {
+        if (recordedCalls == null) {
+            this.recordingId = recordingId;
+            recordedCalls = new SerializedRecordedMethodCallList(recordingId, pageAllocator);
+        }
+
+        long nanoTime = (enterRecord instanceof TimestampedEnterMethodNoArgsRecordingEvent) ? ((TimestampedEnterMethodNoArgsRecordingEvent) enterRecord).getNanoTime() : -1;
+        recordedCalls.addEnterMethodCall(
+                enterRecord.getMethodId(),
+                typeResolver,
+                enterRecord.getCallee(),
+                null,
+                nanoTime
+        );
+    }
+
     public void onRecordingFinished(RecordingFinishedEvent event) {
         recordingMetadata = recordingMetadata.withCompleteTime(event.getFinishTimeMillis());
         agentDataWriter.write(typeResolver, recordingMetadata, recordedCalls);

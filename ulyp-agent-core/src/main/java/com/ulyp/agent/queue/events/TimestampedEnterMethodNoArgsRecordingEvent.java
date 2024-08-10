@@ -7,15 +7,16 @@ import java.util.Arrays;
 /**
  * A recording event which is created and stored into {@link com.ulyp.agent.RecordingEventBuffer} when a method is called
  * while recording is active.
+ * Additionally, carries nano time. This class is only used if recording of timestamps is enabled.
  */
 @Getter
-public class EnterMethodRecordingEvent extends AbstractEnterMethodRecordingEvent {
+public class TimestampedEnterMethodNoArgsRecordingEvent extends EnterMethodNoArgsRecordingEvent {
 
-    protected final Object[] args;
+    private final long nanoTime;
 
-    public EnterMethodRecordingEvent(int methodId, Object callee, Object[] args) {
+    public TimestampedEnterMethodNoArgsRecordingEvent(int methodId, Object callee, long nanoTime) {
         super(methodId, callee);
-        this.args = args;
+        this.nanoTime = nanoTime;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class EnterMethodRecordingEvent extends AbstractEnterMethodRecordingEvent
         return "EnterRecordQueueEvent{" +
                 "methodId=" + methodId +
                 ", callee=" + callee +
-                ", args=" + Arrays.toString(args) +
+                ", nanoTime=" + nanoTime +
                 '}';
     }
 }

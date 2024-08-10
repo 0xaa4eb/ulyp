@@ -3,10 +3,7 @@ package com.ulyp.agent;
 import java.lang.instrument.Instrumentation;
 import java.util.Optional;
 
-import com.ulyp.agent.advice.ConstructorAdvice;
-import com.ulyp.agent.advice.MethodAdvice;
-import com.ulyp.agent.advice.StartRecordingConstructorAdvice;
-import com.ulyp.agent.advice.StartRecordingMethodAdvice;
+import com.ulyp.agent.advice.*;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
@@ -92,14 +89,22 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildContinueRecordingMethodsMatcher(settings));
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> !x.getParameters().isEmpty()));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice0Args = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdvice0Args.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().isEmpty()));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default(new ByteBuddy().with(typeValidation))
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(startRecordingMethodAdvice).visit(methodCallAdvice));
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder
+                    .visit(methodCallAdvice0Args)
+                    .visit(startRecordingMethodAdvice)
+                    .visit(methodCallAdvice)
+            );
 
         if (settings.isInstrumentConstructorsEnabled()) {
             AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()
