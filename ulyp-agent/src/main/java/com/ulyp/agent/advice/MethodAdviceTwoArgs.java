@@ -10,7 +10,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
  *
  * This advice is for single arg methods, so there is no array allocation for arguments
  */
-public class MethodAdviceOneArg {
+public class MethodAdviceTwoArgs {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
@@ -21,13 +21,14 @@ public class MethodAdviceOneArg {
             @MethodId int methodId,
             @Advice.Local("callToken") long callToken,
             @Advice.This(optional = true) Object callee,
-            @Advice.Argument(0) Object arg) {
+            @Advice.Argument(0) Object arg1,
+            @Advice.Argument(1) Object arg2) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
             RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
             if (recordingState != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arg);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arg1, arg2);
             }
         }
     }

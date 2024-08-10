@@ -3,14 +3,14 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
+import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class RecordNestedCallsTest extends AbstractInstrumentationTest {
@@ -27,12 +27,22 @@ class RecordNestedCallsTest extends AbstractInstrumentationTest {
         assertThat(rootRecord.getArgs(), Matchers.empty());
         CallRecord nestedCallRecord = rootRecord.getChildren().get(0);
         assertThat(nestedCallRecord.getArgs(), hasItem(instanceOf(StringObjectRecord.class)));
+        CallRecord nestedCallRecord2 = nestedCallRecord.getChildren().get(0);
+        assertThat(nestedCallRecord2.getArgs(), allOf(
+                hasItem(instanceOf(StringObjectRecord.class)),
+                hasItem(instanceOf(NumberRecord.class)))
+        );
     }
 
     public static class TestCase {
 
+        public static void foo2(String text, Integer b) {
+            System.out.println(text + b);
+        }
+
         public static void foo(String text) {
             System.out.println(text);
+            foo2(text, 56);
         }
 
         public static void startRecordingFoo() {

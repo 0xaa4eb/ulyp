@@ -76,6 +76,10 @@ public class RecordingEventBuffer {
         events.add(new EnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg)));
     }
 
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2) {
+        events.add(new EnterMethodTwoArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2)));
+    }
+
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee) {
         events.add(new EnterMethodNoArgsRecordingEvent(methodId, callee));
     }
@@ -86,6 +90,10 @@ public class RecordingEventBuffer {
 
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg, long nanoTime) {
         events.add(new TimestampedEnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg), nanoTime));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2, long nanoTime) {
+        events.add(new TimestampedEnterMethodTwoArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2), nanoTime));
     }
 
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object[] args, long nanoTime) {

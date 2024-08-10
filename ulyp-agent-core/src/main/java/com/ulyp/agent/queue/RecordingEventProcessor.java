@@ -28,6 +28,7 @@ public class RecordingEventProcessor {
     private MemPageAllocator pageAllocator;
     private SerializedRecordedMethodCallList output;
     private Object[] oneArgArrayCache = new Object[1];
+    private Object[] twoArgsArrayCache = new Object[2];
 
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
@@ -64,6 +65,24 @@ public class RecordingEventProcessor {
                 oneArgArrayCache,
                 nanoTime
         );
+        oneArgArrayCache[0] = null;
+    }
+
+    void onEnterCallRecord(int recordingId, EnterMethodTwoArgsRecordingEvent enterRecord) {
+        ensureOutputInitialized(recordingId);
+
+        long nanoTime = (enterRecord instanceof TimestampedEnterMethodTwoArgsRecordingEvent) ? ((TimestampedEnterMethodTwoArgsRecordingEvent) enterRecord).getNanoTime() : -1;
+        twoArgsArrayCache[0] = enterRecord.getArg1();
+        twoArgsArrayCache[1] = enterRecord.getArg2();
+        output.addEnterMethodCall(
+                enterRecord.getMethodId(),
+                typeResolver,
+                enterRecord.getCallee(),
+                twoArgsArrayCache,
+                nanoTime
+        );
+        twoArgsArrayCache[0] = null;
+        twoArgsArrayCache[1] = null;
     }
 
     void onEnterCallRecord(int recordingId, EnterMethodNoArgsRecordingEvent enterRecord) {

@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class EnterMethodOneArgRecordingEvent extends AbstractEnterMethodRecordingEvent {
 
-    protected Object arg;
+    private Object arg;
 
     public EnterMethodOneArgRecordingEvent(int methodId, Object callee, Object arg) {
         super(methodId, callee);

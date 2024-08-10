@@ -207,6 +207,39 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
+    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object arg1, Object arg2) {
+        try {
+            if (recordingState == null || !recordingState.isEnabled()) {
+                return -1;
+            }
+
+            try {
+                recordingState.setEnabled(false);
+                int callId = recordingState.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, System.nanoTime());
+                } else {
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2);
+                }
+                if (eventBuffer.isFull()) {
+                    recordingEventQueue.enqueue(eventBuffer);
+                    eventBuffer.reset();
+                }
+                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
+            } finally {
+                recordingState.setEnabled(true);
+            }
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
+            return -1;
+        }
+    }
+
+    /**
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
     public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee) {
         try {
             if (recordingState == null || !recordingState.isEnabled()) {
