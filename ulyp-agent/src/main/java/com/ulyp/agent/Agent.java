@@ -87,11 +87,15 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> !x.getParameters().isEmpty()));
-        AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice0Args = Advice.withCustomMapping()
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() > 1));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceZeroArgs = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceNoArgs.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().isEmpty()));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceOneArg = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceOneArg.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 1));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
 
@@ -99,7 +103,8 @@ public class Agent {
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder
-                    .visit(methodCallAdvice0Args)
+                    .visit(methodCallAdviceZeroArgs)
+                    .visit(methodCallAdviceOneArg)
                     .visit(startRecordingMethodAdvice)
                     .visit(methodCallAdvice)
             );

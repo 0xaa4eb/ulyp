@@ -7,9 +7,12 @@ import lombok.Getter;
  * while recording is active.
  */
 @Getter
-public class EnterMethodNoArgsRecordingEvent extends AbstractEnterMethodRecordingEvent {
+public class EnterMethodOneArgRecordingEvent extends AbstractEnterMethodRecordingEvent {
 
-    public EnterMethodNoArgsRecordingEvent(int methodId, Object callee) {
+    protected Object arg;
+
+    public EnterMethodOneArgRecordingEvent(int methodId, Object callee, Object arg) {
         super(methodId, callee);
+        this.arg = arg;
     }
 }

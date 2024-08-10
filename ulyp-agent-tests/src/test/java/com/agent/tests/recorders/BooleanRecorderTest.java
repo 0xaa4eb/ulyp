@@ -1,11 +1,10 @@
 package com.agent.tests.recorders;
 
-import org.junit.jupiter.api.Test;
-
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.BooleanRecord;
 import com.ulyp.storage.tree.CallRecord;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

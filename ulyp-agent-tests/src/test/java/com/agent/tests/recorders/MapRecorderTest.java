@@ -2,19 +2,20 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapEntryRecord;
 import com.ulyp.core.recorders.collections.MapRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class MapRecorderTest extends AbstractInstrumentationTest {
 

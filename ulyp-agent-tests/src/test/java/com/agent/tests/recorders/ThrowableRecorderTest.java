@@ -8,7 +8,8 @@ import com.ulyp.core.recorders.ThrowableRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ThrowableRecorderTest extends AbstractInstrumentationTest {
 

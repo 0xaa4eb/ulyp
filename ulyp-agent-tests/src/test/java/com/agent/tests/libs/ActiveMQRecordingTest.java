@@ -1,21 +1,20 @@
 package com.agent.tests.libs;
 
-import javax.jms.*;
-import javax.jms.IllegalStateException;
-
-import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQTextMessage;
-
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.DebugCallRecordTreePrinter;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import javax.jms.IllegalStateException;
+import javax.jms.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 
 class ActiveMQRecordingTest extends AbstractInstrumentationTest {

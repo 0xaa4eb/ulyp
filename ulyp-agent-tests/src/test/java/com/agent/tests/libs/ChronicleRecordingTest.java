@@ -5,9 +5,8 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
-import net.openhft.chronicle.ExcerptTailer;
 import net.openhft.chronicle.ExcerptAppender;
-import org.hamcrest.MatcherAssert;
+import net.openhft.chronicle.ExcerptTailer;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static com.agent.tests.util.RecordingMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.greaterThan;
 

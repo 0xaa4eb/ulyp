@@ -1,15 +1,14 @@
 package com.agent.tests.recorders;
 
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.junit.jupiter.api.Test;
-
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.storage.tree.CallRecord;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import java.util.List;
+import java.util.function.Supplier;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 class LambdaRecordTest extends AbstractInstrumentationTest {

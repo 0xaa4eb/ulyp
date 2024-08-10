@@ -8,12 +8,12 @@ import lombok.Getter;
  * Additionally, carries nano time. This class is only used if recording of timestamps is enabled.
  */
 @Getter
-public class TimestampedEnterMethodRecordingEvent extends EnterMethodRecordingEvent {
+public class TimestampedEnterMethodOneArgRecordingEvent extends EnterMethodOneArgRecordingEvent {
 
     private final long nanoTime;
 
-    public TimestampedEnterMethodRecordingEvent(int methodId, Object callee, Object[] args, long nanoTime) {
-        super(methodId, callee, args);
+    public TimestampedEnterMethodOneArgRecordingEvent(int methodId, Object callee, Object arg, long nanoTime) {
+        super(methodId, callee, arg);
         this.nanoTime = nanoTime;
     }
 }

@@ -72,12 +72,20 @@ public class RecordingEventBuffer {
         events.add(new EnterMethodRecordingEvent(methodId, callee, argsPrepared));
     }
 
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg) {
+        events.add(new EnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg)));
+    }
+
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee) {
         events.add(new EnterMethodNoArgsRecordingEvent(methodId, callee));
     }
 
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee, long nanoTime) {
         events.add(new TimestampedEnterMethodNoArgsRecordingEvent(methodId, callee, nanoTime));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg, long nanoTime) {
+        events.add(new TimestampedEnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg), nanoTime));
     }
 
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
@@ -104,6 +112,14 @@ public class RecordingEventBuffer {
             returnValuePrepared = convert(returnValue);
         }
         return returnValuePrepared;
+    }
+
+    private Object prepareArg(Object arg) {
+        if (performanceMode) {
+            return arg;
+        } else {
+            return convert(arg);
+        }
     }
 
     private Object[] prepareArgs(Object[] args) {
