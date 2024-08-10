@@ -7,8 +7,10 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 /**
  * Advice which instructs how to instrument methods. The byte buddy library copies the bytecode of methods into
  * constructors being instrumented.
+ *
+ * This advice is for no-args methods, so there is no array allocation for arguments
  */
-public class MethodAdvice0Args {
+public class MethodAdviceNoArgs {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
@@ -24,7 +26,7 @@ public class MethodAdvice0Args {
             RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
             if (recordingState != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, null);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee);
             }
         }
     }

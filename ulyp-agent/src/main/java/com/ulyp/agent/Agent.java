@@ -7,7 +7,6 @@ import com.ulyp.agent.advice.*;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
@@ -15,7 +14,6 @@ import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.ByteBuddy;
@@ -92,7 +90,7 @@ public class Agent {
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> !x.getParameters().isEmpty()));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice0Args = Advice.withCustomMapping()
                 .bind(methodIdFactory)
-                .to(MethodAdvice0Args.class)
+                .to(MethodAdviceNoArgs.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().isEmpty()));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
