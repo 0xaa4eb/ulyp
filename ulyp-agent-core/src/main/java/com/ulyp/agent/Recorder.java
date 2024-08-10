@@ -156,10 +156,7 @@ public class Recorder {
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, args);
                 }
-                if (eventBuffer.isFull()) {
-                    recordingEventQueue.enqueue(eventBuffer);
-                    eventBuffer.reset();
-                }
+                dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
             } finally {
                 recordingState.setEnabled(true);
@@ -189,10 +186,7 @@ public class Recorder {
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg);
                 }
-                if (eventBuffer.isFull()) {
-                    recordingEventQueue.enqueue(eventBuffer);
-                    eventBuffer.reset();
-                }
+                dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
             } finally {
                 recordingState.setEnabled(true);
@@ -222,10 +216,7 @@ public class Recorder {
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2);
                 }
-                if (eventBuffer.isFull()) {
-                    recordingEventQueue.enqueue(eventBuffer);
-                    eventBuffer.reset();
-                }
+                dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
             } finally {
                 recordingState.setEnabled(true);
@@ -255,10 +246,7 @@ public class Recorder {
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee);
                 }
-                if (eventBuffer.isFull()) {
-                    recordingEventQueue.enqueue(eventBuffer);
-                    eventBuffer.reset();
-                }
+                dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
             } finally {
                 recordingState.setEnabled(true);
@@ -301,16 +289,20 @@ public class Recorder {
                         );
                     }
                 } else {
-                    if (eventBuffer.isFull()) {
-                        recordingEventQueue.enqueue(eventBuffer);
-                        eventBuffer.reset();
-                    }
+                    dropIfFull(eventBuffer);
                 }
             } finally {
                 recordingState.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
+        }
+    }
+
+    private void dropIfFull(RecordingEventBuffer eventBuffer) {
+        if (eventBuffer.isFull()) {
+            recordingEventQueue.enqueue(eventBuffer);
+            eventBuffer.reset();
         }
     }
 
