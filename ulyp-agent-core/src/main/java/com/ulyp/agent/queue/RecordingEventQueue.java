@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordingEventQueue implements AutoCloseable {
 
-    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 16 * 1024);
+    private static final int RECORDING_QUEUE_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.size", 64 * 1024);
 
     private final RecordingQueueDisruptor disruptor;
     private final ScheduledExecutorService scheduledExecutorService;
