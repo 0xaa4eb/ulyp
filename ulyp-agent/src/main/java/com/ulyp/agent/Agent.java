@@ -102,7 +102,7 @@ public class Agent {
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 2));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceThreeParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
-                .to(MethodAdviceTwoArgs.class)
+                .to(MethodAdviceThreeArgs.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 3));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
