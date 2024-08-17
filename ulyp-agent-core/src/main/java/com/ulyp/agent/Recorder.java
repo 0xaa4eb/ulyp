@@ -138,6 +138,8 @@ public class Recorder {
     }
 
     /**
+     * Specialized version of recording method enter logic for methods which have any number of parameters.
+     *
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
@@ -168,6 +170,8 @@ public class Recorder {
     }
 
     /**
+     * Specialized version of recording method enter logic for methods which accept only one parameter.
+     *
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
@@ -198,6 +202,8 @@ public class Recorder {
     }
 
     /**
+     * Specialized version of recording method enter logic for methods which accept only two parameters.
+     *
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
@@ -228,6 +234,8 @@ public class Recorder {
     }
 
     /**
+     * Specialized version of recording method enter logic for methods which accept no parameters.
+     *
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
@@ -257,6 +265,11 @@ public class Recorder {
         }
     }
 
+    /**
+     * Records method exit.
+     *
+     * @param callToken call token which was obtained by {@link Recorder#onMethodEnter} call
+     */
     public void onMethodExit(int methodId, Object result, Throwable thrown, long callToken) {
         try {
             int recordingId = recordingId(callToken);
