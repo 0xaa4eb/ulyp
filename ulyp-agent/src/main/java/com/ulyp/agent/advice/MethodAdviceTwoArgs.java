@@ -25,10 +25,10 @@ public class MethodAdviceTwoArgs {
             @Advice.Argument(1) Object arg2) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
-            RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
-            if (recordingState != null) {
+            RecordingThreadLocalContext recordingCtx = RecorderInstance.instance.getCtx();
+            if (recordingCtx != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arg1, arg2);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, callee, arg1, arg2);
             }
         }
     }

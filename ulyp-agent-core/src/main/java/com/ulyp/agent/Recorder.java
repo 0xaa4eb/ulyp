@@ -2,7 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
-import com.ulyp.agent.util.RecordingStateStore;
+import com.ulyp.agent.util.RecordingContextStore;
 import com.ulyp.core.*;
 import com.ulyp.core.metrics.Counter;
 import com.ulyp.core.metrics.Metrics;
@@ -40,8 +40,8 @@ public class Recorder {
     private final Settings settings;
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
-    private final ThreadLocal<RecordingState> threadLocalRecordingState = new ThreadLocal<>();
-    private final RecordingStateStore recordingStateStore = new RecordingStateStore();
+    private final ThreadLocal<RecordingThreadLocalContext> threadLocalRecordingCtx = new ThreadLocal<>();
+    private final RecordingContextStore recordingContextStore = new RecordingContextStore();
     private final StartRecordingPolicy startRecordingPolicy;
     @Getter
     private final RecordingEventQueue recordingEventQueue;
@@ -62,10 +62,10 @@ public class Recorder {
         this.recordingsCounter = metrics.getOrCreateCounter("recorder.count");
     }
 
-    public RecordingState getCurrentRecordingState() {
-        RecordingState recordingState = threadLocalRecordingState.get();
-        if (recordingState != null && recordingState.isEnabled()) {
-            return recordingState;
+    public RecordingThreadLocalContext getCtx() {
+        RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
+        if (recordingCtx != null && recordingCtx.isEnabled()) {
+            return recordingCtx;
         } else {
             return null;
         }
@@ -77,23 +77,23 @@ public class Recorder {
      * Works along with {@link StartRecordingPolicy} but those functionalities are used for different purposes
      */
     public void disableRecording() {
-        RecordingState recordingState = threadLocalRecordingState.get();
-        if (recordingState != null) {
-            recordingState.setEnabled(false);
+        RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
+        if (recordingCtx != null) {
+            recordingCtx.setEnabled(false);
         } else {
-            recordingState = new RecordingState();
-            recordingState.setEnabled(false);
-            threadLocalRecordingState.set(recordingState);
+            recordingCtx = new RecordingThreadLocalContext();
+            recordingCtx.setEnabled(false);
+            threadLocalRecordingCtx.set(recordingCtx);
         }
     }
 
     public void enableRecording() {
-        RecordingState recordingState = threadLocalRecordingState.get();
-        if (recordingState != null) {
-            if (recordingState.getRecordingId() > 0) {
-                recordingState.setEnabled(true);
+        RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
+        if (recordingCtx != null) {
+            if (recordingCtx.getRecordingId() > 0) {
+                recordingCtx.setEnabled(true);
             } else {
-                threadLocalRecordingState.remove();
+                threadLocalRecordingCtx.remove();
             }
         }
     }
@@ -105,36 +105,36 @@ public class Recorder {
      */
     public long startRecordingOnMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
         if (startRecordingPolicy.canStartRecording()) {
-            RecordingState recordingState = initializeRecordingState(methodId);
+            RecordingThreadLocalContext recordingCtx = initializeRecordingCtx(methodId);
 
-            return onMethodEnter(recordingState, methodId, callee, args);
+            return onMethodEnter(recordingCtx, methodId, callee, args);
         } else {
             return -1;
         }
     }
 
     @NotNull
-    private RecordingState initializeRecordingState(int methodId) {
-        RecordingState recordingState = threadLocalRecordingState.get();
-        if (recordingState == null) {
-            recordingState = new RecordingState();
-            recordingState.setEnabled(false);
-            int recordingId = recordingStateStore.add(recordingState);
+    private RecordingThreadLocalContext initializeRecordingCtx(int methodId) {
+        RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
+        if (recordingCtx == null) {
+            recordingCtx = new RecordingThreadLocalContext();
+            recordingCtx.setEnabled(false);
+            int recordingId = recordingContextStore.add(recordingCtx);
             RecordingMetadata recordingMetadata = generateRecordingMetadata(recordingId);
-            recordingState.setRecordingMetadata(recordingMetadata);
-            threadLocalRecordingState.set(recordingState);
+            recordingCtx.setRecordingMetadata(recordingMetadata);
+            threadLocalRecordingCtx.set(recordingCtx);
             RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), settings, typeResolver);
-            recordingState.setEventBuffer(recordingEventBuffer);
+            recordingCtx.setEventBuffer(recordingEventBuffer);
 
             currentRecordingSessionCount.incrementAndGet();
             if (LoggingSettings.DEBUG_ENABLED) {
                 log.debug("Started recording {} at method {}", recordingMetadata.getId(), methodRepository.get(methodId));
             }
             recordingsCounter.inc();
-            recordingState.setEnabled(true);
+            recordingCtx.setEnabled(true);
             recordingEventBuffer.appendRecordingStartedEvent(recordingMetadata);
         }
-        return recordingState;
+        return recordingCtx;
     }
 
     /**
@@ -143,25 +143,25 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object[] args) {
+    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object[] args) {
         try {
-            if (recordingState == null || !recordingState.isEnabled()) {
+            if (recordingCtx == null || !recordingCtx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingState.setEnabled(false);
-                int callId = recordingState.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                recordingCtx.setEnabled(false);
+                int callId = recordingCtx.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, args, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, args);
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
+                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
             } finally {
-                recordingState.setEnabled(true);
+                recordingCtx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -175,25 +175,25 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object arg) {
+    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg) {
         try {
-            if (recordingState == null || !recordingState.isEnabled()) {
+            if (recordingCtx == null || !recordingCtx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingState.setEnabled(false);
-                int callId = recordingState.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                recordingCtx.setEnabled(false);
+                int callId = recordingCtx.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg);
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
+                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
             } finally {
-                recordingState.setEnabled(true);
+                recordingCtx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -207,25 +207,57 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee, Object arg1, Object arg2) {
+    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg1, Object arg2) {
         try {
-            if (recordingState == null || !recordingState.isEnabled()) {
+            if (recordingCtx == null || !recordingCtx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingState.setEnabled(false);
-                int callId = recordingState.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                recordingCtx.setEnabled(false);
+                int callId = recordingCtx.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2);
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
+                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
             } finally {
-                recordingState.setEnabled(true);
+                recordingCtx.setEnabled(true);
+            }
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
+            return -1;
+        }
+    }
+
+    /**
+     * Specialized version of recording method enter logic for methods which accept only two parameters.
+     *
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
+    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg1, Object arg2, Object arg3) {
+        try {
+            if (recordingCtx == null || !recordingCtx.isEnabled()) {
+                return -1;
+            }
+
+            try {
+                recordingCtx.setEnabled(false);
+                int callId = recordingCtx.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
+                if (Settings.TIMESTAMPS_ENABLED) {
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3, System.nanoTime());
+                } else {
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3);
+                }
+                dropIfFull(eventBuffer);
+                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
+            } finally {
+                recordingCtx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -239,25 +271,25 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingState recordingState, int methodId, @Nullable Object callee) {
+    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee) {
         try {
-            if (recordingState == null || !recordingState.isEnabled()) {
+            if (recordingCtx == null || !recordingCtx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingState.setEnabled(false);
-                int callId = recordingState.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                recordingCtx.setEnabled(false);
+                int callId = recordingCtx.nextCallId();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee);
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingState.getRecordingId(), callId);
+                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
             } finally {
-                recordingState.setEnabled(true);
+                recordingCtx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -274,38 +306,38 @@ public class Recorder {
         try {
             int recordingId = recordingId(callToken);
             int callId = callId(callToken);
-            RecordingState recordingState = recordingStateStore.get(recordingId);
-            if (recordingState == null || !recordingState.isEnabled()) return;
+            RecordingThreadLocalContext recordingCtx = recordingContextStore.get(recordingId);
+            if (recordingCtx == null || !recordingCtx.isEnabled()) return;
 
             try {
-                recordingState.setEnabled(false);
+                recordingCtx.setEnabled(false);
 
-                RecordingEventBuffer eventBuffer = recordingState.getEventBuffer();
+                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (Settings.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);
                 }
 
-                if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
+                if (callId == RecordingThreadLocalContext.ROOT_CALL_RECORDING_ID) {
                     eventBuffer.appendRecordingFinishedEvent(System.currentTimeMillis());
                     recordingEventQueue.enqueue(eventBuffer);
-                    recordingStateStore.remove(recordingId);
-                    threadLocalRecordingState.remove();
+                    recordingContextStore.remove(recordingId);
+                    threadLocalRecordingCtx.remove();
                     currentRecordingSessionCount.decrementAndGet();
                     if (LoggingSettings.DEBUG_ENABLED) {
                         Method method = methodRepository.get(methodId);
                         log.debug("Finished recording {} at method {}, recorded {} calls",
-                            recordingState.getRecordingMetadata(),
+                            recordingCtx.getRecordingMetadata(),
                             method.toShortString(),
-                            recordingState.getCallId()
+                            recordingCtx.getCallId()
                         );
                     }
                 } else {
                     dropIfFull(eventBuffer);
                 }
             } finally {
-                recordingState.setEnabled(true);
+                recordingCtx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -348,11 +380,11 @@ public class Recorder {
      */
     @TestOnly
     public long onMethodEnter(int methodId, @Nullable Object callee, Object[] args) {
-        return onMethodEnter(threadLocalRecordingState.get(), methodId, callee, args);
+        return onMethodEnter(threadLocalRecordingCtx.get(), methodId, callee, args);
     }
 
     @TestOnly
-    RecordingState getRecordingState() {
-        return threadLocalRecordingState.get();
+    RecordingThreadLocalContext getRecordingCtx() {
+        return threadLocalRecordingCtx.get();
     }
 }

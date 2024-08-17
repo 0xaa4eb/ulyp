@@ -8,7 +8,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
  * Advice which instructs how to instrument methods. The byte buddy library copies the bytecode of methods into
  * constructors being instrumented.
  *
- * This advice is for single arg methods, so there is no array allocation for arguments
+ * This advice is for methods which accept one parameter
  */
 public class MethodAdviceOneArg {
 
@@ -24,10 +24,10 @@ public class MethodAdviceOneArg {
             @Advice.Argument(0) Object arg) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
-            RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
-            if (recordingState != null) {
+            RecordingThreadLocalContext recordingCtx = RecorderInstance.instance.getCtx();
+            if (recordingCtx != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, callee, arg);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, callee, arg);
             }
         }
     }

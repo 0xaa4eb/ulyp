@@ -87,19 +87,23 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() > 2));
-        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceNoArgs = Advice.withCustomMapping()
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() > 3));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceNoParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceNoArgs.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().isEmpty()));
-        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceOneArg = Advice.withCustomMapping()
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceOneParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceOneArg.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 1));
-        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceTwoArgs = Advice.withCustomMapping()
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceTwoParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceTwoArgs.class)
                 .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 2));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceThreeParams = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceTwoArgs.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 3));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
 
@@ -107,9 +111,10 @@ public class Agent {
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
             .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder
-                    .visit(methodCallAdviceNoArgs)
-                    .visit(methodCallAdviceOneArg)
-                    .visit(methodCallAdviceTwoArgs)
+                    .visit(methodCallAdviceNoParams)
+                    .visit(methodCallAdviceOneParams)
+                    .visit(methodCallAdviceTwoParams)
+                    .visit(methodCallAdviceThreeParams)
                     .visit(startRecordingMethodAdvice)
                     .visit(methodCallAdvice)
             );

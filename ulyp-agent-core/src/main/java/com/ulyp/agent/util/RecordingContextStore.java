@@ -1,38 +1,38 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.agent.RecordingState;
+import com.ulyp.agent.RecordingThreadLocalContext;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Maintains all recording states {@link RecordingState} in a simple array for fast access
+ * Maintains all recording states {@link RecordingThreadLocalContext} in a simple array for fast access
  * by recording id. The access to array is not synchronized - JVM guarantees everything is fine (no word tearing) as long as
  * different threads access their own exclusive locations.
  */
 @NotThreadSafe
-public class RecordingStateStore {
+public class RecordingContextStore {
 
     private static final int MAX_RECORDINGS = 64 * 1024;
 
-    private final RecordingState[] recordingStates = new RecordingState[MAX_RECORDINGS];
+    private final RecordingThreadLocalContext[] recordingStates = new RecordingThreadLocalContext[MAX_RECORDINGS];
     private final AtomicInteger idGenerator = new AtomicInteger(0);
 
-    public RecordingStateStore() {
+    public RecordingContextStore() {
 
     }
 
     /**
      * Atomically puts recording states and returns an index which might be used as a recording id
      */
-    public int add(RecordingState recordingState) {
+    public int add(RecordingThreadLocalContext ctx) {
         int id = generateRecordingId();
         // no synchronization and volatile writes since different thread access different array locations
-        recordingStates[id] = recordingState;
+        recordingStates[id] = ctx;
         return id;
     }
 
-    public RecordingState get(int recordingId) {
+    public RecordingThreadLocalContext get(int recordingId) {
         // no synchronization
         return recordingStates[recordingId];
     }

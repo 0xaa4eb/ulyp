@@ -25,19 +25,32 @@ class RecordNestedCallsTest extends AbstractInstrumentationTest {
 
         CallRecord rootRecord = recordingResult.getSingleRoot();
         assertThat(rootRecord.getArgs(), Matchers.empty());
+
         CallRecord nestedCallRecord = rootRecord.getChildren().get(0);
         assertThat(nestedCallRecord.getArgs(), hasItem(instanceOf(StringObjectRecord.class)));
+
         CallRecord nestedCallRecord2 = nestedCallRecord.getChildren().get(0);
         assertThat(nestedCallRecord2.getArgs(), allOf(
                 hasItem(instanceOf(StringObjectRecord.class)),
+                hasItem(instanceOf(NumberRecord.class)))
+        );
+
+        CallRecord nestedCallRecord3 = nestedCallRecord.getChildren().get(0);
+        assertThat(nestedCallRecord3.getArgs(), allOf(
+                hasItem(instanceOf(StringObjectRecord.class)),
+                hasItem(instanceOf(NumberRecord.class)),
                 hasItem(instanceOf(NumberRecord.class)))
         );
     }
 
     public static class TestCase {
 
+        public static void foo3(String text, Integer b, Long c) {
+            System.out.println(text + b + c);
+        }
+
         public static void foo2(String text, Integer b) {
-            System.out.println(text + b);
+            foo3(text, b, 5454L);
         }
 
         public static void foo(String text) {

@@ -1,7 +1,7 @@
 package com.ulyp.agent.queue;
 
 import com.ulyp.agent.AgentDataWriter;
-import com.ulyp.agent.RecordingState;
+import com.ulyp.agent.RecordingThreadLocalContext;
 import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
@@ -29,6 +29,7 @@ public class RecordingEventProcessor {
     private SerializedRecordedMethodCallList output;
     private Object[] oneArgArrayCache = new Object[1];
     private Object[] twoArgsArrayCache = new Object[2];
+    private Object[] threeArgsArrayCache = new Object[3];
 
     public RecordingEventProcessor(TypeResolver typeResolver, AgentDataWriter agentDataWriter) {
         this.typeResolver = typeResolver;
@@ -85,6 +86,25 @@ public class RecordingEventProcessor {
         twoArgsArrayCache[1] = null;
     }
 
+    public void onEnterCallRecord(int recordingId, EnterMethodThreeArgsRecordingEvent enterRecord) {
+        ensureOutputInitialized(recordingId);
+
+        long nanoTime = (enterRecord instanceof TimestampedEnterMethodThreeArgsRecordingEvent) ? ((TimestampedEnterMethodThreeArgsRecordingEvent) enterRecord).getNanoTime() : -1;
+        threeArgsArrayCache[0] = enterRecord.getArg1();
+        threeArgsArrayCache[1] = enterRecord.getArg2();
+        threeArgsArrayCache[2] = enterRecord.getArg3();
+        output.addEnterMethodCall(
+                enterRecord.getMethodId(),
+                typeResolver,
+                enterRecord.getCallee(),
+                threeArgsArrayCache,
+                nanoTime
+        );
+        threeArgsArrayCache[0] = null;
+        threeArgsArrayCache[1] = null;
+        threeArgsArrayCache[2] = null;
+    }
+
     void onEnterCallRecord(int recordingId, EnterMethodNoArgsRecordingEvent enterRecord) {
         ensureOutputInitialized(recordingId);
 
@@ -131,13 +151,13 @@ public class RecordingEventProcessor {
     private void writeOutputIfNeeded(SerializedRecordedMethodCallList recordedCalls, int callId) {
         if (recordedCalls.bytesWritten() > FLUSH_BUFFER_SIZE) {
 
-            if (callId != RecordingState.ROOT_CALL_RECORDING_ID) {
+            if (callId != RecordingThreadLocalContext.ROOT_CALL_RECORDING_ID) {
                 this.output = new SerializedRecordedMethodCallList(this.recordingId, pageAllocator);
             }
 
             agentDataWriter.write(typeResolver, recordingMetadata, recordedCalls);
 
-            if (callId == RecordingState.ROOT_CALL_RECORDING_ID) {
+            if (callId == RecordingThreadLocalContext.ROOT_CALL_RECORDING_ID) {
                 this.output = null;
             }
         }

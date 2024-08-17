@@ -122,6 +122,8 @@ public final class QueueBatchEventProcessor implements EventProcessor {
                     processor.onEnterCallRecord(recordingId, (EnterMethodOneArgRecordingEvent) event);
                 } else if (event instanceof EnterMethodTwoArgsRecordingEvent) {
                     processor.onEnterCallRecord(recordingId, (EnterMethodTwoArgsRecordingEvent) event);
+                } else if (event instanceof EnterMethodThreeArgsRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodThreeArgsRecordingEvent) event);
                 } else if (event instanceof ExitMethodRecordingEvent) {
                     processor.onExitCallRecord(recordingId, (ExitMethodRecordingEvent) event);
                 } else if (event instanceof RecordingStartedEvent) {
