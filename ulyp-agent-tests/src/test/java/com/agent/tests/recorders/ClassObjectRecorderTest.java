@@ -6,7 +6,7 @@ import com.ulyp.core.recorders.ClassObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class ClassObjectRecorderTest extends AbstractInstrumentationTest {

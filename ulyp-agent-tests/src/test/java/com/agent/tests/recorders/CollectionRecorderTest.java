@@ -2,12 +2,12 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.collections.CollectionRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class CollectionRecorderTest extends AbstractInstrumentationTest {
 

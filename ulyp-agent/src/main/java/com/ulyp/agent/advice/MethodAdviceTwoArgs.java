@@ -1,15 +1,16 @@
 package com.ulyp.agent.advice;
 
 import com.ulyp.agent.*;
-
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
 /**
  * Advice which instructs how to instrument methods. The byte buddy library copies the bytecode of methods into
  * constructors being instrumented.
+ *
+ * This advice is for single arg methods, so there is no array allocation for arguments
  */
-public class MethodAdvice {
+public class MethodAdviceTwoArgs {
 
     /**
      * @param methodId injected right into bytecode unique method id. Mapping is made by
@@ -20,13 +21,14 @@ public class MethodAdvice {
             @MethodId int methodId,
             @Advice.Local("callToken") long callToken,
             @Advice.This(optional = true) Object callee,
-            @Advice.AllArguments Object[] arguments) {
+            @Advice.Argument(0) Object arg1,
+            @Advice.Argument(1) Object arg2) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
             RecordingThreadLocalContext recordingCtx = RecorderInstance.instance.getCtx();
             if (recordingCtx != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, callee, arguments);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, callee, arg1, arg2);
             }
         }
     }

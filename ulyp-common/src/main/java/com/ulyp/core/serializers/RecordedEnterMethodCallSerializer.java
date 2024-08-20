@@ -52,6 +52,10 @@ public class RecordedEnterMethodCallSerializer {
     }
 
     private static void serializeArgs(BytesOut out, TypeResolver typeResolver, Object[] args) {
+        if (args == null) {
+            out.writeVarInt(0);
+            return;
+        }
         out.writeVarInt(args.length);
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             Object argValue = args[argIndex];

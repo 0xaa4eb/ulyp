@@ -9,15 +9,12 @@ import java.util.Arrays;
  * while recording is active.
  */
 @Getter
-public class EnterMethodRecordingEvent implements RecordingEvent {
+public class EnterMethodRecordingEvent extends AbstractEnterMethodRecordingEvent {
 
-    protected final int methodId;
-    protected final Object callee;
     protected final Object[] args;
 
     public EnterMethodRecordingEvent(int methodId, Object callee, Object[] args) {
-        this.methodId = methodId;
-        this.callee = callee;
+        super(methodId, callee);
         this.args = args;
     }
 

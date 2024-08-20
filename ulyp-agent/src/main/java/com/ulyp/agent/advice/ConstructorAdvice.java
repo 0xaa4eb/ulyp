@@ -22,10 +22,10 @@ public class ConstructorAdvice {
             @Advice.AllArguments Object[] arguments) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
-            RecordingState recordingState = RecorderInstance.instance.getCurrentRecordingState();
-            if (recordingState != null) {
+            RecordingThreadLocalContext recordingCtx = RecorderInstance.instance.getCtx();
+            if (recordingCtx != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingState, methodId, null, arguments);
+                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, null, arguments);
             }
         }
     }

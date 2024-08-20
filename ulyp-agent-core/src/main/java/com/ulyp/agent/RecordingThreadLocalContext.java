@@ -8,10 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Single state for recording session. There is only single {@link ThreadLocal#get()} call for every recorded method
+ * Thread-local context which contains all necessary information about ongoing (if any) recording session.
+ *
+ * There is only single {@link ThreadLocal#get()} call for every recorded method
  */
 @Getter
-public class RecordingState {
+public class RecordingThreadLocalContext {
 
     public static final int ROOT_CALL_RECORDING_ID = 1;
 
@@ -26,7 +28,7 @@ public class RecordingState {
     @Setter
     private RecordingEventBuffer eventBuffer;
 
-    public RecordingState() {
+    public RecordingThreadLocalContext() {
 
     }
 

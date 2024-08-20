@@ -71,7 +71,7 @@ class RecorderTest {
         recorder.onMethodExit(methodIdx, "ABC", null, callToken2);
         callRecordQueue.sync(Duration.ofSeconds(5));
 
-        assertNull(recorder.getRecordingState());
+        assertNull(recorder.getRecordingCtx());
         assertEquals(4, storage.getCallRecords().size());
     }
 
@@ -107,6 +107,6 @@ class RecorderTest {
 
         recorder.enableRecording();
 
-        assertNull(recorder.getRecordingState());
+        assertNull(recorder.getRecordingCtx());
     }
 }

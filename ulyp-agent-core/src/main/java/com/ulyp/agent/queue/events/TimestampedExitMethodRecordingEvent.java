@@ -11,14 +11,4 @@ public class TimestampedExitMethodRecordingEvent extends ExitMethodRecordingEven
         super(callId, returnValue, thrown);
         this.nanoTime = nanoTime;
     }
-
-    @Override
-    public String toString() {
-        return "ExitRecordQueueEvent{" +
-                "callId=" + callId +
-                ", returnValue=" + returnValue +
-                ", thrown=" + thrown +
-                ", nanoTime=" + nanoTime +
-                '}';
-    }
 }

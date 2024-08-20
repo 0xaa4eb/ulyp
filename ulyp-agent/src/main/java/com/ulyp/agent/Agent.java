@@ -3,14 +3,10 @@ package com.ulyp.agent;
 import java.lang.instrument.Instrumentation;
 import java.util.Optional;
 
-import com.ulyp.agent.advice.ConstructorAdvice;
-import com.ulyp.agent.advice.MethodAdvice;
-import com.ulyp.agent.advice.StartRecordingConstructorAdvice;
-import com.ulyp.agent.advice.StartRecordingMethodAdvice;
+import com.ulyp.agent.advice.*;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
@@ -18,7 +14,6 @@ import com.ulyp.core.recorders.collections.CollectionRecorder;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.ByteBuddy;
@@ -92,14 +87,37 @@ public class Agent {
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildContinueRecordingMethodsMatcher(settings));
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() > 3));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceNoParams = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceNoArgs.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().isEmpty()));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceOneParams = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceOneArg.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 1));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceTwoParams = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceTwoArgs.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 2));
+        AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceThreeParams = Advice.withCustomMapping()
+                .bind(methodIdFactory)
+                .to(MethodAdviceThreeArgs.class)
+                .on(buildContinueRecordingMethodsMatcher(settings).and(x -> x.getParameters().size() == 3));
 
         TypeValidation typeValidation = settings.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
 
         AgentBuilder.Identified.Extendable agentBuilder = new AgentBuilder.Default(new ByteBuddy().with(typeValidation))
             .ignore(ignoreMatcher)
             .type(instrumentationMatcher)
-            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder.visit(startRecordingMethodAdvice).visit(methodCallAdvice));
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder
+                    .visit(methodCallAdviceNoParams)
+                    .visit(methodCallAdviceOneParams)
+                    .visit(methodCallAdviceTwoParams)
+                    .visit(methodCallAdviceThreeParams)
+                    .visit(startRecordingMethodAdvice)
+                    .visit(methodCallAdvice)
+            );
 
         if (settings.isInstrumentConstructorsEnabled()) {
             AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()

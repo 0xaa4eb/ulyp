@@ -1,10 +1,5 @@
 package com.agent.tests.recording;
 
-import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
@@ -13,8 +8,12 @@ import com.ulyp.core.recorders.ThrowableRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.Recording;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class TypeInitializerRecordTest extends AbstractInstrumentationTest {

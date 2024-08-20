@@ -72,6 +72,38 @@ public class RecordingEventBuffer {
         events.add(new EnterMethodRecordingEvent(methodId, callee, argsPrepared));
     }
 
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg) {
+        events.add(new EnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg)));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2) {
+        events.add(new EnterMethodTwoArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2)));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2, Object arg3) {
+        events.add(new EnterMethodThreeArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2), prepareArg(arg3)));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee) {
+        events.add(new EnterMethodNoArgsRecordingEvent(methodId, callee));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, long nanoTime) {
+        events.add(new TimestampedEnterMethodNoArgsRecordingEvent(methodId, callee, nanoTime));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg, long nanoTime) {
+        events.add(new TimestampedEnterMethodOneArgRecordingEvent(methodId, callee, prepareArg(arg), nanoTime));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2, long nanoTime) {
+        events.add(new TimestampedEnterMethodTwoArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2), nanoTime));
+    }
+
+    public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object arg1, Object arg2, Object arg3, long nanoTime) {
+        events.add(new TimestampedEnterMethodThreeArgsRecordingEvent(methodId, callee, prepareArg(arg1), prepareArg(arg2), prepareArg(arg3), nanoTime));
+    }
+
     public void appendMethodEnterEvent(int methodId, @Nullable Object callee, Object[] args, long nanoTime) {
         Object[] argsPrepared = prepareArgs(args);
 
@@ -98,7 +130,18 @@ public class RecordingEventBuffer {
         return returnValuePrepared;
     }
 
+    private Object prepareArg(Object arg) {
+        if (performanceMode) {
+            return arg;
+        } else {
+            return convert(arg);
+        }
+    }
+
     private Object[] prepareArgs(Object[] args) {
+        if (args == null) {
+            return null;
+        }
         Object[] argsPrepared;
         if (performanceMode) {
             argsPrepared = args;
