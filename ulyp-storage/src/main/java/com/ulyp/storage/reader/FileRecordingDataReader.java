@@ -78,6 +78,11 @@ public class FileRecordingDataReader implements RecordingDataReader {
     }
 
     @Override
+    public long bytesAvailable() {
+        return file.length();
+    }
+
+    @Override
     public void close() throws StorageException {
         if (!closed) {
             executorService.shutdownNow();

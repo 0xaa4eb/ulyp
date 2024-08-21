@@ -16,17 +16,13 @@ public interface RecordingDataReader extends AutoCloseable {
 
     CompletableFuture<Void> submitReaderJob(RecordingDataReaderJob job);
 
-    /**
-     *
-     */
     RecordedEnterMethodCall readEnterMethodCall(long address, ReadableRepository<Integer, Type> typeRepository);
 
-    /**
-     *
-     */
     RecordedExitMethodCall readExitMethodCall(long address, ReadableRepository<Integer, Type> typeRepository);
 
     ProcessMetadata getProcessMetadata();
+
+    long bytesAvailable();
 
     void close() throws StorageException;
 }
