@@ -1,11 +1,13 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.Getter;
@@ -29,15 +31,15 @@ public class RecordingEventBuffer {
 
     @Getter
     private final int recordingId;
-    private final boolean performanceMode;
+    private final boolean alwaysPassByRef;
     private final TypeResolver typeResolver;
     @Getter
     private List<RecordingEvent> events;
     private byte[] tmpBuffer;
 
-    public RecordingEventBuffer(int recordingId, Settings settings, TypeResolver typeResolver) {
+    public RecordingEventBuffer(int recordingId, AgentOptions options, TypeResolver typeResolver) {
         this.recordingId = recordingId;
-        this.performanceMode = settings.isPerformanceModeEnabled();
+        this.alwaysPassByRef = options.getCollectionsRecordingMode().get() == CollectionsRecordingMode.NONE;
         this.typeResolver = typeResolver;
         this.events = new ArrayList<>(MAX_BUFFER_SIZE);
     }
@@ -122,7 +124,7 @@ public class RecordingEventBuffer {
 
     private Object prepareReturnValue(Object returnValue) {
         Object returnValuePrepared;
-        if (performanceMode) {
+        if (alwaysPassByRef) {
             returnValuePrepared = returnValue;
         } else {
             returnValuePrepared = convert(returnValue);
@@ -131,7 +133,7 @@ public class RecordingEventBuffer {
     }
 
     private Object prepareArg(Object arg) {
-        if (performanceMode) {
+        if (alwaysPassByRef) {
             return arg;
         } else {
             return convert(arg);
@@ -143,7 +145,7 @@ public class RecordingEventBuffer {
             return null;
         }
         Object[] argsPrepared;
-        if (performanceMode) {
+        if (alwaysPassByRef) {
             argsPrepared = args;
         } else {
             argsPrepared = convert(args);

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ObjectArrayRecorder extends ObjectRecorder {
 
-    private volatile boolean enabled = true;
+    private volatile boolean enabled = false;
 
     public ObjectArrayRecorder(byte id) {
         super(id);

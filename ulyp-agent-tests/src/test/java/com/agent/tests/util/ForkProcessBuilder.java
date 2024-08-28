@@ -1,6 +1,6 @@
 package com.agent.tests.util;
 
-import com.ulyp.agent.Settings;
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
@@ -24,7 +24,6 @@ public class ForkProcessBuilder {
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
     private String printClasses = null;
     private String logLevel = "INFO";
-    private String recordThreads;
     private Boolean agentDisabled = null;
     private Boolean recordConstructors = null;
     private Boolean instrumentLambdas = null;
@@ -125,11 +124,6 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public ForkProcessBuilder withRecordThreads(String recordThreads) {
-        this.recordThreads = recordThreads;
-        return this;
-    }
-
     public ForkProcessBuilder withSystemProp(SystemProp systemProp) {
         this.systemProps.add(systemProp);
         return this;
@@ -138,44 +132,41 @@ public class ForkProcessBuilder {
     public List<String> toCmdJavaProps() {
         List<String> params = new ArrayList<>();
 
-        params.add("-D" + Settings.PACKAGES_PROPERTY + "=" + String.join(",", instrumentedPackages));
+        params.add("-D" + AgentOptions.PACKAGES_PROPERTY + "=" + String.join(",", instrumentedPackages));
         if (!excludedFromInstrumentationPackages.isEmpty()) {
-            params.add("-D" + Settings.EXCLUDE_PACKAGES_PROPERTY + "=" + String.join(",", excludedFromInstrumentationPackages));
+            params.add("-D" + AgentOptions.EXCLUDE_PACKAGES_PROPERTY + "=" + String.join(",", excludedFromInstrumentationPackages));
         }
         if (excludeClassesProperty != null) {
-            params.add("-D" + Settings.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
+            params.add("-D" + AgentOptions.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
         }
         if (printClasses != null) {
-            params.add("-D" + Settings.PRINT_TYPES_PROPERTY + "=" + printClasses);
+            params.add("-D" + AgentOptions.PRINT_TYPES_PROPERTY + "=" + printClasses);
         }
         if (agentDisabled != null && agentDisabled) {
-            params.add("-D" + Settings.AGENT_DISABLED_PROPERTY);
+            params.add("-D" + AgentOptions.AGENT_DISABLED_PROPERTY);
         }
         if (instrumentLambdas != null) {
-            params.add("-D" + Settings.INSTRUMENT_LAMBDAS_PROPERTY);
+            params.add("-D" + AgentOptions.INSTRUMENT_LAMBDAS_PROPERTY);
         }
         if (recordConstructors != null) {
-            params.add("-D" + Settings.INSTRUMENT_CONSTRUCTORS_PROPERTY);
+            params.add("-D" + AgentOptions.INSTRUMENT_CONSTRUCTORS_PROPERTY);
         }
         if (excludeRecordingMethods != null) {
-            params.add("-D" + Settings.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
-        }
-        if (recordThreads != null) {
-            params.add("-D" + Settings.START_RECORDING_THREADS_PROPERTY + "=" + recordThreads);
+            params.add("-D" + AgentOptions.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
         }
         if (instrumentTypeInitializers != null) {
-            params.add("-D" + Settings.INSTRUMENT_TYPE_INITIALIZERS);
+            params.add("-D" + AgentOptions.INSTRUMENT_TYPE_INITIALIZERS);
         }
         if (recordTimestamps != null) {
-            params.add("-D" + Settings.TIMESTAMPS_ENABLED_PROPERTY);
+            params.add("-D" + AgentOptions.TIMESTAMPS_ENABLED_PROPERTY);
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);
-        params.add("-D" + Settings.TYPE_VALIDATION_ENABLED_PROPERTY);
+        params.add("-D" + AgentOptions.TYPE_VALIDATION_ENABLED_PROPERTY);
         params.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + logLevel);
-        params.add("-D" + Settings.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
-        params.add("-D" + Settings.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
-        params.add("-D" + Settings.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
+        params.add("-D" + AgentOptions.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
+        params.add("-D" + AgentOptions.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
+        params.add("-D" + AgentOptions.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
 
         systemProps.forEach(sysProp -> params.add(sysProp.toJavaCmdLineProp()));
 

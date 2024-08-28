@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.*;
 import com.ulyp.core.metrics.NullMetrics;
@@ -37,7 +38,7 @@ class RecorderTest {
             new NullMetrics()
     );
     private final Recorder recorder = new Recorder(
-            Settings.builder().build(),
+            AgentOptions.builder().build(),
             typeResolver,
             methodRepository,
             new EnabledRecordingPolicy(),

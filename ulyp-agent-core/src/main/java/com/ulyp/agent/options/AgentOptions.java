@@ -1,5 +1,7 @@
-package com.ulyp.agent;
+package com.ulyp.agent.options;
 
+import com.ulyp.agent.StartRecordingMethods;
+import com.ulyp.agent.policy.OverridableRecordingPolicy;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.MethodMatcher;
@@ -12,18 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Agent settings which define what packages to instrument, at which method recording should start, etc.
+ * Agent options which define what packages to instrument, at which method recording should start, etc.
  * It's only possible to set settings via JMV system properties at the time.
  */
 @Getter
 @Builder
-public class Settings {
+public class AgentOptions {
 
     public static final boolean TIMESTAMPS_ENABLED;
 
@@ -34,14 +34,12 @@ public class Settings {
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String START_RECORDING_THREADS_PROPERTY = "ulyp.threads";
     public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
-    public static final String PERFORMANCE_PROPERTY = "ulyp.performance";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
@@ -52,32 +50,59 @@ public class Settings {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
-    private final String recordingDataFilePath;
+    @Builder.Default
+    private final AgentOption<String> recordingDataFilePath = new AgentOption<>(
+            FILE_PATH_PROPERTY,
+            text -> text,
+            "Path to the file where recording data should be written"
+    );
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
     private final StartRecordingMethods startRecordingMethods;
-    private final Pattern startRecordingThreads;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
-    private final boolean instrumentConstructorsEnabled;
-    private final boolean instrumentLambdasEnabled;
-    private final boolean instrumentTypeInitializers;
-    private final String startRecordingPolicyPropertyValue;
-    private final CollectionsRecordingMode collectionsRecordingMode;
+    @Builder.Default
+    private final AgentOption<Boolean> instrumentConstructorsOption = new AgentOption<>(
+            INSTRUMENT_CONSTRUCTORS_PROPERTY,
+            new FlagParser(),
+            "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+    );
+    @Builder.Default
+    private final AgentOption<Boolean> instrumentLambdasOption = new AgentOption<>(
+            INSTRUMENT_LAMBDAS_PROPERTY,
+            new FlagParser(),
+            "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+    );
+    @Builder.Default
+    private final AgentOption<Boolean> instrumentTypeInitializers = new AgentOption<>(
+            INSTRUMENT_TYPE_INITIALIZERS,
+            new FlagParser(),
+            "(Experimental) Indicates whether type initializer blocks should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+    );
+    @Builder.Default
+    private final AgentOption<OverridableRecordingPolicy> startRecordingPolicy = new AgentOption<>(
+            START_RECORDING_POLICY_PROPERTY,
+            new RecordingPolicyParser(),
+            "The policy property which defines when any recording can start. " +
+                    "If not set, then recording can start any time. " +
+                    "Value 'delay:X' allows to set delay after which recording can start. X is specified in seconds. For example, 'delay:60'. " +
+                    "Value 'api' makes the agent behaviour controllable through remote Grpc API."
+    );
+    @Builder.Default
+    private final AgentOption<CollectionsRecordingMode> collectionsRecordingMode = new AgentOption<>(
+            RECORD_COLLECTIONS_PROPERTY,
+            CollectionsRecordingMode::valueOf,
+            "Defines if collections, maps and arrays should be recorded. Defaults to 'NONE' which allows the agent to pass all objects by reference" +
+                    " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
+                    "will record all collections (event 3rd party library collections) which might be very unpleasant, so use with care."
+    );
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
     private final boolean agentEnabled;
     private final boolean timestampsEnabled;
     private final boolean metricsEnabled;
     private final boolean typeValidationEnabled;
-    /**
-     * In performance mode collection and array recorders are disabled, and most objects are passed by reference to the
-     * background thread. This may lower performance impact on application's client threads
-     */
-    private final boolean performanceModeEnabled;
 
-    public static Settings fromSystemProperties() {
-
-        String startRecordingPolicy = System.getProperty(START_RECORDING_POLICY_PROPERTY);
+    public static AgentOptions fromSystemProperties() {
         String bindNetworkAddress = System.getProperty(BIND_NETWORK_ADDRESS);
 
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
@@ -101,21 +126,7 @@ public class Settings {
             throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
         }
 
-        Pattern recordThreads = Optional.ofNullable(System.getProperty(START_RECORDING_THREADS_PROPERTY))
-                .map(Pattern::compile)
-                .orElse(null);
-
-        boolean performanceModeEnabled = true;
-        boolean recordConstructors = System.getProperty(INSTRUMENT_CONSTRUCTORS_PROPERTY) != null;
-        boolean instrumentLambdas = System.getProperty(INSTRUMENT_LAMBDAS_PROPERTY) != null;
-        boolean instrumentTypeInitializers = System.getProperty(INSTRUMENT_TYPE_INITIALIZERS) != null;
         boolean timestampsEnabled = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
-
-        String recordCollectionsProp = System.getProperty(RECORD_COLLECTIONS_PROPERTY, CollectionsRecordingMode.NONE.name());
-        CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.valueOf(recordCollectionsProp.toUpperCase());
-        if (collectionsRecordingMode != CollectionsRecordingMode.NONE) {
-            performanceModeEnabled = false;
-        }
 
         boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
         boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;
@@ -127,25 +138,17 @@ public class Settings {
                         .map(TypeMatcher::parse)
                         .collect(Collectors.toSet());
 
-        return Settings.builder()
-                .recordingDataFilePath(recordingDataFilePath)
+        return AgentOptions.builder()
                 .instrumentatedPackages(instrumentationPackages)
                 .excludedFromInstrumentationPackages(excludedPackages)
                 .startRecordingMethods(startRecordingMethods)
-                .startRecordingThreads(recordThreads)
-                .instrumentConstructorsEnabled(recordConstructors)
-                .instrumentLambdasEnabled(instrumentLambdas)
-                .instrumentTypeInitializers(instrumentTypeInitializers)
-                .collectionsRecordingMode(collectionsRecordingMode)
                 .typesToPrint(typesToPrint)
-                .startRecordingPolicyPropertyValue(startRecordingPolicy)
                 .excludeFromInstrumentationClasses(excludeClassesFromInstrumentation)
                 .bindNetworkAddress(bindNetworkAddress)
                 .agentEnabled(agentEnabled)
                 .timestampsEnabled(timestampsEnabled)
                 .metricsEnabled(metricsEnabled)
                 .typeValidationEnabled(typeValidationEnabled)
-                .performanceModeEnabled(performanceModeEnabled)
                 .build();
     }
 
@@ -159,28 +162,29 @@ public class Settings {
         return startRecordingMethods;
     }
 
-    @Nullable
-    public Pattern getStartRecordingThreads() {
-        return startRecordingThreads;
-    }
-
-    public boolean instrumentTypeInitializers() {
-        return instrumentTypeInitializers;
-    }
-
     @Override
     public String toString() {
         return "file: " + recordingDataFilePath +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nstart recording at methods: " + startRecordingMethods +
-                (startRecordingThreads != null ? (",\nstart recording at threads: " + startRecordingThreads) : "") +
-                ",\ninstrument constructors: " + instrumentConstructorsEnabled +
-                ",\ninstrument lambdas: " + instrumentLambdasEnabled +
-                ",\nrecording policy: " + startRecordingPolicyPropertyValue +
+                ",\ninstrument constructors: " + instrumentConstructorsOption +
+                ",\ninstrument lambdas: " + instrumentLambdasOption +
                 ",\nrecord collections: " + collectionsRecordingMode +
                 ",\ntimestamps enabled: " + timestampsEnabled +
                 ",\ntype validation enabled: " + typeValidationEnabled +
                 ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
+    }
+
+    public boolean isInstrumentConstructorsEnabled() {
+        return instrumentConstructorsOption.get();
+    }
+
+    public boolean isInstrumentLambdasEnabled() {
+        return instrumentLambdasOption.get();
+    }
+
+    public boolean isInstrumentTypeInitializersEnabled() {
+        return instrumentTypeInitializers.get();
     }
 }
