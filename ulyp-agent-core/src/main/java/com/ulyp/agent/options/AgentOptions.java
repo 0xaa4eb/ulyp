@@ -8,7 +8,6 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.CommaSeparatedList;
 import com.ulyp.core.util.PackageList;
-import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
  * It's only possible to set settings via JMV system properties at the time.
  */
 @Getter
-@Builder
 public class AgentOptions {
 
     public static final boolean TIMESTAMPS_ENABLED;
@@ -50,7 +48,6 @@ public class AgentOptions {
         TIMESTAMPS_ENABLED = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
     }
 
-    @Builder.Default
     private final AgentOption<String> recordingDataFilePath = new AgentOption<>(
             FILE_PATH_PROPERTY,
             text -> text,
@@ -60,25 +57,21 @@ public class AgentOptions {
     private final PackageList excludedFromInstrumentationPackages;
     private final StartRecordingMethods startRecordingMethods;
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
-    @Builder.Default
     private final AgentOption<Boolean> instrumentConstructorsOption = new AgentOption<>(
             INSTRUMENT_CONSTRUCTORS_PROPERTY,
             new FlagParser(),
-            "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+            "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
-    @Builder.Default
     private final AgentOption<Boolean> instrumentLambdasOption = new AgentOption<>(
             INSTRUMENT_LAMBDAS_PROPERTY,
             new FlagParser(),
-            "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+            "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
-    @Builder.Default
     private final AgentOption<Boolean> instrumentTypeInitializers = new AgentOption<>(
             INSTRUMENT_TYPE_INITIALIZERS,
             new FlagParser(),
-            "(Experimental) Indicates whether type initializer blocks should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'true'"
+            "(Experimental) Indicates whether type initializers (static blocks) should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'false'"
     );
-    @Builder.Default
     private final AgentOption<OverridableRecordingPolicy> startRecordingPolicy = new AgentOption<>(
             START_RECORDING_POLICY_PROPERTY,
             new RecordingPolicyParser(),
@@ -87,7 +80,6 @@ public class AgentOptions {
                     "Value 'delay:X' allows to set delay after which recording can start. X is specified in seconds. For example, 'delay:60'. " +
                     "Value 'api' makes the agent behaviour controllable through remote Grpc API."
     );
-    @Builder.Default
     private final AgentOption<CollectionsRecordingMode> collectionsRecordingMode = new AgentOption<>(
             RECORD_COLLECTIONS_PROPERTY,
             CollectionsRecordingMode::valueOf,
@@ -97,14 +89,43 @@ public class AgentOptions {
     );
     private final Set<TypeMatcher> typesToPrint;
     private final String bindNetworkAddress;
-    private final boolean agentEnabled;
-    private final boolean timestampsEnabled;
-    private final boolean metricsEnabled;
-    private final boolean typeValidationEnabled;
+    private final AgentOption<Boolean> agentDisabled = new AgentOption<>(
+            AGENT_DISABLED_PROPERTY,
+            new FlagParser(),
+            "Allows to disable the agent altogether via single property."
+    );
+    private final AgentOption<Boolean> timestampsEnabled = new AgentOption<>(
+            TIMESTAMPS_ENABLED_PROPERTY,
+            new FlagParser(),
+            "Records timestamps spent in each method in nanoseconds. Correct values: 'true', 'false'. Defaults to 'false'"
+    );
+    private final AgentOption<Boolean> metricsEnabled = new AgentOption<>(
+            METRICS_ENABLED_PROPERTY,
+            new FlagParser(),
+            "(Experimental) Indicates if metrics are enabled. Metrics are dumped to stderr periodically. Correct values: 'true', 'false'. Defaults to 'false'"
+    );
+    private final AgentOption<Boolean> typeValidationEnabled = new AgentOption<>(
+            TYPE_VALIDATION_ENABLED_PROPERTY,
+            new FlagParser(),
+            "Byte-buddy type validation flag. Correct values: 'true', 'false'. Defaults to 'false'"
+    );
+
+    public AgentOptions(PackageList instrumentatedPackages,
+                        PackageList excludedFromInstrumentationPackages,
+                        StartRecordingMethods startRecordingMethods,
+                        List<TypeMatcher> excludeFromInstrumentationClasses,
+                        Set<TypeMatcher> typesToPrint,
+                        String bindNetworkAddress) {
+        this.instrumentatedPackages = instrumentatedPackages;
+        this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
+        this.startRecordingMethods = startRecordingMethods;
+        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
+        this.typesToPrint = typesToPrint;
+        this.bindNetworkAddress = bindNetworkAddress;
+    }
 
     public static AgentOptions fromSystemProperties() {
         String bindNetworkAddress = System.getProperty(BIND_NETWORK_ADDRESS);
-
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
         List<TypeMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
@@ -121,35 +142,20 @@ public class AgentOptions {
             );
         }
 
-        String recordingDataFilePath = System.getProperty(FILE_PATH_PROPERTY);
-        if (recordingDataFilePath == null) {
-            throw new RuntimeException("Property " + FILE_PATH_PROPERTY + " must be set");
-        }
-
-        boolean timestampsEnabled = System.getProperty(TIMESTAMPS_ENABLED_PROPERTY) != null;
-
-        boolean agentEnabled = System.getProperty(AGENT_DISABLED_PROPERTY) == null;
-        boolean metricsEnabled = System.getProperty(METRICS_ENABLED_PROPERTY) != null;
-        boolean typeValidationEnabled = System.getProperty(TYPE_VALIDATION_ENABLED_PROPERTY) != null;
-
         Set<TypeMatcher> typesToPrint =
                 CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
                         .stream()
                         .map(TypeMatcher::parse)
                         .collect(Collectors.toSet());
 
-        return AgentOptions.builder()
-                .instrumentatedPackages(instrumentationPackages)
-                .excludedFromInstrumentationPackages(excludedPackages)
-                .startRecordingMethods(startRecordingMethods)
-                .typesToPrint(typesToPrint)
-                .excludeFromInstrumentationClasses(excludeClassesFromInstrumentation)
-                .bindNetworkAddress(bindNetworkAddress)
-                .agentEnabled(agentEnabled)
-                .timestampsEnabled(timestampsEnabled)
-                .metricsEnabled(metricsEnabled)
-                .typeValidationEnabled(typeValidationEnabled)
-                .build();
+        return new AgentOptions(
+                instrumentationPackages,
+                excludedPackages,
+                startRecordingMethods,
+                excludeClassesFromInstrumentation,
+                typesToPrint,
+                bindNetworkAddress
+        );
     }
 
     @Nullable
@@ -176,6 +182,10 @@ public class AgentOptions {
                 ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 
+    public boolean isAgentEnabled() {
+        return !agentDisabled.get();
+    }
+
     public boolean isInstrumentConstructorsEnabled() {
         return instrumentConstructorsOption.get();
     }
@@ -186,5 +196,9 @@ public class AgentOptions {
 
     public boolean isInstrumentTypeInitializersEnabled() {
         return instrumentTypeInitializers.get();
+    }
+
+    public boolean isTypeValidationEnabled() {
+        return typeValidationEnabled.get();
     }
 }
