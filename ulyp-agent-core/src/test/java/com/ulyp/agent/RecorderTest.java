@@ -14,7 +14,7 @@ import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.AfterEach;
 
-import com.ulyp.agent.policy.EnabledRecordingPolicy;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
@@ -41,7 +41,7 @@ class RecorderTest {
             AgentOptions.builder().build(),
             typeResolver,
             methodRepository,
-            new EnabledRecordingPolicy(),
+            new AlwaysEnabledRecordingPolicy(),
             callRecordQueue,
             new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();

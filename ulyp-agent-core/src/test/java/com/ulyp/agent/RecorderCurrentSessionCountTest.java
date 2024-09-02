@@ -18,7 +18,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
 
 import com.ulyp.agent.log.SimpleLoggerFactory;
-import com.ulyp.agent.policy.EnabledRecordingPolicy;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
@@ -45,7 +45,7 @@ class RecorderCurrentSessionCountTest {
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
     private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
-    private final Recorder recorder = new Recorder(AgentOptions.builder().build(), typeResolver, methodRepository, new EnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
+    private final Recorder recorder = new Recorder(AgentOptions.builder().build(), typeResolver, methodRepository, new AlwaysEnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;

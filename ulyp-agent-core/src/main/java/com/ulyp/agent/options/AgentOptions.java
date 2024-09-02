@@ -1,6 +1,7 @@
 package com.ulyp.agent.options;
 
 import com.ulyp.agent.StartRecordingMethods;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.agent.policy.OverridableRecordingPolicy;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
@@ -59,21 +60,25 @@ public class AgentOptions {
     private final List<TypeMatcher> excludeFromInstrumentationClasses;
     private final AgentOption<Boolean> instrumentConstructorsOption = new AgentOption<>(
             INSTRUMENT_CONSTRUCTORS_PROPERTY,
+            false,
             new FlagParser(),
             "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentLambdasOption = new AgentOption<>(
             INSTRUMENT_LAMBDAS_PROPERTY,
+            false,
             new FlagParser(),
             "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentTypeInitializers = new AgentOption<>(
             INSTRUMENT_TYPE_INITIALIZERS,
+            false,
             new FlagParser(),
             "(Experimental) Indicates whether type initializers (static blocks) should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'false'"
     );
     private final AgentOption<OverridableRecordingPolicy> startRecordingPolicy = new AgentOption<>(
             START_RECORDING_POLICY_PROPERTY,
+            new OverridableRecordingPolicy(new AlwaysEnabledRecordingPolicy()),
             new RecordingPolicyParser(),
             "The policy property which defines when any recording can start. " +
                     "If not set, then recording can start any time. " +
@@ -91,21 +96,25 @@ public class AgentOptions {
     private final String bindNetworkAddress;
     private final AgentOption<Boolean> agentDisabled = new AgentOption<>(
             AGENT_DISABLED_PROPERTY,
+            false,
             new FlagParser(),
             "Allows to disable the agent altogether via single property."
     );
     private final AgentOption<Boolean> timestampsEnabled = new AgentOption<>(
             TIMESTAMPS_ENABLED_PROPERTY,
+            false,
             new FlagParser(),
             "Records timestamps spent in each method in nanoseconds. Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> metricsEnabled = new AgentOption<>(
             METRICS_ENABLED_PROPERTY,
+            false,
             new FlagParser(),
             "(Experimental) Indicates if metrics are enabled. Metrics are dumped to stderr periodically. Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> typeValidationEnabled = new AgentOption<>(
             TYPE_VALIDATION_ENABLED_PROPERTY,
+            false,
             new FlagParser(),
             "Byte-buddy type validation flag. Correct values: 'true', 'false'. Defaults to 'false'"
     );
