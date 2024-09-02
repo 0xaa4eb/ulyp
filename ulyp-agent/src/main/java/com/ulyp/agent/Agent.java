@@ -71,7 +71,7 @@ public class Agent {
             mapRecorder.setMode(options.getCollectionsRecordingMode().get());
 
             PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
-            toStringRecorder.addClassesToPrint(options.getTypesToPrint());
+            toStringRecorder.addTypeMatchers(options.getTypesToPrint().get());
 
             ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
             if (options.getCollectionsRecordingMode().get() != CollectionsRecordingMode.NONE) {

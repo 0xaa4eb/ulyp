@@ -13,8 +13,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -92,8 +92,21 @@ public class AgentOptions {
                     " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
                     "will record all collections (event 3rd party library collections) which might be very unpleasant, so use with care."
     );
-    private final Set<TypeMatcher> typesToPrint;
-    private final String bindNetworkAddress;
+    private final AgentOption<List<TypeMatcher>> typesToPrint = new AgentOption<>(
+            PRINT_TYPES_PROPERTY,
+            Collections.emptyList(),
+            new ListParser<>(new TypeMatcherParser()),
+            "Specifies a comma separated list of type matchers, which should be printed via toString() in the process of recording. " +
+                    "Type matcher consists of ANT package class matcher and class name matcher. Examples are: " +
+                    "1) org.springframework.** - all classes in org.springframework package.\n" +
+                    "2) **.Command - classes of any package which have either Command class name or inherit/implement any class of such name.\n" +
+                    "3) com.springframework.*.Command - combines both package and name matchers."
+    );
+    private final AgentOption<String> bindNetworkAddress = new AgentOption<>(
+            AGENT_DISABLED_PROPERTY,
+            text -> text,
+            "Network address at which GRPC API should bind"
+    );
     private final AgentOption<Boolean> agentDisabled = new AgentOption<>(
             AGENT_DISABLED_PROPERTY,
             false,
@@ -122,19 +135,14 @@ public class AgentOptions {
     public AgentOptions(PackageList instrumentatedPackages,
                         PackageList excludedFromInstrumentationPackages,
                         StartRecordingMethods startRecordingMethods,
-                        List<TypeMatcher> excludeFromInstrumentationClasses,
-                        Set<TypeMatcher> typesToPrint,
-                        String bindNetworkAddress) {
+                        List<TypeMatcher> excludeFromInstrumentationClasses) {
         this.instrumentatedPackages = instrumentatedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
         this.startRecordingMethods = startRecordingMethods;
         this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
-        this.typesToPrint = typesToPrint;
-        this.bindNetworkAddress = bindNetworkAddress;
     }
 
     public static AgentOptions fromSystemProperties() {
-        String bindNetworkAddress = System.getProperty(BIND_NETWORK_ADDRESS);
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
         List<TypeMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
@@ -151,25 +159,17 @@ public class AgentOptions {
             );
         }
 
-        Set<TypeMatcher> typesToPrint =
-                CommaSeparatedList.parse(System.getProperty(PRINT_TYPES_PROPERTY, ""))
-                        .stream()
-                        .map(TypeMatcher::parse)
-                        .collect(Collectors.toSet());
-
         return new AgentOptions(
                 instrumentationPackages,
                 excludedPackages,
                 startRecordingMethods,
-                excludeClassesFromInstrumentation,
-                typesToPrint,
-                bindNetworkAddress
+                excludeClassesFromInstrumentation
         );
     }
 
     @Nullable
     public String getBindNetworkAddress() {
-        return bindNetworkAddress;
+        return bindNetworkAddress.get();
     }
 
     @NotNull

@@ -2,7 +2,6 @@ package com.ulyp.core.recorders.collections;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +41,7 @@ class MapRecorderTest {
 
     @Test
     void test() throws Exception {
-        printingRecorder.addClassesToPrint(new HashSet<>(Arrays.asList(TypeMatcher.parse("**.XYZ"))));
+        printingRecorder.addTypeMatchers(Arrays.asList(TypeMatcher.parse("**.XYZ")));
         Map<String, XYZ> map = new HashMap<>();
         map.put("ABC", new XYZ());
         map.put("ZXC", new XYZ());
