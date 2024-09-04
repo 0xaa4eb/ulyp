@@ -13,41 +13,19 @@ import com.ulyp.core.Method;
  * <p>
  * If recording should start at any method, then *.* string should be used
  */
-public class MethodMatcher {
+public interface MethodMatcher {
 
-    private static final char SEPARATOR = '.';
-    private static final String WILDCARD = "*";
+    char MATCHER_SEPARATOR = ',';
+    char SEPARATOR = '.';
+    String WILDCARD = "*";
 
-    private final TypeMatcher typeMatcher;
-    private final String methodName;
-    private final boolean isMethodWildcard;
-
-    public MethodMatcher(Class<?> clazz, String methodName) {
-        this(TypeMatcher.parse(clazz.getName()), methodName);
-    }
-
-    public MethodMatcher(TypeMatcher typeMatcher, String methodName) {
-        this.typeMatcher = typeMatcher;
-        this.methodName = methodName;
-        this.isMethodWildcard = methodName.equals(WILDCARD);
-    }
-
-    public static MethodMatcher parse(String text) {
-        int separatorPos = text.lastIndexOf(SEPARATOR);
-        if (separatorPos < 0) {
-            throw new SettingsException("Invalid method matcher: " + text +
-                    ". It should look something like this: **.Runnable.run");
+    static MethodMatcher parse(String text) {
+        if (text.indexOf(MATCHER_SEPARATOR) >= 0) {
+            return CompoundMethodMatcher.parse(text);
+        } else {
+            return SingleMethodMatcher.parse(text);
         }
-
-        return new MethodMatcher(TypeMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));
     }
 
-    public boolean matches(Method method) {
-        return (isMethodWildcard || method.getName().equals(methodName)) && typeMatcher.matches(method.getDeclaringType());
-    }
-
-    @Override
-    public String toString() {
-        return typeMatcher + "." + methodName;
-    }
+    boolean matches(Method method);
 }

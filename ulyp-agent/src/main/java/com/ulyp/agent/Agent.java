@@ -153,25 +153,25 @@ public class Agent {
 
     private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(AgentOptions options) {
         return ElementMatchers.isConstructor().and(
-                methodDescription -> options.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
         );
     }
 
     private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingConstructorMatcher(AgentOptions options) {
         return ElementMatchers.isConstructor().and(
-                methodDescription -> !options.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> !options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
         );
     }
 
     private static ElementMatcher.Junction<MethodDescription> buildStartRecordingMethodsMatcher(AgentOptions options) {
         return basicMethodsMatcher(options).and(
-                methodDescription -> options.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
         );
     }
 
     private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingMethodsMatcher(AgentOptions options) {
         return basicMethodsMatcher(options).and(
-                methodDescription -> !options.getRecordMethodList().shouldStartRecording(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> !options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
         );
     }
 

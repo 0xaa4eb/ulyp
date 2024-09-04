@@ -5,6 +5,7 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.core.util.PackageList;
+import com.ulyp.core.util.SingleMethodMatcher;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ForkProcessBuilder {
             instrumentedPackages = new PackageList(mainClassName.getPackage().getName());
         }
         if (methodToRecord == null) {
-            this.methodToRecord = new MethodMatcher(mainClassName, "main");
+            this.methodToRecord = new SingleMethodMatcher(mainClassName, "main");
         }
         return this;
     }
@@ -102,7 +103,7 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withMethodToRecord(String startMethod) {
         if (mainClassName != null) {
-            this.methodToRecord = new MethodMatcher(mainClassName, startMethod);
+            this.methodToRecord = new SingleMethodMatcher(mainClassName, startMethod);
         } else {
             throw new IllegalArgumentException("Please set main class name first");
         }
@@ -151,9 +152,11 @@ public class ForkProcessBuilder {
         if (recordConstructors != null) {
             params.add("-D" + AgentOptions.INSTRUMENT_CONSTRUCTORS_PROPERTY);
         }
+/*
+        TODO return
         if (excludeRecordingMethods != null) {
             params.add("-D" + AgentOptions.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
-        }
+        }*/
         if (instrumentTypeInitializers != null) {
             params.add("-D" + AgentOptions.INSTRUMENT_TYPE_INITIALIZERS);
         }

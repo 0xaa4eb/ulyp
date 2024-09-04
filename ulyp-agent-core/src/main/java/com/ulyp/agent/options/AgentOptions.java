@@ -1,21 +1,16 @@
 package com.ulyp.agent.options;
 
-import com.ulyp.agent.StartRecordingMethods;
+import com.ulyp.core.util.*;
 import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.agent.policy.OverridableRecordingPolicy;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
-import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.core.util.TypeMatcher;
-import com.ulyp.core.util.CommaSeparatedList;
-import com.ulyp.core.util.PackageList;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Agent options which define what packages to instrument, at which method recording should start, etc.
@@ -31,7 +26,6 @@ public class AgentOptions {
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
-    public static final String EXCLUDE_RECORDING_METHODS_PROPERTY = "ulyp.exclude-methods";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
@@ -56,8 +50,21 @@ public class AgentOptions {
     );
     private final PackageList instrumentatedPackages;
     private final PackageList excludedFromInstrumentationPackages;
-    private final StartRecordingMethods startRecordingMethods;
-    private final List<TypeMatcher> excludeFromInstrumentationClasses;
+    private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
+            START_RECORDING_METHODS_PROPERTY,
+            new MethodMatchersParser(),
+            "Method at which start recording"
+    );
+    private final AgentOption<List<TypeMatcher>> excludeFromInstrumentationClasses = new AgentOption<>(
+            EXCLUDE_CLASSES_PROPERTY,
+            Collections.emptyList(),
+            new ListParser<>(new TypeMatcherParser()),
+            "Specifies a comma separated list of type matchers, which should be printed via toString() in the process of recording. " +
+                    "Type matcher consists of ANT package class matcher and class name matcher. Examples are: " +
+                    "1) org.springframework.** - all classes in org.springframework package.\n" +
+                    "2) **.Command - classes of any package which have either Command class name or inherit/implement any class of such name.\n" +
+                    "3) com.springframework.*.Command - combines both package and name matchers."
+    );
     private final AgentOption<Boolean> instrumentConstructorsOption = new AgentOption<>(
             INSTRUMENT_CONSTRUCTORS_PROPERTY,
             false,
@@ -133,38 +140,16 @@ public class AgentOptions {
     );
 
     public AgentOptions(PackageList instrumentatedPackages,
-                        PackageList excludedFromInstrumentationPackages,
-                        StartRecordingMethods startRecordingMethods,
-                        List<TypeMatcher> excludeFromInstrumentationClasses) {
+                        PackageList excludedFromInstrumentationPackages) {
         this.instrumentatedPackages = instrumentatedPackages;
         this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
-        this.startRecordingMethods = startRecordingMethods;
-        this.excludeFromInstrumentationClasses = excludeFromInstrumentationClasses;
     }
 
     public static AgentOptions fromSystemProperties() {
         PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
         PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
-        List<TypeMatcher> excludeClassesFromInstrumentation = CommaSeparatedList.parse(System.getProperty(EXCLUDE_CLASSES_PROPERTY, ""))
-                .stream()
-                .map(TypeMatcher::parse)
-                .collect(Collectors.toList());
 
-        String methodsToRecordRaw = System.getProperty(START_RECORDING_METHODS_PROPERTY, "");
-        String excludeMethodsToRecordRaw = System.getProperty(EXCLUDE_RECORDING_METHODS_PROPERTY, "");
-        StartRecordingMethods startRecordingMethods = StartRecordingMethods.parse(methodsToRecordRaw, excludeMethodsToRecordRaw);
-        if (startRecordingMethods.isEmpty()) {
-            startRecordingMethods = StartRecordingMethods.of(
-                    new MethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main")
-            );
-        }
-
-        return new AgentOptions(
-                instrumentationPackages,
-                excludedPackages,
-                startRecordingMethods,
-                excludeClassesFromInstrumentation
-        );
+        return new AgentOptions(instrumentationPackages, excludedPackages);
     }
 
     @Nullable
@@ -173,8 +158,13 @@ public class AgentOptions {
     }
 
     @NotNull
-    public StartRecordingMethods getRecordMethodList() {
-        return startRecordingMethods;
+    public MethodMatcher getRecordMethodList() {
+        MethodMatcher methodMatcher = startRecordingMethodMatcher.get();
+        if (methodMatcher != null) {
+            return methodMatcher;
+        } else {
+            return new SingleMethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main");
+        }
     }
 
     @Override
@@ -182,7 +172,7 @@ public class AgentOptions {
         return "file: " + recordingDataFilePath +
                 ",\npackages to instrument: " + instrumentatedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
-                ",\nstart recording at methods: " + startRecordingMethods +
+                ",\nrecording will start at methods: " + startRecordingMethodMatcher +
                 ",\ninstrument constructors: " + instrumentConstructorsOption +
                 ",\ninstrument lambdas: " + instrumentLambdasOption +
                 ",\nrecord collections: " + collectionsRecordingMode +
