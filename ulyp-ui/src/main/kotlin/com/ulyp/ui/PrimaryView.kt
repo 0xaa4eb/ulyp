@@ -2,6 +2,8 @@ package com.ulyp.ui
 
 import com.ulyp.core.exception.UlypException
 import com.ulyp.storage.tree.CallRecordTree
+import com.ulyp.storage.tree.Recording
+import com.ulyp.storage.tree.RecordingListener
 import com.ulyp.storage.util.RocksdbChecker
 import com.ulyp.ui.code.SourceCodeView
 import com.ulyp.ui.elements.controls.ControlsModalView
@@ -12,10 +14,12 @@ import com.ulyp.ui.elements.recording.tree.FileRecordingsTabName
 import com.ulyp.ui.reader.ReaderRegistry
 import com.ulyp.ui.settings.Settings
 import com.ulyp.ui.util.FxThreadExecutor
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Parent
+import javafx.scene.control.ProgressBar
 import javafx.scene.control.SplitPane
 import javafx.scene.image.Image
 import javafx.scene.layout.AnchorPane
@@ -151,12 +155,34 @@ class PrimaryView(
             errorPopup.show()
         }
 
-        callRecordTree.subscribe {
-            recording -> fileRecordingsTab.updateOrCreateRecordingTab(callRecordTree.processMetadata, recording)
-        }
+        val loadingProgressBar = ProgressBar()
+        loadingProgressBar.prefWidth = 200.0
+        fileTabPaneAnchorPane.children.add(loadingProgressBar)
+
+        callRecordTree.subscribe(
+            object : RecordingListener {
+                var prevProgress = 0.0
+
+                override fun onRecordingUpdated(recording: Recording) {
+                    fileRecordingsTab.updateOrCreateRecordingTab(callRecordTree.processMetadata, recording)
+                }
+
+                override fun onProgressUpdated(progress: Double) {
+                    // update every 5 percent at most
+                    if (progress > prevProgress + 0.05) {
+                        Platform.runLater {
+                            loadingProgressBar.progress = progress
+                        }
+                        prevProgress = progress
+                    }
+                }
+            }
+        )
 
         callRecordTree.completeFuture.exceptionally {
             FxThreadExecutor.execute {
+                loadingProgressBar.visibleProperty().set(false)
+                fileTabPaneAnchorPane.children.remove(loadingProgressBar)
                 val errorPopup = applicationContext.getBean(
                         ErrorModalView::class.java,
                         applicationContext.getBean(SceneRegistry::class.java),
@@ -166,6 +192,9 @@ class PrimaryView(
                 errorPopup.show()
             }
             null
+        }.thenAccept {
+            loadingProgressBar.visibleProperty().set(false)
+            fileTabPaneAnchorPane.children.remove(loadingProgressBar)
         }
     }
 }
