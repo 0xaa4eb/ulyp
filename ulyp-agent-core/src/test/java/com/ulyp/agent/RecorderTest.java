@@ -38,7 +38,7 @@ class RecorderTest {
             new NullMetrics()
     );
     private final Recorder recorder = new Recorder(
-            AgentOptions.builder().build(),
+            new AgentOptions(),
             typeResolver,
             methodRepository,
             new AlwaysEnabledRecordingPolicy(),
