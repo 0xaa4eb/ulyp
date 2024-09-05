@@ -106,7 +106,7 @@ public class CallRecord {
 
     public String toString() {
         return getReturnValue() + " : " +
-                getMethod().getDeclaringType().getName() +
+                getMethod().getType().getName() +
                 "." +
                 getMethod().getName() +
                 args;

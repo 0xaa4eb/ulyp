@@ -63,7 +63,12 @@ public class AgentOptions {
     private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
             START_RECORDING_METHODS_PROPERTY,
             new MethodMatchersParser(),
-            "Method at which start recording"
+            "Comma-separated list of method matchers to specify where recording should start. " +
+                    "Method matcher consists of ANT pattern type matcher concatenated with method name with '.' dot sign. \n" +
+                    "Valid ANT pattern type matchers: 'org.springframework.**.SomeType', 'org.springframework.web.DispatcherServlet'. " +
+                    "Wildcard method name '*' is also a valid option. \n" +
+                    "In order to exclude methods (i.e. recording should not start) '-' sign can be prepended to the corresponding method matcher. \n" +
+                    "Correct examples of method matchers are '**.Runnable.run' or 'org.springframework.**.Runner.*' or 'com.test.package.util.Runner.doRun'. \n"
     );
     private final AgentOption<List<TypeMatcher>> excludeFromInstrumentationClasses = new AgentOption<>(
             EXCLUDE_CLASSES_PROPERTY,

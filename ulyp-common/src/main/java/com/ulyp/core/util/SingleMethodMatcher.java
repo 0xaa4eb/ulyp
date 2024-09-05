@@ -30,10 +30,9 @@ public class SingleMethodMatcher implements MethodMatcher {
     }
 
     public static SingleMethodMatcher parse(String text) {
-        int separatorPos = text.lastIndexOf(SEPARATOR);
+        int separatorPos = text.lastIndexOf(METHOD_NAME_SEPARATOR);
         if (separatorPos < 0) {
-            throw new SettingsException("Invalid method matcher: " + text +
-                    ". It should look something like this: **.Runnable.run");
+            throw new IllegalArgumentException("Parse failed. Invalid method matcher: '" + text + "'");
         }
 
         return new SingleMethodMatcher(TypeMatcher.parse(text.substring(0, separatorPos)), text.substring(separatorPos + 1));
@@ -41,7 +40,7 @@ public class SingleMethodMatcher implements MethodMatcher {
 
     @Override
     public boolean matches(Method method) {
-        return (isMethodWildcard || method.getName().equals(methodName)) && typeMatcher.matches(method.getDeclaringType());
+        return (isMethodWildcard || method.getName().equals(methodName)) && typeMatcher.matches(method.getType());
     }
 
     @Override

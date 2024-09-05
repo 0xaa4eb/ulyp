@@ -2,13 +2,18 @@ package com.ulyp.core.util;
 
 import com.ulyp.core.Method;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 /**
- * Compound matcher which allows to specify multiple method matchers. It's usually
- * used to specify at which methods recording should start.
+ * Compound matcher which allows to specify multiple method matchers as comma separated list:
+ * **.Class1.run,**.Class2.run
+ * It's also possible to specify methods to exclude via '-' sign as follows:
+ * **.Class1.run,**.Class2.run,-**.Class3.run
+ * It's usually used to specify at which methods recording should start.
  */
 public final class CompoundMethodMatcher implements MethodMatcher {
 
@@ -21,11 +26,23 @@ public final class CompoundMethodMatcher implements MethodMatcher {
     }
 
     public static CompoundMethodMatcher parse(String methodsText) {
-        // TODO implement exclude methods
-        return new CompoundMethodMatcher(
-                CommaSeparatedList.parse(methodsText).stream().map(MethodMatcher::parse).collect(Collectors.toList()),
-                Collections.emptyList()
-        );
+        StringTokenizer stringTokenizer = new StringTokenizer(methodsText, String.valueOf(MATCHER_SEPARATOR));
+        List<MethodMatcher> matchers = new ArrayList<>();
+        List<MethodMatcher> excludeMatchers = new ArrayList<>();
+
+        while (stringTokenizer.hasMoreTokens()) {
+            String nextMatcherText = stringTokenizer.nextToken();
+            if (nextMatcherText.startsWith(EXCLUDE_METHOD_PREFIX)) {
+                excludeMatchers.add(MethodMatcher.parse(nextMatcherText.substring(EXCLUDE_METHOD_PREFIX.length())));
+            } else {
+                matchers.add(MethodMatcher.parse(nextMatcherText));
+            }
+        }
+        if (matchers.isEmpty()) {
+            throw new IllegalArgumentException("Parse failed. At least one method to match must be included. " +
+                    "Provided: '" + methodsText + "'");
+        }
+        return new CompoundMethodMatcher(matchers, excludeMatchers);
     }
 
     public static CompoundMethodMatcher of(MethodMatcher matcher) {
@@ -48,9 +65,10 @@ public final class CompoundMethodMatcher implements MethodMatcher {
 
     @Override
     public String toString() {
-        return "CompoundMethodMatcher{" +
-                "matchers=" + matchers +
-                ", excludeMatchers=" + excludeMatchers +
-                '}';
+        StringBuilder builder = new StringBuilder(matchers.stream().map(MethodMatcher::toString).collect(Collectors.joining(",")));
+        if (!excludeMatchers.isEmpty()) {
+            builder.append(",").append(excludeMatchers.stream().map(excludeMatcher -> "-" + excludeMatcher.toString()).collect(Collectors.joining(",")));
+        }
+        return builder.toString();
     }
 }

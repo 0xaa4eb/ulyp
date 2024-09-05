@@ -14,9 +14,9 @@ import java.util.List;
 public class ForkProcessBuilder {
 
     private final List<SystemProp> systemProps = new ArrayList<>();
+    @Getter
     private Class<?> mainClassName;
     private MethodMatcher methodToRecord;
-    private String excludeRecordingMethods;
     @Getter
     private OutputFile outputFile = new OutputFile();
     private List<String> instrumentedPackages = new ArrayList<>();
@@ -30,10 +30,6 @@ public class ForkProcessBuilder {
     private Boolean instrumentLambdas = null;
     private Boolean instrumentTypeInitializers = null;
     private Boolean recordTimestamps = null;
-
-    public Class<?> getMainClassName() {
-        return mainClassName;
-    }
 
     public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
         this.mainClassName = mainClassName;
@@ -63,16 +59,6 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withPrintClasses(String printClasses) {
         this.printClasses = printClasses;
-        return this;
-    }
-
-    public ForkProcessBuilder withAgentDisabled(Boolean agentDisabled) {
-        this.agentDisabled = agentDisabled;
-        return this;
-    }
-
-    public ForkProcessBuilder withExcludeStartRecordingMethods(String method) {
-        this.excludeRecordingMethods = method;
         return this;
     }
 
@@ -107,11 +93,6 @@ public class ForkProcessBuilder {
         } else {
             throw new IllegalArgumentException("Please set main class name first");
         }
-        return this;
-    }
-
-    public ForkProcessBuilder withOutputFile(OutputFile outputFile) {
-        this.outputFile = outputFile;
         return this;
     }
 
@@ -152,11 +133,6 @@ public class ForkProcessBuilder {
         if (recordConstructors != null) {
             params.add("-D" + AgentOptions.INSTRUMENT_CONSTRUCTORS_PROPERTY);
         }
-/*
-        TODO return
-        if (excludeRecordingMethods != null) {
-            params.add("-D" + AgentOptions.EXCLUDE_RECORDING_METHODS_PROPERTY + "=" + excludeRecordingMethods);
-        }*/
         if (instrumentTypeInitializers != null) {
             params.add("-D" + AgentOptions.INSTRUMENT_TYPE_INITIALIZERS);
         }

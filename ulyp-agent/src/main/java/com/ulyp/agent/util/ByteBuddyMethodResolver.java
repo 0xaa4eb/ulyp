@@ -39,7 +39,7 @@ public class ByteBuddyMethodResolver {
                 .constructor(description.isConstructor())
                 .isStatic(description.isStatic())
                 .returnsSomething(returns)
-                .declaringType(declaringType)
+                .type(declaringType)
                 .build();
 
         if (LoggingSettings.TRACE_ENABLED) {

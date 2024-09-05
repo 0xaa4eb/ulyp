@@ -25,7 +25,7 @@ class SerializedRecordedMethodCallListTest {
             SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
 
             Type type = typeResolver.get(A.class);
-            Method method = Method.builder().id(5).name("convert").declaringType(type).build();
+            Method method = Method.builder().id(5).name("convert").type(type).build();
 
             int callsCount = 10000;
             for (int i = 0; i < callsCount; i++) {
@@ -51,7 +51,7 @@ class SerializedRecordedMethodCallListTest {
         SerializedRecordedMethodCallList serializedRecordedMethodCallList = new SerializedRecordedMethodCallList(333, out);
 
         Type type = typeResolver.get(A.class);
-        Method method = Method.builder().id(5).name("convert").declaringType(type).build();
+        Method method = Method.builder().id(5).name("convert").type(type).build();
 
         serializedRecordedMethodCallList.addEnterMethodCall(method.getId(), typeResolver, new A(), new Object[]{5});
         serializedRecordedMethodCallList.addExitMethodCall(1, typeResolver, "ABC");

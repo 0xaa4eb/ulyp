@@ -16,7 +16,8 @@ import com.ulyp.core.Method;
 public interface MethodMatcher {
 
     char MATCHER_SEPARATOR = ',';
-    char SEPARATOR = '.';
+    char METHOD_NAME_SEPARATOR = '.';
+    String EXCLUDE_METHOD_PREFIX = "-";
     String WILDCARD = "*";
 
     static MethodMatcher parse(String text) {

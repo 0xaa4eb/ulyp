@@ -41,8 +41,7 @@ class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(A.class)
-                .withMethodToRecord(MethodMatcher.parse("**.A.foo,**.A.bar"))
-                .withExcludeStartRecordingMethods("**.A.foo")
+                .withMethodToRecord(MethodMatcher.parse("**.A.foo,**.A.bar,-**.A.foo"))
         );
 
         recordingResult.assertHasSingleRecording();
@@ -53,8 +52,7 @@ class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
                 .withMainClassName(A.class)
-                .withMethodToRecord(MethodMatcher.parse("**.A.*"))
-                .withExcludeStartRecordingMethods("**.A.main")
+                .withMethodToRecord(MethodMatcher.parse("**.A.*,-**.A.main"))
         );
 
         Assertions.assertEquals(2, recordingResult.recordings().size());

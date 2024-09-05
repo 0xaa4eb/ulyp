@@ -17,21 +17,73 @@ class MethodMatcherTest {
                 .build();
 
         Method method = Method.builder()
-                .declaringType(type)
+                .type(type)
                 .name("run")
                 .build();
 
         assertTrue(MethodMatcher.parse("com.pckg.SomeClass.run").matches(method));
-
         assertTrue(MethodMatcher.parse("com.pckg.SomeClass.*").matches(method));
-
         assertTrue(MethodMatcher.parse("com.*.SomeClass.run").matches(method));
-
         assertTrue(MethodMatcher.parse("*.*").matches(method));
-
         assertTrue(MethodMatcher.parse("**.*").matches(method));
-
         assertTrue(MethodMatcher.parse("**.SomeClass.run").matches(method));
+    }
+
+    @Test
+    void testExcludeMatching() {
+
+        MethodMatcher matcher = MethodMatcher.parse("**.Runner.run,-org.springframework.**.Runner.run");
+
+        assertTrue(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("com.framework.Runner").build())
+                        .name("run")
+                        .build()
+        ));
+        assertFalse(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("org.springframework.Runner").build())
+                        .name("run")
+                        .build()
+        ));
+        assertFalse(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("org.springframework.util.Runner").build())
+                        .name("run")
+                        .build()
+        ));
+    }
+
+    @Test
+    void testPrintingAndParsing() {
+        MethodMatcher matcher = MethodMatcher.parse("**.A.foo,**.B.foo,**.B.bar,-**.A.bar");
+
+        matcher = MethodMatcher.parse(matcher.toString());
+
+        assertTrue(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("com.test.A").build())
+                        .name("foo")
+                        .build()
+        ));
+        assertTrue(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("com.test.B").build())
+                        .name("foo")
+                        .build()
+        ));
+        assertTrue(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("com.test.B").build())
+                        .name("bar")
+                        .build()
+        ));
+        assertFalse(matcher.matches(
+                Method.builder()
+                        .type(Type.builder().name("com.test.A").build())
+                        .name("bar")
+                        .build()
+        ));
     }
 
     @Test
@@ -42,7 +94,7 @@ class MethodMatcherTest {
             .build();
 
         Method method = Method.builder()
-            .declaringType(type)
+            .type(type)
             .name("run")
             .build();
 
@@ -62,25 +114,25 @@ class MethodMatcherTest {
 
         assertTrue(methodMatcher.matches(
                 Method.builder()
-                        .declaringType(Type.builder().name("org.apache.kafka.Producer").build())
+                        .type(Type.builder().name("org.apache.kafka.Producer").build())
                         .name("run")
                         .build())
         );
         assertTrue(methodMatcher.matches(
                 Method.builder()
-                        .declaringType(Type.builder().name("org.apache.kafka.util.ByteUtils").build())
+                        .type(Type.builder().name("org.apache.kafka.util.ByteUtils").build())
                         .name("computeOffset")
                         .build())
         );
         assertTrue(methodMatcher.matches(
                 Method.builder()
-                        .declaringType(Type.builder().name("org.apache.kafka.Consumer").build())
+                        .type(Type.builder().name("org.apache.kafka.Consumer").build())
                         .name("poll")
                         .build())
         );
         assertFalse(methodMatcher.matches(
                 Method.builder()
-                        .declaringType(Type.builder().name("org.apache.ignite.Runner").build())
+                        .type(Type.builder().name("org.apache.ignite.Runner").build())
                         .name("run")
                         .build())
         );
