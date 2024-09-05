@@ -31,7 +31,7 @@ public final class CompoundMethodMatcher implements MethodMatcher {
         List<MethodMatcher> excludeMatchers = new ArrayList<>();
 
         while (stringTokenizer.hasMoreTokens()) {
-            String nextMatcherText = stringTokenizer.nextToken();
+            String nextMatcherText = stringTokenizer.nextToken().trim();
             if (nextMatcherText.startsWith(EXCLUDE_METHOD_PREFIX)) {
                 excludeMatchers.add(MethodMatcher.parse(nextMatcherText.substring(EXCLUDE_METHOD_PREFIX.length())));
             } else {

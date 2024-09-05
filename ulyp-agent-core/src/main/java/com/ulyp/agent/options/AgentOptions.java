@@ -59,7 +59,7 @@ public class AgentOptions {
             Collections.emptyList(),
             new ListParser<>(text -> text),
             ""
-    );;
+    );
     private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
             START_RECORDING_METHODS_PROPERTY,
             new MethodMatchersParser(),

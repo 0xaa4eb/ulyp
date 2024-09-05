@@ -20,7 +20,7 @@ public class ListParser<T> implements Parser<List<T>> {
         StringTokenizer stringTokenizer = new StringTokenizer(text, SEPARATORS, false);
         while (stringTokenizer.hasMoreTokens()) {
             String element = stringTokenizer.nextToken();
-            result.add(elementParser.parse(element));
+            result.add(elementParser.parse(element.trim()));
         }
         return result;
     }
