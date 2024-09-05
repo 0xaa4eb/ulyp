@@ -46,7 +46,7 @@ public class AgentContext {
     private final MetricDumper metricDumper;
 
     private AgentContext() {
-        this.options = AgentOptions.fromSystemProperties();
+        this.options = new AgentOptions();
         if (options.getMetricsEnabled().get()) {
             this.metrics = new MetricsImpl();
             this.metricDumper = new MetricDumper(metrics);

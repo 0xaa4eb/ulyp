@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import java.lang.instrument.Instrumentation;
+import java.util.List;
 import java.util.Optional;
 
 import com.ulyp.agent.advice.*;
@@ -16,7 +17,6 @@ import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapRecorder;
 import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-import com.ulyp.core.util.PackageList;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -43,7 +43,7 @@ public class Agent {
 
     public static void start(String args, Instrumentation instrumentation) {
 
-        AgentOptions options = AgentOptions.fromSystemProperties();
+        AgentOptions options = new AgentOptions();
         if (!options.isAgentEnabled()) {
             System.out.println("ULYP agent disabled, no code will be instrumented");
             return;
@@ -188,10 +188,10 @@ public class Agent {
     }
 
     private static ElementMatcher.Junction<TypeDescription> buildInstrumentationMatcher(AgentOptions options) {
-        PackageList instrumentatedPackages = options.getInstrumentatedPackages();
+        List<String> instrumentedPackages = options.getInstrumentedPackages().get();
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = null;
 
-        for (String packageToInstrument : instrumentatedPackages) {
+        for (String packageToInstrument : instrumentedPackages) {
             if (instrumentationMatcher == null) {
                 instrumentationMatcher = ElementMatchers.nameStartsWith(packageToInstrument);
             } else {
@@ -203,7 +203,7 @@ public class Agent {
     }
 
     private static ElementMatcher.Junction<TypeDescription> buildIgnoreMatcher(AgentOptions options) {
-        PackageList excludedPackages = options.getExcludedFromInstrumentationPackages();
+        List<String> excludedPackages = options.getExcludedFromInstrumentationPackages().get();
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = ElementMatchers.nameStartsWith("java.")
             .or(ElementMatchers.nameStartsWith("javax."))
@@ -222,7 +222,7 @@ public class Agent {
             ignoreMatcher = ignoreMatcher.or(ElementMatchers.nameStartsWith(excludedPackage));
         }
 
-        for (TypeMatcher excludeTypeMatcher : options.getExcludeFromInstrumentationClasses()) {
+        for (TypeMatcher excludeTypeMatcher : options.getExcludeFromInstrumentationClasses().get()) {
             ByteBuddyTypeConverter typeConverter = ByteBuddyTypeConverter.INSTANCE;
             ignoreMatcher = ignoreMatcher.or(
                 target -> excludeTypeMatcher.matches(typeConverter.convert(target.asGenericType()))

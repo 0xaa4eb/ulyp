@@ -4,11 +4,11 @@ import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.MethodMatcher;
-import com.ulyp.core.util.PackageList;
 import com.ulyp.core.util.SingleMethodMatcher;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ForkProcessBuilder {
@@ -19,9 +19,9 @@ public class ForkProcessBuilder {
     private String excludeRecordingMethods;
     @Getter
     private OutputFile outputFile = new OutputFile();
-    private PackageList instrumentedPackages = new PackageList();
+    private List<String> instrumentedPackages = new ArrayList<>();
     private String excludeClassesProperty = null;
-    private PackageList excludedFromInstrumentationPackages = new PackageList();
+    private List<String> excludedFromInstrumentationPackages = new ArrayList<>();
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
     private String printClasses = null;
     private String logLevel = "INFO";
@@ -38,7 +38,7 @@ public class ForkProcessBuilder {
     public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
         this.mainClassName = mainClassName;
         if (instrumentedPackages.isEmpty()) {
-            instrumentedPackages = new PackageList(mainClassName.getPackage().getName());
+            instrumentedPackages = Arrays.asList(mainClassName.getPackage().getName());
         }
         if (methodToRecord == null) {
             this.methodToRecord = new SingleMethodMatcher(mainClassName, "main");
@@ -57,7 +57,7 @@ public class ForkProcessBuilder {
     }
 
     public ForkProcessBuilder withInstrumentedPackages(String... packages) {
-        this.instrumentedPackages = new PackageList(packages);
+        this.instrumentedPackages = Arrays.asList(packages);
         return this;
     }
 
@@ -116,7 +116,7 @@ public class ForkProcessBuilder {
     }
 
     public ForkProcessBuilder withExcludedFromInstrumentationPackages(String... packages) {
-        this.excludedFromInstrumentationPackages = new PackageList(packages);
+        this.excludedFromInstrumentationPackages = Arrays.asList(packages);
         return this;
     }
 

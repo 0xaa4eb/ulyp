@@ -48,8 +48,18 @@ public class AgentOptions {
             text -> text,
             "Path to the file where recording data should be written"
     );
-    private final PackageList instrumentatedPackages;
-    private final PackageList excludedFromInstrumentationPackages;
+    private final AgentOption<List<String>> instrumentedPackages = new AgentOption<>(
+            PACKAGES_PROPERTY,
+            Collections.emptyList(),
+            new ListParser<>(text -> text),
+            ""
+    );
+    private final AgentOption<List<String>> excludedFromInstrumentationPackages = new AgentOption<>(
+            EXCLUDE_PACKAGES_PROPERTY,
+            Collections.emptyList(),
+            new ListParser<>(text -> text),
+            ""
+    );;
     private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
             START_RECORDING_METHODS_PROPERTY,
             new MethodMatchersParser(),
@@ -139,19 +149,6 @@ public class AgentOptions {
             "Byte-buddy type validation flag. Correct values: 'true', 'false'. Defaults to 'false'"
     );
 
-    public AgentOptions(PackageList instrumentatedPackages,
-                        PackageList excludedFromInstrumentationPackages) {
-        this.instrumentatedPackages = instrumentatedPackages;
-        this.excludedFromInstrumentationPackages = excludedFromInstrumentationPackages;
-    }
-
-    public static AgentOptions fromSystemProperties() {
-        PackageList instrumentationPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(PACKAGES_PROPERTY, "")));
-        PackageList excludedPackages = new PackageList(CommaSeparatedList.parse(System.getProperty(EXCLUDE_PACKAGES_PROPERTY, "")));
-
-        return new AgentOptions(instrumentationPackages, excludedPackages);
-    }
-
     @Nullable
     public String getBindNetworkAddress() {
         return bindNetworkAddress.get();
@@ -170,7 +167,7 @@ public class AgentOptions {
     @Override
     public String toString() {
         return "file: " + recordingDataFilePath +
-                ",\npackages to instrument: " + instrumentatedPackages +
+                ",\npackages to instrument: " + instrumentedPackages +
                 ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
                 ",\nrecording will start at methods: " + startRecordingMethodMatcher +
                 ",\ninstrument constructors: " + instrumentConstructorsOption +
