@@ -73,7 +73,7 @@ public class AgentOptions {
     private final AgentOption<List<TypeMatcher>> excludeFromInstrumentationClasses = new AgentOption<>(
             EXCLUDE_CLASSES_PROPERTY,
             Collections.emptyList(),
-            new ListParser<>(new TypeMatcherParser()),
+            new ListParser<>(TypeMatcher::parse),
             "Specifies a comma separated list of type matchers, which should be printed via toString() in the process of recording. " +
                     "Type matcher consists of ANT package class matcher and class name matcher. Examples are: " +
                     "1) org.springframework.** - all classes in org.springframework package.\n" +
@@ -117,7 +117,7 @@ public class AgentOptions {
     private final AgentOption<List<TypeMatcher>> typesToPrint = new AgentOption<>(
             PRINT_TYPES_PROPERTY,
             Collections.emptyList(),
-            new ListParser<>(new TypeMatcherParser()),
+            new ListParser<>(TypeMatcher::parse),
             "Specifies a comma separated list of type matchers, which should be printed via toString() in the process of recording. " +
                     "Type matcher consists of ANT package class matcher and class name matcher. Examples are: " +
                     "1) org.springframework.** - all classes in org.springframework package.\n" +
