@@ -24,8 +24,8 @@ class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTest {
 
 
         assertThat(root.getChildren(), Matchers.hasSize(2));
-        assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is(B.class.getName()));
-        assertThat(root.getChildren().get(1).getMethod().getDeclaringType().getName(), is(C.class.getName()));
+        assertThat(root.getChildren().get(0).getMethod().getType().getName(), is(B.class.getName()));
+        assertThat(root.getChildren().get(1).getMethod().getType().getName(), is(C.class.getName()));
     }
 
     @Test
@@ -38,7 +38,7 @@ class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTest {
 
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
-        assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is(C.class.getName()));
+        assertThat(root.getChildren().get(0).getMethod().getType().getName(), is(C.class.getName()));
     }
 
     @Disabled
@@ -52,7 +52,7 @@ class ExcludeClassesInstrumentationTest extends AbstractInstrumentationTest {
 
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
-        assertThat(root.getChildren().get(0).getMethod().getDeclaringType().getName(), is(C.class.getName()));
+        assertThat(root.getChildren().get(0).getMethod().getType().getName(), is(C.class.getName()));
     }
 
     @Test

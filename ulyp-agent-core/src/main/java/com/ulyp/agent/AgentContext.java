@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.bootstrap.RecordingDataWriterFactory;
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.policy.*;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.agent.util.MetricDumper;
@@ -17,9 +18,6 @@ import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.util.regex.Pattern;
-
 public class AgentContext {
 
     @Getter
@@ -27,7 +25,7 @@ public class AgentContext {
     private static volatile boolean agentLoaded = false;
 
     @Getter
-    private final Settings settings;
+    private final AgentOptions options;
     private final OverridableRecordingPolicy startRecordingPolicy;
     private final RecordingDataWriter recordingDataWriter;
     @Getter
@@ -48,16 +46,16 @@ public class AgentContext {
     private final MetricDumper metricDumper;
 
     private AgentContext() {
-        this.settings = Settings.fromSystemProperties();
-        if (settings.isMetricsEnabled()) {
+        this.options = new AgentOptions();
+        if (options.getMetricsEnabled().get()) {
             this.metrics = new MetricsImpl();
             this.metricDumper = new MetricDumper(metrics);
         } else {
             this.metrics = new NullMetrics();
             this.metricDumper = null;
         }
-        this.startRecordingPolicy = initializePolicy(settings);
-        this.recordingDataWriter = new RecordingDataWriterFactory().build(settings.getRecordingDataFilePath(), metrics);
+        this.startRecordingPolicy = options.getStartRecordingPolicy().get();
+        this.recordingDataWriter = new RecordingDataWriterFactory().build(options.getRecordingDataFilePath().get(), metrics);
         this.methodRepository = new MethodRepository();
         this.processMetadata = ProcessMetadata.builder()
                 .mainClassName(ProcessMetadata.getMainClassNameFromProp())
@@ -66,48 +64,26 @@ public class AgentContext {
                 .build();
         this.typeResolver = ReflectionBasedTypeResolver.getInstance();
         this.recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
-        this.recorder = new Recorder(settings, typeResolver, methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
+        this.recorder = new Recorder(options, typeResolver, methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
 
-        if (settings.getBindNetworkAddress() != null) {
+        if (options.getBindNetworkAddress() != null) {
             apiServer = AgentApiBootstrap.bootstrap(
                     startRecordingPolicy::setRecordingCanStart,
                     methodRepository,
                     typeResolver,
                     recordingDataWriter,
                     processMetadata,
-                    Integer.parseInt(settings.getBindNetworkAddress())
+                    Integer.parseInt(options.getBindNetworkAddress())
             );
         } else {
             apiServer = null;
         }
     }
 
-    private static OverridableRecordingPolicy initializePolicy(Settings settings) {
-        String value = settings.getStartRecordingPolicyPropertyValue();
-
-        // TODO move string checks to policy factory
-        StartRecordingPolicy policy;
-        if (value == null || value.isEmpty()) {
-            policy = new EnabledRecordingPolicy();
-        } else if (value.startsWith("delay:")) {
-            policy = new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(value.replace("delay:", ""))));
-        } else if (value.equals("api")) {
-            policy = new DisabledRecordingPolicy();
-        } else {
-            throw new IllegalArgumentException("Unsupported recording policy: " + value);
-        }
-
-        Pattern startRecordingThreads = settings.getStartRecordingThreads();
-        if (startRecordingThreads != null) {
-            policy = new ThreadNameRecordingPolicy(policy, startRecordingThreads);
-        }
-        return new OverridableRecordingPolicy(policy);
-    }
-
     public static void init() {
         ctx = new AgentContext();
 
-        if (ctx.getSettings().isAgentEnabled()) {
+        if (ctx.getOptions().isAgentEnabled()) {
             ctx.getStorageWriter().write(ctx.getProcessMetadata());
 
             Thread shutdown = new Thread(new AgentShutdownHook());

@@ -26,7 +26,7 @@ public class ReflectionBasedMethodResolver {
             .constructor(false)
             .isStatic(Modifier.isStatic(method.getModifiers()))
             .returnsSomething(returns)
-            .declaringType(declaringType)
+            .type(declaringType)
             .build();
     }
 }

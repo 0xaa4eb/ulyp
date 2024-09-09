@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.*;
 import com.ulyp.core.metrics.NullMetrics;
@@ -13,7 +14,7 @@ import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.AfterEach;
 
-import com.ulyp.agent.policy.EnabledRecordingPolicy;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
@@ -37,10 +38,10 @@ class RecorderTest {
             new NullMetrics()
     );
     private final Recorder recorder = new Recorder(
-            Settings.builder().build(),
+            new AgentOptions(),
             typeResolver,
             methodRepository,
-            new EnabledRecordingPolicy(),
+            new AlwaysEnabledRecordingPolicy(),
             callRecordQueue,
             new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();

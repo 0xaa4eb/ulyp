@@ -33,7 +33,7 @@ class CallRecordTreeTest {
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
-        .declaringType(type)
+        .type(type)
         .name("run")
         .id(1000)
         .constructor(false)

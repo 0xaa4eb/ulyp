@@ -3,7 +3,7 @@ package com.ulyp.agent.policy;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EnabledRecordingPolicy implements StartRecordingPolicy {
+public class AlwaysEnabledRecordingPolicy implements StartRecordingPolicy {
 
     @Override
     public boolean canStartRecording() {

@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.policy.StartRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.agent.util.RecordingContextStore;
@@ -37,7 +38,7 @@ public class Recorder {
     */
     public static final AtomicInteger currentRecordingSessionCount = new AtomicInteger();
 
-    private final Settings settings;
+    private final AgentOptions options;
     private final TypeResolver typeResolver;
     private final MethodRepository methodRepository;
     private final ThreadLocal<RecordingThreadLocalContext> threadLocalRecordingCtx = new ThreadLocal<>();
@@ -48,13 +49,13 @@ public class Recorder {
     private final Counter recordingsCounter;
 
     public Recorder(
-            Settings settings,
+            AgentOptions options,
             TypeResolver typeResolver,
             MethodRepository methodRepository,
             StartRecordingPolicy startRecordingPolicy,
             RecordingEventQueue recordingEventQueue,
             Metrics metrics) {
-        this.settings = settings;
+        this.options = options;
         this.typeResolver = typeResolver;
         this.methodRepository = methodRepository;
         this.recordingEventQueue = recordingEventQueue;
@@ -123,7 +124,7 @@ public class Recorder {
             RecordingMetadata recordingMetadata = generateRecordingMetadata(recordingId);
             recordingCtx.setRecordingMetadata(recordingMetadata);
             threadLocalRecordingCtx.set(recordingCtx);
-            RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), settings, typeResolver);
+            RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), options, typeResolver);
             recordingCtx.setEventBuffer(recordingEventBuffer);
 
             currentRecordingSessionCount.incrementAndGet();
@@ -153,7 +154,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, args, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, args);
@@ -185,7 +186,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg);
@@ -217,7 +218,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2);
@@ -249,7 +250,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3);
@@ -281,7 +282,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee);
@@ -313,7 +314,7 @@ public class Recorder {
                 recordingCtx.setEnabled(false);
 
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (Settings.TIMESTAMPS_ENABLED) {
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);

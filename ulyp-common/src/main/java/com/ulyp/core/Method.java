@@ -11,7 +11,7 @@ public class Method {
     @Setter
     private int id;
     private final String name;
-    private final Type declaringType;
+    private final Type type;
     private final boolean isStatic;
     private final boolean constructor;
     private final boolean returnsSomething;
@@ -25,6 +25,6 @@ public class Method {
     }
 
     public String toShortString() {
-        return declaringType.getName() + "." + name;
+        return type.getName() + "." + name;
     }
 }

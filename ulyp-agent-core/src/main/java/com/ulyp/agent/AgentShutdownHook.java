@@ -14,7 +14,7 @@ public class AgentShutdownHook implements Runnable {
     @Override
     public void run() {
         AgentContext ctx = AgentContext.getCtx();
-        if (!ctx.getSettings().isAgentEnabled()) {
+        if (!ctx.getOptions().isAgentEnabled()) {
             return;
         }
 

@@ -1,7 +1,6 @@
 package com.ulyp.core.recorders;
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 import org.agrona.concurrent.UnsafeBuffer;
 
@@ -15,7 +14,7 @@ import com.ulyp.core.util.TypeMatcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ToStringPrintingRecorderTest {
+class PrintingRecorderTest {
 
     private final UnsafeBuffer buffer = new UnsafeBuffer(new byte[16 * 1024]);
     private final BytesOut out = new BufferBytesOut(buffer);
@@ -31,7 +30,7 @@ class ToStringPrintingRecorderTest {
     @Test
     void test() throws Exception {
         PrintingRecorder recorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
-        recorder.addClassesToPrint(new HashSet<>(Arrays.asList(TypeMatcher.parse("**.X"))));
+        recorder.addTypeMatchers(Arrays.asList(TypeMatcher.parse("**.X")));
 
         recorder.write(new X(), out, typeResolver);
 

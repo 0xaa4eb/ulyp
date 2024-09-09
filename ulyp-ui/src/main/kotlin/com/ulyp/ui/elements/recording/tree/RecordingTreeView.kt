@@ -40,7 +40,7 @@ class RecordingTreeView(
                     val selectedNode = newValue as RecordedCallTreeItem?
                     if (selectedNode?.callRecord != null) {
                         val sourceCodeFuture = sourceCodeFinder.find(
-                            selectedNode.callRecord.method.declaringType.name
+                            selectedNode.callRecord.method.type.name
                         )
                         sourceCodeFuture.thenAccept { sourceCode: SourceCode? ->
                             Platform.runLater {

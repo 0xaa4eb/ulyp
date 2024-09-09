@@ -78,7 +78,7 @@ class RecordedCallTreeItem(private val recording: Recording, private val callRec
 
         text.append(callRecord.returnValue.toString())
             .append(" ")
-            .append(callRecord.method.declaringType.name)
+            .append(callRecord.method.type.name)
             .append(".")
             .append(callRecord.method.name)
             .append(" (")
