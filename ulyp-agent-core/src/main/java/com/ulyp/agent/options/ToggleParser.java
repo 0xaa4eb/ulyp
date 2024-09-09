@@ -1,6 +1,6 @@
 package com.ulyp.agent.options;
 
-public class FlagParser implements Parser<Boolean> {
+public class ToggleParser implements Parser<Boolean> {
 
     @Override
     public Boolean parse(String text) {

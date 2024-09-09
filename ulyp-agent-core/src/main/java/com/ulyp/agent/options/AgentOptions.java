@@ -83,19 +83,19 @@ public class AgentOptions {
     private final AgentOption<Boolean> instrumentConstructorsOption = new AgentOption<>(
             INSTRUMENT_CONSTRUCTORS_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentLambdasOption = new AgentOption<>(
             INSTRUMENT_LAMBDAS_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentTypeInitializers = new AgentOption<>(
             INSTRUMENT_TYPE_INITIALIZERS,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "(Experimental) Indicates whether type initializers (static blocks) should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Empty is considered as 'false'"
     );
     private final AgentOption<OverridableRecordingPolicy> startRecordingPolicy = new AgentOption<>(
@@ -132,25 +132,25 @@ public class AgentOptions {
     private final AgentOption<Boolean> agentDisabled = new AgentOption<>(
             AGENT_DISABLED_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "Allows to disable the agent altogether via single property."
     );
     private final AgentOption<Boolean> timestampsEnabled = new AgentOption<>(
             TIMESTAMPS_ENABLED_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "Records timestamps spent in each method in nanoseconds. Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> metricsEnabled = new AgentOption<>(
             METRICS_ENABLED_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "(Experimental) Indicates if metrics are enabled. Metrics are dumped to stderr periodically. Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> typeValidationEnabled = new AgentOption<>(
             TYPE_VALIDATION_ENABLED_PROPERTY,
             false,
-            new FlagParser(),
+            new ToggleParser(),
             "Byte-buddy type validation flag. Correct values: 'true', 'false'. Defaults to 'false'"
     );
 
