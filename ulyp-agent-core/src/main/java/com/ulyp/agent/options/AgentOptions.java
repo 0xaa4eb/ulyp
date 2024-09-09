@@ -62,7 +62,7 @@ public class AgentOptions {
     );
     private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
             START_RECORDING_METHODS_PROPERTY,
-            new MethodMatchersParser(),
+            MethodMatcher::parse,
             "Comma-separated list of method matchers to specify where recording should start. " +
                     "Method matcher consists of ANT pattern type matcher concatenated with method name with '.' dot sign. \n" +
                     "Valid ANT pattern type matchers: 'org.springframework.**.SomeType', 'org.springframework.web.DispatcherServlet'. " +
