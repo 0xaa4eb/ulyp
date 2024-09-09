@@ -65,7 +65,7 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
         }
         children.add(Text(" "))
         children.add(EnhancedText(
-            "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
+            "${ClassNameUtils.toSimpleName(rootCallRecord.method.type.name)}.${rootCallRecord.method.name}",
             Style.RECORDING_LIST_ITEM,
             Style.BOLD_TEXT
         ))

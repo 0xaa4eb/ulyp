@@ -7,7 +7,7 @@ data class Filter(val minimumCount: Int, val excludeClasses: String) {
 
     fun toStorageFilter(): Filter {
         return Filter {
-            !excludeClasses.contains(ClassUtils.getSimpleNameFromName(it.root.method.declaringType.name)) &&
+            !excludeClasses.contains(ClassUtils.getSimpleNameFromName(it.root.method.type.name)) &&
                     it.callCount() > minimumCount
         }
     }
