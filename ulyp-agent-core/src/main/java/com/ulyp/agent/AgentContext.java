@@ -44,6 +44,7 @@ public class AgentContext {
     private final Metrics metrics;
     @Nullable
     private final MetricDumper metricDumper;
+    private final RecorderContext recorderContext;
 
     private AgentContext() {
         this.options = new AgentOptions();
@@ -54,6 +55,8 @@ public class AgentContext {
             this.metrics = new NullMetrics();
             this.metricDumper = null;
         }
+        this.recorderContext = new RecorderContext(options);
+        this.recorderContext.init();
         this.startRecordingPolicy = options.getStartRecordingPolicy().get();
         this.recordingDataWriter = new RecordingDataWriterFactory().build(options.getRecordingDataFilePath().get(), metrics);
         this.methodRepository = new MethodRepository();
@@ -91,7 +94,6 @@ public class AgentContext {
 
             ctx.getRecordingEventQueue().start();
         }
-
         agentLoaded = true;
     }
 

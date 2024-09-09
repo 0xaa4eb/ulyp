@@ -62,23 +62,6 @@ public class Agent {
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + options);
 
-        {
-            // TODO should have a recorder context with all recorders properly set up
-            CollectionRecorder recorder = (CollectionRecorder) ObjectRecorderRegistry.COLLECTION_RECORDER.getInstance();
-            recorder.setMode(options.getCollectionsRecordingMode().get());
-
-            MapRecorder mapRecorder = (MapRecorder) ObjectRecorderRegistry.MAP_RECORDER.getInstance();
-            mapRecorder.setMode(options.getCollectionsRecordingMode().get());
-
-            PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
-            toStringRecorder.addTypeMatchers(options.getTypesToPrint().get());
-
-            ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
-            if (options.getCollectionsRecordingMode().get() != CollectionsRecordingMode.NONE) {
-                objectArrayRecorder.setEnabled(true);
-            }
-        }
-
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(options);
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(options);
 
