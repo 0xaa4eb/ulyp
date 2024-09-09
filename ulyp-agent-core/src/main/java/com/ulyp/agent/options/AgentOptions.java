@@ -52,13 +52,13 @@ public class AgentOptions {
             PACKAGES_PROPERTY,
             Collections.emptyList(),
             new ListParser<>(text -> text),
-            ""
+            "Comma separated list of packages to instrument"
     );
     private final AgentOption<List<String>> excludedFromInstrumentationPackages = new AgentOption<>(
             EXCLUDE_PACKAGES_PROPERTY,
             Collections.emptyList(),
             new ListParser<>(text -> text),
-            ""
+            "Comma separated list of packages to exclude from instrumentation"
     );
     private final AgentOption<MethodMatcher> startRecordingMethodMatcher = new AgentOption<>(
             START_RECORDING_METHODS_PROPERTY,
