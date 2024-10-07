@@ -125,7 +125,7 @@ public class AgentOptions {
                     "3) com.springframework.*.Command - combines both package and name matchers."
     );
     private final AgentOption<String> bindNetworkAddress = new AgentOption<>(
-            AGENT_DISABLED_PROPERTY,
+            BIND_NETWORK_ADDRESS,
             text -> text,
             "Network address at which GRPC API should bind"
     );
