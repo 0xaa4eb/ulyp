@@ -35,7 +35,7 @@ class ReaderRegistry(private val filterRegistry: FilterRegistry) {
         readersMap[file.toPath().toAbsolutePath()] = recordingDataReader
 
         val callRecordTree = CallRecordTreeBuilder(recordingDataReader)
-            .setReadInfinitely(true)
+            .setReadInfinitely(false)
             .setIndexSupplier { index }
             .build()
         CloseReaderOnExitHook.add(Pair(readerDirectory, callRecordTree))
