@@ -6,6 +6,7 @@ import com.ulyp.agent.policy.OverridableRecordingPolicy;
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import lombok.Getter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,21 +18,22 @@ import java.util.List;
  * It's only possible to set settings via JMV system properties at the time.
  */
 @Getter
+@ToString
 public class AgentOptions {
 
     public static final boolean TIMESTAMPS_ENABLED;
 
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
+    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
-    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
-    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.type-initializers";
+    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.static-blocks";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
@@ -74,7 +76,7 @@ public class AgentOptions {
             EXCLUDE_CLASSES_PROPERTY,
             Collections.emptyList(),
             new ListParser<>(TypeMatcher::parse),
-            "Specifies a comma separated list of type matchers, which should be printed via toString() in the process of recording. " +
+            "Specifies a comma separated list of type matchers which should be excluded from instrumentation. " +
                     "Type matcher consists of ANT package class matcher and class name matcher. Examples are: " +
                     "1) org.springframework.** - all classes in org.springframework package.\n" +
                     "2) **.Command - classes of any package which have either Command class name or inherit/implement any class of such name.\n" +
@@ -167,20 +169,6 @@ public class AgentOptions {
         } else {
             return new SingleMethodMatcher(TypeMatcher.parse(ProcessMetadata.getMainClassNameFromProp()), "main");
         }
-    }
-
-    @Override
-    public String toString() {
-        return "file: " + recordingDataFilePath +
-                ",\npackages to instrument: " + instrumentedPackages +
-                ",\npackages excluded from instrumentation: " + excludedFromInstrumentationPackages +
-                ",\nrecording will start at methods: " + startRecordingMethodMatcher +
-                ",\ninstrument constructors: " + instrumentConstructorsOption +
-                ",\ninstrument lambdas: " + instrumentLambdasOption +
-                ",\nrecord collections: " + collectionsRecordingMode +
-                ",\ntimestamps enabled: " + timestampsEnabled +
-                ",\ntype validation enabled: " + typeValidationEnabled +
-                ",\ntypesToPrintWithToString(TBD)=" + typesToPrint;
     }
 
     public boolean isAgentEnabled() {

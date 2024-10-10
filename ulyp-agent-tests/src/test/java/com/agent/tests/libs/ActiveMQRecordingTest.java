@@ -44,7 +44,7 @@ class ActiveMQRecordingTest extends AbstractInstrumentationTest {
                         .withMethodToRecord(MethodMatcher.parse("**.ActiveMQTestCase.main"))
                         .withInstrumentedPackages()
                         .withRecordConstructors()
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
         CallRecord singleRoot = recordingResult.getSingleRoot();

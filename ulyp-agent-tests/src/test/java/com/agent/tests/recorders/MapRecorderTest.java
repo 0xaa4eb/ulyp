@@ -48,7 +48,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnHashMap")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
         assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));

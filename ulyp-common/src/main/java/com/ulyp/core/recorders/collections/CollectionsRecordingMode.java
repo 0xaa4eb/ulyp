@@ -7,7 +7,7 @@ public enum CollectionsRecordingMode {
      * This is a safer, because some collections which have side-effect iteration (like Hibernate persisted collections)
      * are not recorded.
      */
-    JAVA {
+    JDK {
         @Override
         public boolean supports(Class<?> type) {
             return type.getName().startsWith("java.") && !type.getName().startsWith("java.util.concurrent");

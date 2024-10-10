@@ -53,6 +53,6 @@ public class AgentOption<T> implements Option<T> {
 
     @Override
     public String toString() {
-        return "Option '" + prop + "', value: " + get();
+        return "Option '" + prop + "' = " + System.getProperty(prop);
     }
 }

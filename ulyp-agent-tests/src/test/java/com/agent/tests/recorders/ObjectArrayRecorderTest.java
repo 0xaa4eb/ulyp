@@ -23,7 +23,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesEmptyObjectArray.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
 
@@ -40,7 +40,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesStringArrayWithSomeString.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
 
@@ -69,7 +69,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesVariousItemsArray.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
 
@@ -95,7 +95,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(VaragsTestCase.class)
                         .withMethodToRecord("takeVararg")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
 

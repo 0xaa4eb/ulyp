@@ -63,7 +63,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnArrayListOfString")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
         assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
@@ -76,7 +76,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnCustomList")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
         assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
