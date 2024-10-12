@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CollectionRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    void shouldRecordSimpleItemsProperly() {
+    void shouldRecordCollectionItems() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -34,13 +34,37 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();
 
+        assertEquals(6, collection.getLength());
+
         List<ObjectRecord> items = collection.getRecordedItems();
 
-        StringObjectRecord firstItemRepr = (StringObjectRecord) items.get(0);
-        assertEquals("a", firstItemRepr.value());
+        assertEquals("a", ((StringObjectRecord) items.get(0)).value());
+        assertEquals("b", ((StringObjectRecord) items.get(1)).value());
+        assertEquals("c", ((StringObjectRecord) items.get(2)).value());
+    }
 
-        StringObjectRecord secondItemRepr = (StringObjectRecord) items.get(1);
-        assertEquals("b", secondItemRepr.value());
+    @Test
+    void shouldRecordCollectionItemsMoreItemsIfPropSet() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
+                        .withRecordCollectionItems(5)
+        );
+
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(6, collection.getLength());
+
+        List<ObjectRecord> items = collection.getRecordedItems();
+
+        assertEquals("a", ((StringObjectRecord) items.get(0)).value());
+        assertEquals("b", ((StringObjectRecord) items.get(1)).value());
+        assertEquals("c", ((StringObjectRecord) items.get(2)).value());
+        assertEquals("d", ((StringObjectRecord) items.get(3)).value());
+        assertEquals("e", ((StringObjectRecord) items.get(4)).value());
     }
 
     @Test
@@ -111,7 +135,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
     static class TestCase {
 
         public static List<String> returnArrayListOfString() {
-            return Arrays.asList("a", "b");
+            return Arrays.asList("a", "b", "c", "d", "e", "f");
         }
 
         public static List<String> returnCustomList() {

@@ -20,9 +20,11 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    public static final int MAX_ITEMS_TO_RECORD = SystemPropertyUtil.getInt("ulyp.recorder.map.items", 3);
     private static final byte RECORDED_ITEMS_FLAG = 1;
     private static final byte RECORDED_IDENTITY_ONLY = 0;
+
+    @Setter
+    private int maxItemsToRecord;
     @Setter
     private volatile CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
     private volatile boolean active = true;
@@ -70,7 +72,7 @@ public class MapRecorder extends ObjectRecorder {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
                     out.writeVarInt(length);
-                    int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
+                    int itemsToRecord = Math.min(maxItemsToRecord, length);
                     out.writeVarInt(itemsToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;

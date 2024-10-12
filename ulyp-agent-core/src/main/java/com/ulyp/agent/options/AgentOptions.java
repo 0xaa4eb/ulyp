@@ -27,7 +27,7 @@ public class AgentOptions {
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
     public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
-    public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
+    public static final String EXCLUDE_TYPES_PROPERTY = "ulyp.exclude-types";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_TYPES_PROPERTY = "ulyp.print-types";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
@@ -36,6 +36,7 @@ public class AgentOptions {
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.record-static-blocks";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
     public static final String RECORD_ARRAYS_PROPERTY = "ulyp.record-arrays";
+    public static final String RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY = "ulyp.record-collections.max-items";
     public static final String RECORD_ARRAYS_MAX_ITEMS_PROPERTY = "ulyp.record-arrays.max-items";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.record-timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
@@ -75,7 +76,7 @@ public class AgentOptions {
                     "Correct examples of method matchers are '**.Runnable.run' or 'org.springframework.**.Runner.*' or 'com.test.package.util.Runner.doRun'. \n"
     );
     private final AgentOption<List<TypeMatcher>> excludeFromInstrumentationClasses = new AgentOption<>(
-            EXCLUDE_CLASSES_PROPERTY,
+            EXCLUDE_TYPES_PROPERTY,
             Collections.emptyList(),
             new ListParser<>(TypeMatcher::parse),
             "Specifies a comma separated list of type matchers which should be excluded from instrumentation. " +
@@ -117,6 +118,12 @@ public class AgentOptions {
             "Defines if collections, maps and arrays should be recorded. Defaults to 'NONE' which allows the agent to pass all objects by reference" +
                     " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
                     "will record all collections (event 3rd party library collections) which might be very unpleasant, so use with care."
+    );
+    private final AgentOption<Integer> maxItemsCollectionsRecordingOption = new AgentOption<>(
+            RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY,
+            3,
+            Integer::valueOf,
+            "Max number of collection items which are recorded"
     );
     private final AgentOption<Boolean> arraysRecordingOption = new AgentOption<>(
             RECORD_ARRAYS_PROPERTY,

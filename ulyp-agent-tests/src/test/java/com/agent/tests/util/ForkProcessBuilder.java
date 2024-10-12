@@ -32,6 +32,7 @@ public class ForkProcessBuilder {
     private Boolean recordTimestamps = null;
     private Boolean recordArrays = null;
     private Integer recordArrayItems = null;
+    private Integer recordCollectionItems = null;
 
     public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
         this.mainClassName = mainClassName;
@@ -61,6 +62,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withRecordArrayItems(int cnt) {
         recordArrayItems = cnt;
+        return this;
+    }
+
+    public ForkProcessBuilder withRecordCollectionItems(int cnt) {
+        recordCollectionItems = cnt;
         return this;
     }
 
@@ -131,7 +137,7 @@ public class ForkProcessBuilder {
             params.add("-D" + AgentOptions.EXCLUDE_PACKAGES_PROPERTY + "=" + String.join(",", excludedFromInstrumentationPackages));
         }
         if (excludeClassesProperty != null) {
-            params.add("-D" + AgentOptions.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
+            params.add("-D" + AgentOptions.EXCLUDE_TYPES_PROPERTY + "=" + excludeClassesProperty);
         }
         if (printTypes != null) {
             params.add("-D" + AgentOptions.PRINT_TYPES_PROPERTY + "=" + printTypes);
@@ -156,6 +162,9 @@ public class ForkProcessBuilder {
         }
         if (recordArrayItems != null) {
             params.add("-D" + AgentOptions.RECORD_ARRAYS_MAX_ITEMS_PROPERTY + "=" + recordArrayItems);
+        }
+        if (recordCollectionItems != null) {
+            params.add("-D" + AgentOptions.RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY + "=" + recordCollectionItems);
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);

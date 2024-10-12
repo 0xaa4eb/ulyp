@@ -19,9 +19,11 @@ public class RecorderContext {
     public void init() {
         CollectionRecorder recorder = (CollectionRecorder) ObjectRecorderRegistry.COLLECTION_RECORDER.getInstance();
         recorder.setMode(options.getCollectionsRecordingMode().get());
+        recorder.setMaxItemsToRecord(options.getMaxItemsCollectionsRecordingOption().get());
 
         MapRecorder mapRecorder = (MapRecorder) ObjectRecorderRegistry.MAP_RECORDER.getInstance();
         mapRecorder.setMode(options.getCollectionsRecordingMode().get());
+        mapRecorder.setMaxItemsToRecord(options.getMaxItemsCollectionsRecordingOption().get());
 
         PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addTypeMatchers(options.getTypesToPrint().get());

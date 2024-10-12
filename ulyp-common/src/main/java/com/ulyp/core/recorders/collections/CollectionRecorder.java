@@ -10,6 +10,7 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.Mark;
 import com.ulyp.core.util.LoggingSettings;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,11 +22,12 @@ import java.util.List;
 @Slf4j
 public class CollectionRecorder extends ObjectRecorder {
 
-    public static final int MAX_ITEMS_TO_RECORD = 3;
     private static final int RECORDED_ITEMS_FLAG = 1;
     private static final int RECORDED_IDENTITY_FLAG = 0;
 
     private volatile boolean active = true;
+    @Setter
+    private int maxItemsToRecord;
     private CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
 
     public CollectionRecorder(byte id) {
@@ -78,7 +80,7 @@ public class CollectionRecorder extends ObjectRecorder {
                 Collection<?> collection = (Collection<?>) object;
                 int length = collection.size();
                 out.write(length);
-                int itemsToRecord = Math.min(MAX_ITEMS_TO_RECORD, length);
+                int itemsToRecord = Math.min(maxItemsToRecord, length);
                 out.write(itemsToRecord);
                 Iterator<?> iterator = collection.iterator();
                 int recorded = 0;
