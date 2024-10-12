@@ -9,7 +9,7 @@ public class RecordingPolicyParser implements Parser<OverridableRecordingPolicy>
     @Override
     public OverridableRecordingPolicy parse(String textValue) {
         StartRecordingPolicy policy;
-        if (textValue == null || textValue.isEmpty()) {
+        if (textValue == null || textValue.isEmpty() || textValue.equals("default")) {
             policy = new AlwaysEnabledRecordingPolicy();
         } else if (textValue.startsWith("delay:")) {
             policy = new DelayBasedRecordingPolicy(Duration.ofSeconds(Integer.parseInt(textValue.replace("delay:", ""))));

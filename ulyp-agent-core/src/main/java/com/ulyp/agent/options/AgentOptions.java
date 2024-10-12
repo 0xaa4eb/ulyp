@@ -25,7 +25,7 @@ public class AgentOptions {
 
     public static final String PACKAGES_PROPERTY = "ulyp.packages";
     public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
-    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.policy";
+    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.start";
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
     public static final String EXCLUDE_TYPES_PROPERTY = "ulyp.exclude-types";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
@@ -107,7 +107,7 @@ public class AgentOptions {
             START_RECORDING_POLICY_PROPERTY,
             new OverridableRecordingPolicy(new AlwaysEnabledRecordingPolicy()),
             new RecordingPolicyParser(),
-            "The policy property which defines when any recording can start. " +
+            "The property which defines when any recording can start. " +
                     "If not set, then recording can start any time. " +
                     "Value 'delay:X' allows to set delay after which recording can start. X is specified in seconds. For example, 'delay:60'. " +
                     "Value 'api' makes the agent behaviour controllable through remote Grpc API."
