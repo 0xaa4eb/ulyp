@@ -18,6 +18,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnByteArray")
+                        .withRecordArrays()
         );
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();
@@ -31,6 +32,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)
                 .withMethodToRecord("returnEmptyArray")
+                .withRecordArrays()
         );
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();

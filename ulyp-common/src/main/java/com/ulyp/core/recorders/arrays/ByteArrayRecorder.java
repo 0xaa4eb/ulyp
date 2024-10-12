@@ -10,9 +10,13 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class ByteArrayRecorder extends ObjectRecorder {
+
+    @Setter
+    private volatile boolean enabled = false;
 
     public ByteArrayRecorder(byte id) {
         super(id);
@@ -20,7 +24,7 @@ public class ByteArrayRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return type == byte[].class;
+        return enabled && type == byte[].class;
     }
 
     @Override

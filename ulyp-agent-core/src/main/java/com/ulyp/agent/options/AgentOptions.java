@@ -35,6 +35,7 @@ public class AgentOptions {
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.static-blocks";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
+    public static final String RECORD_ARRAYS_PROPERTY = "ulyp.record-arrays";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
@@ -86,13 +87,13 @@ public class AgentOptions {
             INSTRUMENT_CONSTRUCTORS_PROPERTY,
             false,
             new ToggleParser(),
-            "Indicates whether constructors should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
+            "Enables constructors instrumentation (and possibly recording). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentLambdasOption = new AgentOption<>(
             INSTRUMENT_LAMBDAS_PROPERTY,
             false,
             new ToggleParser(),
-            "Indicates whether lambdas should be instrumented (and possibly recorded). Correct values: 'true', 'false'. Defaults to 'false'"
+            "Enables lambdas instrumentation (and possibly recording). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<Boolean> instrumentTypeInitializers = new AgentOption<>(
             INSTRUMENT_TYPE_INITIALIZERS,
@@ -115,6 +116,12 @@ public class AgentOptions {
             "Defines if collections, maps and arrays should be recorded. Defaults to 'NONE' which allows the agent to pass all objects by reference" +
                     " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
                     "will record all collections (event 3rd party library collections) which might be very unpleasant, so use with care."
+    );
+    private final AgentOption<Boolean> arraysRecordingOption = new AgentOption<>(
+            RECORD_ARRAYS_PROPERTY,
+            false,
+            new ToggleParser(),
+            "Enables array instrumentation (and possibly recording). Correct values: 'true', 'false'. Defaults to 'false'"
     );
     private final AgentOption<List<TypeMatcher>> typesToPrint = new AgentOption<>(
             PRINT_TYPES_PROPERTY,

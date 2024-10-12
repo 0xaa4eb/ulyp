@@ -4,7 +4,6 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
-import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -18,20 +17,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
     @Test
+    void shouldNotRecordArrayValuesByDefault() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TakesEmptyObjectArray.class)
+                        .withMethodToRecord("accept")
+        );
+
+
+        IdentityObjectRecord record = (IdentityObjectRecord) root.getArgs().get(0);
+
+
+        assertThat(record.getType().getName(), is("[Ljava.lang.Object;"));
+    }
+
+    @Test
     void shouldProvideArgumentTypes() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TakesEmptyObjectArray.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JDK)
+                        .withRecordArrays()
         );
 
 
-        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
+        ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(objectRepresentation.getLength(), is(0));
-        assertThat(objectRepresentation.getRecordedItems(), Matchers.empty());
+        assertThat(record.getLength(), is(0));
+        assertThat(record.getRecordedItems(), Matchers.empty());
     }
 
     @Test
@@ -40,16 +54,16 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesStringArrayWithSomeString.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JDK)
+                        .withRecordArrays()
         );
 
 
-        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
+        ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(objectRepresentation.getLength(), is(3));
+        assertThat(record.getLength(), is(3));
 
-        List<ObjectRecord> items = objectRepresentation.getRecordedItems();
+        List<ObjectRecord> items = record.getRecordedItems();
 
         assertThat(items, Matchers.hasSize(3));
 
@@ -69,15 +83,15 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TakesVariousItemsArray.class)
                         .withMethodToRecord("accept")
-                        .withRecordCollections(CollectionsRecordingMode.JDK)
+                        .withRecordArrays()
         );
 
 
-        ObjectArrayRecord objectRepresentation = (ObjectArrayRecord) root.getArgs().get(0);
+        ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
-        assertThat(objectRepresentation.getLength(), is(5));
+        assertThat(record.getLength(), is(5));
 
-        List<ObjectRecord> items = objectRepresentation.getRecordedItems();
+        List<ObjectRecord> items = record.getRecordedItems();
 
         IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
         assertThat(arg0.getType().getName(), is(X.class.getName()));
@@ -95,15 +109,15 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(VaragsTestCase.class)
                         .withMethodToRecord("takeVararg")
-                        .withRecordCollections(CollectionsRecordingMode.JDK)
+                        .withRecordArrays()
         );
 
 
-        ObjectArrayRecord arrayRecord = (ObjectArrayRecord) root.getArgs().get(0);
+        ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
-        assertThat(arrayRecord.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
-        assertThat(arrayRecord.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
-        assertThat(arrayRecord.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(record.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(record.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(record.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
     }
 
     public static class TakesEmptyObjectArray {

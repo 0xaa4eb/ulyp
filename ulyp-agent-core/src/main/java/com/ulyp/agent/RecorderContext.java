@@ -3,9 +3,9 @@ package com.ulyp.agent;
 import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
+import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.CollectionRecorder;
-import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapRecorder;
 
 public class RecorderContext {
@@ -26,12 +26,11 @@ public class RecorderContext {
         PrintingRecorder toStringRecorder = (PrintingRecorder) (ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance());
         toStringRecorder.addTypeMatchers(options.getTypesToPrint().get());
 
+        ByteArrayRecorder byteArrayRecorder = (ByteArrayRecorder) ObjectRecorderRegistry.BYTE_ARRAY_RECORDER.getInstance();
         ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
-        /*
-        * If at least Java collections are recorded, we disable array recorder either
-        */
-        if (options.getCollectionsRecordingMode().get() != CollectionsRecordingMode.NONE) {
+        if (options.getArraysRecordingOption().get()) {
             objectArrayRecorder.setEnabled(true);
+            byteArrayRecorder.setEnabled(true);
         }
     }
 }

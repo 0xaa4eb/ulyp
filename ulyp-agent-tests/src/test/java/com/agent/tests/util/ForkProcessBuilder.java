@@ -30,6 +30,7 @@ public class ForkProcessBuilder {
     private Boolean instrumentLambdas = null;
     private Boolean instrumentTypeInitializers = null;
     private Boolean recordTimestamps = null;
+    private Boolean recordArrays = null;
 
     public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
         this.mainClassName = mainClassName;
@@ -49,6 +50,11 @@ public class ForkProcessBuilder {
 
     public ForkProcessBuilder withRecordConstructors() {
         recordConstructors = true;
+        return this;
+    }
+
+    public ForkProcessBuilder withRecordArrays() {
+        recordArrays = true;
         return this;
     }
 
@@ -138,6 +144,9 @@ public class ForkProcessBuilder {
         }
         if (recordTimestamps != null) {
             params.add("-D" + AgentOptions.TIMESTAMPS_ENABLED_PROPERTY);
+        }
+        if (recordArrays != null) {
+            params.add("-D" + AgentOptions.RECORD_ARRAYS_PROPERTY);
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);

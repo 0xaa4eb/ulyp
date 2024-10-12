@@ -8,6 +8,7 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,15 +16,11 @@ import java.util.List;
 
 public class ObjectArrayRecorder extends ObjectRecorder {
 
+    @Setter
     private volatile boolean enabled = false;
 
     public ObjectArrayRecorder(byte id) {
         super(id);
-    }
-
-    @Override
-    public boolean supportsAsyncRecording() {
-        return false;
     }
 
     @Override
@@ -53,9 +50,5 @@ public class ObjectArrayRecorder extends ObjectRecorder {
         for (int i = 0; i < itemsToRecord; i++) {
             out.write(array[i], typeResolver);
         }
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 }
