@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.TypeResolver;
@@ -38,6 +39,11 @@ class MapRecorderTest {
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final MapRecorder mapRecorder = new MapRecorder((byte) 1);
     private final PrintingRecorder printingRecorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
+
+    @BeforeEach
+    public void setUp() {
+        mapRecorder.setMaxItemsToRecord(3);
+    }
 
     @Test
     void test() throws Exception {
