@@ -2,8 +2,11 @@ package com.ulyp.agent;
 
 import javax.annotation.Nullable;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.RecordingMetadata;
 
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +24,8 @@ public class RecordingThreadLocalContext {
     private int recordingId = -1;
     @Nullable
     private RecordingMetadata recordingMetadata;
+    @Getter
+    private RecordedObjectConverter objectConverter;
     private int callId = ROOT_CALL_RECORDING_ID;
     @Setter
     private boolean enabled;
@@ -28,8 +33,12 @@ public class RecordingThreadLocalContext {
     @Setter
     private RecordingEventBuffer eventBuffer;
 
-    public RecordingThreadLocalContext() {
-
+    public RecordingThreadLocalContext(AgentOptions options, TypeResolver typeResolver) {
+        if (options.getCollectionsRecordingMode().get() == CollectionsRecordingMode.NONE && !options.getArraysRecordingOption().get()) {
+            this.objectConverter = PassByRefRecordedObjectConverter.INSTANCE;
+        } else {
+            this.objectConverter = new ByTypeRecordedObjectConverter(typeResolver);
+        }
     }
 
     public int nextCallId() {

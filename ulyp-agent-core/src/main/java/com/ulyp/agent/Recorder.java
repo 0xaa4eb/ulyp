@@ -82,7 +82,7 @@ public class Recorder {
         if (recordingCtx != null) {
             recordingCtx.setEnabled(false);
         } else {
-            recordingCtx = new RecordingThreadLocalContext();
+            recordingCtx = new RecordingThreadLocalContext(options, typeResolver);
             recordingCtx.setEnabled(false);
             threadLocalRecordingCtx.set(recordingCtx);
         }
@@ -118,13 +118,13 @@ public class Recorder {
     private RecordingThreadLocalContext initializeRecordingCtx(int methodId) {
         RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
         if (recordingCtx == null) {
-            recordingCtx = new RecordingThreadLocalContext();
+            recordingCtx = new RecordingThreadLocalContext(options, typeResolver);
             recordingCtx.setEnabled(false);
             int recordingId = recordingContextStore.add(recordingCtx);
             RecordingMetadata recordingMetadata = generateRecordingMetadata(recordingId);
             recordingCtx.setRecordingMetadata(recordingMetadata);
             threadLocalRecordingCtx.set(recordingCtx);
-            RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId(), options, typeResolver);
+            RecordingEventBuffer recordingEventBuffer = new RecordingEventBuffer(recordingMetadata.getId());
             recordingCtx.setEventBuffer(recordingEventBuffer);
 
             currentRecordingSessionCount.incrementAndGet();
@@ -152,12 +152,13 @@ public class Recorder {
 
             try {
                 recordingCtx.setEnabled(false);
+                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, args, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(args), System.nanoTime());
                 } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, args);
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(args));
                 }
                 dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
@@ -184,12 +185,13 @@ public class Recorder {
 
             try {
                 recordingCtx.setEnabled(false);
+                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg), System.nanoTime());
                 } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg);
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg));
                 }
                 dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
@@ -216,12 +218,13 @@ public class Recorder {
 
             try {
                 recordingCtx.setEnabled(false);
+                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg1), objectConverter.prepare(arg2), System.nanoTime());
                 } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2);
+                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg1), objectConverter.prepare(arg2));
                 }
                 dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
@@ -248,12 +251,26 @@ public class Recorder {
 
             try {
                 recordingCtx.setEnabled(false);
+                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
                 int callId = recordingCtx.nextCallId();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3, System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1),
+                            objectConverter.prepare(arg2),
+                            objectConverter.prepare(arg3),
+                            System.nanoTime()
+                    );
                 } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, arg1, arg2, arg3);
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1),
+                            objectConverter.prepare(arg2),
+                            objectConverter.prepare(arg3)
+                    );
                 }
                 dropIfFull(eventBuffer);
                 return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
@@ -313,11 +330,12 @@ public class Recorder {
             try {
                 recordingCtx.setEnabled(false);
 
+                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
                 RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null, System.nanoTime());
+                    eventBuffer.appendMethodExitEvent(callId, objectConverter.prepare(thrown != null ? thrown : result), thrown != null, System.nanoTime());
                 } else {
-                    eventBuffer.appendMethodExitEvent(callId, thrown != null ? thrown : result, thrown != null);
+                    eventBuffer.appendMethodExitEvent(callId, objectConverter.prepare(thrown != null ? thrown : result), thrown != null);
                 }
 
                 if (callId == RecordingThreadLocalContext.ROOT_CALL_RECORDING_ID) {
