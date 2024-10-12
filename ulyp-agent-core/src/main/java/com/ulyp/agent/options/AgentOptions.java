@@ -34,7 +34,7 @@ public class AgentOptions {
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.static-blocks";
-    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.collections";
+    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
