@@ -29,7 +29,7 @@ public class AgentOptions {
     public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
     public static final String EXCLUDE_CLASSES_PROPERTY = "ulyp.exclude-classes";
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
+    public static final String PRINT_TYPES_PROPERTY = "ulyp.print-types";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
     public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.record-constructors";
     public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.record-lambdas";

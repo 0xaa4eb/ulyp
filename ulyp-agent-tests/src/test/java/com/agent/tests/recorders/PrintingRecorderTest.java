@@ -33,7 +33,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
-                        .withPrintClasses("**.X")
+                        .withPrintTypes("**.X")
         );
 
 
@@ -52,7 +52,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnNonPrintableObject")
-                        .withPrintClasses("**.ToStringThrowingClass")
+                        .withPrintTypes("**.ToStringThrowingClass")
         );
 
 

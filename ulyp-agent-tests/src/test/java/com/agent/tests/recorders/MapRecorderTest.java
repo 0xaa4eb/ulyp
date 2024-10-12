@@ -75,7 +75,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
                 .withMainClassName(TestCase.class)
                 .withMethodToRecord("returnMapWithObjectsThrowingOnPrint")
                 .withRecordCollections(CollectionsRecordingMode.ALL)
-                .withPrintClasses("**.XYZ")
+                .withPrintTypes("**.XYZ")
         );
 
         MapRecord collection = (MapRecord) root.getReturnValue();

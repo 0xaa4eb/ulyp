@@ -23,7 +23,7 @@ public class ForkProcessBuilder {
     private String excludeClassesProperty = null;
     private List<String> excludedFromInstrumentationPackages = new ArrayList<>();
     private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
-    private String printClasses = null;
+    private String printTypes = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
     private Boolean recordConstructors = null;
@@ -69,8 +69,8 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public ForkProcessBuilder withPrintClasses(String printClasses) {
-        this.printClasses = printClasses;
+    public ForkProcessBuilder withPrintTypes(String printClasses) {
+        this.printTypes = printClasses;
         return this;
     }
 
@@ -133,8 +133,8 @@ public class ForkProcessBuilder {
         if (excludeClassesProperty != null) {
             params.add("-D" + AgentOptions.EXCLUDE_CLASSES_PROPERTY + "=" + excludeClassesProperty);
         }
-        if (printClasses != null) {
-            params.add("-D" + AgentOptions.PRINT_TYPES_PROPERTY + "=" + printClasses);
+        if (printTypes != null) {
+            params.add("-D" + AgentOptions.PRINT_TYPES_PROPERTY + "=" + printTypes);
         }
         if (agentDisabled != null && agentDisabled) {
             params.add("-D" + AgentOptions.AGENT_DISABLED_PROPERTY);
