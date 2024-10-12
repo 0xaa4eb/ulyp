@@ -31,13 +31,13 @@ public class AgentOptions {
     public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
     public static final String PRINT_TYPES_PROPERTY = "ulyp.print";
     public static final String FILE_PATH_PROPERTY = "ulyp.file";
-    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.constructors";
-    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.lambdas";
-    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.static-blocks";
+    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.record-constructors";
+    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.record-lambdas";
+    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.record-static-blocks";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
     public static final String RECORD_ARRAYS_PROPERTY = "ulyp.record-arrays";
     public static final String RECORD_ARRAYS_MAX_ITEMS_PROPERTY = "ulyp.record-arrays.max-items";
-    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
+    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.record-timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
     public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
