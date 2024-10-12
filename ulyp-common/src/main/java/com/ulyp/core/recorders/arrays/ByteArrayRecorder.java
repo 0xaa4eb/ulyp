@@ -13,10 +13,15 @@ import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+
+/**
+ * Recorder for byte arrays. It currently records only the length of array.
+ */
 public class ByteArrayRecorder extends ObjectRecorder {
 
+    // Intentionally not volatile
     @Setter
-    private volatile boolean enabled = false;
+    private boolean enabled = false;
 
     public ByteArrayRecorder(byte id) {
         super(id);

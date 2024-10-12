@@ -61,20 +61,48 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(record.getLength(), is(3));
+        assertThat(record.getLength(), is(6));
 
         List<ObjectRecord> items = record.getRecordedItems();
 
         assertThat(items, Matchers.hasSize(3));
-
         StringObjectRecord str0 = (StringObjectRecord) items.get(0);
-        assertEquals(str0.value(), "sddsad");
-
+        assertEquals(str0.value(), "A");
         StringObjectRecord str1 = (StringObjectRecord) items.get(1);
-        assertEquals(str1.value(), "zx");
-
+        assertEquals(str1.value(), "B");
         StringObjectRecord str2 = (StringObjectRecord) items.get(2);
-        assertEquals(str2.value(), "sdsd");
+        assertEquals(str2.value(), "C");
+    }
+
+    @Test
+    void shouldRecordSimpleArrayWithStringWithCustomMaxCountSpecified() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TakesStringArrayWithSomeString.class)
+                        .withMethodToRecord("accept")
+                        .withRecordArrays()
+                        .withRecordArrayItems(5)
+        );
+
+
+        ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
+
+
+        assertThat(record.getLength(), is(6));
+
+        List<ObjectRecord> items = record.getRecordedItems();
+
+        assertThat(items, Matchers.hasSize(5));
+        StringObjectRecord str0 = (StringObjectRecord) items.get(0);
+        assertEquals(str0.value(), "A");
+        StringObjectRecord str1 = (StringObjectRecord) items.get(1);
+        assertEquals(str1.value(), "B");
+        StringObjectRecord str2 = (StringObjectRecord) items.get(2);
+        assertEquals(str2.value(), "C");
+        StringObjectRecord str3 = (StringObjectRecord) items.get(3);
+        assertEquals(str3.value(), "D");
+        StringObjectRecord str4 = (StringObjectRecord) items.get(4);
+        assertEquals(str4.value(), "E");
     }
 
     @Test
@@ -134,9 +162,12 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         public static void main(String[] args) {
             new TakesStringArrayWithSomeString().accept(new String[]{
-                    "sddsad",
-                    "zx",
-                    "sdsd"
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F"
             });
         }
 

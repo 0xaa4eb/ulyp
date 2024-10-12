@@ -32,5 +32,6 @@ public class RecorderContext {
             objectArrayRecorder.setEnabled(true);
             byteArrayRecorder.setEnabled(true);
         }
+        objectArrayRecorder.setMaxItemsToRecord(options.getMaxItemsArrayRecordingOption().get());
     }
 }

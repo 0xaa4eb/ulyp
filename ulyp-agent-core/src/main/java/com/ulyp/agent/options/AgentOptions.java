@@ -36,6 +36,7 @@ public class AgentOptions {
     public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.static-blocks";
     public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
     public static final String RECORD_ARRAYS_PROPERTY = "ulyp.record-arrays";
+    public static final String RECORD_ARRAYS_MAX_ITEMS_PROPERTY = "ulyp.record-arrays.max-items";
     public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.timestamps";
     public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
     public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
@@ -122,6 +123,12 @@ public class AgentOptions {
             false,
             new ToggleParser(),
             "Enables array instrumentation (and possibly recording). Correct values: 'true', 'false'. Defaults to 'false'"
+    );
+    private final AgentOption<Integer> maxItemsArrayRecordingOption = new AgentOption<>(
+            RECORD_ARRAYS_MAX_ITEMS_PROPERTY,
+            3,
+            Integer::valueOf,
+            "Max number of array items which are recorded"
     );
     private final AgentOption<List<TypeMatcher>> typesToPrint = new AgentOption<>(
             PRINT_TYPES_PROPERTY,
