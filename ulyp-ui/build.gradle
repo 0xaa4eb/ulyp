@@ -73,9 +73,9 @@ run {
 def platform = project.findProperty("platform")
 def jarName
 if (platform != null) {
-    jarName = "ulyp-${rootProject.version}-${platform}.jar"
+    jarName = "ulyp-ui-${rootProject.version}-${platform}.jar"
 } else {
-    jarName = "ulyp-${rootProject.version}.jar"
+    jarName = "ulyp-ui-${rootProject.version}.jar"
 }
 
 task fatJar(type: Jar) {
