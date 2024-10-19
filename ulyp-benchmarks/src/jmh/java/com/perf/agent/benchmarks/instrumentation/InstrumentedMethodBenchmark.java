@@ -53,7 +53,7 @@ public class InstrumentedMethodBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dulyp.record-constructors"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public String returnObjectInstrumented(State1 s1, State2 s2, State3 s3) {
@@ -65,7 +65,7 @@ public class InstrumentedMethodBenchmark {
             "-Dulyp.file=/tmp/test.dat",
             "-Dulyp.methods=**.InstrumentedMethodBenchmark.c",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-            "-Dulyp.constructors"
+            "-Dulyp.record-constructors"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @CompilerControl(CompilerControl.Mode.EXCLUDE)

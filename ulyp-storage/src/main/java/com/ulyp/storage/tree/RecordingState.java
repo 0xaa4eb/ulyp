@@ -62,7 +62,7 @@ public class RecordingState {
 /*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
                                 "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
-                                " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.constructors option)");
+                                " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.record-constructors option)");
 */
                     return;
                 }
