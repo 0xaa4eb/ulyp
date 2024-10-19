@@ -22,7 +22,7 @@ public class ForkProcessBuilder {
     private List<String> instrumentedPackages = new ArrayList<>();
     private String excludeClassesProperty = null;
     private List<String> excludedFromInstrumentationPackages = new ArrayList<>();
-    private CollectionsRecordingMode collectionsRecordingMode = CollectionsRecordingMode.NONE;
+    private CollectionsRecordingMode collectionsRecordingMode;
     private String printTypes = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
@@ -166,13 +166,15 @@ public class ForkProcessBuilder {
         if (recordCollectionItems != null) {
             params.add("-D" + AgentOptions.RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY + "=" + recordCollectionItems);
         }
+        if (collectionsRecordingMode != null) {
+            params.add("-D" + AgentOptions.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
+        }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);
         params.add("-D" + AgentOptions.TYPE_VALIDATION_ENABLED_PROPERTY);
         params.add("-D" + LoggingSettings.LOG_LEVEL_PROPERTY + "=" + logLevel);
         params.add("-D" + AgentOptions.START_RECORDING_METHODS_PROPERTY + "=" + methodToRecord.toString());
         params.add("-D" + AgentOptions.FILE_PATH_PROPERTY + "=" + (outputFile != null ? outputFile : ""));
-        params.add("-D" + AgentOptions.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
 
         systemProps.forEach(sysProp -> params.add(sysProp.toJavaCmdLineProp()));
 

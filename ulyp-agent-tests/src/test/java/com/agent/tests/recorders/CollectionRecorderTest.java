@@ -19,8 +19,21 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class CollectionRecorderTest extends AbstractInstrumentationTest {
+
+    @Test
+    void shouldNotRecordCollectionByDefault() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnArrayListOfString")
+        );
+
+        assertInstanceOf(IdentityObjectRecord.class, root.getReturnValue());
+    }
 
     @Test
     void shouldRecordCollectionItems() {

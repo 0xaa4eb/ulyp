@@ -114,6 +114,7 @@ public class AgentOptions {
     );
     private final AgentOption<CollectionsRecordingMode> collectionsRecordingMode = new AgentOption<>(
             RECORD_COLLECTIONS_PROPERTY,
+            CollectionsRecordingMode.NONE,
             CollectionsRecordingMode::valueOf,
             "Defines if collections, maps and arrays should be recorded. Defaults to 'NONE' which allows the agent to pass all objects by reference" +
                     " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
