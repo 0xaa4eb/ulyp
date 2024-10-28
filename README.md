@@ -21,7 +21,7 @@ Here is the basic example of recorded execution of Hibernate framework
 
 ![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
-## Example of usage
+## How to use
 
 Usage is relatively simple.
 
