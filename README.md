@@ -30,26 +30,28 @@ Usage is relatively simple.
     
     
     ```
-    -javaagent:~/ulyp-agent-1.0.0.jar
-    -Dulyp.methods=**.HibernateShowcase.save
-    -Dulyp.file=/tmp/hibernate-recording.dat
+    -javaagent:/path/to/ulyp-agent-1.0.0.jar
+    -Dulyp.methods=**.HibernateShowcase.*
+    -Dulyp.file=/tmp/recording.dat
     ```
-    
-    
-Whenever methods with name `save` and class name `**.HibernateShowcase` (inheritors including) are called, recording will start. 
-The data is written to the specified file which can later be opened in the UI.
 
-## Key details
+Recording starts when any method of a class which has class name `HibernateShowcase` is called. The data is written to the 
+specified file which can later be opened in the UI.
 
-All instrumentation is done using [byte buddy](https://github.com/raphw/byte-buddy) library. All Java objects are recorded by the specialized [recorders](https://github.com/0xaa4eb/ulyp/tree/master/ulyp-common/src/main/java/com/ulyp/core/recorders). 
-Each recorder supports a particular set of Java types and is responsible for serializing object values into bytes. 
-Note that Ulyp doesn't fully serialize objects. Let's say, for `String` the first couple of hundred symbols are only recorded. 
-All data is written to file in a flat format. 
-UI later uses [RocksDB](https://github.com/facebook/rocksdb) in order to build the index
+Examples of method matchers are:
+<table>
+<tr>
+		<th>Matcher</th>
+		<th>Explanation</th>
+</tr>
+<tr><td>org.springframework.**.Service.*</td><td>Record any method of class Service in package org.springframework (or nested) package</td></tr>
+<tr><td>**.Runnable.run</td><td>Record all Runnable instances</td></tr>
+<tr><td>*.*</td><td>Record all calls (Experimental)</td></tr>
+</table>
 
 ## Options
 
-The agent is controlled via JVM properties.
+The agent is controlled via JVM system properties.
 
 | Property                          | Description                                                                                                                                                                                                                                       | Example                                                   | Default      |
 |-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------|
