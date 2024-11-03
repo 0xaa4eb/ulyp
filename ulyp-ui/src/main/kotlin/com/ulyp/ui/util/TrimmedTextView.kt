@@ -10,5 +10,6 @@ class TrimmedTextView(value: Text) : Text() {
             textContent = textContent.substring(0..75) + "..."
         }
         this.text = textContent
+        this.styleClass.addAll(value.styleClass)
     }
 }

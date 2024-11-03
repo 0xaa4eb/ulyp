@@ -89,6 +89,10 @@
     -fx-fill: rgb(169, 183, 198);
 }
 
+.ulyp-call-tree-class.ulyp-call-tree-bold {
+    -fx-fill: rgb(169, 183, 198);
+}
+
 .ulyp-call-tree-string {
     -fx-fill: rgb(0, 120, 0);
 }
