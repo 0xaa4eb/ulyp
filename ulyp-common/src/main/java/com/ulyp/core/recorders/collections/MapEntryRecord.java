@@ -2,7 +2,9 @@ package com.ulyp.core.recorders.collections;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.ObjectRecord;
+import lombok.Getter;
 
+@Getter
 public class MapEntryRecord extends ObjectRecord {
 
     private final ObjectRecord key;
@@ -13,14 +15,6 @@ public class MapEntryRecord extends ObjectRecord {
 
         this.key = key;
         this.value = value;
-    }
-
-    public ObjectRecord getKey() {
-        return key;
-    }
-
-    public ObjectRecord getValue() {
-        return value;
     }
 
     @Override

@@ -4,20 +4,18 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.collections.CollectionRecord;
+import com.ulyp.core.recorders.collections.CollectionType;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.storage.tree.CallRecord;
-import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import static com.agent.tests.util.RecordingMatchers.isString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
@@ -29,40 +27,111 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
+                        .withMethodToRecord("returnList")
         );
 
         assertInstanceOf(IdentityObjectRecord.class, root.getReturnValue());
     }
 
     @Test
-    void shouldRecordCollectionItems() {
+    void shouldRecordElementsForList() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
-                        .withRecordCollections(CollectionsRecordingMode.ALL)
+                        .withMethodToRecord("returnList")
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+        CollectionRecord record = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(6, collection.getLength());
+        assertEquals(CollectionType.LIST, record.getCollectionType());
+        assertEquals(6, record.getLength());
 
-        List<ObjectRecord> items = collection.getRecordedItems();
-
-        assertEquals("a", ((StringObjectRecord) items.get(0)).value());
-        assertEquals("b", ((StringObjectRecord) items.get(1)).value());
-        assertEquals("c", ((StringObjectRecord) items.get(2)).value());
+        assertThat(record.getElements(), contains(
+                isString("A"),
+                isString("B"),
+                isString("C"))
+        );
     }
 
     @Test
-    void shouldRecordCollectionItemsMoreItemsIfPropSet() {
+    void shouldRecordElementsForSet() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
+                        .withMethodToRecord("returnSet")
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
+        );
+
+        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(CollectionType.SET, record.getCollectionType());
+        assertEquals(6, record.getLength());
+
+        List<ObjectRecord> items = record.getElements();
+
+        assertThat(items, containsInAnyOrder(
+                isString("A"),
+                isString("B"),
+                isString("C"))
+        );
+    }
+
+    @Test
+    void shouldRecordElementsForQueue() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnQueue")
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
+        );
+
+        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(CollectionType.QUEUE, record.getCollectionType());
+        assertEquals(6, record.getLength());
+
+        List<ObjectRecord> items = record.getElements();
+
+        assertThat(items, containsInAnyOrder(
+                isString("Q1"),
+                isString("Q2"),
+                isString("Q3"))
+        );
+    }
+
+    @Test
+    void shouldRecordElementsForCustomCollection() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnBag")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
+        );
+
+        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(CollectionType.OTHER, record.getCollectionType());
+        assertEquals(6, record.getLength());
+
+        assertThat(record.getElements(), contains(
+                isString("A"),
+                isString("B"),
+                isString("C"))
+        );
+    }
+
+    @Test
+    void shouldRecordCollectionElementsMoreItemsIfPropSet() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
                         .withRecordCollectionItems(5)
         );
@@ -71,13 +140,13 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         assertEquals(6, collection.getLength());
 
-        List<ObjectRecord> items = collection.getRecordedItems();
-
-        assertEquals("a", ((StringObjectRecord) items.get(0)).value());
-        assertEquals("b", ((StringObjectRecord) items.get(1)).value());
-        assertEquals("c", ((StringObjectRecord) items.get(2)).value());
-        assertEquals("d", ((StringObjectRecord) items.get(3)).value());
-        assertEquals("e", ((StringObjectRecord) items.get(4)).value());
+        assertThat(collection.getElements(), contains(
+                isString("A"),
+                isString("B"),
+                isString("C"),
+                isString("D"),
+                isString("E"))
+        );
     }
 
     @Test
@@ -86,11 +155,11 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
+                        .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -99,11 +168,11 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
-                        .withMethodToRecord("returnArrayListOfString")
+                        .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -116,7 +185,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), instanceOf(IdentityObjectRecord.class));
     }
 
     @Test
@@ -129,7 +198,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        assertThat(root.getReturnValue(), Matchers.instanceOf(CollectionRecord.class));
+        assertThat(root.getReturnValue(), instanceOf(CollectionRecord.class));
     }
 
     @Test
@@ -142,13 +211,25 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
+        assertThat(root.getReturnValue(), instanceOf(IdentityObjectRecord.class));
     }
 
     static class TestCase {
 
-        public static List<String> returnArrayListOfString() {
-            return Arrays.asList("a", "b", "c", "d", "e", "f");
+        public static List<String> returnList() {
+            return Arrays.asList("A", "B", "C", "D", "E", "F");
+        }
+
+        public static Set<String> returnSet() {
+            return new HashSet<>(Arrays.asList("A", "B", "C", "D", "E", "F"));
+        }
+
+        public static Bag<String> returnBag() {
+            return new Bag<>(Arrays.asList("A", "B", "C", "D", "E", "F"));
+        }
+
+        public static Queue<String> returnQueue() {
+            return new ArrayDeque<>(Arrays.asList("Q1", "Q2", "Q3", "Q4", "Q5", "Q6"));
         }
 
         public static List<String> returnCustomList() {
@@ -176,10 +257,87 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         }
 
         public static void main(String[] args) {
-            System.out.println(returnArrayListOfString());
+            System.out.println(returnList());
+            System.out.println(returnSet());
+            System.out.println(returnBag());
+            System.out.println(returnQueue());
             System.out.println(returnCustomList());
             List<String> strings = returnThrowingOnIteratorList();
             System.out.println(System.identityHashCode(strings));
+        }
+    }
+
+    static class Bag<E> implements Collection<E> {
+
+        private final List<E> internal;
+
+        public Bag(List<E> from) {
+            this.internal = new ArrayList<>(from);
+        }
+
+        @Override
+        public int size() {
+            return internal.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return internal.isEmpty();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return internal.contains(o);
+        }
+
+        @Override
+        public @NotNull Iterator<E> iterator() {
+            return internal.iterator();
+        }
+
+        @Override
+        public @NotNull Object[] toArray() {
+            return internal.toArray();
+        }
+
+        @Override
+        public @NotNull <T> T[] toArray(@NotNull T[] a) {
+            return internal.toArray(a);
+        }
+
+        @Override
+        public boolean add(E e) {
+            return internal.add(e);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return internal.remove(o);
+        }
+
+        @Override
+        public boolean containsAll(@NotNull Collection<?> c) {
+            return internal.containsAll(c);
+        }
+
+        @Override
+        public boolean addAll(@NotNull Collection<? extends E> c) {
+            return internal.addAll(c);
+        }
+
+        @Override
+        public boolean removeAll(@NotNull Collection<?> c) {
+            return internal.removeAll(c);
+        }
+
+        @Override
+        public boolean retainAll(@NotNull Collection<?> c) {
+            return internal.retainAll(c);
+        }
+
+        @Override
+        public void clear() {
+            internal.clear();
         }
     }
 }

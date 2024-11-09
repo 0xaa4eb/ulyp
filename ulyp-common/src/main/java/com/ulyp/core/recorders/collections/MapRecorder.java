@@ -6,7 +6,6 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.Setter;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
@@ -20,11 +19,11 @@ import java.util.Map;
 
 public class MapRecorder extends ObjectRecorder {
 
-    private static final byte RECORDED_ITEMS_FLAG = 1;
+    private static final byte RECORDED_ENTRIES_FLAG = 1;
     private static final byte RECORDED_IDENTITY_ONLY = 0;
 
     @Setter
-    private int maxItemsToRecord;
+    private int maxEntriesToRecord;
     @Setter
     private volatile CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
     private volatile boolean active = true;
@@ -45,13 +44,13 @@ public class MapRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
-        byte recordedItems = input.readByte();
+        byte recordedEntries = input.readByte();
 
-        if (recordedItems == RECORDED_ITEMS_FLAG) {
+        if (recordedEntries == RECORDED_ENTRIES_FLAG) {
             int collectionSize = input.readVarInt();
-            int recordedItemsCount = input.readVarInt();
+            int recordedEntriesCount = input.readVarInt();
             List<MapEntryRecord> entries = new ArrayList<>();
-            for (int i = 0; i < recordedItemsCount; i++) {
+            for (int i = 0; i < recordedEntriesCount; i++) {
                 ObjectRecord key = input.readObject(typeResolver);
                 ObjectRecord value = input.readObject(typeResolver);
                 entries.add(new MapEntryRecord(Type.unknown(), key, value));
@@ -67,17 +66,17 @@ public class MapRecorder extends ObjectRecorder {
         try (BytesOut out = nout.nest()) {
             if (active) {
                 Mark mark = out.mark();
-                out.write(RECORDED_ITEMS_FLAG);
+                out.write(RECORDED_ENTRIES_FLAG);
                 try {
                     Map<?, ?> collection = (Map<?, ?>) object;
                     int length = collection.size();
                     out.writeVarInt(length);
-                    int itemsToRecord = Math.min(maxItemsToRecord, length);
-                    out.writeVarInt(itemsToRecord);
+                    int entriesToRecord = Math.min(maxEntriesToRecord, length);
+                    out.writeVarInt(entriesToRecord);
                     Iterator<? extends Map.Entry<?, ?>> iterator = collection.entrySet().iterator();
                     int recorded = 0;
 
-                    while (recorded < itemsToRecord && iterator.hasNext()) {
+                    while (recorded < entriesToRecord && iterator.hasNext()) {
                         Map.Entry<?, ?> entry = iterator.next();
                         out.write(entry.getKey(), typeResolver);
                         out.write(entry.getValue(), typeResolver);

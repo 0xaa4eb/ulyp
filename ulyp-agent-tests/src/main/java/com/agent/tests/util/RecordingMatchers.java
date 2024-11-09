@@ -1,6 +1,8 @@
 package com.agent.tests.util;
 
 import com.ulyp.core.Method;
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -8,6 +10,20 @@ import org.hamcrest.TypeSafeMatcher;
 
 
 public class RecordingMatchers {
+
+    public static Matcher<ObjectRecord> isString(String value) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof StringObjectRecord && ((StringObjectRecord) item).value().equals(value);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded string with value ").appendValue(value);
+            }
+        };
+    }
 
     public static Matcher<Method> hasName(String name) {
         return new TypeSafeMatcher<Method>() {

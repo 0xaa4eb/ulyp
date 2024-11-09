@@ -22,12 +22,12 @@ import java.util.List;
 @Slf4j
 public class CollectionRecorder extends ObjectRecorder {
 
-    private static final int RECORDED_ITEMS_FLAG = 1;
-    private static final int RECORDED_IDENTITY_FLAG = 0;
+    protected static final int RECORDED_ELEMENTS_FLAG = 1;
+    protected static final int RECORDED_IDENTITY_FLAG = 0;
 
     private volatile boolean active = true;
     @Setter
-    private int maxItemsToRecord;
+    private int maxElementsToRecord;
     private CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
 
     public CollectionRecorder(byte id) {
@@ -50,21 +50,26 @@ public class CollectionRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
-        int recordedItems = input.readInt();
+    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
+        return read(objectType, CollectionType.OTHER, input, typeResolver);
+    }
 
-        if (recordedItems == RECORDED_ITEMS_FLAG) {
+    protected ObjectRecord read(@NotNull Type type, CollectionType collectionType, BytesIn input, ByIdTypeResolver typeResolver) {
+        int recordedElements = input.readInt();
+
+        if (recordedElements == RECORDED_ELEMENTS_FLAG) {
             int collectionSize = input.readInt();
-            List<ObjectRecord> items = new ArrayList<>();
-            int recordedItemsCount = input.readInt();
+            List<ObjectRecord> elements = new ArrayList<>();
+            int recordedElementsCount = input.readInt();
 
-            for (int i = 0; i < recordedItemsCount; i++) {
-                items.add(input.readObject(typeResolver));
+            for (int i = 0; i < recordedElementsCount; i++) {
+                elements.add(input.readObject(typeResolver));
             }
             return new CollectionRecord(
                     type,
+                    collectionType,
                     collectionSize,
-                    items
+                    elements
             );
         } else {
             return ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
@@ -75,23 +80,23 @@ public class CollectionRecorder extends ObjectRecorder {
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         if (active) {
             Mark mark = out.mark();
-            out.write(RECORDED_ITEMS_FLAG);
+            out.write(RECORDED_ELEMENTS_FLAG);
             try {
                 Collection<?> collection = (Collection<?>) object;
                 int length = collection.size();
                 out.write(length);
-                int itemsToRecord = Math.min(maxItemsToRecord, length);
-                out.write(itemsToRecord);
+                int elementsToRecord = Math.min(maxElementsToRecord, length);
+                out.write(elementsToRecord);
                 Iterator<?> iterator = collection.iterator();
                 int recorded = 0;
 
-                while (recorded < itemsToRecord && iterator.hasNext()) {
+                while (recorded < elementsToRecord && iterator.hasNext()) {
                     out.write(iterator.next(), typeResolver);
                     recorded++;
                 }
             } catch (Throwable throwable) {
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Collection items will not be recorded as error occurred while recording", throwable);
+                    log.info("Collection elements will not be recorded as error occurred while recording", throwable);
                 }
                 mark.rollback();
                 active = false; // TODO ban by id

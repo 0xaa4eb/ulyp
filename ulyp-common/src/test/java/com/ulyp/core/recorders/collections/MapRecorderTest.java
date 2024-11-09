@@ -42,7 +42,7 @@ class MapRecorderTest {
 
     @BeforeEach
     public void setUp() {
-        mapRecorder.setMaxItemsToRecord(3);
+        mapRecorder.setMaxEntriesToRecord(3);
     }
 
     @Test
