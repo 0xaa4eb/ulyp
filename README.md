@@ -6,9 +6,7 @@
 
 ## TL;DR
 
-Ulyp instruments all third-party library classes and record their method calls including return values and 
-arguments, so that you can have a better understanding of what your code and frameworks do, find inefficiencies, debug faster. Instrumentation is done by [byte-buddy](https://github.com/raphw/byte-buddy) library. 
-All data is saved to a file during recording. No clouds uploads, server, etc. UI is a desktop app written using JavaFX.
+Run your code, record everything, analyze execution flow.
 
 Here is the basic example of recorded execution of Hibernate framework
 
