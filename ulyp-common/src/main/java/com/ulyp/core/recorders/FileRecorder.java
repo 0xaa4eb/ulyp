@@ -7,11 +7,13 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.File;
 
 /**
  * Records instances of {@link File} class
  */
+@ThreadSafe
 public class FileRecorder extends ObjectRecorder {
 
     protected FileRecorder(byte id) {

@@ -10,9 +10,11 @@ import com.ulyp.core.recorders.ObjectRecorder;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 
+@ThreadSafe
 public class ObjectArrayRecorder extends ObjectRecorder {
 
     // Intentionally not volatile

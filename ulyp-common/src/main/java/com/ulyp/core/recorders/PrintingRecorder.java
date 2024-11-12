@@ -8,9 +8,14 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.util.TypeMatcher;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Allows to record the result of {@link Object#toString()} for requested types.
+ */
+@ThreadSafe
 public class PrintingRecorder extends ObjectRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;

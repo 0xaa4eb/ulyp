@@ -7,8 +7,10 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Date;
 
+@ThreadSafe
 public class DateRecorder extends ObjectRecorder {
 
     protected DateRecorder(byte id) {

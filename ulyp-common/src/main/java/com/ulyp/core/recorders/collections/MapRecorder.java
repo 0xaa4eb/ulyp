@@ -12,11 +12,13 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+@ThreadSafe
 public class MapRecorder extends ObjectRecorder {
 
     private static final byte RECORDED_ENTRIES_FLAG = 1;

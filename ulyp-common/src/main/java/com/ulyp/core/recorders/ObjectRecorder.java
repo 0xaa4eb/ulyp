@@ -7,14 +7,17 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Object recorder which does what it is named for. It essentially encodes some java object of
  * certain type at runtime into bytes which can later be read and decoded.
  * The decoded value is some implementation of {@link ObjectRecord}.
- * <p>
  * Depending on the particular implementation used for serialization
  * some amount of information may (and for some data types certainly will) be lost.
+ * Every implementation must be thread-safe.
  */
+@ThreadSafe
 public abstract class ObjectRecorder {
 
     protected final String simpleClassName;

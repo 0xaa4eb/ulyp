@@ -7,9 +7,12 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Currently supports both primitive and boxed numbers
  */
+@ThreadSafe
 public class NumbersRecorder extends ObjectRecorder {
 
     protected NumbersRecorder(byte id) {

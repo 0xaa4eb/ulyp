@@ -9,9 +9,11 @@ import com.ulyp.core.bytes.BytesOut;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Optional;
 
 @Slf4j
+@ThreadSafe
 public class OptionalRecorder extends ObjectRecorder {
 
     protected OptionalRecorder(byte id) {

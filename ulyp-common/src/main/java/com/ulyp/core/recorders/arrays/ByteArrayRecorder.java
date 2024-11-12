@@ -13,10 +13,13 @@ import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 
 /**
- * Recorder for byte arrays. It currently records only the length of array.
+ * Byte array recorder. It currently only records the length of array.
  */
+@ThreadSafe
 public class ByteArrayRecorder extends ObjectRecorder {
 
     // Intentionally not volatile

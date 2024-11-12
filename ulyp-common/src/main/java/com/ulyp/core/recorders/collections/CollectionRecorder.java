@@ -14,12 +14,14 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
+@ThreadSafe
 public class CollectionRecorder extends ObjectRecorder {
 
     protected static final int RECORDED_ELEMENTS_FLAG = 1;

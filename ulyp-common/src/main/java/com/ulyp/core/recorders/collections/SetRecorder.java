@@ -7,9 +7,11 @@ import com.ulyp.core.recorders.ObjectRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Set;
 
 @Slf4j
+@ThreadSafe
 public class SetRecorder extends CollectionRecorder {
 
     public SetRecorder(byte id) {

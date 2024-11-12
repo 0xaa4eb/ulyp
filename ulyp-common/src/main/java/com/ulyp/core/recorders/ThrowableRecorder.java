@@ -8,6 +8,9 @@ import com.ulyp.core.bytes.BytesOut;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public class ThrowableRecorder extends ObjectRecorder {
 
     protected ThrowableRecorder(byte id) {

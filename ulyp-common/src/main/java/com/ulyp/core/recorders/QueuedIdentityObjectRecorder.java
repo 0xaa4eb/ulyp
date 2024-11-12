@@ -8,6 +8,9 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public class QueuedIdentityObjectRecorder extends ObjectRecorder {
 
     protected QueuedIdentityObjectRecorder(byte id) {

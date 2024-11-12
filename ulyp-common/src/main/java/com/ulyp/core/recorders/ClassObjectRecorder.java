@@ -9,7 +9,10 @@ import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 @Slf4j
+@ThreadSafe
 public class ClassObjectRecorder extends ObjectRecorder {
 
     protected ClassObjectRecorder(byte id) {

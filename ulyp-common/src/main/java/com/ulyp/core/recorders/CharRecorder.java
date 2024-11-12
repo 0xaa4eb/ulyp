@@ -7,6 +7,9 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public class CharRecorder extends ObjectRecorder {
 
     protected CharRecorder(byte id) {
