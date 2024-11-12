@@ -27,7 +27,7 @@ abstract class RenderedObject protected constructor() : TextFlow() {
                 is ByteArrayRecord -> RenderedByteArray(record)
                 is CollectionRecord -> RenderedCollection(record, renderSettings)
                 is MapEntryRecord -> RenderedMapEntry(record, renderSettings)
-                is ClassObjectRecord -> RenderedClassObject(record, renderSettings)
+                is ClassRecord -> RenderedClassObject(record, renderSettings)
                 is MapRecord -> RenderedMap(record, renderSettings)
                 is IdentityObjectRecord -> RenderedIdentityObject(record, renderSettings)
                 is ThrowableRecord -> RenderedException(record, renderSettings)

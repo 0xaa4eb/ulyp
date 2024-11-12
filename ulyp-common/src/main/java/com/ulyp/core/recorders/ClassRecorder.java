@@ -13,9 +13,9 @@ import javax.annotation.concurrent.ThreadSafe;
 
 @Slf4j
 @ThreadSafe
-public class ClassObjectRecorder extends ObjectRecorder {
+public class ClassRecorder extends ObjectRecorder {
 
-    protected ClassObjectRecorder(byte id) {
+    protected ClassRecorder(byte id) {
         super(id);
     }
 
@@ -31,7 +31,7 @@ public class ClassObjectRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        return new ClassObjectRecord(objectType, typeResolver.getType(input.readVarInt()));
+        return new ClassRecord(objectType, typeResolver.getType(input.readVarInt()));
     }
 
     @Override

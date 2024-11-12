@@ -1,13 +1,13 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.ClassObjectRecord
+import com.ulyp.core.recorders.ClassRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of
 import com.ulyp.ui.util.TrimmedTextView
 import javafx.scene.text.Text
 
-class RenderedClassObject(record: ClassObjectRecord, renderSettings: RenderSettings) : RenderedObject() {
+class RenderedClassObject(record: ClassRecord, renderSettings: RenderSettings) : RenderedObject() {
 
     init {
         if (renderSettings.showTypes) {

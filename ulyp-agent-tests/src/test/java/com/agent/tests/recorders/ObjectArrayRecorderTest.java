@@ -127,7 +127,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         NumberRecord arg1 = (NumberRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
 
-        ClassObjectRecord arg4 = (ClassObjectRecord) items.get(2);
+        ClassRecord arg4 = (ClassRecord) items.get(2);
         assertThat(arg4.getCarriedType().getName(), is(Object.class.getName()));
     }
 
@@ -143,9 +143,9 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         ObjectArrayRecord record = (ObjectArrayRecord) root.getArgs().get(0);
 
-        assertThat(record.getRecordedItems().get(0), Matchers.instanceOf(ClassObjectRecord.class));
-        assertThat(record.getRecordedItems().get(1), Matchers.instanceOf(ClassObjectRecord.class));
-        assertThat(record.getRecordedItems().get(2), Matchers.instanceOf(ClassObjectRecord.class));
+        assertThat(record.getRecordedItems().get(0), Matchers.instanceOf(ClassRecord.class));
+        assertThat(record.getRecordedItems().get(1), Matchers.instanceOf(ClassRecord.class));
+        assertThat(record.getRecordedItems().get(2), Matchers.instanceOf(ClassRecord.class));
     }
 
     public static class TakesEmptyObjectArray {

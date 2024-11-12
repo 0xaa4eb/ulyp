@@ -2,11 +2,11 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 
-public class ClassObjectRecord extends ObjectRecord {
+public class ClassRecord extends ObjectRecord {
 
     private final Type carriedType;
 
-    protected ClassObjectRecord(Type type, Type carriedType) {
+    protected ClassRecord(Type type, Type carriedType) {
         super(type);
 
         if (!type.getName().equals(Class.class.getName())) {

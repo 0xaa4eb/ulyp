@@ -2,14 +2,14 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.ClassObjectRecord;
+import com.ulyp.core.recorders.ClassRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-class ClassObjectRecorderTest extends AbstractInstrumentationTest {
+class ClassRecorderTest extends AbstractInstrumentationTest {
 
     @Test
     void testClassTypeReturning() {
@@ -20,7 +20,7 @@ class ClassObjectRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("returnClass")
         );
 
-        ClassObjectRecord arg = (ClassObjectRecord) root.getReturnValue();
+        ClassRecord arg = (ClassRecord) root.getReturnValue();
 
         assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
     }
@@ -34,7 +34,7 @@ class ClassObjectRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("takeClass")
         );
 
-        ClassObjectRecord arg = (ClassObjectRecord) root.getArgs().get(0);
+        ClassRecord arg = (ClassRecord) root.getArgs().get(0);
 
         assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
     }

@@ -19,7 +19,7 @@ import com.ulyp.core.recorders.collections.*;
  * The resolution of recorders is done only once for each method and cached within {@link com.ulyp.core.Method}
  */
 public enum ObjectRecorderRegistry {
-    CLASS_OBJECT_RECORDER(new ClassObjectRecorder((byte) 1), 20),
+    CLASS_OBJECT_RECORDER(new ClassRecorder((byte) 1), 20),
     STRING_RECORDER(new StringRecorder((byte) 2), 0),
     THROWABLE_RECORDER(new ThrowableRecorder((byte) 5), 20),
     ENUM_RECORDER(new EnumRecorder((byte) 6), 5),
