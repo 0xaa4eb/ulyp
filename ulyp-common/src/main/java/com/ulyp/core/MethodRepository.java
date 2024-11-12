@@ -3,10 +3,12 @@ package com.ulyp.core;
 import com.ulyp.core.util.ConcurrentArrayList;
 import lombok.Getter;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
+@ThreadSafe
 public class MethodRepository {
 
     private final ConcurrentArrayList<Method> methods = new ConcurrentArrayList<>(64_000);

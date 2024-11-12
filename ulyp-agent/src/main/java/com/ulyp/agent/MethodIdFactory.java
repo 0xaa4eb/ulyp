@@ -13,12 +13,15 @@ import net.bytebuddy.description.method.ParameterDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bytecode.assign.Assigner;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 
 /**
  * Allows wiring method id into advice classes {@link ConstructorAdvice} and {@link MethodAdvice}
  * <p>
  * Uses a singleton instance of {@link MethodRepository} to store methods into it.
  */
+@ThreadSafe
 public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
     private final ForMethodIdOffsetMapping instance;

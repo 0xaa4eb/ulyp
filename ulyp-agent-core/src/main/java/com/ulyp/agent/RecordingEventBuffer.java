@@ -7,15 +7,18 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Thread-local buffer for recording events. Client app threads gather some number of
  * events in into such buffers and post them to the background thread.
+ * Not thread-safe. Every thread has its own event buffer.
  */
 @Getter
 @Slf4j
+@NotThreadSafe
 public class RecordingEventBuffer {
 
     private static final int MAX_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording.max-buffer-size", 256);

@@ -3,14 +3,16 @@ package com.ulyp.agent.util;
 import com.ulyp.agent.RecordingThreadLocalContext;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Maintains all recording states {@link RecordingThreadLocalContext} in a simple array for fast access
  * by recording id. The access to array is not synchronized - JVM guarantees everything is fine (no word tearing) as long as
- * different threads access their own exclusive locations.
+ * different threads access their own exclusive locations. So, it's thread-safe as long as different threads manage
+ * their recording states with different ids.
  */
-@NotThreadSafe
+@ThreadSafe
 public class RecordingContextStore {
 
     private static final int MAX_RECORDINGS = 64 * 1024;

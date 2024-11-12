@@ -12,11 +12,14 @@ import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 /**
  * Processes all events for a certain recording session. All events are serialized in a flat byte buffer and at some point
  * dropped to {@link AgentDataWriter}
  */
 @Slf4j
+@NotThreadSafe
 public class RecordingEventProcessor {
 
     private static final int FLUSH_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording-queue.serialization-buffer-size", 256 * 1024);
