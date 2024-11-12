@@ -128,7 +128,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         assertThat(arg1.getNumberPrintedText(), is("664"));
 
         ClassRecord arg4 = (ClassRecord) items.get(2);
-        assertThat(arg4.getCarriedType().getName(), is(Object.class.getName()));
+        assertThat(arg4.getDeclaringType().getName(), is(Object.class.getName()));
     }
 
     @Test

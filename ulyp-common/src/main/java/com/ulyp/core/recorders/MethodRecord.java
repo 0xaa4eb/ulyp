@@ -3,18 +3,22 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.Type;
 import lombok.Getter;
 
+import java.lang.reflect.Method;
+
 @Getter
-public class ClassRecord extends ObjectRecord {
+public class MethodRecord extends ObjectRecord {
 
     private final Type declaringType;
+    private final String name;
 
-    protected ClassRecord(Type type, Type declaringType) {
+    protected MethodRecord(Type type, String name, Type declaringType) {
         super(type);
 
-        if (!type.getName().equals(Class.class.getName())) {
+        if (!type.getName().equals(Method.class.getName())) {
             throw new RuntimeException("Type must always be a " + Class.class.getName());
         }
 
+        this.name = name;
         this.declaringType = declaringType;
     }
 

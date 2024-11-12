@@ -22,7 +22,7 @@ class ClassRecorderTest extends AbstractInstrumentationTest {
 
         ClassRecord arg = (ClassRecord) root.getReturnValue();
 
-        assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
+        assertThat(arg.getDeclaringType().getName(), is(X.class.getName()));
     }
 
     @Test
@@ -36,7 +36,7 @@ class ClassRecorderTest extends AbstractInstrumentationTest {
 
         ClassRecord arg = (ClassRecord) root.getArgs().get(0);
 
-        assertThat(arg.getCarriedType().getName(), is(X.class.getName()));
+        assertThat(arg.getDeclaringType().getName(), is(X.class.getName()));
     }
 
     static class X {
