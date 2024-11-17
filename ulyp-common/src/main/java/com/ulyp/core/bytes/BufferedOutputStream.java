@@ -3,8 +3,10 @@ package com.ulyp.core.bytes;
 import com.ulyp.core.util.SystemPropertyUtil;
 import org.agrona.DirectBuffer;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 
+@NotThreadSafe
 public class BufferedOutputStream implements OutputStream {
 
     private static final int TMP_BUF_SIZE = SystemPropertyUtil.getInt("ulyp.storage.buffered-output-stream.size", 4 * 1024);

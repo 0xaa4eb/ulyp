@@ -1,5 +1,8 @@
 package com.ulyp.core.metrics;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+@ThreadSafe
 public interface Metrics {
 
     Counter getOrCreateCounter(String name);
