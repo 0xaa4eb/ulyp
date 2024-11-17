@@ -49,11 +49,7 @@ public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
             type.setRecorderHint(recorder);
         }
         if (recorder.supportsAsyncRecording()) {
-            if (recorder instanceof IdentityRecorder) {
-                return new QueuedIdentityObject(type.getId(), value);
-            } else {
-                return value;
-            }
+            return value;
         } else {
             BufferBytesOut output = new BufferBytesOut(new UnsafeBuffer(getTmpBuffer()));
             try {
