@@ -8,9 +8,13 @@ import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.SystemPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.agrona.concurrent.UnsafeBuffer;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.concurrent.NotThreadSafe;
 
 
 @Slf4j
+@NotThreadSafe
 public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
 
     private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording.tmp-buffer.size", 16 * 1024);
@@ -42,29 +46,37 @@ public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
         if (value == null) {
             return null;
         }
+
         Type type = typeResolver.get(value);
+
         ObjectRecorder recorder = type.getRecorderHint();
         if (recorder == null) {
             recorder = RecorderChooser.getInstance().chooseForType(value.getClass());
             type.setRecorderHint(recorder);
         }
+
         if (recorder.supportsAsyncRecording()) {
-            if (recorder instanceof IdentityRecorder) {
-                return new QueuedIdentityObject(type.getId(), value);
-            } else {
-                return value;
-            }
+            // recording will be done in the background thread
+            return value;
         } else {
-            BufferBytesOut output = new BufferBytesOut(new UnsafeBuffer(getTmpBuffer()));
-            try {
-                recorder.write(value, output, typeResolver);
-                return new QueuedRecordedObject(type, recorder.getId(), output.copy());
-            } catch (Exception e) {
-                if (LoggingSettings.DEBUG_ENABLED) {
-                    log.debug("Error while recording object", e);
-                }
-                return new QueuedIdentityObject(type.getId(), value);
+            return recordNow(value, recorder, type);
+        }
+    }
+
+    private @NotNull Object recordNow(Object value, ObjectRecorder recorder, Type type) {
+        BufferBytesOut output = new BufferBytesOut(new UnsafeBuffer(getTmpBuffer()));
+
+        try {
+
+            recorder.write(value, output, typeResolver);
+            return new QueuedRecordedObject(type, recorder.getId(), output.copy());
+        } catch (Exception e) {
+
+            if (LoggingSettings.DEBUG_ENABLED) {
+                log.debug("Error while recording object", e);
             }
+            // recording failed, we can only record identity
+            return new QueuedIdentityObject(type.getId(), value);
         }
     }
 
