@@ -25,7 +25,6 @@ class ListRecorderTest extends AbstractInstrumentationTest {
                         .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getImmutableList"))
                         .withRecordCollections(CollectionsRecordingMode.JDK)
-                        .withLogLevel("TRACE")
         );
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();

@@ -24,7 +24,6 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
                         .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getArray"))
                         .withRecordArrays()
-                        .withLogLevel("TRACE")
         );
 
 
