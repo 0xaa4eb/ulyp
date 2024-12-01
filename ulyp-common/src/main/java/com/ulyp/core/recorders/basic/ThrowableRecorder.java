@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.basic;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
@@ -6,6 +6,8 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.ObjectRecorder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -13,7 +15,7 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public class ThrowableRecorder extends ObjectRecorder {
 
-    protected ThrowableRecorder(byte id) {
+    public ThrowableRecorder(byte id) {
         super(id);
     }
 

@@ -18,7 +18,7 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.SerializedMethodList;
 import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.mem.SerializedTypeList;
-import com.ulyp.core.recorders.StringObjectRecord;
+import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
 import com.ulyp.storage.reader.RecordingDataReader;

@@ -15,7 +15,7 @@ import com.ulyp.core.bytes.BytesOut;
  */
 public class DoubleRecorder extends ObjectRecorder {
 
-    protected DoubleRecorder(byte id) {
+    public DoubleRecorder(byte id) {
         super(id);
     }
 

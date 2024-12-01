@@ -4,7 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.recorders.numeric.NumberRecord;
-import com.ulyp.core.recorders.StringObjectRecord;
+import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;

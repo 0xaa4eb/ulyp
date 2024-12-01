@@ -17,7 +17,7 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public class NumbersRecorder extends ObjectRecorder {
 
-    protected NumbersRecorder(byte id) {
+    public NumbersRecorder(byte id) {
         super(id);
     }
 

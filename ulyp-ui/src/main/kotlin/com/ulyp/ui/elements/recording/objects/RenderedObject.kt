@@ -3,6 +3,7 @@ package com.ulyp.ui.elements.recording.objects
 import com.ulyp.core.recorders.*
 import com.ulyp.core.recorders.arrays.ByteArrayRecord
 import com.ulyp.core.recorders.arrays.ArrayRecord
+import com.ulyp.core.recorders.basic.*
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
 import com.ulyp.core.recorders.collections.MapRecord

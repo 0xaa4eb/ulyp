@@ -1,4 +1,4 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.basic;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
@@ -6,6 +6,8 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.ObjectRecorder;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +18,7 @@ import java.util.Optional;
 @ThreadSafe
 public class OptionalRecorder extends ObjectRecorder {
 
-    protected OptionalRecorder(byte id) {
+    public OptionalRecorder(byte id) {
         super(id);
     }
 

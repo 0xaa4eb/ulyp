@@ -1,24 +1,27 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.basic;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.ObjectRecorder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.Date;
 
 @ThreadSafe
-public class NullObjectRecorder extends ObjectRecorder {
+public class DateRecorder extends ObjectRecorder {
 
-    protected NullObjectRecorder(byte id) {
+    public DateRecorder(byte id) {
         super(id);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        return false;
+        return type == Date.class;
     }
 
     @Override
@@ -28,13 +31,11 @@ public class NullObjectRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        // still need to read as this recorder may be used inside another recorder
-        input.readBoolean();
-        return NullObjectRecord.getInstance();
+        return new DateRecord(objectType, input.readString());
     }
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
-        out.write(false);
+        out.write(object.toString());
     }
 }

@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.StringObjectRecord
+import com.ulyp.core.recorders.basic.StringObjectRecord
 import com.ulyp.ui.util.SingleLineTextView
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText

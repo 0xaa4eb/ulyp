@@ -17,7 +17,7 @@ import javax.annotation.concurrent.ThreadSafe;
 @ThreadSafe
 public class IntegralRecorder extends ObjectRecorder {
 
-    protected IntegralRecorder(byte id) {
+    public IntegralRecorder(byte id) {
         super(id);
     }
 

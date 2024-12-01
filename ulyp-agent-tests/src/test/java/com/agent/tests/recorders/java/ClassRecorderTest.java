@@ -2,7 +2,7 @@ package com.agent.tests.recorders.java;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.ClassRecord;
+import com.ulyp.core.recorders.basic.ClassRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 

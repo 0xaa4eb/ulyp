@@ -15,7 +15,7 @@ import com.ulyp.core.bytes.BytesOut;
  */
 public class FloatRecorder extends ObjectRecorder {
 
-    protected FloatRecorder(byte id) {
+    public FloatRecorder(byte id) {
         super(id);
     }
 
