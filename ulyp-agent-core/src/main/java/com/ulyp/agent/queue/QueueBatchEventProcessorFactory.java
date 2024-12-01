@@ -9,7 +9,7 @@ import com.ulyp.agent.queue.disruptor.RingBuffer;
 import com.ulyp.core.TypeResolver;
 import lombok.Getter;
 
-public class QueueBatchEventProcessorFactory implements EventProcessorFactory<EventHolder> {
+public class QueueBatchEventProcessorFactory implements EventProcessorFactory<RecordingEventDisruptorEntry> {
 
     private final TypeResolver typeResolver;
     private final AgentDataWriter agentDataWriter;
@@ -22,7 +22,7 @@ public class QueueBatchEventProcessorFactory implements EventProcessorFactory<Ev
     }
 
     @Override
-    public EventProcessor createEventProcessor(RingBuffer<EventHolder> ringBuffer, Sequence[] barrierSequences) {
+    public EventProcessor createEventProcessor(RingBuffer<RecordingEventDisruptorEntry> ringBuffer, Sequence[] barrierSequences) {
         if (eventProcessor != null) {
             return eventProcessor;
         }

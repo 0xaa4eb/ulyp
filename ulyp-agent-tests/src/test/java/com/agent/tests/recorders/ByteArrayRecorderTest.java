@@ -1,14 +1,12 @@
 package com.agent.tests.recorders;
 
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.arrays.ByteArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,6 +18,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnByteArray")
+                        .withRecordArrays()
         );
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();
@@ -33,6 +32,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
             new ForkProcessBuilder()
                 .withMainClassName(TestCase.class)
                 .withMethodToRecord("returnEmptyArray")
+                .withRecordArrays()
         );
 
         ByteArrayRecord value = (ByteArrayRecord) root.getReturnValue();

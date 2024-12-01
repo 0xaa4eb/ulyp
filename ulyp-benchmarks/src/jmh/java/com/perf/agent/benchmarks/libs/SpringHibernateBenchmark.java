@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SingleShotTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-@Warmup(iterations = 10)
+@Warmup(iterations = 20)
 @Measurement(iterations = 30)
 public class SpringHibernateBenchmark extends RecordingBenchmark {
 
-    private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "20"));
-    private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "10"));
+    private static final int PEOPLE_PER_DEPT = Integer.parseInt(System.getProperty("peoplePerDeptCount", "30"));
+    private static final int DEPT_COUNT = Integer.parseInt(System.getProperty("deptCount", "20"));
     private DepartmentService departmentService;
 
     @Setup(Level.Trial)

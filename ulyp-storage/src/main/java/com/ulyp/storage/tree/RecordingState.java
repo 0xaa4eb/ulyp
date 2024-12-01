@@ -21,6 +21,7 @@ public class RecordingState {
     @Getter
     private volatile boolean published = false;
 
+    private int nextCallId = 1;
     private long rootUniqueId = -1;
 
     public RecordingState(
@@ -41,8 +42,9 @@ public class RecordingState {
         while (iterator.hasNext()) {
             RecordedMethodCall value = iterator.next();
             long relativeAddress = iterator.address();
-            long uniqueId = BitUtil.longFromInts(metadata.getId(), (int) value.getCallId());
+
             if (value instanceof RecordedEnterMethodCall) {
+                long uniqueId = BitUtil.longFromInts(metadata.getId(), nextCallId++);
                 if (rootUniqueId < 0) {
                     rootUniqueId = uniqueId;
                 }
@@ -53,12 +55,14 @@ public class RecordingState {
                 memCallStack.push(callState);
             } else {
 
+                RecordedExitMethodCall exitMethodCall = (RecordedExitMethodCall) value;
+                long uniqueId = BitUtil.longFromInts(metadata.getId(), (int) exitMethodCall.getCallId());
                 CallRecordIndexState lastCallState = memCallStack.peek();
                 if (lastCallState == null || lastCallState.getId() != uniqueId) {
 /*
                         throw new StorageException("Inconsistent recording file. The last recorded enter method call has different " +
                                 "call id rather than the last exit method call. This usually happens when recording of constructors is enabled, and" +
-                                " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.constructors option)");
+                                " an exception is thrown inside a consutructor. Please disable recording constructors (-Dulyp.record-constructors option)");
 */
                     return;
                 }
@@ -95,8 +99,8 @@ public class RecordingState {
     }
 
     public synchronized void update(RecordingMetadata metadata) {
-        if (metadata.getRecordingCompletedEpochMillis() > 0) {
-            this.metadata.setRecordingCompletedEpochMillis(metadata.getRecordingCompletedEpochMillis());
+        if (metadata.getRecordingFinishedMillis() > 0) {
+            this.metadata.setRecordingFinishedMillis(metadata.getRecordingFinishedMillis());
         }
     }
 
@@ -143,8 +147,8 @@ public class RecordingState {
 
     public synchronized Duration getLifetime() {
         RecordingMetadata metadata = getMetadata();
-        if (metadata.getRecordingCompletedEpochMillis() > 0) {
-            return Duration.ofMillis(metadata.getRecordingCompletedEpochMillis() - metadata.getRecordingStartedEpochMillis());
+        if (metadata.getRecordingFinishedMillis() > 0) {
+            return Duration.ofMillis(metadata.getRecordingFinishedMillis() - metadata.getRecordingStartedMillis());
         } else {
             return Duration.ofSeconds(0);
         }

@@ -18,7 +18,6 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
     }
 
     private var showThreadName: Boolean = false
-    val recordingId = recording.id
 
     init {
         this.showThreadName = settings.recordingListShowThreads.get()
@@ -54,7 +53,7 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
         val recordingMetadata = recording.metadata
         val rootCallRecord = recording.root
         children.add(EnhancedText(
-            Timestamp(recordingMetadata.recordingStartedEpochMillis).toLocalDateTime().format(dateTimeFormatter),
+            Timestamp(recordingMetadata.recordingStartedMillis).toLocalDateTime().format(dateTimeFormatter),
             Style.RECORDING_LIST_ITEM)
         )
         children.add(Text(" "))
@@ -66,7 +65,7 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
         }
         children.add(Text(" "))
         children.add(EnhancedText(
-            "${ClassNameUtils.toSimpleName(rootCallRecord.method.declaringType.name)}.${rootCallRecord.method.name}",
+            "${ClassNameUtils.toSimpleName(rootCallRecord.method.type.name)}.${rootCallRecord.method.name}",
             Style.RECORDING_LIST_ITEM,
             Style.BOLD_TEXT
         ))
@@ -86,5 +85,13 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
             " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
             Style.RECORDING_LIST_ITEM
         )
+    }
+
+    fun markHighlighted() {
+        children.forEach { it.styleClass.add("search-highlighted") }
+    }
+
+    fun clearHighlight() {
+        children.forEach { it.styleClass.remove("search-highlighted") }
     }
 }

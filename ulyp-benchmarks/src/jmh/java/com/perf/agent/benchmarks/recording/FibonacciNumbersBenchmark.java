@@ -39,7 +39,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int record() {
@@ -49,7 +49,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int syncRecord(Counters counters) {

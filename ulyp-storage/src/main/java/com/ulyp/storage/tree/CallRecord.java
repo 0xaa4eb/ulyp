@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 public class CallRecord {
 
     private final long callId;
+    @Getter
     private final int subtreeSize;
     @Getter
     private final long nanosDuration;
@@ -54,10 +55,6 @@ public class CallRecord {
     private final ObjectRecord returnValue = NotRecordedObjectRecord.getInstance();
 
     private List<CallRecord> children;
-
-    public int getSubtreeSize() {
-        return subtreeSize;
-    }
 
     @NotNull
     public ObjectRecord getCallee() {
@@ -109,7 +106,7 @@ public class CallRecord {
 
     public String toString() {
         return getReturnValue() + " : " +
-                getMethod().getDeclaringType().getName() +
+                getMethod().getType().getName() +
                 "." +
                 getMethod().getName() +
                 args;

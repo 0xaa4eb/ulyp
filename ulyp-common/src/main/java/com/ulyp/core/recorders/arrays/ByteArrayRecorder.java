@@ -10,9 +10,21 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+
+/**
+ * Byte array recorder. It currently only records the length of array.
+ */
+@ThreadSafe
 public class ByteArrayRecorder extends ObjectRecorder {
+
+    // Intentionally not volatile
+    @Setter
+    private boolean enabled = false;
 
     public ByteArrayRecorder(byte id) {
         super(id);
@@ -20,19 +32,19 @@ public class ByteArrayRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return type == byte[].class;
+        return enabled && type == byte[].class;
     }
 
     @Override
     public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         IdentityObjectRecord identityRecord = (IdentityObjectRecord) ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
-        return new ByteArrayRecord(type, identityRecord, input.readInt());
+        return new ByteArrayRecord(type, identityRecord, input.readVarInt());
     }
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
         ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().write(object, out, typeResolver);
         byte[] array = (byte[]) object;
-        out.write(array.length);
+        out.writeVarInt(array.length);
     }
 }

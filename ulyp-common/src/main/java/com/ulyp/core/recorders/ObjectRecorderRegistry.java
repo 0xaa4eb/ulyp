@@ -3,8 +3,7 @@ package com.ulyp.core.recorders;
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
-import com.ulyp.core.recorders.collections.CollectionRecorder;
-import com.ulyp.core.recorders.collections.MapRecorder;
+import com.ulyp.core.recorders.collections.*;
 
 /**
  * All object recorer registry. Every recorder is provided with two values: a unique id and an order.
@@ -20,7 +19,8 @@ import com.ulyp.core.recorders.collections.MapRecorder;
  * The resolution of recorders is done only once for each method and cached within {@link com.ulyp.core.Method}
  */
 public enum ObjectRecorderRegistry {
-    CLASS_OBJECT_RECORDER(new ClassObjectRecorder((byte) 1), 20),
+    CLASS_RECORDER(new ClassRecorder((byte) 1), 20),
+    METHOD_RECORDER(new MethodRecorder((byte) 40), 20),
     STRING_RECORDER(new StringRecorder((byte) 2), 0),
     THROWABLE_RECORDER(new ThrowableRecorder((byte) 5), 20),
     ENUM_RECORDER(new EnumRecorder((byte) 6), 5),
@@ -32,7 +32,10 @@ public enum ObjectRecorderRegistry {
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
     BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),
-    COLLECTION_RECORDER(new CollectionRecorder((byte) 10), 1),
+    LIST_RECORDER(new ListRecorder((byte) 80), 2),
+    SET_RECORDER(new SetRecorder((byte) 81), 2),
+    QUEUE_RECORDER(new QueueRecorder((byte) 82), 2),
+    COLLECTION_RECORDER(new CollectionRecorder((byte) 10), 5),
     MAP_RECORDER(new MapRecorder((byte) 13), 1),
     OPTIONAL_RECORDER(new OptionalRecorder((byte) 25), 90),
     CHAR_RECORDER(new CharRecorder((byte) 28), 8),

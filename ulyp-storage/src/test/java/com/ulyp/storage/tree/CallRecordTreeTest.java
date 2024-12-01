@@ -33,10 +33,10 @@ class CallRecordTreeTest {
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final Type type = typeResolver.get(T.class);
     private final Method method = Method.builder()
-        .declaringType(type)
+        .type(type)
         .name("run")
         .id(1000)
-        .isConstructor(false)
+        .constructor(false)
         .isStatic(false)
         .returnsSomething(true)
         .build();
@@ -81,8 +81,8 @@ class CallRecordTreeTest {
     @Test
     void testReadWriteRecordingWithoutReturnValue() throws ExecutionException, InterruptedException {
         SerializedRecordedMethodCallList calls = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
-        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
-        calls.addExitMethodCall(0, typeResolver, "CDE");
+        calls.addEnterMethodCall(method.getId(), typeResolver, obj, new Object[]{"ABC"});
+        calls.addExitMethodCall(1, typeResolver, "CDE");
 
         writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);
@@ -109,7 +109,7 @@ class CallRecordTreeTest {
     @Test
     void testNotFinishedRecording() throws ExecutionException, InterruptedException {
         SerializedRecordedMethodCallList calls = new SerializedRecordedMethodCallList(1, new TestMemPageAllocator());
-        calls.addEnterMethodCall(0, method.getId(), typeResolver, obj, new Object[]{"ABC"});
+        calls.addEnterMethodCall(method.getId(), typeResolver, obj, new Object[]{"ABC"});
 
         writer.write(RecordingMetadata.builder().id(1).build());
         writer.write(types);

@@ -139,6 +139,7 @@ public class CallRecordTree implements AutoCloseable {
                         recordingListener.onRecordingUpdated(converted);
                     }
                 }
+                recordingListener.onProgressUpdated(address * 1.0d / dataReader.bytesAvailable());
             } finally {
                 listenerLock.unlock();
             }

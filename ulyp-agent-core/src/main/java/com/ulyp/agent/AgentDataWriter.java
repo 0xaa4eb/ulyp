@@ -2,13 +2,13 @@ package com.ulyp.agent;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ulyp.core.CallRecordBuffer;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.mem.SerializedMethodList;
+import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.util.ConcurrentArrayList;
 import com.ulyp.storage.writer.RecordingDataWriter;
@@ -23,7 +23,6 @@ public class AgentDataWriter {
     @Getter
     private final MethodRepository methodRepository;
     private final AtomicInteger lastIndexOfMethodWritten = new AtomicInteger(-1);
-    private final AtomicInteger lastIndexOfMethodToRecordWritten = new AtomicInteger(-1);
     private final AtomicInteger lastIndexOfTypeWritten = new AtomicInteger(-1);
 
     public AgentDataWriter(RecordingDataWriter recordingDataWriter, MethodRepository methodRepository) {
@@ -31,7 +30,7 @@ public class AgentDataWriter {
         this.methodRepository = methodRepository;
     }
 
-    public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, CallRecordBuffer callRecordBuffer) {
+    public void write(TypeResolver typeResolver, RecordingMetadata recordingMetadata, SerializedRecordedMethodCallList recordedCalls) {
 
         SerializedMethodList methodsList = new SerializedMethodList();
 
@@ -41,7 +40,7 @@ public class AgentDataWriter {
 
         for (int i = startFrom; i <= upToExcluding; i++) {
             Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
+            log.debug("Will write method {} to storage", method);
             methodsList.add(method);
         }
         if (methodsList.size() > 0) {
@@ -59,31 +58,6 @@ public class AgentDataWriter {
             }
         }
 
-        methodsList = new SerializedMethodList();
-        methods = methodRepository.getRecordingStartMethods();
-        upToExcluding = methods.size() - 1;
-        startFrom = lastIndexOfMethodToRecordWritten.get() + 1;
-
-        for (int i = startFrom; i <= upToExcluding; i++) {
-            Method method = methods.get(i);
-            log.debug("Will write {} to storage", method);
-            methodsList.add(method);
-        }
-        if (methodsList.size() > 0) {
-            recordingDataWriter.write(methodsList);
-            for (;;) {
-                int currentIndex = lastIndexOfMethodToRecordWritten.get();
-                if (currentIndex < upToExcluding) {
-                    if (lastIndexOfMethodToRecordWritten.compareAndSet(currentIndex, upToExcluding)) {
-                        break;
-                    }
-                } else {
-                    // Someone else must have written methods already
-                    break;
-                }
-            }
-        }
-
         SerializedTypeList typesList = new SerializedTypeList();
         ConcurrentArrayList<Type> types = typeResolver.values();
         upToExcluding = types.size() - 1;
@@ -91,7 +65,7 @@ public class AgentDataWriter {
 
         for (int i = startFrom; i <= upToExcluding; i++) {
             Type type = types.get(i);
-            log.debug("Will write {} to storage", type);
+            log.debug("Will write type {} to storage", type);
             typesList.add(type);
         }
         if (typesList.size() > 0) {
@@ -110,6 +84,8 @@ public class AgentDataWriter {
         }
 
         recordingDataWriter.write(recordingMetadata);
-        recordingDataWriter.write(callRecordBuffer.getRecordedCalls());
+        if (recordedCalls != null) {
+            recordingDataWriter.write(recordedCalls);
+        }
     }
 }

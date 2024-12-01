@@ -7,7 +7,7 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class TypeTest extends AbstractInstrumentationTest {
@@ -24,7 +24,7 @@ class TypeTest extends AbstractInstrumentationTest {
 
         CallRecord root = recordingResult.getSingleRoot();
 
-        assertThat(root.getMethod().getDeclaringType().getName(), is("com.agent.tests.general.TypeTest$FooImpl"));
+        assertThat(root.getMethod().getType().getName(), is("com.agent.tests.general.TypeTest$FooImpl"));
     }
 
     public interface Foo {

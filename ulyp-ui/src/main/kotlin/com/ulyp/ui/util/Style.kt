@@ -15,6 +15,7 @@ enum class Style(vararg classes: String) {
     CALL_TREE("ulyp-call-tree"),
     CALL_TREE_TIMESTAMP("ulyp-call-tree-timestamp"),
     CALL_TREE_TYPE_NAME("ulyp-call-tree-typename"),
+    CALL_TREE_CLASS("ulyp-call-tree-class"),
     CALL_TREE_STRING("ulyp-call-tree-string"),
     CALL_TREE_NUMBER("ulyp-call-tree-number"),
     CALL_TREE_NULL("ulyp-call-tree-null"),

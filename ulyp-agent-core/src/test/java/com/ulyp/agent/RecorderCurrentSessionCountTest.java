@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.metrics.NullMetrics;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,8 @@ import org.slf4j.impl.StaticLoggerBinder;
 import org.slf4j.spi.LocationAwareLogger;
 
 import com.ulyp.agent.log.SimpleLoggerFactory;
-import com.ulyp.agent.policy.EnabledRecordingPolicy;
-import com.ulyp.agent.queue.RecordingQueue;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
+import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
@@ -43,8 +44,8 @@ class RecorderCurrentSessionCountTest {
     private final MethodRepository methodRepository = new MethodRepository();
     private final TypeResolver typeResolver = new ReflectionBasedTypeResolver();
     private final StatsRecordingDataWriter recordingDataWriter = new StatsRecordingDataWriter(new NullMetrics(), new BlackholeRecordingDataWriter());
-    private final RecordingQueue recordingQueue = new RecordingQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
-    private final Recorder recorder = new Recorder(methodRepository, new EnabledRecordingPolicy(), recordingQueue, new NullMetrics());
+    private final RecordingEventQueue recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), new NullMetrics());
+    private final Recorder recorder = new Recorder(new AgentOptions(), typeResolver, methodRepository, new AlwaysEnabledRecordingPolicy(), recordingEventQueue, new NullMetrics());
     private final ReflectionBasedMethodResolver methodResolver = new ReflectionBasedMethodResolver();
     private Method method;
     private int methodIdx;
@@ -55,12 +56,12 @@ class RecorderCurrentSessionCountTest {
         method = methodResolver.resolve(X.class.getMethod("foo", Integer.class));
         methodIdx = methodRepository.putAndGetId(method);
         executor = Executors.newFixedThreadPool(THREADS);
-        recordingQueue.start();
+        recordingEventQueue.start();
     }
 
     @AfterEach
     public void tearDown() throws InterruptedException {
-        recordingQueue.close();
+        recordingEventQueue.close();
 
         ((SimpleLoggerFactory) StaticLoggerBinder.getSingleton().getLoggerFactory()).setCurrentLogLevel(LocationAwareLogger.INFO_INT);
 
@@ -81,7 +82,7 @@ class RecorderCurrentSessionCountTest {
             X callee = new X();
 
             for (int i = 0; i < recordingsCount && !Thread.currentThread().isInterrupted(); i++) {
-                int callId = recorder.startOrContinueRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
+                long callId = recorder.startRecordingOnMethodEnter(methodIdx, callee, new Object[5]);
 
                 Assertions.assertTrue(Recorder.currentRecordingSessionCount.get() > 0, "Since at least one recording session is active, " +
                     "Recorder.currentRecordingSessionCount must be positive");
@@ -104,7 +105,7 @@ class RecorderCurrentSessionCountTest {
             fut.get(1, TimeUnit.MINUTES);
         }
 
-        recordingQueue.sync(Duration.ofMinutes(3));
+        recordingEventQueue.sync(Duration.ofMinutes(3));
         assertEquals(0, Recorder.currentRecordingSessionCount.get());
     }
 }

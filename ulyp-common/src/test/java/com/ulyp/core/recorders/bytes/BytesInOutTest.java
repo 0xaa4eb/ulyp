@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.bytes.BytesIn;
@@ -76,7 +75,7 @@ abstract class BytesInOutTest {
             BytesOut out = create();
 
             while (out.position() < PageConstants.PAGE_SIZE * 30) {
-                int rnd = ThreadLocalRandom.current().nextInt(8);
+                int rnd = ThreadLocalRandom.current().nextInt(9);
                 if (rnd == 0) {
                     char value = (char) ('A' + ThreadLocalRandom.current().nextInt(25));
                     out.write(value);
@@ -106,6 +105,10 @@ abstract class BytesInOutTest {
                     ThreadLocalRandom.current().nextBytes(byteArray);
                     out.write(byteArray);
                     written.add(byteArray);
+                } else if (rnd == 7) {
+                    int value = ThreadLocalRandom.current().nextInt();
+                    out.writeVarInt(value);
+                    written.add(new VarInt(value));
                 } else {
                     byte[] byteArray = new byte[ThreadLocalRandom.current().nextInt(128) + 1];
                     ThreadLocalRandom.current().nextBytes(byteArray);
@@ -130,12 +133,23 @@ abstract class BytesInOutTest {
                     assertEquals(value, input.readString());
                 } else if (value instanceof Byte) {
                     assertEquals(value, input.readByte());
+                } else if (value instanceof VarInt) {
+                    VarInt varIntValue = (VarInt) value;
+                    assertEquals(varIntValue.value, input.readVarInt());
                 } else if (value instanceof byte[]) {
                     assertBytesEquals((byte[]) value, input.readBytes());
                 } else if (value instanceof UnsafeBuffer) {
                     input.readBytes();
                 }
             }
+        }
+    }
+
+    private static class VarInt {
+        private final int value;
+
+        private VarInt(int value) {
+            this.value = value;
         }
     }
 
@@ -265,6 +279,36 @@ abstract class BytesInOutTest {
         assertEquals("abc", out.flip().readString());
     }
 
+    @Test
+    public void testVarInt() {
+        testVarInt(Integer.MIN_VALUE);
+        testVarInt(Integer.MIN_VALUE / 2);
+        testVarInt(-1453445355);
+        testVarInt(-14534453);
+        testVarInt(-1454);
+        testVarInt(-259);
+        testVarInt(-255);
+        testVarInt(-13);
+        testVarInt(0);
+        testVarInt(5);
+        testVarInt(255);
+        testVarInt(256);
+        testVarInt(1023);
+        testVarInt(58127724);
+        testVarInt(258127724);
+        testVarInt(2058127724);
+        testVarInt(Integer.MAX_VALUE);
+    }
+
+    private void testVarInt(int value) {
+        BytesOut out = create();
+
+        try (BytesOut nested = out.nest()) {
+            nested.writeVarInt(value);
+        }
+
+        assertEquals(value, out.flip().readVarInt());
+    }
 
     @Test
     public void testRollingBack() {

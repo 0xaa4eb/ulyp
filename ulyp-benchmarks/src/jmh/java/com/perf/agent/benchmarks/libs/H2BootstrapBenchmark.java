@@ -70,7 +70,7 @@ public class H2BootstrapBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = {
         "-Dulyp.methods=" + METHOD_MATCHERS + ",**.H2BootstrapBenchmark.run",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-        "-Dulyp.constructors"
+        "-Dulyp.record-constructors"
     }, value = 3)
     @Benchmark
     public void syncRecord(Counters counters) {

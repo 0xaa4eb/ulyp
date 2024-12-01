@@ -78,6 +78,11 @@ public class FileRecordingDataReader implements RecordingDataReader {
     }
 
     @Override
+    public long bytesAvailable() {
+        return file.length();
+    }
+
+    @Override
     public void close() throws StorageException {
         if (!closed) {
             executorService.shutdownNow();
@@ -109,6 +114,8 @@ public class FileRecordingDataReader implements RecordingDataReader {
         @Override
         public void run() {
             try (BinaryListFileReader reader = new BinaryListFileReader(file)) {
+                job.onStart();
+
                 while (!Thread.currentThread().isInterrupted()) {
 
                     try {

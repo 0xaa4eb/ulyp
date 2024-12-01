@@ -94,9 +94,9 @@ class RecordedCallView(callRecord: CallRecord, renderSettings: RenderSettings) :
             result.add(
                     text().text(
                             if (renderSettings.showTypes) {
-                                node.method.declaringType.name
+                                node.method.type.name
                             } else {
-                                toSimpleName(node.method.declaringType.name)
+                                toSimpleName(node.method.type.name)
                             })
                             .style(Style.CALL_TREE)
                             .style(Style.CALL_TREE_METHOD_NAME)

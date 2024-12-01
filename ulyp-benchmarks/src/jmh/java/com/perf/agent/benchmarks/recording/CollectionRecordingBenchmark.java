@@ -33,7 +33,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int record() {
@@ -42,7 +42,7 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int syncRecord(Counters counters) throws InterruptedException {

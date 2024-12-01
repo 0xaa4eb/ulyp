@@ -20,12 +20,12 @@ public class StubSearchResultListener implements SearchResultListener {
     }
 
     @Override
-    public void onMatch(RecordedEnterMethodCall enterMethodCall) {
+    public void onMatch(int recordingId, RecordedEnterMethodCall enterMethodCall) {
         matchedCalls.add(enterMethodCall);
     }
 
     @Override
-    public void onMatch(RecordedExitMethodCall exitMethodCall) {
+    public void onMatch(int recordingId, RecordedExitMethodCall exitMethodCall) {
         matchedCalls.add(exitMethodCall);
     }
 

@@ -37,7 +37,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
             "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
             "-Dulyp.metrics",
             "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=INFO",
-            "-Dulyp.recording-queue.size=4194304"
+            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -49,7 +49,7 @@ public class NumbersRecordingBenchmark extends RecordingBenchmark {
         "-Dulyp.methods=**.NumbersRecordingBenchmark.doCompute",
         "-Dulyp.metrics",
         "-Dcom.ulyp.slf4j.simpleLogger.defaultLogLevel=OFF",
-        "-Dulyp.recording-queue.size=4194304"
+        "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public long syncRecord(Counters counters) {

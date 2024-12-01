@@ -7,9 +7,12 @@ import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * Number recorder. Handles everything including byte/short/int/long
  */
+@ThreadSafe
 public class IntegralRecorder extends ObjectRecorder {
 
     protected IntegralRecorder(byte id) {

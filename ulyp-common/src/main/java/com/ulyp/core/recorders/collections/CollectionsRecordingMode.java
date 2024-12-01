@@ -3,11 +3,11 @@ package com.ulyp.core.recorders.collections;
 public enum CollectionsRecordingMode {
 
     /**
-     * Records all java collections (i.e. those which are concrete classes and have package java.*).
+     * Records all java collections/maps (i.e. those which are concrete classes and have package java.*).
      * This is a safer, because some collections which have side-effect iteration (like Hibernate persisted collections)
      * are not recorded.
      */
-    JAVA {
+    JDK {
         @Override
         public boolean supports(Class<?> type) {
             return type.getName().startsWith("java.") && !type.getName().startsWith("java.util.concurrent");
@@ -19,7 +19,7 @@ public enum CollectionsRecordingMode {
         }
     },
     /**
-     * The most intrusive mode: try to record items on every collection. Might break recordings
+     * The most intrusive mode: try to record elements on every collection. Might break things
      */
     ALL {
         @Override
@@ -33,7 +33,7 @@ public enum CollectionsRecordingMode {
         }
     },
     /**
-     * Do not iterate and record items in collections. The most safe mode
+     * Do not iterate and record elements in collections/maps. The most safe mode
      */
     NONE {
         @Override

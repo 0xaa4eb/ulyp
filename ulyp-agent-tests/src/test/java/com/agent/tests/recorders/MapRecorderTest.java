@@ -2,24 +2,25 @@ package com.agent.tests.recorders;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import com.ulyp.core.recorders.collections.MapEntryRecord;
 import com.ulyp.core.recorders.collections.MapRecord;
 import com.ulyp.storage.tree.CallRecord;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class MapRecorderTest extends AbstractInstrumentationTest {
 
     @Test
-    void shouldRecordSimpleMap() {
+    void shouldRecordMapItems() {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -30,14 +31,47 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         MapRecord collection = (MapRecord) root.getReturnValue();
 
-        assertEquals(2, collection.getSize());
+        assertEquals(7, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
-        MapEntryRecord firstEntry = entries.get(0);
-        StringObjectRecord key = (StringObjectRecord) firstEntry.getKey();
-        assertEquals("a", key.value());
-        StringObjectRecord value = (StringObjectRecord) firstEntry.getValue();
-        assertEquals("b", value.value());
+        assertEquals(entries.size(), 3);
+
+        assertEquals("A", ((StringObjectRecord) entries.get(0).getKey()).value());
+        assertEquals("0", ((StringObjectRecord) entries.get(0).getValue()).value());
+        assertEquals("B", ((StringObjectRecord) entries.get(1).getKey()).value());
+        assertEquals("1", ((StringObjectRecord) entries.get(1).getValue()).value());
+        assertEquals("C", ((StringObjectRecord) entries.get(2).getKey()).value());
+        assertEquals("2", ((StringObjectRecord) entries.get(2).getValue()).value());
+    }
+
+    @Test
+    void shouldRecordMoreMapItemsIfPropSet() {
+
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMainClassName(TestCase.class)
+                        .withMethodToRecord("returnHashMap")
+                        .withRecordCollections(CollectionsRecordingMode.ALL)
+                        .withRecordCollectionItems(5)
+        );
+
+        MapRecord collection = (MapRecord) root.getReturnValue();
+
+        assertEquals(7, collection.getSize());
+
+        List<MapEntryRecord> entries = collection.getEntries();
+        assertEquals(entries.size(), 5);
+
+        assertEquals("A", ((StringObjectRecord) entries.get(0).getKey()).value());
+        assertEquals("0", ((StringObjectRecord) entries.get(0).getValue()).value());
+        assertEquals("B", ((StringObjectRecord) entries.get(1).getKey()).value());
+        assertEquals("1", ((StringObjectRecord) entries.get(1).getValue()).value());
+        assertEquals("C", ((StringObjectRecord) entries.get(2).getKey()).value());
+        assertEquals("2", ((StringObjectRecord) entries.get(2).getValue()).value());
+        assertEquals("D", ((StringObjectRecord) entries.get(3).getKey()).value());
+        assertEquals("3", ((StringObjectRecord) entries.get(3).getValue()).value());
+        assertEquals("E", ((StringObjectRecord) entries.get(4).getKey()).value());
+        assertEquals("4", ((StringObjectRecord) entries.get(4).getValue()).value());
     }
 
     @Test
@@ -47,7 +81,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnHashMap")
-                        .withRecordCollections(CollectionsRecordingMode.JAVA)
+                        .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
         assertThat(root.getReturnValue(), Matchers.instanceOf(IdentityObjectRecord.class));
@@ -74,7 +108,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
                 .withMainClassName(TestCase.class)
                 .withMethodToRecord("returnMapWithObjectsThrowingOnPrint")
                 .withRecordCollections(CollectionsRecordingMode.ALL)
-                .withPrintClasses("**.XYZ")
+                .withPrintTypes("**.XYZ")
         );
 
         MapRecord collection = (MapRecord) root.getReturnValue();
@@ -107,8 +141,13 @@ class MapRecorderTest extends AbstractInstrumentationTest {
         public static Map<String, String> returnHashMap() {
             return new LinkedHashMap<String, String>() {
                 {
-                    put("a", "b");
-                    put("c", "d");
+                    put("A", "0");
+                    put("B", "1");
+                    put("C", "2");
+                    put("D", "3");
+                    put("E", "4");
+                    put("F", "5");
+                    put("G", "6");
                 }
             };
         }

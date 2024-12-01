@@ -23,10 +23,10 @@ public class ReflectionBasedMethodResolver {
         return Method.builder()
             .id(idGenerator.incrementAndGet())
             .name(method.getName())
-            .isConstructor(false)
+            .constructor(false)
             .isStatic(Modifier.isStatic(method.getModifiers()))
             .returnsSomething(returns)
-            .declaringType(declaringType)
+            .type(declaringType)
             .build();
     }
 }

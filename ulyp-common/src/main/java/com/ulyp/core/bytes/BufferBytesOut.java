@@ -66,6 +66,15 @@ public class BufferBytesOut extends AbstractBytesOut {
         position += Integer.BYTES;
     }
 
+    public void writeVarInt(int v) {
+        do {
+            int bits = v & 0x7F;
+            v >>>= 7;
+            byte b = (byte) (bits + ((v != 0) ? 0x80 : 0));
+            write(b);
+        } while (v != 0);
+    }
+
     public void write(long value) {
         buffer.putLong(position, value);
         position += Long.BYTES;
@@ -91,13 +100,13 @@ public class BufferBytesOut extends AbstractBytesOut {
 
     @Override
     public void write(DirectBuffer buffer) {
-        write(buffer.capacity());
+        writeVarInt(buffer.capacity());
         this.buffer.putBytes(position, buffer, 0, buffer.capacity());
         position += buffer.capacity();
     }
 
     public void write(byte[] bytes) {
-        write(bytes.length);
+        writeVarInt(bytes.length);
         buffer.putBytes(position, bytes);
         position += bytes.length;
     }

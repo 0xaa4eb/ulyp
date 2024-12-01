@@ -61,11 +61,11 @@ class RecordingListItem(recording: Recording, settings: Settings): StackPane() {
     }
 
     fun markHighlighted() {
-//        this.children.add(RecordingListItemSelectionMark())
+        method.markHighlighted()
     }
 
     fun clearHighlight() {
-
+        method.clearHighlight()
     }
 
     fun update(recording: Recording) {

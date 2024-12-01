@@ -1,9 +1,7 @@
 package com.ulyp.core;
 
 import com.ulyp.core.recorders.ObjectRecorder;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.Set;
@@ -23,19 +21,12 @@ public class Type {
     private final String name;
     @Builder.Default
     private final Set<String> superTypeNames = Collections.emptySet();
-
+    @Getter
+    @Setter
     private volatile ObjectRecorder recorderHint;
 
     public static Type unknown() {
         return UNKNOWN;
-    }
-
-    public ObjectRecorder getRecorderHint() {
-        return recorderHint;
-    }
-
-    public void setRecorderHint(ObjectRecorder recorderHint) {
-        this.recorderHint = recorderHint;
     }
 
     public int getId() {

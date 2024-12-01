@@ -7,6 +7,8 @@ import com.ulyp.core.Type;
 
 public interface RecordingDataReaderJob {
 
+    default void onStart() {}
+
     void onProcessMetadata(ProcessMetadata processMetadata);
 
     void onRecordingMetadata(RecordingMetadata recordingMetadata);

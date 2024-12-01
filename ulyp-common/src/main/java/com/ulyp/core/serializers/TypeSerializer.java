@@ -11,14 +11,14 @@ public class TypeSerializer implements Serializer<Type> {
     @Override
     public Type deserialize(BytesIn input) {
         return Type.builder()
-                .id(input.readInt())
+                .id(input.readVarInt())
                 .name(input.readString())
                 .build();
     }
 
     @Override
     public void serialize(BytesOut out, Type m) {
-        out.write(m.getId());
+        out.writeVarInt(m.getId());
         out.write(m.getName());
     }
 }

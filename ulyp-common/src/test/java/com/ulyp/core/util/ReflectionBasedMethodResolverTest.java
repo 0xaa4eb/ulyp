@@ -24,7 +24,7 @@ class ReflectionBasedMethodResolverTest {
         Assertions.assertEquals("get", method.getName());
         Assertions.assertFalse(method.isStatic());
 
-        Type declaringType = method.getDeclaringType();
+        Type declaringType = method.getType();
         Assertions.assertEquals("com.ulyp.core.util.ReflectionBasedMethodResolverTest$T", declaringType.getName());
     }
 }

@@ -3,6 +3,9 @@ package com.ulyp.core.bytes;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
+@NotThreadSafe
 public interface BytesIn {
 
     int available();
@@ -12,6 +15,8 @@ public interface BytesIn {
     byte readByte();
 
     int readInt();
+
+    int readVarInt();
 
     int readInt(int offset);
 

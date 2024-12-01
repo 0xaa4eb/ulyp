@@ -7,7 +7,7 @@ import com.ulyp.core.recorders.PrintedObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -33,7 +33,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
-                        .withPrintClasses("**.X")
+                        .withPrintTypes("**.X")
         );
 
 
@@ -52,7 +52,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
                 new ForkProcessBuilder()
                         .withMainClassName(TestCase.class)
                         .withMethodToRecord("returnNonPrintableObject")
-                        .withPrintClasses("**.ToStringThrowingClass")
+                        .withPrintTypes("**.ToStringThrowingClass")
         );
 
 

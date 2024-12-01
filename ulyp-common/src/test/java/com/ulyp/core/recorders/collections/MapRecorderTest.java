@@ -2,13 +2,13 @@ package com.ulyp.core.recorders.collections;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.ulyp.core.TypeResolver;
@@ -40,12 +40,19 @@ class MapRecorderTest {
     private final MapRecorder mapRecorder = new MapRecorder((byte) 1);
     private final PrintingRecorder printingRecorder = (PrintingRecorder) ObjectRecorderRegistry.TO_STRING_RECORDER.getInstance();
 
+    @BeforeEach
+    public void setUp() {
+        mapRecorder.setMaxEntriesToRecord(3);
+    }
+
     @Test
     void test() throws Exception {
-        printingRecorder.addClassesToPrint(new HashSet<>(Arrays.asList(TypeMatcher.parse("**.XYZ"))));
+        printingRecorder.addTypeMatchers(Arrays.asList(TypeMatcher.parse("**.XYZ")));
         Map<String, XYZ> map = new HashMap<>();
         map.put("ABC", new XYZ());
         map.put("ZXC", new XYZ());
+
+        mapRecorder.setMode(CollectionsRecordingMode.ALL);
 
         mapRecorder.write(map, out, typeResolver);
 

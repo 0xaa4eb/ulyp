@@ -7,7 +7,7 @@ import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class NumbersRecorderTest extends AbstractInstrumentationTest {

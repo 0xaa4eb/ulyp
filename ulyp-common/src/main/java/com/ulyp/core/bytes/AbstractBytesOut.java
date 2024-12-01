@@ -11,6 +11,7 @@ import com.ulyp.core.util.SystemPropertyUtil;
 
 public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
 
+    protected static final int MAX_VAR_INT_BYTES = 5;
     private static final int MAXIMUM_RECURSION_DEPTH = SystemPropertyUtil.getInt("ulyp.recorder.max-recursion", 3);
     private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
 
@@ -32,19 +33,19 @@ public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
             }
 
             byte[] bytes = toPrint.getBytes(StandardCharsets.UTF_8);
-            write(bytes.length);
+            writeVarInt(bytes.length);
             for (byte b : bytes) {
                 write(b);
             }
         } else {
-            write(-1);
+            writeVarInt(-1);
         }
     }
 
     public void write(Object object, TypeResolver typeResolver) throws Exception {
         try (BytesOut nestedOut = nest()) {
             Type itemType = typeResolver.get(object);
-            write(itemType.getId());
+            writeVarInt(itemType.getId());
             ObjectRecorder recorder;
             if (object != null) {
                 // Simply stop recursively write objects if it's too deep

@@ -9,7 +9,7 @@ import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -47,7 +47,7 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord record = root.getChildren().get(0);
 
         assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
+        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
 
         ObjectRecord callee = record.getCallee();
         assertThat(callee, instanceOf(IdentityObjectRecord.class));
@@ -69,7 +69,7 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord record = root.getChildren().get(0);
 
         assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getDeclaringType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$XThrows"));
+        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$XThrows"));
         assertFalse(record.isFullyRecorded());
         assertThat(record.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
         assertThat(record.getCallee(), is(NotRecordedObjectRecord.getInstance()));

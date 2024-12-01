@@ -2,18 +2,10 @@ package com.ulyp.agent.util;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
-import com.ulyp.core.recorders.ObjectRecorder;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.RecorderChooser;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 /**
  * Converts byte buddy method description to internal domain class {@link Method}
@@ -21,13 +13,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ByteBuddyMethodResolver {
 
-    private static final AtomicInteger idGenerator = new AtomicInteger();
+    public static final ByteBuddyMethodResolver INSTANCE = new ByteBuddyMethodResolver(ByteBuddyTypeConverter.INSTANCE);
 
-    private final ByteBuddyTypeConverter typeConverter;
     private final ByteBuddyTypeConverter declaringTypeConverter;
 
-    public ByteBuddyMethodResolver(ByteBuddyTypeConverter typeConverter, ByteBuddyTypeConverter declaringTypeConverter) {
-        this.typeConverter = typeConverter;
+    public ByteBuddyMethodResolver(ByteBuddyTypeConverter declaringTypeConverter) {
         this.declaringTypeConverter = declaringTypeConverter;
     }
 
@@ -45,12 +35,11 @@ public class ByteBuddyMethodResolver {
         }
 
         Method resolved = Method.builder()
-                .id(idGenerator.incrementAndGet())
                 .name(name)
-                .isConstructor(description.isConstructor())
+                .constructor(description.isConstructor())
                 .isStatic(description.isStatic())
                 .returnsSomething(returns)
-                .declaringType(declaringType)
+                .type(declaringType)
                 .build();
 
         if (LoggingSettings.TRACE_ENABLED) {

@@ -14,9 +14,9 @@ public class MethodSerializer implements Serializer<Method> {
                 .id(input.readInt())
                 .returnsSomething(input.readBoolean())
                 .isStatic(input.readBoolean())
-                .isConstructor(input.readBoolean())
+                .constructor(input.readBoolean())
                 .name(input.readString())
-                .declaringType(TypeSerializer.instance.deserialize(input))
+                .type(TypeSerializer.instance.deserialize(input))
                 .build();
     }
 
@@ -27,6 +27,6 @@ public class MethodSerializer implements Serializer<Method> {
         out.write(m.isStatic());
         out.write(m.isConstructor());
         out.write(m.getName());
-        TypeSerializer.instance.serialize(out, m.getDeclaringType());
+        TypeSerializer.instance.serialize(out, m.getType());
     }
 }

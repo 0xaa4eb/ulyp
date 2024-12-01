@@ -8,31 +8,36 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.util.TypeMatcher;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Allows to record the result of {@link Object#toString()} for requested types.
+ */
+@ThreadSafe
 public class PrintingRecorder extends ObjectRecorder {
 
     private static final int TO_STRING_CALL_SUCCESS = 1;
     private static final int TO_STRING_CALL_FAIL = 0;
 
-    private final Set<TypeMatcher> classesToPrint = new CopyOnWriteArraySet<>();
+    private final List<TypeMatcher> printedTypeMatchers = new CopyOnWriteArrayList<>();
 
     protected PrintingRecorder(byte id) {
         super(id);
     }
 
-    public void addClassesToPrint(Set<TypeMatcher> classNames) {
-        this.classesToPrint.addAll(classNames);
+    public void addTypeMatchers(List<TypeMatcher> classNames) {
+        this.printedTypeMatchers.addAll(classNames);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        if (classesToPrint.isEmpty()) {
+        if (printedTypeMatchers.isEmpty()) {
             return false;
         }
 
-        return classesToPrint.stream().anyMatch(matcher -> matcher.matches(Type.builder().name(type.getName()).build()));
+        return printedTypeMatchers.stream().anyMatch(matcher -> matcher.matches(Type.builder().name(type.getName()).build()));
     }
 
     @Override

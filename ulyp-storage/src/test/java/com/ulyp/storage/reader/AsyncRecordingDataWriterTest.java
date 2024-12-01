@@ -45,9 +45,8 @@ class AsyncRecordingDataWriterTest {
             RecordingMetadata.builder()
                 .id(1)
                 .threadId(2)
-                .logCreatedEpochMillis(999L)
-                .recordingStartedEpochMillis(90)
-                .recordingCompletedEpochMillis(100)
+                .recordingStartedMillis(90)
+                .recordingFinishedMillis(100)
                 .build()
         );
         writer.write(

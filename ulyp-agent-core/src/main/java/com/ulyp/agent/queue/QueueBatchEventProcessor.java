@@ -1,9 +1,7 @@
 package com.ulyp.agent.queue;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.lmax.disruptor.AlertException;
@@ -13,8 +11,7 @@ import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.Sequencer;
 import com.ulyp.agent.AgentDataWriter;
-import com.ulyp.agent.queue.events.EnterRecordQueueEvent;
-import com.ulyp.agent.queue.events.ExitRecordQueueEvent;
+import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.LoggingSettings;
 
@@ -30,15 +27,15 @@ public final class QueueBatchEventProcessor implements EventProcessor {
     private final AgentDataWriter agentDataWriter;
     private final Map<Integer, RecordingEventProcessor> recordingQueueProcessors = new HashMap<>();
     private final AtomicInteger status = new AtomicInteger(IDLE);
-    private final DataProvider<EventHolder> dataProvider;
+    private final DataProvider<RecordingEventDisruptorEntry> dataProvider;
     private final SequenceBarrier sequenceBarrier;
     private final Sequence sequence = new Sequence(Sequencer.INITIAL_CURSOR_VALUE);
 
     public QueueBatchEventProcessor(
-        DataProvider<EventHolder> dataProvider,
-        SequenceBarrier sequenceBarrier,
-        TypeResolver typeResolver,
-        AgentDataWriter agentDataWriter) {
+            DataProvider<RecordingEventDisruptorEntry> dataProvider,
+            SequenceBarrier sequenceBarrier,
+            TypeResolver typeResolver,
+            AgentDataWriter agentDataWriter) {
         this.dataProvider = dataProvider;
         this.sequenceBarrier = sequenceBarrier;
         this.typeResolver = typeResolver;
@@ -86,75 +83,60 @@ public final class QueueBatchEventProcessor implements EventProcessor {
         while (true) {
             try {
                 final long availableSequence = sequenceBarrier.waitFor(nextSequence);
-                Set<Integer> recordingIds = new HashSet<>();
 
                 while (nextSequence <= availableSequence) {
-                    processAtSeq(nextSequence, recordingIds);
-
-                    if (nextSequence == availableSequence) {
-                        handleBatchEnd(recordingIds);
-                    }
+                    processAtSeq(nextSequence);
                     nextSequence++;
                 }
 
                 sequence.set(availableSequence);
             } catch (final AlertException ex) {
                 if (status.get() != RUNNING) {
-                    break;
+                    return;
                 }
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
-                break;
-            } catch (final Throwable ex) {
+                return;
+            } catch (Exception ex) {
                 sequence.set(nextSequence);
                 nextSequence++;
             }
         }
     }
 
-    private void processAtSeq(long sequence, Set<Integer> recordingIds) {
-        EventHolder eventHolder = dataProvider.get(sequence);
-        Object event = eventHolder.event;
-        eventHolder.event = null;
-        if (event instanceof EnterRecordQueueEvent) {
-            // TODO possible inline recording id and event type in item holder
-            EnterRecordQueueEvent enterRecord = (EnterRecordQueueEvent) event;
-            RecordingEventProcessor processor = recordingQueueProcessors.get(enterRecord.getRecordingId());
-            if (recordingIds.add(enterRecord.getRecordingId())) {
-                processor.onEventBatchStart();
-            }
-            processor.onEnterCallRecord(enterRecord);
-        } else if (event instanceof ExitRecordQueueEvent) {
-            ExitRecordQueueEvent exitRecord = (ExitRecordQueueEvent) event;
-            RecordingEventProcessor processor = recordingQueueProcessors.get(exitRecord.getRecordingId());
-            if (recordingIds.add(exitRecord.getRecordingId())) {
-                processor.onEventBatchStart();
-            }
-            processor.onExitCallRecord(exitRecord);
-        } else {
-            RecordingMetadataQueueEvent updateRecordingMetadataItem = (RecordingMetadataQueueEvent) event;
-            RecordingEventProcessor processor = recordingQueueProcessors.get(updateRecordingMetadataItem.getRecordingMetadata().getId());
+    private void processAtSeq(long sequence) {
+        RecordingEventDisruptorEntry batch = dataProvider.get(sequence);
+        try {
+            int recordingId = batch.getRecordingId();
+            RecordingEventProcessor processor = recordingQueueProcessors.get(batch.getRecordingId());
             if (processor == null) {
                 processor = new RecordingEventProcessor(typeResolver, agentDataWriter);
-                recordingQueueProcessors.put(
-                        updateRecordingMetadataItem.getRecordingMetadata().getId(),
-                        processor
-                );
+                recordingQueueProcessors.put(recordingId, processor);
             }
-            processor.onRecordingMetadataUpdate(updateRecordingMetadataItem);
-        }
-        if (LoggingSettings.TRACE_ENABLED) {
-            log.trace("Event processed {} at seq {}", event, sequence);
-        }
-    }
-
-    private void handleBatchEnd(Set<Integer> recordingIds) {
-        for (Integer recordingId : recordingIds) {
-            RecordingEventProcessor handler = recordingQueueProcessors.get(recordingId);
-            handler.onEventBatchEnd();
-            if (handler.isComplete()) {
-                recordingQueueProcessors.remove(recordingId);
+            for (RecordingEvent event : batch.getEvents()) {
+                if (event instanceof EnterMethodRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodRecordingEvent) event);
+                } else if (event instanceof EnterMethodNoArgsRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodNoArgsRecordingEvent) event);
+                } else if (event instanceof EnterMethodOneArgRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodOneArgRecordingEvent) event);
+                } else if (event instanceof EnterMethodTwoArgsRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodTwoArgsRecordingEvent) event);
+                } else if (event instanceof EnterMethodThreeArgsRecordingEvent) {
+                    processor.onEnterCallRecord(recordingId, (EnterMethodThreeArgsRecordingEvent) event);
+                } else if (event instanceof ExitMethodRecordingEvent) {
+                    processor.onExitCallRecord(recordingId, (ExitMethodRecordingEvent) event);
+                } else if (event instanceof RecordingStartedEvent) {
+                    processor.onRecordingStarted((RecordingStartedEvent) event);
+                } else if (event instanceof RecordingFinishedEvent) {
+                    processor.onRecordingFinished((RecordingFinishedEvent) event);
+                }
+                if (LoggingSettings.TRACE_ENABLED) {
+                    log.trace("Event processed {} at seq {}", event, sequence);
+                }
             }
+        } finally {
+            batch.reset();
         }
     }
 }
