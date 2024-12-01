@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.arrays.IntArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.basic.*;
 import com.ulyp.core.recorders.collections.*;
+import com.ulyp.core.recorders.kotlin.KtPairRecorder;
 import com.ulyp.core.recorders.numeric.DoubleRecorder;
 import com.ulyp.core.recorders.numeric.IntegralRecorder;
 import com.ulyp.core.recorders.numeric.NumbersRecorder;
@@ -49,6 +50,7 @@ public enum ObjectRecorderRegistry {
     PATH_RECORDER(new PathRecorder((byte) 27), 90),
     DATE_RECORDER(new DateRecorder((byte) 20), 90),
     TO_STRING_RECORDER(new PrintingRecorder((byte) 91), 99),
+    KT_PAIR_RECORDER(new KtPairRecorder((byte) 15), 200),
     IDENTITY_RECORDER(new IdentityRecorder((byte) 0), Integer.MAX_VALUE / 2),
     // Null recorder is only used manually, so it has max available order
     NULL_RECORDER(new NullObjectRecorder((byte) 9), Integer.MAX_VALUE);

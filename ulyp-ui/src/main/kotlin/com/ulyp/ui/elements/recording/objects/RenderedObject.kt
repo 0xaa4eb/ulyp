@@ -7,6 +7,7 @@ import com.ulyp.core.recorders.basic.*
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
 import com.ulyp.core.recorders.collections.MapRecord
+import com.ulyp.core.recorders.kotlin.KtPairRecord
 import com.ulyp.core.recorders.numeric.IntegralRecord
 import com.ulyp.core.recorders.numeric.NumberRecord
 import com.ulyp.ui.RenderSettings
@@ -41,6 +42,7 @@ abstract class RenderedObject protected constructor() : TextFlow() {
                 is BooleanRecord -> RenderedBoolean(record, renderSettings)
                 is OptionalRecord -> RenderedOptional(record, renderSettings)
                 is IntegralRecord -> RenderedNumber(record.value.toString(), record.type, renderSettings)
+                is KtPairRecord -> RenderedKtPair(record, renderSettings)
                 else -> throw RuntimeException("Not supported for rendering: $record")
             }
             objectValue.children.forEach(Consumer { node: Node ->
