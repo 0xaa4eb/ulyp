@@ -2,20 +2,20 @@ package com.agent.tests.recorders.java.arrays;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
+import com.agent.tests.util.RecordingMatchers;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ArrayRecord;
 import com.ulyp.core.recorders.basic.ClassRecord;
-import com.ulyp.core.recorders.basic.StringObjectRecord;
-import com.ulyp.core.recorders.numeric.NumberRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.agent.tests.util.RecordingMatchers.isIdentity;
+import static com.agent.tests.util.RecordingMatchers.isString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
@@ -66,15 +66,12 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         assertThat(record.getLength(), is(6));
 
-        List<? extends ObjectRecord> items = record.getElements();
+        List<? extends ObjectRecord> elements = record.getElements();
 
-        assertThat(items, Matchers.hasSize(3));
-        com.ulyp.core.recorders.basic.StringObjectRecord str0 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(0);
-        assertEquals(str0.value(), "A");
-        com.ulyp.core.recorders.basic.StringObjectRecord str1 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(1);
-        assertEquals(str1.value(), "B");
-        com.ulyp.core.recorders.basic.StringObjectRecord str2 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(2);
-        assertEquals(str2.value(), "C");
+        assertThat(elements, Matchers.hasSize(3));
+        assertThat(elements.get(0), isString("A"));
+        assertThat(elements.get(1), isString("B"));
+        assertThat(elements.get(2), isString("C"));
     }
 
     @Test
@@ -93,19 +90,14 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         assertThat(record.getLength(), is(6));
 
-        List<? extends ObjectRecord> items = record.getElements();
+        List<? extends ObjectRecord> elements = record.getElements();
 
-        assertThat(items, Matchers.hasSize(5));
-        com.ulyp.core.recorders.basic.StringObjectRecord str0 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(0);
-        assertEquals(str0.value(), "A");
-        com.ulyp.core.recorders.basic.StringObjectRecord str1 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(1);
-        assertEquals(str1.value(), "B");
-        com.ulyp.core.recorders.basic.StringObjectRecord str2 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(2);
-        assertEquals(str2.value(), "C");
-        com.ulyp.core.recorders.basic.StringObjectRecord str3 = (com.ulyp.core.recorders.basic.StringObjectRecord) items.get(3);
-        assertEquals(str3.value(), "D");
-        com.ulyp.core.recorders.basic.StringObjectRecord str4 = (StringObjectRecord) items.get(4);
-        assertEquals(str4.value(), "E");
+        assertThat(elements, Matchers.hasSize(5));
+        assertThat(elements.get(0), isString("A"));
+        assertThat(elements.get(1), isString("B"));
+        assertThat(elements.get(2), isString("C"));
+        assertThat(elements.get(3), isString("D"));
+        assertThat(elements.get(4), isString("E"));
     }
 
     @Test
@@ -122,15 +114,11 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         assertThat(record.getLength(), is(5));
 
-        List<? extends ObjectRecord> items = record.getElements();
+        List<? extends ObjectRecord> elements = record.getElements();
 
-        IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
-        assertThat(arg0.getType().getName(), is(X.class.getName()));
-
-        com.ulyp.core.recorders.numeric.NumberRecord arg1 = (NumberRecord) items.get(1);
-        assertThat(arg1.getNumberPrintedText(), is("664"));
-
-        com.ulyp.core.recorders.basic.ClassRecord arg4 = (com.ulyp.core.recorders.basic.ClassRecord) items.get(2);
+        assertThat(elements.get(0), isIdentity(X.class.getName()));
+        assertThat(elements.get(1), RecordingMatchers.isIntegral(664));
+        ClassRecord arg4 = (ClassRecord) elements.get(2);
         assertThat(arg4.getDeclaringType().getName(), is(Object.class.getName()));
     }
 
@@ -146,8 +134,8 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
 
         ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
 
-        assertThat(record.getElements().get(0), Matchers.instanceOf(com.ulyp.core.recorders.basic.ClassRecord.class));
-        assertThat(record.getElements().get(1), Matchers.instanceOf(com.ulyp.core.recorders.basic.ClassRecord.class));
+        assertThat(record.getElements().get(0), Matchers.instanceOf(ClassRecord.class));
+        assertThat(record.getElements().get(1), Matchers.instanceOf(ClassRecord.class));
         assertThat(record.getElements().get(2), Matchers.instanceOf(ClassRecord.class));
     }
 
