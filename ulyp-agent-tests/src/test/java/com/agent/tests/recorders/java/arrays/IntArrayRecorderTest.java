@@ -20,7 +20,7 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
     void shouldNotRecordArrayValuesByDefault() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnArray")
         );
 
@@ -32,7 +32,7 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordIntArray() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnArray")
                         .withRecordArrays()
         );
@@ -54,7 +54,7 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordMoreElementsForIntArrayIfConfigured() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnArray")
                         .withRecordArrays()
                         .withRecordArrayItems(5)

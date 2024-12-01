@@ -14,7 +14,7 @@ class CharRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordFileObject() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnChar")
         );
 

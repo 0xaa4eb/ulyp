@@ -16,7 +16,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordByteArray() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnByteArray")
                         .withRecordArrays()
         );
@@ -30,7 +30,7 @@ class ByteArrayRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordEmptyByteArray() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
-                .withMainClassName(TestCase.class)
+                .withMain(TestCase.class)
                 .withMethodToRecord("returnEmptyArray")
                 .withRecordArrays()
         );

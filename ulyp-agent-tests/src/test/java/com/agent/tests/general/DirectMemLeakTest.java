@@ -14,7 +14,7 @@ class DirectMemLeakTest extends AbstractInstrumentationTest {
     void shouldWithstandLongRecording() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(FibonacciTestCase.class)
+                        .withMain(FibonacciTestCase.class)
                         .withMethodToRecord("compute")
         );
 

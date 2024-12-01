@@ -17,7 +17,7 @@ class IdentityRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("pass")
         );
 
@@ -35,7 +35,7 @@ class IdentityRecorderTest extends AbstractInstrumentationTest {
     void testIdentityRepresentationOfCallee() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("main")
         );
 

@@ -22,7 +22,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordImmutableMapEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getImmutableMap"))
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -48,7 +48,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordMutableMapEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getImmutableMap"))
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -74,7 +74,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordIdentityIfRecordingCollectionIsDisabled() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getImmutableMap"))
                         .withRecordCollections(CollectionsRecordingMode.NONE)
         );

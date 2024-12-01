@@ -24,7 +24,7 @@ class ActiveMQRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(ActiveMQTestCase.class)
+                        .withMain(ActiveMQTestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ActiveMQTestCase.main"))
                         .withInstrumentedPackages()
                         .withRecordConstructors()
@@ -40,7 +40,7 @@ class ActiveMQRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(ActiveMQTestCase.class)
+                        .withMain(ActiveMQTestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ActiveMQTestCase.main"))
                         .withInstrumentedPackages()
                         .withRecordConstructors()

@@ -15,3 +15,7 @@ fun getImmutableList(): List<String> {
 fun getMutableList(): MutableList<String> {
     return mutableListOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }
+
+fun getArray(): IntArray {
+    return intArrayOf(1, 2, 3, 4, 5)
+}

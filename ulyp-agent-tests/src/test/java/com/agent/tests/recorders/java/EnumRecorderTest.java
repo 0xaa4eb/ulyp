@@ -19,7 +19,7 @@ class EnumRecorderTest extends AbstractInstrumentationTest {
     void shouldPrintEnumNames() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(EnumTestCases.class)
+                        .withMain(EnumTestCases.class)
                         .withMethodToRecord("consumesMapAndEnums")
         );
 

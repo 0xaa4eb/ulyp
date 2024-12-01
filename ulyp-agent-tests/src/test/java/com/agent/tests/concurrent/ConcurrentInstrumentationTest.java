@@ -23,7 +23,7 @@ class ConcurrentInstrumentationTest extends AbstractInstrumentationTest {
     void shouldInstrumentConcurrently() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestRunner.class)
+                        .withMain(TestRunner.class)
                         .withMethodToRecord(MethodMatcher.parse("**.zxczxc.*"))
                         .withLogLevel("OFF")
         );

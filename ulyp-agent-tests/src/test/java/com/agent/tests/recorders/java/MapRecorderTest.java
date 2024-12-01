@@ -24,7 +24,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnHashMap")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
@@ -49,7 +49,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnHashMap")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
                         .withRecordCollectionItems(5)
@@ -79,7 +79,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnHashMap")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -92,7 +92,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnMapThrowingOnIteration")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
@@ -105,7 +105,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
-                .withMainClassName(TestCase.class)
+                .withMain(TestCase.class)
                 .withMethodToRecord("returnMapWithObjectsThrowingOnPrint")
                 .withRecordCollections(CollectionsRecordingMode.ALL)
                 .withPrintTypes("**.XYZ")

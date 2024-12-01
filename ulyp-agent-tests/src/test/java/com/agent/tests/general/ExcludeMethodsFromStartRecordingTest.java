@@ -29,7 +29,7 @@ class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
     void shouldRecordNormalCase() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
-                .withMainClassName(A.class)
+                .withMain(A.class)
                 .withMethodToRecord(MethodMatcher.parse("**.A.main"))
         );
 
@@ -40,7 +40,7 @@ class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
     void shouldNotStartRecordingIfMethodExcluded() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
-                .withMainClassName(A.class)
+                .withMain(A.class)
                 .withMethodToRecord(MethodMatcher.parse("**.A.foo,**.A.bar,-**.A.foo"))
         );
 
@@ -51,7 +51,7 @@ class ExcludeMethodsFromStartRecordingTest extends AbstractInstrumentationTest {
     void shouldNotStartRecordingIfMethodExcluded2() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
-                .withMainClassName(A.class)
+                .withMain(A.class)
                 .withMethodToRecord(MethodMatcher.parse("**.A.*,-**.A.main"))
         );
 

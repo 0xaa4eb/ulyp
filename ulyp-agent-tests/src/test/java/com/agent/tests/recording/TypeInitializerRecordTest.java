@@ -22,7 +22,7 @@ class TypeInitializerRecordTest extends AbstractInstrumentationTest {
     void shouldRecordTypeInitializer() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(ClassWithStaticInitializer.class)
+                        .withMain(ClassWithStaticInitializer.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ClassWithStaticInitializer.*"))
                         .withInstrumentTypeInitializers(true)
         );
@@ -56,7 +56,7 @@ class TypeInitializerRecordTest extends AbstractInstrumentationTest {
     void shouldRecordAllMethods2() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
-                .withMainClassName(ClassWhichUsesFailureTypeInitializer.class)
+                .withMain(ClassWhichUsesFailureTypeInitializer.class)
                 .withMethodToRecord(MethodMatcher.parse("**.X.*"))
                 .withInstrumentTypeInitializers(true)
         );

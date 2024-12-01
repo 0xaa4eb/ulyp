@@ -33,7 +33,7 @@ class HibernateRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(HibernateSaveEntityTest.class)
+                        .withMain(HibernateSaveEntityTest.class)
                         .withMethodToRecord(MethodMatcher.parse("**.HibernateSaveEntityTest.main"))
                         .withInstrumentedPackages()
                         .withRecordConstructors()
@@ -81,7 +81,7 @@ class HibernateRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(MultithreadedHibernateSaveEntityTest.class)
+                        .withMain(MultithreadedHibernateSaveEntityTest.class)
                         .withMethodToRecord(MethodMatcher.parse("**.DepartmentService.save"))
                         .withInstrumentedPackages()
                         .withRecordConstructors()

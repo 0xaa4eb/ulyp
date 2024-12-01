@@ -16,7 +16,7 @@ class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnArray")
                         .withRecordArrays()
         );

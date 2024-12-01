@@ -16,7 +16,7 @@ class TypeTest extends AbstractInstrumentationTest {
     void shouldProvideArgumentTypes() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.FooImpl.bar"))
         );
 

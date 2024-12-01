@@ -38,7 +38,7 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withRecordConstructors()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("main")
         );
 
@@ -60,7 +60,7 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
                         .withRecordConstructors()
-                        .withMainClassName(TestCasesThrows.class)
+                        .withMain(TestCasesThrows.class)
                         .withMethodToRecord("main")
         );
 

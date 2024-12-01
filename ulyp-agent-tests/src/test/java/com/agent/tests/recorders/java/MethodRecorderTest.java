@@ -18,7 +18,7 @@ class MethodRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(PassClazz.class)
+                        .withMain(PassClazz.class)
                         .withMethodToRecord("returnMethod")
         );
 

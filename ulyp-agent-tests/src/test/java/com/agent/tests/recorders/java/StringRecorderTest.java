@@ -16,7 +16,7 @@ class StringRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordShortString() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(StringTestCases.class)
+                        .withMain(StringTestCases.class)
                         .withMethodToRecord("returnShortString")
         );
 
@@ -28,7 +28,7 @@ class StringRecorderTest extends AbstractInstrumentationTest {
     void shouldCutLongStringWhileRecording() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(StringTestCases.class)
+                        .withMain(StringTestCases.class)
                         .withMethodToRecord("returnLongString")
         );
 

@@ -15,7 +15,7 @@ public class ForkProcessBuilder {
 
     private final List<SystemProp> systemProps = new ArrayList<>();
     @Getter
-    private Class<?> mainClassName;
+    private Class<?> mainClass;
     private MethodMatcher methodToRecord;
     @Getter
     private OutputFile outputFile = new OutputFile();
@@ -34,13 +34,13 @@ public class ForkProcessBuilder {
     private Integer recordArrayItems = null;
     private Integer recordCollectionItems = null;
 
-    public ForkProcessBuilder withMainClassName(Class<?> mainClassName) {
-        this.mainClassName = mainClassName;
+    public ForkProcessBuilder withMain(Class<?> mainClass) {
+        this.mainClass = mainClass;
         if (instrumentedPackages.isEmpty()) {
-            instrumentedPackages = Arrays.asList(mainClassName.getPackage().getName());
+            instrumentedPackages = Arrays.asList(mainClass.getPackage().getName());
         }
         if (methodToRecord == null) {
-            this.methodToRecord = new SingleMethodMatcher(mainClassName, "main");
+            this.methodToRecord = new SingleMethodMatcher(mainClass, "main");
         }
         return this;
     }
@@ -106,8 +106,8 @@ public class ForkProcessBuilder {
     }
 
     public ForkProcessBuilder withMethodToRecord(String startMethod) {
-        if (mainClassName != null) {
-            this.methodToRecord = new SingleMethodMatcher(mainClassName, startMethod);
+        if (mainClass != null) {
+            this.methodToRecord = new SingleMethodMatcher(mainClass, startMethod);
         } else {
             throw new IllegalArgumentException("Please set main class name first");
         }

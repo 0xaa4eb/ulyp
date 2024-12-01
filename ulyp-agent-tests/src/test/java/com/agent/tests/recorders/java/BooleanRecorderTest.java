@@ -15,7 +15,7 @@ class BooleanRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordBoxedBooleanTrue() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnBoxedBooleanTrue")
         );
 
@@ -28,7 +28,7 @@ class BooleanRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordBoxedBooleanFalse() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
-                .withMainClassName(TestCase.class)
+                .withMain(TestCase.class)
                 .withMethodToRecord("returnBoxedBooleanFalse")
         );
 
@@ -41,7 +41,7 @@ class BooleanRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordPrimitiveBooleanTrue() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
-                .withMainClassName(TestCase.class)
+                .withMain(TestCase.class)
                 .withMethodToRecord("returnPrimitiveBooleanTrue")
         );
 
@@ -54,7 +54,7 @@ class BooleanRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordPrimitiveBooleanFalse() {
         CallRecord root = runSubprocessAndReadFile(
             new ForkProcessBuilder()
-                .withMainClassName(TestCase.class)
+                .withMain(TestCase.class)
                 .withMethodToRecord("returnPrimitiveBooleanFalse")
         );
 

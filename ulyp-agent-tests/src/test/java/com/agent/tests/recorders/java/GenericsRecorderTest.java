@@ -17,7 +17,7 @@ class GenericsRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(X.class)
+                        .withMain(X.class)
                         .withMethodToRecord(MethodMatcher.parse("**.Box.get"))
         );
 

@@ -19,7 +19,7 @@ class RecordNestedCallsTest extends AbstractInstrumentationTest {
     void shouldRecordAllMethods() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.TestCase.startRecordingFoo"))
         );
 

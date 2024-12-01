@@ -22,9 +22,10 @@ class ListRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordImmutableListEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getImmutableList"))
                         .withRecordCollections(CollectionsRecordingMode.JDK)
+                        .withLogLevel("TRACE")
         );
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();
@@ -44,7 +45,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordMutableListEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getMutableList"))
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -66,7 +67,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
     void shouldRecordIdentityForMutableListIfRecordingCollectionIsDisabled() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getMutableList"))
                         .withRecordCollections(CollectionsRecordingMode.NONE)
         );

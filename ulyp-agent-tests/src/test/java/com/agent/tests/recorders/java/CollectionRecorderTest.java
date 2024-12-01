@@ -26,7 +26,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnList")
         );
 
@@ -38,7 +38,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -60,7 +60,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnSet")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -84,7 +84,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnQueue")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -108,7 +108,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnBag")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
@@ -130,7 +130,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
                         .withRecordCollectionItems(5)
@@ -154,7 +154,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
@@ -167,7 +167,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnList")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -180,7 +180,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnCustomList")
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
@@ -193,7 +193,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnCustomList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
@@ -206,7 +206,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnThrowingOnIteratorList")
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );

@@ -18,7 +18,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
         );
 
@@ -31,7 +31,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnPrintableObject")
                         .withPrintTypes("**.X")
         );
@@ -50,7 +50,7 @@ class PrintingRecorderTest extends AbstractInstrumentationTest {
 
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnNonPrintableObject")
                         .withPrintTypes("**.ToStringThrowingClass")
         );

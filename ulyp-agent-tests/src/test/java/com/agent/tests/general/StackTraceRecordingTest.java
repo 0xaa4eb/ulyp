@@ -17,7 +17,7 @@ class StackTraceRecordingTest extends AbstractInstrumentationTest {
     void testStackTracer() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("foo")
         );
 

@@ -15,7 +15,7 @@ class TimestampRecordingTest extends AbstractInstrumentationTest {
     void shouldRecordTimestamp() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("returnChar")
                         .withRecordTimestamps(true)
         );
@@ -27,7 +27,7 @@ class TimestampRecordingTest extends AbstractInstrumentationTest {
     void shouldRecordTimestampLongerTime() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("sleep")
                         .withRecordTimestamps(true)
         );
