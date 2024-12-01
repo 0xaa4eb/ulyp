@@ -1,4 +1,4 @@
-package com.agent.tests.recorders;
+package com.agent.tests.recorders.java;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
@@ -46,7 +46,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CollectionRecord record = (CollectionRecord) root.getReturnValue();
 
         assertEquals(CollectionType.LIST, record.getCollectionType());
-        assertEquals(6, record.getLength());
+        assertEquals(6, record.getSize());
 
         assertThat(record.getElements(), contains(
                 isString("A"),
@@ -68,7 +68,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CollectionRecord record = (CollectionRecord) root.getReturnValue();
 
         assertEquals(CollectionType.SET, record.getCollectionType());
-        assertEquals(6, record.getLength());
+        assertEquals(6, record.getSize());
 
         List<ObjectRecord> items = record.getElements();
 
@@ -92,7 +92,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CollectionRecord record = (CollectionRecord) root.getReturnValue();
 
         assertEquals(CollectionType.QUEUE, record.getCollectionType());
-        assertEquals(6, record.getLength());
+        assertEquals(6, record.getSize());
 
         List<ObjectRecord> items = record.getElements();
 
@@ -116,7 +116,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
         CollectionRecord record = (CollectionRecord) root.getReturnValue();
 
         assertEquals(CollectionType.OTHER, record.getCollectionType());
-        assertEquals(6, record.getLength());
+        assertEquals(6, record.getSize());
 
         assertThat(record.getElements(), contains(
                 isString("A"),
@@ -138,7 +138,7 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(6, collection.getLength());
+        assertEquals(6, collection.getSize());
 
         assertThat(collection.getElements(), contains(
                 isString("A"),

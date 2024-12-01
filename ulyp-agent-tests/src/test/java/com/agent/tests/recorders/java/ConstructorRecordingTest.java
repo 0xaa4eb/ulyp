@@ -1,4 +1,4 @@
-package com.agent.tests.recorders;
+package com.agent.tests.recorders.java;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
@@ -47,12 +47,12 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord record = root.getChildren().get(0);
 
         assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
+        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
 
         ObjectRecord callee = record.getCallee();
         assertThat(callee, instanceOf(IdentityObjectRecord.class));
         IdentityObjectRecord identityCallee = (IdentityObjectRecord) callee;
-        assertThat(identityCallee.getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$X"));
+        assertThat(identityCallee.getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         CallRecord record = root.getChildren().get(0);
 
         assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.ConstructorRecordingTest$XThrows"));
+        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$XThrows"));
         assertFalse(record.isFullyRecorded());
         assertThat(record.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
         assertThat(record.getCallee(), is(NotRecordedObjectRecord.getInstance()));

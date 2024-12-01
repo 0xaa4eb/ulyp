@@ -10,20 +10,20 @@ import java.util.List;
 public class CollectionRecord extends ObjectRecord {
 
     private final CollectionType collectionType;
-    private final int length;
+    private final int size;
     private final List<ObjectRecord> elements;
 
     // Not all elements are recorded, therefore objectsRepresentations.size() != length
-    protected CollectionRecord(Type type, CollectionType collectionType, int length, List<ObjectRecord> elements) {
+    protected CollectionRecord(Type type, CollectionType collectionType, int size, List<ObjectRecord> elements) {
         super(type);
 
         this.collectionType = collectionType;
-        this.length = length;
+        this.size = size;
         this.elements = elements;
     }
 
     @Override
     public String toString() {
-        return "type: " + collectionType + " len: " + length + ", elements: " + elements.toString();
+        return "type: " + collectionType + " len: " + size + ", elements: " + elements.toString();
     }
 }

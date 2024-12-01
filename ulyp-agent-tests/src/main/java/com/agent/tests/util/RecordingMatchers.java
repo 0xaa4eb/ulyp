@@ -1,6 +1,7 @@
 package com.agent.tests.util;
 
 import com.ulyp.core.Method;
+import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
@@ -21,6 +22,20 @@ public class RecordingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("is recorded string with value ").appendValue(value);
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isIdentity(String expectedType) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IdentityObjectRecord && item.getType().getName().equals(expectedType);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded identity with type ").appendValue(expectedType);
             }
         };
     }
