@@ -4,6 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.basic.NullObjectRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.core.recorders.numeric.NumberRecord;
 import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
@@ -38,7 +39,7 @@ class ObjectInstrumentationTest extends AbstractInstrumentationTest {
 
         assertThat(root.getArgs(), hasSize(2));
         assertThat(root.getArgs().get(0), instanceOf(StringObjectRecord.class));
-        assertThat(root.getArgs().get(1), instanceOf(NumberRecord.class));
+        assertThat(root.getArgs().get(1), instanceOf(IntegralRecord.class));
     }
 
     @Test

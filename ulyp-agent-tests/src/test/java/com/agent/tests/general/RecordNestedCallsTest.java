@@ -3,7 +3,7 @@ package com.agent.tests.general;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
-import com.ulyp.core.recorders.numeric.NumberRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
@@ -33,15 +33,15 @@ class RecordNestedCallsTest extends AbstractInstrumentationTest {
         assertThat(nestedCallRecord2.getArgs(), Matchers.hasSize(2));
         assertThat(nestedCallRecord2.getArgs(), allOf(
                 hasItem(instanceOf(StringObjectRecord.class)),
-                hasItem(instanceOf(NumberRecord.class)))
+                hasItem(instanceOf(IntegralRecord.class)))
         );
 
         CallRecord nestedCallRecord3 = nestedCallRecord2.getChildren().get(0);
         assertThat(nestedCallRecord3.getArgs(), Matchers.hasSize(3));
         assertThat(nestedCallRecord3.getArgs(), allOf(
                 hasItem(instanceOf(StringObjectRecord.class)),
-                hasItem(instanceOf(NumberRecord.class)),
-                hasItem(instanceOf(NumberRecord.class)))
+                hasItem(instanceOf(IntegralRecord.class)),
+                hasItem(instanceOf(IntegralRecord.class)))
         );
     }
 
