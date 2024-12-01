@@ -23,25 +23,25 @@ public class AgentOptions {
 
     public static final boolean TIMESTAMPS_ENABLED;
 
-    public static final String PACKAGES_PROPERTY = "ulyp.packages";
-    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp.exclude-packages";
-    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp.start";
-    public static final String BIND_NETWORK_ADDRESS = "ulyp.bind";
-    public static final String EXCLUDE_TYPES_PROPERTY = "ulyp.exclude-types";
-    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp.methods";
-    public static final String PRINT_TYPES_PROPERTY = "ulyp.print-types";
-    public static final String FILE_PATH_PROPERTY = "ulyp.file";
-    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp.record-constructors";
-    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp.record-lambdas";
-    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp.record-static-blocks";
-    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp.record-collections";
-    public static final String RECORD_ARRAYS_PROPERTY = "ulyp.record-arrays";
-    public static final String RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY = "ulyp.record-collections.max-items";
-    public static final String RECORD_ARRAYS_MAX_ITEMS_PROPERTY = "ulyp.record-arrays.max-items";
-    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp.record-timestamps";
-    public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp.type-validation";
-    public static final String AGENT_DISABLED_PROPERTY = "ulyp.off";
-    public static final String METRICS_ENABLED_PROPERTY = "ulyp.metrics";
+    public static final String PACKAGES_PROPERTY = "ulyp2.packages";
+    public static final String EXCLUDE_PACKAGES_PROPERTY = "ulyp2.exclude-packages";
+    public static final String START_RECORDING_POLICY_PROPERTY = "ulyp2.start";
+    public static final String BIND_NETWORK_ADDRESS = "ulyp2.bind";
+    public static final String EXCLUDE_TYPES_PROPERTY = "ulyp2.exclude-types";
+    public static final String START_RECORDING_METHODS_PROPERTY = "ulyp2.methods";
+    public static final String PRINT_TYPES_PROPERTY = "ulyp2.print-types";
+    public static final String FILE_PATH_PROPERTY = "ulyp2.file";
+    public static final String INSTRUMENT_CONSTRUCTORS_PROPERTY = "ulyp2.record-constructors";
+    public static final String INSTRUMENT_LAMBDAS_PROPERTY = "ulyp2.record-lambdas";
+    public static final String INSTRUMENT_TYPE_INITIALIZERS = "ulyp2.record-static-blocks";
+    public static final String RECORD_COLLECTIONS_PROPERTY = "ulyp2.record-collections";
+    public static final String RECORD_ARRAYS_PROPERTY = "ulyp2.record-arrays";
+    public static final String RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY = "ulyp2.record-collections.max-items";
+    public static final String RECORD_ARRAYS_MAX_ITEMS_PROPERTY = "ulyp2.record-arrays.max-items";
+    public static final String TIMESTAMPS_ENABLED_PROPERTY = "ulyp2.record-timestamps";
+    public static final String TYPE_VALIDATION_ENABLED_PROPERTY = "ulyp2.type-validation";
+    public static final String AGENT_DISABLED_PROPERTY = "ulyp2.off";
+    public static final String METRICS_ENABLED_PROPERTY = "ulyp2.metrics";
 
     static {
         // make 'static final'. bytecode will be thrown off if the feature is disabled
