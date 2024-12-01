@@ -2,10 +2,12 @@ package com.agent.tests.recorders.java;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
+import com.agent.tests.util.RecordingMatchers;
 import com.ulyp.core.recorders.NumberRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
+import static com.agent.tests.util.RecordingMatchers.isIntegral;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -19,8 +21,7 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("te")
         );
 
-        NumberRecord arg = (NumberRecord) root.getArgs().get(0);
-        assertThat(arg.getNumberPrintedText(), is("1"));
+        assertThat(root.getArgs().get(0), isIntegral(1));
     }
 
     @Test
@@ -30,9 +31,21 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("primitiveIntSum")
         );
 
-        assertThat(((NumberRecord) root.getArgs().get(0)).getNumberPrintedText(), is("-234"));
-        assertThat(((NumberRecord) root.getArgs().get(1)).getNumberPrintedText(), is("23"));
-        assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), is("-211"));
+        assertThat(root.getArgs().get(0), isIntegral(-234));
+        assertThat(root.getArgs().get(1), isIntegral(23));
+        assertThat(root.getReturnValue(), isIntegral(-211));
+    }
+
+    @Test
+    void testPrimitiveByteSum() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder().withMainClassName(BoxedNumbersTestCases.class)
+                        .withMethodToRecord("primitiveByteSum")
+        );
+
+        assertThat(root.getArgs().get(0), isIntegral(-5));
+        assertThat(root.getArgs().get(1), isIntegral(6));
+        assertThat(root.getReturnValue(), isIntegral(1));
     }
 
     @Test
@@ -42,7 +55,7 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("boxedIntSum")
         );
 
-        assertThat(((NumberRecord) root.getReturnValue()).getNumberPrintedText(), is("-211"));
+        assertThat(root.getReturnValue(), isIntegral(-211));
     }
 
     @Test
@@ -95,6 +108,10 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
 
     public static class BoxedNumbersTestCases {
 
+        public static int primitiveByteSum(byte b1, byte b2) {
+            return (int) b1 + b2;
+        }
+
         public static int primitiveIntSum(int v1, int v2) {
             return v1 + v2;
         }
@@ -124,6 +141,7 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
         }
 
         public static void main(String[] args) {
+            System.out.println(BoxedNumbersTestCases.primitiveByteSum((byte) -5, (byte) 6));
             System.out.println(BoxedNumbersTestCases.boxedIntSum(-234, 23));
             System.out.println(BoxedNumbersTestCases.boxedDoubleSum(-5434.23, 321.2453));
             System.out.println(BoxedNumbersTestCases.boxedFloatSum(-5434.23f, 321.2453f));

@@ -2,6 +2,7 @@ package com.agent.tests.util;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.IntegralRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
@@ -36,6 +37,20 @@ public class RecordingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("is recorded identity with type ").appendValue(expectedType);
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isIntegral(long expectedValue) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IntegralRecord && ((IntegralRecord) item).getValue() == expectedValue;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded integral value with type ").appendValue(expectedValue);
             }
         };
     }

@@ -2,7 +2,7 @@ package com.agent.tests.recorders.java;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
-import com.ulyp.core.recorders.arrays.ObjectArrayRecord;
+import com.ulyp.core.recorders.arrays.ArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
@@ -21,15 +21,15 @@ class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
                         .withRecordArrays()
         );
 
-        ObjectArrayRecord repr = (ObjectArrayRecord) root.getReturnValue();
+        ArrayRecord repr = (ArrayRecord) root.getReturnValue();
 
         assertThat(repr.getLength(), is(1));
 
-        ObjectArrayRecord item = (ObjectArrayRecord) repr.getRecordedItems().get(0);
+        ArrayRecord item = (ArrayRecord) repr.getElements().get(0);
 
-        ObjectArrayRecord itemOfItem = (ObjectArrayRecord) item.getRecordedItems().get(0);
+        ArrayRecord itemOfItem = (ArrayRecord) item.getElements().get(0);
 
-        ObjectArrayRecord itemOfItemOfItem = (ObjectArrayRecord) itemOfItem.getRecordedItems().get(0);
+        ArrayRecord itemOfItemOfItem = (ArrayRecord) itemOfItem.getElements().get(0);
     }
 
     static class TestCase {

@@ -2,7 +2,7 @@ package com.ulyp.ui.elements.recording.objects
 
 import com.ulyp.core.recorders.*
 import com.ulyp.core.recorders.arrays.ByteArrayRecord
-import com.ulyp.core.recorders.arrays.ObjectArrayRecord
+import com.ulyp.core.recorders.arrays.ArrayRecord
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
 import com.ulyp.core.recorders.collections.MapRecord
@@ -23,7 +23,7 @@ abstract class RenderedObject protected constructor() : TextFlow() {
                 is NotRecordedObjectRecord -> NotRecordedRenderedObject(renderSettings)
                 is NumberRecord -> RenderedNumber(record.numberPrintedText, record.getType(), renderSettings)
                 is FileRecord -> RenderedFile(record.path, record.getType(), renderSettings)
-                is ObjectArrayRecord -> RenderedObjectArray(record, renderSettings)
+                is ArrayRecord -> RenderedArray(record, renderSettings)
                 is ByteArrayRecord -> RenderedByteArray(record)
                 is CollectionRecord -> RenderedCollection(record, renderSettings)
                 is MapEntryRecord -> RenderedMapEntry(record, renderSettings)

@@ -5,17 +5,23 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.recorders.IntegralRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+
+/**
+ * Int array recorder
+ */
 @ThreadSafe
-public class ObjectArrayRecorder extends ObjectRecorder {
+public class IntArrayRecorder extends ObjectRecorder {
 
     // Intentionally not volatile
     @Setter
@@ -23,36 +29,35 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     @Setter
     private int maxItemsToRecord;
 
-    public ObjectArrayRecorder(byte id) {
+    public IntArrayRecorder(byte id) {
         super(id);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        return enabled && Object[].class.isAssignableFrom(type);
+        return enabled && type == int[].class;
     }
 
     @Override
     public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readVarInt();
         int recordedItemsCount = input.readVarInt();
-        List<ObjectRecord> items = new ArrayList<>(recordedItemsCount);
-        for (int i = 0; i < recordedItemsCount; i++) {
-            items.add(input.readObject(typeResolver));
-        }
-        return new ArrayRecord(type, arrayLength, items);
+        List<IntegralRecord> elements = IntStream.range(0, recordedItemsCount)
+                .mapToObj($ -> new IntegralRecord(Type.INT, input.readVarInt()))
+                .collect(Collectors.toList());
+        return new ArrayRecord(type, arrayLength, elements);
     }
 
     @Override
     public void write(Object object, BytesOut out, TypeResolver typeResolver) throws Exception {
-        Object[] array = (Object[]) object;
+        int[] array = (int[]) object;
         int length = array.length;
         out.writeVarInt(length);
         int itemsToRecord = Math.min(maxItemsToRecord, length);
         out.writeVarInt(itemsToRecord);
 
         for (int i = 0; i < itemsToRecord; i++) {
-            out.write(array[i], typeResolver);
+            out.writeVarInt(array[i]);
         }
     }
 }

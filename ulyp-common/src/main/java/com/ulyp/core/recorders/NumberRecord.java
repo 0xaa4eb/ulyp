@@ -2,6 +2,11 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 
+/**
+ * Object record for some number. Can be both integer or float point.
+ * Stores text representation, since for some instances of {@link Number} we can only capture
+ * their string representation.
+ */
 public class NumberRecord extends ObjectRecord {
 
     private final String numberPrintedText;

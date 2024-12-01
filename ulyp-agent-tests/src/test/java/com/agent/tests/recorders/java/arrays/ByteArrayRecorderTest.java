@@ -1,4 +1,4 @@
-package com.agent.tests.recorders.java;
+package com.agent.tests.recorders.java.arrays;
 
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;

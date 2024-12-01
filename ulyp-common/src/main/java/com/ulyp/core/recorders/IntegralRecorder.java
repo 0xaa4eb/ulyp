@@ -21,7 +21,7 @@ public class IntegralRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return Long.class == type || Integer.class == type || Short.class == type;
+        return Long.class == type || Integer.class == type || Short.class == type || Byte.class == type;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class IntegralRecorder extends ObjectRecorder {
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        return new NumberRecord(objectType, String.valueOf(input.readLong()));
+        return new IntegralRecord(objectType, input.readLong());
     }
 
     @Override
