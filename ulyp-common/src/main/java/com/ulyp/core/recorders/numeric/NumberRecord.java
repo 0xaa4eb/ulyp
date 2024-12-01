@@ -1,6 +1,7 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.numeric;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.recorders.ObjectRecord;
 
 /**
  * Object record for some number. Can be both integer or float point.

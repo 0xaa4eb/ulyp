@@ -5,7 +5,7 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
-import com.ulyp.core.recorders.IntegralRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import lombok.Setter;

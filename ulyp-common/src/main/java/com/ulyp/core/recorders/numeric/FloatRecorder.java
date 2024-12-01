@@ -1,5 +1,7 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.numeric;
 
+import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.ObjectRecorder;
 import org.jetbrains.annotations.NotNull;
 
 import com.ulyp.core.ByIdTypeResolver;

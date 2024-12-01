@@ -4,6 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.*;
 import com.ulyp.core.recorders.arrays.ArrayRecord;
+import com.ulyp.core.recorders.numeric.NumberRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -124,7 +125,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         IdentityObjectRecord arg0 = (IdentityObjectRecord) items.get(0);
         assertThat(arg0.getType().getName(), is(X.class.getName()));
 
-        NumberRecord arg1 = (NumberRecord) items.get(1);
+        com.ulyp.core.recorders.numeric.NumberRecord arg1 = (NumberRecord) items.get(1);
         assertThat(arg1.getNumberPrintedText(), is("664"));
 
         ClassRecord arg4 = (ClassRecord) items.get(2);

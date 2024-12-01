@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.arrays.ArrayRecord
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
 import com.ulyp.core.recorders.collections.MapRecord
+import com.ulyp.core.recorders.numeric.NumberRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import javafx.scene.Node

@@ -1,6 +1,7 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.numeric;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.recorders.ObjectRecord;
 import lombok.Getter;
 
 @Getter

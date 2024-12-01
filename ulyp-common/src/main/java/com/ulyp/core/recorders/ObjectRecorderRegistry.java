@@ -5,6 +5,9 @@ import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
 import com.ulyp.core.recorders.arrays.IntArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.*;
+import com.ulyp.core.recorders.numeric.DoubleRecorder;
+import com.ulyp.core.recorders.numeric.IntegralRecorder;
+import com.ulyp.core.recorders.numeric.NumbersRecorder;
 
 /**
  * All object recorer registry. Every recorder is provided with two values: a unique id and an order.
