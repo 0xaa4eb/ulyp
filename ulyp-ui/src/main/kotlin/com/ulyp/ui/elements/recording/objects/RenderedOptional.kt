@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.OptionalRecord
+import com.ulyp.core.recorders.basic.OptionalRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.Style
 import com.ulyp.ui.util.StyledText.of

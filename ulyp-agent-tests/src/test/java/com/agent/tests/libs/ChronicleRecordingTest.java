@@ -25,7 +25,7 @@ class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
                         .withInstrumentedPackages()
         );
@@ -47,7 +47,7 @@ class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
                         .withInstrumentedPackages()
                         .withSystemProp(SystemProp.builder().key("messageCount").value("6").build())

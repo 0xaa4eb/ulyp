@@ -4,7 +4,7 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.recorders.ThrowableRecord;
+import com.ulyp.core.recorders.basic.ThrowableRecord;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import com.ulyp.storage.tree.Recording;
@@ -22,7 +22,7 @@ class TypeInitializerRecordTest extends AbstractInstrumentationTest {
     void shouldRecordTypeInitializer() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(ClassWithStaticInitializer.class)
+                        .withMain(ClassWithStaticInitializer.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ClassWithStaticInitializer.*"))
                         .withInstrumentTypeInitializers(true)
         );
@@ -56,7 +56,7 @@ class TypeInitializerRecordTest extends AbstractInstrumentationTest {
     void shouldRecordAllMethods2() {
         RecordingResult recordingResult = runSubprocess(
             new ForkProcessBuilder()
-                .withMainClassName(ClassWhichUsesFailureTypeInitializer.class)
+                .withMain(ClassWhichUsesFailureTypeInitializer.class)
                 .withMethodToRecord(MethodMatcher.parse("**.X.*"))
                 .withInstrumentTypeInitializers(true)
         );

@@ -17,7 +17,7 @@ class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
     void shouldInstrumentAndTraceAllClasses() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(A.class)
+                        .withMain(A.class)
                         .withInstrumentedPackages("com.agent.tests.general.a")
         );
 
@@ -30,7 +30,7 @@ class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
     void shouldExcludeInstrumentationPackage() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(A.class)
+                        .withMain(A.class)
                         .withInstrumentedPackages("com.agent.tests.general.a")
                         .withExcludedFromInstrumentationPackages("com.agent.tests.general.a.b")
         );
@@ -49,7 +49,7 @@ class PackageFilterInstrumentationTest extends AbstractInstrumentationTest {
     void shouldExcludeTwoPackages() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(A.class)
+                        .withMain(A.class)
                         .withInstrumentedPackages("com.agent.tests.general.a")
                         .withExcludedFromInstrumentationPackages("com.agent.tests.general.a.b", "com.agent.tests.general.a.c")
                         .withLogLevel("INFO")

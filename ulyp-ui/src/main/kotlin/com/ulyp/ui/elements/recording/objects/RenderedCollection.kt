@@ -36,14 +36,14 @@ class RenderedCollection(record: CollectionRecord, renderSettings: RenderSetting
 
             nodes.add(recordedObjects[i])
 
-            if (i != recordedObjects.size - 1 || recordedObjects.size < record.length) {
+            if (i != recordedObjects.size - 1 || recordedObjects.size < record.size) {
                 nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
             }
         }
-        if (recordedObjects.size < record.length) {
+        if (recordedObjects.size < record.size) {
             nodes.add(
                     of(
-                            (record.length - recordedObjects.size).toString() + " more...",
+                            (record.size - recordedObjects.size).toString() + " more...",
                             Style.CALL_TREE_NODE_SEPARATOR
                     )
             )

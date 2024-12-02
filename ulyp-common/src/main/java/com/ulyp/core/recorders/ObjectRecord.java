@@ -1,6 +1,7 @@
 package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
+import com.ulyp.core.recorders.basic.StringRecorder;
 import org.jetbrains.annotations.NotNull;
 
 /**

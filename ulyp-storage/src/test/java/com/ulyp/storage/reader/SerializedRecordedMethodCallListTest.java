@@ -2,7 +2,7 @@ package com.ulyp.storage.reader;
 
 import com.ulyp.core.*;
 import com.ulyp.core.mem.*;
-import com.ulyp.core.recorders.NumberRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.bytes.PagedMemBytesOut;
 import com.ulyp.core.repository.InMemoryRepository;
@@ -66,8 +66,8 @@ class SerializedRecordedMethodCallListTest {
         assertEquals(5, enterCall.getMethodId());
         List<ObjectRecord> arguments = enterCall.getArguments();
         assertEquals(1, arguments.size());
-        NumberRecord numberRecord = (NumberRecord) arguments.get(0);
-        assertEquals("5", numberRecord.getNumberPrintedText());
+        IntegralRecord numberRecord = (IntegralRecord) arguments.get(0);
+        assertEquals(5, numberRecord.getValue());
 
         RecordedExitMethodCall exitCall = (RecordedExitMethodCall) it.next();
 

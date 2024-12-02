@@ -16,6 +16,7 @@ import java.util.Set;
 public class Type {
 
     private static final Type UNKNOWN = Type.builder().name("Unknown").id(-1).build();
+    public static final Type INT = Type.builder().name("int").id(-2).build();
 
     private final int id;
     private final String name;

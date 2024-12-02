@@ -8,6 +8,9 @@ buildscript {
 
 plugins {
     id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
     id "io.freefair.lombok" version "6.0.0-m2"
 }
 

@@ -1,6 +1,6 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.EnumRecord
+import com.ulyp.core.recorders.basic.EnumRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Style

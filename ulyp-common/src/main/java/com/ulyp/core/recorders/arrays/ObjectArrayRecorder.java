@@ -40,7 +40,7 @@ public class ObjectArrayRecorder extends ObjectRecorder {
         for (int i = 0; i < recordedItemsCount; i++) {
             items.add(input.readObject(typeResolver));
         }
-        return new ObjectArrayRecord(type, arrayLength, items);
+        return new ArrayRecord(type, arrayLength, items);
     }
 
     @Override

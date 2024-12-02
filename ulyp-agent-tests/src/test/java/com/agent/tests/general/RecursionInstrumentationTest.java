@@ -14,7 +14,7 @@ class RecursionInstrumentationTest extends AbstractInstrumentationTest {
     void testFibonacciMethodCall() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(RecursionTestCases.class)
+                        .withMain(RecursionTestCases.class)
                         .withMethodToRecord("fibonacci")
         );
 

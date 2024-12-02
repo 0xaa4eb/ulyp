@@ -23,7 +23,7 @@ class ConcurrentMidSizeRecordingTest extends AbstractInstrumentationTest {
     void shouldRecordInConcurrentMode() {
         RecordingResult recordingResult = runSubprocess(
                 new ForkProcessBuilder()
-                        .withMainClassName(MultithreadedExample.class)
+                        .withMain(MultithreadedExample.class)
                         .withMethodToRecord(MethodMatcher.parse("**.RecordedRunner.run"))
                         .withLogLevel("OFF")
         );

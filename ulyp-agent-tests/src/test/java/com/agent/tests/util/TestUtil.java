@@ -28,7 +28,7 @@ public class TestUtil {
             processArgs.add("-cp");
             processArgs.add(classPath);
             processArgs.addAll(settingsBuilder.toCmdJavaProps());
-            processArgs.add(settingsBuilder.getMainClassName().getName());
+            processArgs.add(settingsBuilder.getMainClass().getName());
 
             ProcResult result = new ProcBuilder(javaBinary, processArgs.toArray(new String[]{}))
                     .withTimeoutMillis(TimeUnit.MINUTES.toMillis(3))

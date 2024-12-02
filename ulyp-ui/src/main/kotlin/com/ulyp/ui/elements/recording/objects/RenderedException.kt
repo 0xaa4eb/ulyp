@@ -1,7 +1,7 @@
 package com.ulyp.ui.elements.recording.objects
 
-import com.ulyp.core.recorders.NullObjectRecord
-import com.ulyp.core.recorders.ThrowableRecord
+import com.ulyp.core.recorders.basic.NullObjectRecord
+import com.ulyp.core.recorders.basic.ThrowableRecord
 import com.ulyp.ui.RenderSettings
 import com.ulyp.ui.util.ClassNameUtils.toSimpleName
 import com.ulyp.ui.util.Style

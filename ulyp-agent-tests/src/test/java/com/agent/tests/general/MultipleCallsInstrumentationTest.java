@@ -17,7 +17,7 @@ class MultipleCallsInstrumentationTest extends AbstractInstrumentationTest {
     void shouldMake1000Calls() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("make1000CallsInLoop")
         );
 
@@ -28,7 +28,7 @@ class MultipleCallsInstrumentationTest extends AbstractInstrumentationTest {
     void shouldHaveCompleteTree() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
-                        .withMainClassName(TestCase.class)
+                        .withMain(TestCase.class)
                         .withMethodToRecord("level0")
         );
 

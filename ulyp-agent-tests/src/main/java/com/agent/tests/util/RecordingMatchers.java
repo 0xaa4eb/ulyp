@@ -1,8 +1,11 @@
 package com.agent.tests.util;
 
 import com.ulyp.core.Method;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.basic.NullObjectRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-import com.ulyp.core.recorders.StringObjectRecord;
+import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -21,6 +24,62 @@ public class RecordingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("is recorded string with value ").appendValue(value);
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isIdentity(String expectedType) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IdentityObjectRecord && item.getType().getName().equals(expectedType);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded identity with type ").appendValue(expectedType);
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isIdentity() {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IdentityObjectRecord;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded identity with any type");
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isIntegral(long expectedValue) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IntegralRecord && ((IntegralRecord) item).getValue() == expectedValue;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded integral value with type ").appendValue(expectedValue);
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isNull() {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof NullObjectRecord;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is null");
             }
         };
     }

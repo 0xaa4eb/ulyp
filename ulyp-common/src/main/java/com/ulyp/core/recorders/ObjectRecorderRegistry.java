@@ -2,8 +2,15 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
+import com.ulyp.core.recorders.arrays.IntArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
+import com.ulyp.core.recorders.basic.*;
 import com.ulyp.core.recorders.collections.*;
+import com.ulyp.core.recorders.kotlin.KtPairRecorder;
+import com.ulyp.core.recorders.kotlin.KtTripleRecorder;
+import com.ulyp.core.recorders.numeric.DoubleRecorder;
+import com.ulyp.core.recorders.numeric.IntegralRecorder;
+import com.ulyp.core.recorders.numeric.NumbersRecorder;
 
 /**
  * All object recorer registry. Every recorder is provided with two values: a unique id and an order.
@@ -31,6 +38,7 @@ public enum ObjectRecorderRegistry {
     QUEUE_RECORDED_OBJECT_RECORDER(new QueuedRecordedObjectRecorder((byte) 102), 95),
     ANY_NUMBER_RECORDER(new NumbersRecorder((byte) 8), 10),
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
+    INT_ARRAY_RECORDER(new IntArrayRecorder((byte) 14), 1),
     BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),
     LIST_RECORDER(new ListRecorder((byte) 80), 2),
     SET_RECORDER(new SetRecorder((byte) 81), 2),
@@ -43,6 +51,8 @@ public enum ObjectRecorderRegistry {
     PATH_RECORDER(new PathRecorder((byte) 27), 90),
     DATE_RECORDER(new DateRecorder((byte) 20), 90),
     TO_STRING_RECORDER(new PrintingRecorder((byte) 91), 99),
+    KT_PAIR_RECORDER(new KtPairRecorder((byte) 15), 200),
+    KT_TRIPLE_RECORDER(new KtTripleRecorder((byte) 16), 200),
     IDENTITY_RECORDER(new IdentityRecorder((byte) 0), Integer.MAX_VALUE / 2),
     // Null recorder is only used manually, so it has max available order
     NULL_RECORDER(new NullObjectRecorder((byte) 9), Integer.MAX_VALUE);
