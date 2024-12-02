@@ -6,8 +6,10 @@ import com.ulyp.core.recorders.arrays.ArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
+import static com.agent.tests.util.RecordingMatchers.isIdentity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
 
@@ -21,15 +23,14 @@ class RecursiveArrayRecorderTest extends AbstractInstrumentationTest {
                         .withRecordArrays()
         );
 
-        ArrayRecord repr = (ArrayRecord) root.getReturnValue();
+        ArrayRecord array = (ArrayRecord) root.getReturnValue();
 
-        assertThat(repr.getLength(), is(1));
-
-        ArrayRecord item = (ArrayRecord) repr.getElements().get(0);
-
-        ArrayRecord itemOfItem = (ArrayRecord) item.getElements().get(0);
-
-        ArrayRecord itemOfItemOfItem = (ArrayRecord) itemOfItem.getElements().get(0);
+        assertThat(array.getLength(), is(1));
+        ArrayRecord nestedArrayRecord = (ArrayRecord) array.getElements().get(0);
+        ArrayRecord nested2ArrayRecord = (ArrayRecord) nestedArrayRecord.getElements().get(0);
+        ArrayRecord nested3ArrayRecord = (ArrayRecord) nested2ArrayRecord.getElements().get(0);
+        assertEquals(1, nested3ArrayRecord.getLength());
+        assertThat(nested3ArrayRecord.getElements().get(0), isIdentity());
     }
 
     static class TestCase {

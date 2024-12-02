@@ -1,16 +1,5 @@
 package com.agent.tests.libs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.*;
-
-import com.ulyp.storage.tree.Recording;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.agent.tests.libs.util.hibernate.ApplicationConfiguration;
 import com.agent.tests.libs.util.hibernate.Department;
 import com.agent.tests.libs.util.hibernate.DepartmentService;
@@ -21,9 +10,19 @@ import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingResult;
 import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
+import com.ulyp.storage.tree.Recording;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HibernateRecordingTest extends AbstractInstrumentationTest {

@@ -136,7 +136,7 @@ class NumbersRecorderTest extends AbstractInstrumentationTest {
         }
 
         public static void te(Long v1) {
-
+            // NOP
         }
 
         public static void main(String[] args) {

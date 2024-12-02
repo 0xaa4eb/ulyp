@@ -42,6 +42,20 @@ public class RecordingMatchers {
         };
     }
 
+    public static Matcher<ObjectRecord> isIdentity() {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof IdentityObjectRecord;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is recorded identity with any type");
+            }
+        };
+    }
+
     public static Matcher<ObjectRecord> isIntegral(long expectedValue) {
         return new TypeSafeMatcher<ObjectRecord>() {
             @Override

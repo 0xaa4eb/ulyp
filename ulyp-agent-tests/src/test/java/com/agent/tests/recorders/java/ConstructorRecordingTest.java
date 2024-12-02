@@ -17,13 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class ConstructorRecordingTest extends AbstractInstrumentationTest {
 
     public static class Base {
-
     }
 
     public static class X extends Base {
-
-        public X() {
-        }
     }
 
     public static class TestCase {
@@ -44,12 +40,12 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
-        CallRecord record = root.getChildren().get(0);
+        CallRecord objectRecord = root.getChildren().get(0);
 
-        assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
+        assertThat(objectRecord.getMethod().getName(), is("<init>"));
+        assertThat(objectRecord.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
 
-        ObjectRecord callee = record.getCallee();
+        ObjectRecord callee = objectRecord.getCallee();
         assertThat(callee, instanceOf(IdentityObjectRecord.class));
         IdentityObjectRecord identityCallee = (IdentityObjectRecord) callee;
         assertThat(identityCallee.getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
@@ -66,13 +62,13 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
 
         assertThat(root.getChildren(), Matchers.hasSize(1));
 
-        CallRecord record = root.getChildren().get(0);
+        CallRecord objectRecord = root.getChildren().get(0);
 
-        assertThat(record.getMethod().getName(), is("<init>"));
-        assertThat(record.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$XThrows"));
-        assertFalse(record.isFullyRecorded());
-        assertThat(record.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
-        assertThat(record.getCallee(), is(NotRecordedObjectRecord.getInstance()));
+        assertThat(objectRecord.getMethod().getName(), is("<init>"));
+        assertThat(objectRecord.getMethod().getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$XThrows"));
+        assertFalse(objectRecord.isFullyRecorded());
+        assertThat(objectRecord.getReturnValue(), is(NotRecordedObjectRecord.getInstance()));
+        assertThat(objectRecord.getCallee(), is(NotRecordedObjectRecord.getInstance()));
     }
 
     public static class XThrows extends Base {
@@ -90,40 +86,6 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public static class TBase {
-
-        public TBase() {
-            System.out.println(foo());
-            throw new RuntimeException("a");
-        }
-
-        public int foo() {
-            return 5;
-        }
-    }
-
-    public static class T extends TBase {
-
-        public T() {
-
-        }
-    }
-
-    public static class TestCasesThrows2 {
-
-        public static void bar() {
-            try {
-                System.out.println(new T());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public static void main(String[] args) {
-            bar();
         }
     }
 }

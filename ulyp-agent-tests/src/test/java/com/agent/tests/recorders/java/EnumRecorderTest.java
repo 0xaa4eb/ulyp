@@ -46,6 +46,7 @@ class EnumRecorderTest extends AbstractInstrumentationTest {
         }
 
         public void consumesMapAndEnums(Map<TestEnum, TestEnum> map, TestEnum l1, TestEnum l2) {
+            // NOP
         }
 
         public enum TestEnum {
@@ -58,6 +59,7 @@ class EnumRecorderTest extends AbstractInstrumentationTest {
                 s = x;
             }
 
+            @Override
             public String toString() {
                 return s;
             }

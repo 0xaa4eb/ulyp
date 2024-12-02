@@ -43,7 +43,7 @@ public class IntArrayRecorder extends ObjectRecorder {
         int arrayLength = input.readVarInt();
         int recordedItemsCount = input.readVarInt();
         List<IntegralRecord> elements = IntStream.range(0, recordedItemsCount)
-                .mapToObj($ -> new IntegralRecord(Type.INT, input.readVarInt()))
+                .mapToObj(ignored -> new IntegralRecord(Type.INT, input.readVarInt()))
                 .collect(Collectors.toList());
         return new ArrayRecord(type, arrayLength, elements);
     }

@@ -4,9 +4,8 @@ import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.basic.NullObjectRecord;
-import com.ulyp.core.recorders.numeric.IntegralRecord;
-import com.ulyp.core.recorders.numeric.NumberRecord;
 import com.ulyp.core.recorders.basic.StringObjectRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
@@ -71,18 +70,16 @@ class ObjectInstrumentationTest extends AbstractInstrumentationTest {
         }
 
         public void acceptsTwoObjects2(Object o1, Object o2) {
-            System.out.println(o1);
-            System.out.println(o2);
+            System.err.println(o1);
+            System.err.println(o2);
         }
 
         public void acceptsTwoObjects3(Object o1, Object o2) {
-            System.out.println(o1);
-            System.out.println(o2);
+            System.out.println(o1 + ", " + o2);
         }
 
         public void acceptsTwoNulls(Object o1, Object o2) {
-            System.out.println(o1);
-            System.out.println(o2);
+            System.err.println(o1 + ", " + o2);
         }
 
         private static class X {

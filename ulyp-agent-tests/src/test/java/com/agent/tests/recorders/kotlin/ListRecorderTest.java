@@ -33,7 +33,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
         assertEquals(5, collection.getSize());
 
         List<ObjectRecord> elements = collection.getElements();
-        assertEquals(elements.size(), 3);
+        assertEquals(3, elements.size());
 
         assertThat(elements.get(0), RecordingMatchers.isString("ABC"));
         assertThat(elements.get(1), RecordingMatchers.isString("CDE"));
@@ -55,7 +55,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
         assertEquals(5, collection.getSize());
 
         List<ObjectRecord> elements = collection.getElements();
-        assertEquals(elements.size(), 3);
+        assertEquals(3, elements.size());
 
         assertThat(elements.get(0), RecordingMatchers.isString("ABC"));
         assertThat(elements.get(1), RecordingMatchers.isString("CDE"));

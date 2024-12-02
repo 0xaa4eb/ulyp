@@ -43,12 +43,12 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+        CollectionRecord objectRecord = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(CollectionType.LIST, record.getCollectionType());
-        assertEquals(6, record.getSize());
+        assertEquals(CollectionType.LIST, objectRecord.getCollectionType());
+        assertEquals(6, objectRecord.getSize());
 
-        assertThat(record.getElements(), contains(
+        assertThat(objectRecord.getElements(), contains(
                 isString("A"),
                 isString("B"),
                 isString("C"))
@@ -65,12 +65,12 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+        CollectionRecord objectRecord = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(CollectionType.SET, record.getCollectionType());
-        assertEquals(6, record.getSize());
+        assertEquals(CollectionType.SET, objectRecord.getCollectionType());
+        assertEquals(6, objectRecord.getSize());
 
-        List<ObjectRecord> items = record.getElements();
+        List<ObjectRecord> items = objectRecord.getElements();
 
         assertThat(items, containsInAnyOrder(
                 isString("A"),
@@ -89,12 +89,12 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.JDK)
         );
 
-        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+        CollectionRecord objectRecord = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(CollectionType.QUEUE, record.getCollectionType());
-        assertEquals(6, record.getSize());
+        assertEquals(CollectionType.QUEUE, objectRecord.getCollectionType());
+        assertEquals(6, objectRecord.getSize());
 
-        List<ObjectRecord> items = record.getElements();
+        List<ObjectRecord> items = objectRecord.getElements();
 
         assertThat(items, containsInAnyOrder(
                 isString("Q1"),
@@ -113,12 +113,12 @@ class CollectionRecorderTest extends AbstractInstrumentationTest {
                         .withRecordCollections(CollectionsRecordingMode.ALL)
         );
 
-        CollectionRecord record = (CollectionRecord) root.getReturnValue();
+        CollectionRecord objectRecord = (CollectionRecord) root.getReturnValue();
 
-        assertEquals(CollectionType.OTHER, record.getCollectionType());
-        assertEquals(6, record.getSize());
+        assertEquals(CollectionType.OTHER, objectRecord.getCollectionType());
+        assertEquals(6, objectRecord.getSize());
 
-        assertThat(record.getElements(), contains(
+        assertThat(objectRecord.getElements(), contains(
                 isString("A"),
                 isString("B"),
                 isString("C"))

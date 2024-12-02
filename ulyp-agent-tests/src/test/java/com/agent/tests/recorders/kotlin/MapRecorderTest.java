@@ -10,7 +10,8 @@ import com.ulyp.core.util.MethodMatcher;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.agent.tests.util.RecordingMatchers.isString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +34,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
         assertEquals(3, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
-        assertEquals(entries.size(), 3);
+        assertEquals(3, entries.size());
 
         // it's a linked hash map, so we can verify in order
         assertThat(entries.get(0).getKey(), isString("1"));
@@ -59,7 +60,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
         assertEquals(3, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
-        assertEquals(entries.size(), 3);
+        assertEquals(3, entries.size());
 
         // it's a linked hash map, so we can verify in order
         assertThat(entries.get(0).getKey(), isString("1"));

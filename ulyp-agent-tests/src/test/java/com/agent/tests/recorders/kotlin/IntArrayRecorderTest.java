@@ -27,11 +27,11 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getReturnValue();
+        ArrayRecord array = (ArrayRecord) root.getReturnValue();
 
-        assertThat(record.getLength(), is(5));
+        assertThat(array.getLength(), is(5));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements, Matchers.hasSize(3));
         assertThat(elements.get(0), RecordingMatchers.isIntegral(1));

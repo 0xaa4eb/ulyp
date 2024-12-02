@@ -3,9 +3,8 @@ package com.agent.tests.recorders.java;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.ulyp.core.recorders.IdentityObjectRecord;
-import com.ulyp.core.recorders.numeric.IntegralRecord;
-import com.ulyp.core.recorders.numeric.NumberRecord;
 import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.numeric.IntegralRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +21,11 @@ class IdentityRecorderTest extends AbstractInstrumentationTest {
                         .withMethodToRecord("pass")
         );
 
-        IntegralRecord record = (IntegralRecord) root.getReturnValue();
+        IntegralRecord objectRecord = (IntegralRecord) root.getReturnValue();
 
         IdentityObjectRecord arg = (IdentityObjectRecord) root.getArgs().get(0);
 
-        assertEquals(record.getValue(), arg.getHashCode());
+        assertEquals(objectRecord.getValue(), arg.getHashCode());
         assertEquals(X.class.getName(), arg.getType().getName());
     }
 

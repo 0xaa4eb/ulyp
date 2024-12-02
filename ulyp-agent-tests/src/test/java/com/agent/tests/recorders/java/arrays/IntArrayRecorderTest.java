@@ -3,7 +3,7 @@ package com.agent.tests.recorders.java.arrays;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingMatchers;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.arrays.ArrayRecord;
 import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
@@ -38,11 +38,11 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getReturnValue();
+        ArrayRecord array = (ArrayRecord) root.getReturnValue();
 
-        assertThat(record.getLength(), is(5));
+        assertThat(array.getLength(), is(5));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements, Matchers.hasSize(3));
         assertThat(elements.get(0), RecordingMatchers.isIntegral(1));
@@ -61,11 +61,11 @@ class IntArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getReturnValue();
+        ArrayRecord array = (ArrayRecord) root.getReturnValue();
 
-        assertThat(record.getLength(), is(5));
+        assertThat(array.getLength(), is(5));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements, Matchers.hasSize(5));
         assertThat(elements.get(0), RecordingMatchers.isIntegral(1));

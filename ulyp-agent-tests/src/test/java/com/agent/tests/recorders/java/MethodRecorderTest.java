@@ -32,6 +32,7 @@ class MethodRecorderTest extends AbstractInstrumentationTest {
     static class X {
 
         public void foo() {
+            // NOP
         }
     }
 

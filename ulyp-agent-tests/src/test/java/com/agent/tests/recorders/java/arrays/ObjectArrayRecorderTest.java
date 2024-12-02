@@ -3,7 +3,8 @@ package com.agent.tests.recorders.java.arrays;
 import com.agent.tests.util.AbstractInstrumentationTest;
 import com.agent.tests.util.ForkProcessBuilder;
 import com.agent.tests.util.RecordingMatchers;
-import com.ulyp.core.recorders.*;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.arrays.ArrayRecord;
 import com.ulyp.core.recorders.basic.ClassRecord;
 import com.ulyp.storage.tree.CallRecord;
@@ -28,10 +29,10 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        IdentityObjectRecord record = (IdentityObjectRecord) root.getArgs().get(0);
+        IdentityObjectRecord identity = (IdentityObjectRecord) root.getArgs().get(0);
 
 
-        assertThat(record.getType().getName(), is("[Ljava.lang.Object;"));
+        assertThat(identity.getType().getName(), is("[Ljava.lang.Object;"));
     }
 
     @Test
@@ -44,11 +45,11 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
+        ArrayRecord array = (ArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(record.getLength(), is(0));
-        assertThat(record.getElements(), Matchers.empty());
+        assertThat(array.getLength(), is(0));
+        assertThat(array.getElements(), Matchers.empty());
     }
 
     @Test
@@ -61,12 +62,12 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
+        ArrayRecord array = (ArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(record.getLength(), is(6));
+        assertThat(array.getLength(), is(6));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements, Matchers.hasSize(3));
         assertThat(elements.get(0), isString("A"));
@@ -85,12 +86,12 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
+        ArrayRecord array = (ArrayRecord) root.getArgs().get(0);
 
 
-        assertThat(record.getLength(), is(6));
+        assertThat(array.getLength(), is(6));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements, Matchers.hasSize(5));
         assertThat(elements.get(0), isString("A"));
@@ -110,11 +111,11 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
+        ArrayRecord array = (ArrayRecord) root.getArgs().get(0);
 
-        assertThat(record.getLength(), is(5));
+        assertThat(array.getLength(), is(5));
 
-        List<? extends ObjectRecord> elements = record.getElements();
+        List<? extends ObjectRecord> elements = array.getElements();
 
         assertThat(elements.get(0), isIdentity(X.class.getName()));
         assertThat(elements.get(1), RecordingMatchers.isIntegral(664));
@@ -132,11 +133,11 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         );
 
 
-        ArrayRecord record = (ArrayRecord) root.getArgs().get(0);
+        ArrayRecord array = (ArrayRecord) root.getArgs().get(0);
 
-        assertThat(record.getElements().get(0), Matchers.instanceOf(ClassRecord.class));
-        assertThat(record.getElements().get(1), Matchers.instanceOf(ClassRecord.class));
-        assertThat(record.getElements().get(2), Matchers.instanceOf(ClassRecord.class));
+        assertThat(array.getElements().get(0), Matchers.instanceOf(ClassRecord.class));
+        assertThat(array.getElements().get(1), Matchers.instanceOf(ClassRecord.class));
+        assertThat(array.getElements().get(2), Matchers.instanceOf(ClassRecord.class));
     }
 
     public static class TakesEmptyObjectArray {
@@ -146,6 +147,7 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         }
 
         public void accept(Object[] array) {
+            // NOP
         }
     }
 
@@ -179,13 +181,11 @@ class ObjectArrayRecorderTest extends AbstractInstrumentationTest {
         }
 
         public void accept(Object[] array) {
-            System.out.println(array);
+            // NOP
         }
     }
 
     private static class X {
-        public X() {
-        }
     }
 
     public static class VaragsTestCase {

@@ -34,7 +34,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
         assertEquals(7, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
-        assertEquals(entries.size(), 3);
+        assertEquals(3, entries.size());
 
         assertEquals("A", ((StringObjectRecord) entries.get(0).getKey()).value());
         assertEquals("0", ((StringObjectRecord) entries.get(0).getValue()).value());
@@ -60,7 +60,7 @@ class MapRecorderTest extends AbstractInstrumentationTest {
         assertEquals(7, collection.getSize());
 
         List<MapEntryRecord> entries = collection.getEntries();
-        assertEquals(entries.size(), 5);
+        assertEquals(5, entries.size());
 
         assertEquals("A", ((StringObjectRecord) entries.get(0).getKey()).value());
         assertEquals("0", ((StringObjectRecord) entries.get(0).getValue()).value());
