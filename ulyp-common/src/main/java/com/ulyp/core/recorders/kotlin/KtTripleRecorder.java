@@ -17,44 +17,50 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class KtPairRecorder extends ObjectRecorder {
+public class KtTripleRecorder extends ObjectRecorder {
 
-    private static final String KT_PAIR_CLASS_NAME = "kotlin.Pair";
-    private static final String KT_PAIR_FIRST_FIELD_NAME = "getFirst";
-    private static final String KT_PAIR_SECOND_FIELD_NAME = "getSecond";
+    private static final String KT_TRIPLE_CLASS_NAME = "kotlin.Triple";
+    private static final String KT_TRIPLE_FIRST_FIELD_NAME = "getFirst";
+    private static final String KT_TRIPLE_SECOND_FIELD_NAME = "getSecond";
+    private static final String KT_TRIPLE_THIRD_FIELD_NAME = "getThird";
 
     private final Map<Class<?>, ClassMethodHandles> methodHandles = new ConcurrentHashMap<>();
 
-    public KtPairRecorder(byte id) {
+    public KtTripleRecorder(byte id) {
         super(id);
     }
 
     @Override
     public boolean supports(Class<?> type) {
-        if (!type.getName().equals(KT_PAIR_CLASS_NAME)) {
+        if (!type.getName().equals(KT_TRIPLE_CLASS_NAME)) {
             return false;
         }
 
         Method[] declaredMethods = type.getDeclaredMethods();
         return Arrays.stream(declaredMethods).anyMatch(
-                method -> method.getName().equals(KT_PAIR_FIRST_FIELD_NAME)
+                method -> method.getName().equals(KT_TRIPLE_FIRST_FIELD_NAME)
                         && method.getReturnType() == Object.class
-                        && method.getParameterCount() == 0) &&
-                Arrays.stream(declaredMethods).anyMatch(
-                        method -> method.getName().equals(KT_PAIR_SECOND_FIELD_NAME)
-                        && method.getReturnType() == Object.class
-                        && method.getParameterCount() == 0);
+                        && method.getParameterCount() == 0)
+                && Arrays.stream(declaredMethods).anyMatch(
+                        method -> method.getName().equals(KT_TRIPLE_SECOND_FIELD_NAME)
+                                && method.getReturnType() == Object.class
+                                && method.getParameterCount() == 0)
+                && Arrays.stream(declaredMethods).anyMatch(
+                        method -> method.getName().equals(KT_TRIPLE_THIRD_FIELD_NAME)
+                                && method.getReturnType() == Object.class
+                                && method.getParameterCount() == 0);
     }
 
     @Override
     public boolean supportsAsyncRecording() {
-        return true;
+        return false;
     }
 
     @Override
     public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
-        return new KtPairRecord(
+        return new KtTripleRecord(
                 objectType,
+                input.readObject(typeResolver),
                 input.readObject(typeResolver),
                 input.readObject(typeResolver)
         );
@@ -65,8 +71,10 @@ public class KtPairRecorder extends ObjectRecorder {
         ClassMethodHandles methodHandles = getMethodHandles(pair.getClass());
         Object first = methodHandles.extractFirst(pair);
         Object second = methodHandles.extractSecond(pair);
+        Object third = methodHandles.extractThird(pair);
         out.write(first, typeResolver);
         out.write(second, typeResolver);
+        out.write(third, typeResolver);
     }
 
     private ClassMethodHandles getMethodHandles(Class<?> pairClass) {
@@ -79,27 +87,35 @@ public class KtPairRecorder extends ObjectRecorder {
             MethodHandles.Lookup publicLookup = MethodHandles.lookup();
             MethodHandle firstMh;
             try {
-                firstMh = publicLookup.findVirtual(pairClass, KT_PAIR_FIRST_FIELD_NAME, MethodType.methodType(Object.class));
+                firstMh = publicLookup.findVirtual(pairClass, KT_TRIPLE_FIRST_FIELD_NAME, MethodType.methodType(Object.class));
             } catch (IllegalAccessException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
             MethodHandle secondMh;
             try {
-                secondMh = publicLookup.findVirtual(pairClass, KT_PAIR_SECOND_FIELD_NAME, MethodType.methodType(Object.class));
+                secondMh = publicLookup.findVirtual(pairClass, KT_TRIPLE_SECOND_FIELD_NAME, MethodType.methodType(Object.class));
             } catch (IllegalAccessException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-            return new ClassMethodHandles(firstMh, secondMh);
+            MethodHandle thirdMh;
+            try {
+                thirdMh = publicLookup.findVirtual(pairClass, KT_TRIPLE_THIRD_FIELD_NAME, MethodType.methodType(Object.class));
+            } catch (IllegalAccessException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+            return new ClassMethodHandles(firstMh, secondMh, thirdMh);
         });
     }
 
     private static class ClassMethodHandles {
         final MethodHandle firstMh;
         final MethodHandle secondMh;
+        final MethodHandle thirdMh;
 
-        private ClassMethodHandles(MethodHandle firstMh, MethodHandle secondMh) {
+        private ClassMethodHandles(MethodHandle firstMh, MethodHandle secondMh, MethodHandle thirdMh) {
             this.firstMh = firstMh;
             this.secondMh = secondMh;
+            this.thirdMh = thirdMh;
         }
 
         private Object extractFirst(Object pair) {
@@ -113,6 +129,15 @@ public class KtPairRecorder extends ObjectRecorder {
         private Object extractSecond(Object pair) {
             try {
                 return secondMh.invoke(pair);
+            } catch (Throwable e) {
+                // TODO should bypass Throwable, but catch others and rethrow as RecordingException
+                throw new RuntimeException(e);
+            }
+        }
+
+        private Object extractThird(Object pair) {
+            try {
+                return thirdMh.invoke(pair);
             } catch (Throwable e) {
                 // TODO should bypass Throwable, but catch others and rethrow as RecordingException
                 throw new RuntimeException(e);
