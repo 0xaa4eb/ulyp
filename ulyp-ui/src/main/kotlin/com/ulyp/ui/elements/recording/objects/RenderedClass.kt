@@ -13,7 +13,6 @@ class RenderedClass(record: ClassRecord, renderSettings: RenderSettings) : Rende
         if (renderSettings.showTypes) {
             children.add(of(Class::class.java.name + ": ", Style.CALL_TREE_TYPE_NAME))
         }
-        val text: Text = TrimmedTextView(of(record.declaringType.name, Style.CALL_TREE_CLASS, Style.CALL_TREE_BOLD))
-        children.add(text)
+        children += TrimmedTextView(of(record.declaringType.name, Style.CALL_TREE_CLASS, Style.CALL_TREE_BOLD))
     }
 }

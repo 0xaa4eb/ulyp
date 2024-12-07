@@ -12,12 +12,12 @@ class RenderedPrintedObject(record: PrintedObjectRecord, renderSettings: RenderS
         val nodes: MutableList<Node> = ArrayList()
 
         if (renderSettings.showTypes) {
-            nodes.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            nodes.add(of("@", Style.CALL_TREE_IDENTITY))
-            nodes.add(of(Integer.toHexString(record.identityHashCode), Style.CALL_TREE_IDENTITY))
-            nodes.add(of(": ", Style.CALL_TREE_IDENTITY))
+            nodes += of(record.type.name, Style.CALL_TREE_TYPE_NAME)
+            nodes += of("@", Style.CALL_TREE_IDENTITY)
+            nodes += of(Integer.toHexString(record.identityHashCode), Style.CALL_TREE_IDENTITY)
+            nodes += of(": ", Style.CALL_TREE_IDENTITY)
         }
-        nodes.add(of(record.printedObject, Style.CALL_TREE_PRINTED, Style.CALL_TREE_BOLD))
+        nodes += of(record.printedObject, Style.CALL_TREE_PRINTED, Style.CALL_TREE_BOLD)
 
         children.addAll(nodes)
     }

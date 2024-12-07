@@ -11,7 +11,7 @@ class RenderedMethod(record: MethodRecord, renderSettings: RenderSettings) : Ren
 
     init {
         if (renderSettings.showTypes) {
-            children.add(of(Method::class.java.name + ": ", Style.CALL_TREE_TYPE_NAME))
+            children += of(Method::class.java.name + ": ", Style.CALL_TREE_TYPE_NAME)
         }
 
         children.addAll(

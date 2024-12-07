@@ -27,17 +27,17 @@ class RenderedString internal constructor(record: StringObjectRecord) : Rendered
                 Style.CALL_TREE,
                 Style.CALL_TREE_STRING
         )
-        children.add(trimmedText)
+        children += trimmedText
 
         if (trimmedText.text.length != fullText.text.length) {
 
             this.onMouseEntered = EventHandler {
                 children.clear()
-                children.add(fullText)
+                children += fullText
             }
             this.onMouseExited = EventHandler {
                 children.clear()
-                children.add(trimmedText)
+                children += trimmedText
             }
         }
     }

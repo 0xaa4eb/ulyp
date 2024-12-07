@@ -9,10 +9,12 @@ import javafx.scene.Node
 class RenderedMapEntry(record: MapEntryRecord, renderSettings: RenderSettings) : RenderedObject() {
 
     init {
-        val texts: MutableList<Node> = ArrayList()
-        texts.add(of(record.key, renderSettings))
-        texts.add(of(" -> ", Style.CALL_TREE_NODE_SEPARATOR))
-        texts.add(of(record.value, renderSettings))
-        children.addAll(texts)
+        val nodes: MutableList<Node> = ArrayList()
+
+        nodes += of(record.key, renderSettings)
+        nodes += of(" -> ", Style.CALL_TREE_NODE_SEPARATOR)
+        nodes += of(record.value, renderSettings)
+
+        children.addAll(nodes)
     }
 }

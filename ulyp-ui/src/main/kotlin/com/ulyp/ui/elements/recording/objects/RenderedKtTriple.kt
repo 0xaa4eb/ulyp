@@ -12,17 +12,17 @@ class RenderedKtTriple(record: KtTripleRecord, renderSettings: RenderSettings) :
         val nodes: MutableList<Node> = ArrayList()
 
         if (renderSettings.showTypes) {
-            nodes.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            nodes.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes += of(record.type.name, Style.CALL_TREE_TYPE_NAME)
+            nodes += of(": ", Style.CALL_TREE_NODE_SEPARATOR)
         }
 
-        nodes.add(of("<", Style.CALL_TREE_COLLECTION_BRACKET))
-        nodes.add(of(record.first, renderSettings))
-        nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
-        nodes.add(of(record.second, renderSettings))
-        nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
-        nodes.add(of(record.third, renderSettings))
-        nodes.add(of(">", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += of("<", Style.CALL_TREE_COLLECTION_BRACKET)
+        nodes += of(record.first, renderSettings)
+        nodes += of(", ", Style.CALL_TREE_NODE_SEPARATOR)
+        nodes += of(record.second, renderSettings)
+        nodes += of(", ", Style.CALL_TREE_NODE_SEPARATOR)
+        nodes += of(record.third, renderSettings)
+        nodes += of(">", Style.CALL_TREE_COLLECTION_BRACKET)
 
         children.addAll(nodes)
     }

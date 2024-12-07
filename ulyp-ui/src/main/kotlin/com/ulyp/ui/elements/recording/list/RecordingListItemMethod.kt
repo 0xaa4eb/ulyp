@@ -52,27 +52,25 @@ class RecordingListItemMethod(private val recording: Recording, settings: Settin
 
         val recordingMetadata = recording.metadata
         val rootCallRecord = recording.root
-        children.add(EnhancedText(
+        children += EnhancedText(
             Timestamp(recordingMetadata.recordingStartedMillis).toLocalDateTime().format(dateTimeFormatter),
             Style.RECORDING_LIST_ITEM)
-        )
-        children.add(Text(" "))
+        children += Text(" ")
         if (showThreadName) {
-            children.add(EnhancedText(recordingMetadata.threadName,
+            children += EnhancedText(recordingMetadata.threadName,
                 Style.RECORDING_LIST_ITEM,
                 Style.RECORDING_LIST_ITEM_THREAD,
-                Style.HIDDEN))
+                Style.HIDDEN)
         }
-        children.add(Text(" "))
-        children.add(EnhancedText(
+        children += Text(" ")
+        children += EnhancedText(
             "${ClassNameUtils.toSimpleName(rootCallRecord.method.type.name)}.${rootCallRecord.method.name}",
             Style.RECORDING_LIST_ITEM,
             Style.BOLD_TEXT
-        ))
-        children.add(EnhancedText(
+        )
+        children += EnhancedText(
             " (" + recording.lifetime.toMillis() + " ms, " + recording.callCount() + ")",
             Style.RECORDING_LIST_ITEM)
-        )
     }
 
     fun updateShowThreadName(showThreadName: Boolean) {

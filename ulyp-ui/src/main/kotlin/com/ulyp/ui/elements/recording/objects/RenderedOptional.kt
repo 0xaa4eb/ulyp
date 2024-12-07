@@ -9,17 +9,19 @@ import javafx.scene.Node
 class RenderedOptional(record: OptionalRecord, renderSettings: RenderSettings) : RenderedObject() {
 
     init {
-        val content: MutableList<Node> = ArrayList()
+        val nodes: MutableList<Node> = ArrayList()
+
         if (renderSettings.showTypes) {
-            content.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            content.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes += of(record.type.name, Style.CALL_TREE_TYPE_NAME)
+            nodes += of(": ", Style.CALL_TREE_NODE_SEPARATOR)
         }
-        content.add(of("Optional", Style.CALL_TREE_NODE_SEPARATOR))
-        content.add(of("<", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += of("Optional", Style.CALL_TREE_NODE_SEPARATOR)
+        nodes += of("<", Style.CALL_TREE_COLLECTION_BRACKET)
         if (!record.isEmpty) {
-            content.add(of(record.value, renderSettings))
+            nodes += of(record.value, renderSettings)
         }
-        content.add(of(">", Style.CALL_TREE_COLLECTION_BRACKET))
-        children.addAll(content)
+        nodes += of(">", Style.CALL_TREE_COLLECTION_BRACKET)
+
+        children.addAll(nodes)
     }
 }

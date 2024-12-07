@@ -11,6 +11,6 @@ class RenderedChar internal constructor(value: CharRecord)
 
     init {
         val text: Text = TrimmedTextView(Text("'" + value.value + "'"))
-        children.add(StyledText.of(text.text, Style.CALL_TREE_STRING))
+        children += StyledText.of(text.text, Style.CALL_TREE_STRING)
     }
 }

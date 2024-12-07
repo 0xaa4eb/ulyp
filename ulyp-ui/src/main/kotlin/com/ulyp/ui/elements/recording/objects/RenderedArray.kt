@@ -13,7 +13,7 @@ class RenderedArray(record: ArrayRecord, renderSettings: RenderSettings) : Rende
     init {
 
         val nodes: MutableList<Node> = ArrayList()
-        nodes.add(of("[", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += of("[", Style.CALL_TREE_COLLECTION_BRACKET)
 
         val recordedObjects = record.elements
                 .stream()
@@ -22,21 +22,19 @@ class RenderedArray(record: ArrayRecord, renderSettings: RenderSettings) : Rende
 
         for (i in recordedObjects.indices) {
 
-            nodes.add(recordedObjects[i])
+            nodes += recordedObjects[i]
 
             if (i != recordedObjects.size - 1 || recordedObjects.size < record.length) {
-                nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
+                nodes += of(", ", Style.CALL_TREE_NODE_SEPARATOR)
             }
         }
         if (recordedObjects.size < record.length) {
-            nodes.add(
-                    of(
-                            (record.length - recordedObjects.size).toString() + " more...",
-                            Style.CALL_TREE_NODE_SEPARATOR
-                    )
+            nodes += of(
+                (record.length - recordedObjects.size).toString() + " more...",
+                Style.CALL_TREE_NODE_SEPARATOR
             )
         }
-        nodes.add(of("]", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += of("]", Style.CALL_TREE_COLLECTION_BRACKET)
         children.addAll(nodes)
     }
 }

@@ -20,41 +20,39 @@ class RenderedCollection(record: CollectionRecord, renderSettings: RenderSetting
         val nodes: MutableList<Node> = ArrayList()
 
         if (renderSettings.showTypes) {
-            nodes.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            nodes.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes += of(record.type.name, Style.CALL_TREE_TYPE_NAME)
+            nodes += of(": ", Style.CALL_TREE_NODE_SEPARATOR)
         }
 
-        when (record.collectionType) {
-            CollectionType.LIST -> nodes.add(of("[", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.SET -> nodes.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.QUEUE -> nodes.add(of("<", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.OTHER -> nodes.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
-            null -> nodes.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += when (record.collectionType) {
+            CollectionType.LIST -> of("[", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.SET -> of("{", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.QUEUE -> of("<", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.OTHER -> of("{", Style.CALL_TREE_COLLECTION_BRACKET)
+            null -> of("{", Style.CALL_TREE_COLLECTION_BRACKET)
         }
 
         for (i in recordedObjects.indices) {
 
-            nodes.add(recordedObjects[i])
+            nodes += recordedObjects[i]
 
             if (i != recordedObjects.size - 1 || recordedObjects.size < record.size) {
-                nodes.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
+                nodes += of(", ", Style.CALL_TREE_NODE_SEPARATOR)
             }
         }
         if (recordedObjects.size < record.size) {
-            nodes.add(
-                    of(
-                            (record.size - recordedObjects.size).toString() + " more...",
-                            Style.CALL_TREE_NODE_SEPARATOR
-                    )
+            nodes += of(
+                (record.size - recordedObjects.size).toString() + " more...",
+                Style.CALL_TREE_NODE_SEPARATOR
             )
         }
 
-        when (record.collectionType) {
-            CollectionType.LIST -> nodes.add(of("]", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.SET -> nodes.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.QUEUE -> nodes.add(of(">", Style.CALL_TREE_COLLECTION_BRACKET))
-            CollectionType.OTHER -> nodes.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
-            null -> nodes.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += when (record.collectionType) {
+            CollectionType.LIST -> of("]", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.SET -> of("}", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.QUEUE -> of(">", Style.CALL_TREE_COLLECTION_BRACKET)
+            CollectionType.OTHER -> of("}", Style.CALL_TREE_COLLECTION_BRACKET)
+            null -> of("}", Style.CALL_TREE_COLLECTION_BRACKET)
         }
 
         children.addAll(nodes)

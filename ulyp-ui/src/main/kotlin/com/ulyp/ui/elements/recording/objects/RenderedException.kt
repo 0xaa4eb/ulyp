@@ -13,13 +13,16 @@ class RenderedException(record: ThrowableRecord, renderSettings: RenderSettings)
     init {
         val className =
                 if (renderSettings.showTypes) record.type.name else toSimpleName(record.type.name)
-        val childrenToAdd: MutableList<Node> = ArrayList()
-        childrenToAdd.add(of(className, Style.CALL_TREE_TYPE_NAME))
-        childrenToAdd.add(of("(", Style.CALL_TREE_IDENTITY))
+
+        val nodes: MutableList<Node> = ArrayList()
+
+        nodes += of(className, Style.CALL_TREE_TYPE_NAME)
+        nodes += of("(", Style.CALL_TREE_IDENTITY)
         if (record.message !is NullObjectRecord) {
-            childrenToAdd.add(of(record.message, renderSettings))
+            nodes += of(record.message, renderSettings)
         }
-        childrenToAdd.add(of(")", Style.CALL_TREE_IDENTITY))
-        children.addAll(childrenToAdd)
+        nodes += of(")", Style.CALL_TREE_IDENTITY)
+
+        children.addAll(nodes)
     }
 }

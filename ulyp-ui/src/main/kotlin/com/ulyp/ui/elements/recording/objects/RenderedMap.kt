@@ -15,22 +15,24 @@ class RenderedMap(record: MapRecord, renderSettings: RenderSettings) : RenderedO
                 .stream()
                 .map { record: MapEntryRecord -> of(record, renderSettings) }
                 .collect(Collectors.toList())
-        val texts: MutableList<Node> = ArrayList()
+        val nodes: MutableList<Node> = ArrayList()
+        
         if (renderSettings.showTypes) {
-            texts.add(of(record.type.name, Style.CALL_TREE_TYPE_NAME))
-            texts.add(of(": ", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes += of(record.type.name, Style.CALL_TREE_TYPE_NAME)
+            nodes += of(": ", Style.CALL_TREE_NODE_SEPARATOR)
         }
-        texts.add(of("{", Style.CALL_TREE_COLLECTION_BRACKET))
+        nodes += of("{", Style.CALL_TREE_COLLECTION_BRACKET)
         for (i in entries.indices) {
-            texts.add(entries[i])
+            nodes += entries[i]
             if (i != entries.size - 1 || entries.size < record.size) {
-                texts.add(of(", ", Style.CALL_TREE_NODE_SEPARATOR))
+                nodes += of(", ", Style.CALL_TREE_NODE_SEPARATOR)
             }
         }
         if (entries.size < record.size) {
-            texts.add(of((record.size - entries.size).toString() + " more...", Style.CALL_TREE_NODE_SEPARATOR))
+            nodes += of((record.size - entries.size).toString() + " more...", Style.CALL_TREE_NODE_SEPARATOR)
         }
-        texts.add(of("}", Style.CALL_TREE_COLLECTION_BRACKET))
-        children.addAll(texts)
+        nodes += of("}", Style.CALL_TREE_COLLECTION_BRACKET)
+
+        children.addAll(nodes)
     }
 }
