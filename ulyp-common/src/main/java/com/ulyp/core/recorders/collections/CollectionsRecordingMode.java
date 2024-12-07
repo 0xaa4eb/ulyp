@@ -1,5 +1,7 @@
 package com.ulyp.core.recorders.collections;
 
+import java.util.List;
+
 public enum CollectionsRecordingMode {
 
     /**
@@ -11,6 +13,20 @@ public enum CollectionsRecordingMode {
         @Override
         public boolean supports(Class<?> type) {
             return type.getName().startsWith("java.") && !type.getName().startsWith("java.util.concurrent");
+        }
+
+        @Override
+        public String toString() {
+            return "Recording java.* collections";
+        }
+    },
+    /**
+     * Records all kotlin standard library collections
+     */
+    KT {
+        @Override
+        public boolean supports(Class<?> type) {
+            return type.getName().startsWith("kotlin.");
         }
 
         @Override
@@ -48,4 +64,8 @@ public enum CollectionsRecordingMode {
     };
 
     public abstract boolean supports(Class<?> type);
+
+    public static boolean isDisabled(List<CollectionsRecordingMode> modes) {
+        return modes.size() == 1 && modes.get(0) == NONE;
+    }
 }

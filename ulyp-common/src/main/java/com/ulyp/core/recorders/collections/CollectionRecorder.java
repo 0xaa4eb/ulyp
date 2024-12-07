@@ -15,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @ThreadSafe
@@ -30,7 +27,7 @@ public class CollectionRecorder extends ObjectRecorder {
     private volatile boolean active = true;
     @Setter
     private int maxElementsToRecord;
-    private CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
+    private List<CollectionsRecordingMode> modes = Collections.singletonList(CollectionsRecordingMode.NONE);
 
     public CollectionRecorder(byte id) {
         super(id);
@@ -38,7 +35,7 @@ public class CollectionRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return mode.supports(type) && Collection.class.isAssignableFrom(type);
+        return modes.stream().anyMatch(mode -> mode.supports(type)) && Collection.class.isAssignableFrom(type);
     }
 
     @Override
@@ -46,9 +43,9 @@ public class CollectionRecorder extends ObjectRecorder {
         return false;
     }
 
-    public void setMode(CollectionsRecordingMode mode) {
-        this.mode = mode;
-        log.info("Set collection recording mode to {}", mode);
+    public void setModes(List<CollectionsRecordingMode> modes) {
+        this.modes = modes;
+        log.info("Set collection recording mode to {}", modes);
     }
 
     @Override

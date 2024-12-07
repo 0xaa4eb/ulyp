@@ -1,10 +1,6 @@
 package com.ulyp.core.recorders.collections;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +48,7 @@ class MapRecorderTest {
         map.put("ABC", new XYZ());
         map.put("ZXC", new XYZ());
 
-        mapRecorder.setMode(CollectionsRecordingMode.ALL);
+        mapRecorder.setModes(Collections.singletonList(CollectionsRecordingMode.ALL));
 
         mapRecorder.write(map, out, typeResolver);
 
@@ -76,7 +72,7 @@ class MapRecorderTest {
         map.put("ABC", new XYZ());
         map.put("ZXC", new XYZ());
 
-        mapRecorder.setMode(CollectionsRecordingMode.ALL);
+        mapRecorder.setModes(Collections.singletonList(CollectionsRecordingMode.ALL));
         mapRecorder.write(map, out, typeResolver);
 
         IdentityObjectRecord mapRecord = (IdentityObjectRecord) mapRecorder.read(typeResolver.get(map), in, typeResolver::get);
