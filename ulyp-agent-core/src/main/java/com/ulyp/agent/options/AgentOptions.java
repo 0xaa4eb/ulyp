@@ -13,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 /**
  * Agent options which define what packages to instrument, at which method recording should start, etc.
  * It's only possible to set settings via JMV system properties at the time.
@@ -112,13 +114,15 @@ public class AgentOptions {
                     "Value 'delay:X' allows to set delay after which recording can start. X is specified in seconds. For example, 'delay:60'. " +
                     "Value 'api' makes the agent behaviour controllable through remote Grpc API."
     );
-    private final AgentOption<CollectionsRecordingMode> collectionsRecordingMode = new AgentOption<>(
+    private final AgentOption<List<CollectionsRecordingMode>> collectionsRecordingMode = new AgentOption<>(
             RECORD_COLLECTIONS_PROPERTY,
-            CollectionsRecordingMode.NONE,
-            CollectionsRecordingMode::valueOf,
-            "Defines if collections, maps and arrays should be recorded. Defaults to 'NONE' which allows the agent to pass all objects by reference" +
-                    " to the background thread. 'JAVA' enables recording of Java standard library collections, maps and arrays. 'ALL' " +
-                    "will record all collections (event 3rd party library collections) which might be very unpleasant, so use with care."
+            singletonList(CollectionsRecordingMode.NONE),
+            new ListParser<>(CollectionsRecordingMode::valueOf),
+            "Defines if collections, maps and arrays should be recorded. " +
+                    "Defaults to 'NONE' which allows the agent to pass all objects by reference to the background thread. " +
+                    "'JAVA' enables recording of Java standard library collections, maps and arrays. " +
+                    "'KT' enables recording of Kotlin standard library collections. " +
+                    "'ALL' will record all collections (event 3rd party library collections) which may incur side effects, so use with care."
     );
     private final AgentOption<Integer> maxItemsCollectionsRecordingOption = new AgentOption<>(
             RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY,

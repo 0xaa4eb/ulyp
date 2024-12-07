@@ -19,6 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ListRecorderTest extends AbstractInstrumentationTest {
 
     @Test
+    void shouldRecordEmptyList() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMain(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getEmptyList"))
+                        .withRecordCollections(CollectionsRecordingMode.JDK, CollectionsRecordingMode.KT)
+        );
+
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(0, collection.getSize());
+    }
+
+    @Test
     void shouldRecordImmutableListEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -38,6 +52,26 @@ class ListRecorderTest extends AbstractInstrumentationTest {
         assertThat(elements.get(0), RecordingMatchers.isString("ABC"));
         assertThat(elements.get(1), RecordingMatchers.isString("CDE"));
         assertThat(elements.get(2), RecordingMatchers.isString("EFG"));
+    }
+
+    @Test
+    void shouldRecordArrayDequeue() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMain(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getArrayDequeue"))
+                        .withRecordCollections(CollectionsRecordingMode.JDK, CollectionsRecordingMode.KT)
+        );
+
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(5, collection.getSize());
+        List<ObjectRecord> elements = collection.getElements();
+        assertEquals(3, elements.size());
+
+        assertThat(elements.get(0), RecordingMatchers.isString("A"));
+        assertThat(elements.get(1), RecordingMatchers.isString("B"));
+        assertThat(elements.get(2), RecordingMatchers.isString("C"));
     }
 
     @Test
@@ -78,7 +112,9 @@ class ListRecorderTest extends AbstractInstrumentationTest {
 
         public static void main(String[] args) {
             System.out.println(CollectionsTestKt.getImmutableList());
+            System.out.println(CollectionsTestKt.getEmptyList());
             System.out.println(CollectionsTestKt.getMutableList());
+            System.out.println(CollectionsTestKt.getArrayDequeue());
         }
     }
 }

@@ -12,6 +12,20 @@ fun getImmutableList(): List<String> {
     return listOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }
 
+fun getEmptyList(): List<String> {
+    return emptyList()
+}
+
+fun getArrayDequeue(): ArrayDeque<String> {
+    val deq = ArrayDeque<String>(1)
+    deq.add("A")
+    deq.add("B")
+    deq.add("C")
+    deq.add("E")
+    deq.add("F")
+    return deq
+}
+
 fun getMutableList(): MutableList<String> {
     return mutableListOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }

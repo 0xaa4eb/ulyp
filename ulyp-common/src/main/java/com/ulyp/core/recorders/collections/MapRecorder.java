@@ -13,10 +13,7 @@ import com.ulyp.core.bytes.Mark;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ThreadSafe
 public class MapRecorder extends ObjectRecorder {
@@ -27,7 +24,7 @@ public class MapRecorder extends ObjectRecorder {
     @Setter
     private int maxEntriesToRecord;
     @Setter
-    private volatile CollectionsRecordingMode mode = CollectionsRecordingMode.NONE;
+    private List<CollectionsRecordingMode> modes = Collections.singletonList(CollectionsRecordingMode.NONE);
     private volatile boolean active = true;
 
     public MapRecorder(byte id) {
@@ -36,7 +33,7 @@ public class MapRecorder extends ObjectRecorder {
 
     @Override
     public boolean supports(Class<?> type) {
-        return mode.supports(type) && Map.class.isAssignableFrom(type);
+        return modes.stream().anyMatch(mode -> mode.supports(type)) && Map.class.isAssignableFrom(type);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class RecordingThreadLocalContext {
     private RecordingEventBuffer eventBuffer;
 
     public RecordingThreadLocalContext(AgentOptions options, TypeResolver typeResolver) {
-        if (options.getCollectionsRecordingMode().get() == CollectionsRecordingMode.NONE && !options.getArraysRecordingOption().get()) {
+        if (CollectionsRecordingMode.isDisabled(options.getCollectionsRecordingMode().get()) && !options.getArraysRecordingOption().get()) {
             this.objectConverter = PassByRefRecordedObjectConverter.INSTANCE;
         } else {
             this.objectConverter = new ByTypeRecordedObjectConverter(typeResolver);
