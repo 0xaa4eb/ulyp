@@ -11,23 +11,24 @@ import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.Mark;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.*;
 
-@Slf4j
 @ThreadSafe
 public class CollectionRecorder extends ObjectRecorder {
 
     protected static final int RECORDED_ELEMENTS_FLAG = 1;
     protected static final int RECORDED_IDENTITY_FLAG = 0;
 
-    private volatile boolean active = true;
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @Setter
     private int maxElementsToRecord;
     private List<CollectionsRecordingMode> modes = Collections.singletonList(CollectionsRecordingMode.NONE);
+    private volatile boolean active = true;
 
     public CollectionRecorder(byte id) {
         super(id);
@@ -45,7 +46,7 @@ public class CollectionRecorder extends ObjectRecorder {
 
     public void setModes(List<CollectionsRecordingMode> modes) {
         this.modes = modes;
-        log.info("Set collection recording mode to {}", modes);
+        log.info("Collection recording modes set to {}", modes);
     }
 
     @Override
