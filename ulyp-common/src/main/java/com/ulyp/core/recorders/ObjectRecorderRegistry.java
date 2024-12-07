@@ -53,6 +53,7 @@ public enum ObjectRecorderRegistry {
     TO_STRING_RECORDER(new PrintingRecorder((byte) 91), 99),
     KT_PAIR_RECORDER(new KtPairRecorder((byte) 15), 200),
     KT_TRIPLE_RECORDER(new KtTripleRecorder((byte) 16), 200),
+    THREAD_RECORDER(new ThreadRecorder((byte) 7), 50),
     IDENTITY_RECORDER(new IdentityRecorder((byte) 0), Integer.MAX_VALUE / 2),
     // Null recorder is only used manually, so it has max available order
     NULL_RECORDER(new NullObjectRecorder((byte) 9), Integer.MAX_VALUE);
