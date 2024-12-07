@@ -10,6 +10,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ForkProcessBuilder {
 
@@ -22,7 +23,7 @@ public class ForkProcessBuilder {
     private List<String> instrumentedPackages = new ArrayList<>();
     private String excludeClassesProperty = null;
     private List<String> excludedFromInstrumentationPackages = new ArrayList<>();
-    private CollectionsRecordingMode collectionsRecordingMode;
+    private List<CollectionsRecordingMode> collectionsRecordingModes;
     private String printTypes = null;
     private String logLevel = "INFO";
     private Boolean agentDisabled = null;
@@ -45,8 +46,8 @@ public class ForkProcessBuilder {
         return this;
     }
 
-    public ForkProcessBuilder withRecordCollections(CollectionsRecordingMode mode) {
-        collectionsRecordingMode = mode;
+    public ForkProcessBuilder withRecordCollections(CollectionsRecordingMode... modes) {
+        collectionsRecordingModes = Arrays.asList(modes);
         return this;
     }
 
@@ -166,8 +167,12 @@ public class ForkProcessBuilder {
         if (recordCollectionItems != null) {
             params.add("-D" + AgentOptions.RECORD_COLLECTIONS_MAX_ITEMS_PROPERTY + "=" + recordCollectionItems);
         }
-        if (collectionsRecordingMode != null) {
-            params.add("-D" + AgentOptions.RECORD_COLLECTIONS_PROPERTY + "=" + collectionsRecordingMode.name());
+        if (collectionsRecordingModes != null) {
+            params.add("-D" + AgentOptions.RECORD_COLLECTIONS_PROPERTY + "=" +
+                    collectionsRecordingModes.stream()
+                            .map(CollectionsRecordingMode::name)
+                            .collect(Collectors.joining(","))
+            );
         }
 
         params.add("-Dulyp.recording-queue.serialization-buffer-size=" + 2048);

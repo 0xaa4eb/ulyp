@@ -12,6 +12,10 @@ fun getImmutableList(): List<String> {
     return listOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }
 
+fun getEmptyList(): List<String> {
+    return emptyList()
+}
+
 fun getMutableList(): MutableList<String> {
     return mutableListOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }

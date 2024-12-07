@@ -19,6 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ListRecorderTest extends AbstractInstrumentationTest {
 
     @Test
+    void shouldRecordEmptyList() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMain(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getEmptyList"))
+                        .withRecordCollections(CollectionsRecordingMode.JDK, CollectionsRecordingMode.KT)
+        );
+
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        assertEquals(0, collection.getSize());
+    }
+
+    @Test
     void shouldRecordImmutableListEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -78,6 +92,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
 
         public static void main(String[] args) {
             System.out.println(CollectionsTestKt.getImmutableList());
+            System.out.println(CollectionsTestKt.getEmptyList());
             System.out.println(CollectionsTestKt.getMutableList());
         }
     }
