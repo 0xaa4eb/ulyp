@@ -1,8 +1,8 @@
 package com.ulyp.storage.tree;
 
-import java.util.function.Supplier;
-
 import com.ulyp.storage.reader.RecordingDataReader;
+
+import java.util.function.Supplier;
 
 public class CallRecordTreeBuilder {
 

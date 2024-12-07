@@ -6,7 +6,6 @@ import com.ulyp.ui.RenderSettings
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
 import javafx.scene.control.TreeItem
-import java.lang.StringBuilder
 import java.util.function.Consumer
 
 class RecordedCallTreeItem(private val recording: Recording, private val callRecordId: Long, private val renderSettings: RenderSettings) :

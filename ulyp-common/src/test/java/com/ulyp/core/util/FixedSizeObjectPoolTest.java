@@ -1,10 +1,10 @@
 package com.ulyp.core.util;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.ulyp.core.Resettable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 class FixedSizeObjectPoolTest {
 

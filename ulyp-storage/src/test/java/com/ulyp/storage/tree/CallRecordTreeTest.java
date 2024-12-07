@@ -1,16 +1,5 @@
 package com.ulyp.storage.tree;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.concurrent.ExecutionException;
-
-import com.ulyp.storage.util.TestMemPageAllocator;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.AfterEach;
-
 import com.ulyp.core.Method;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.Type;
@@ -22,9 +11,19 @@ import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.reader.FileRecordingDataReaderBuilder;
 import com.ulyp.storage.reader.RecordingDataReader;
-import com.ulyp.storage.writer.RecordingDataWriter;
+import com.ulyp.storage.util.TestMemPageAllocator;
 import com.ulyp.storage.writer.FileRecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

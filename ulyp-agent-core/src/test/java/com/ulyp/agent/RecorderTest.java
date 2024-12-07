@@ -1,22 +1,26 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.options.AgentOptions;
+import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
+import com.ulyp.agent.queue.RecordingEventQueue;
+import com.ulyp.core.Method;
+import com.ulyp.core.MethodRepository;
+import com.ulyp.core.RecordedExitMethodCall;
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.metrics.NullMetrics;
+import com.ulyp.core.util.ReflectionBasedMethodResolver;
+import com.ulyp.core.util.ReflectionBasedTypeResolver;
+import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
-import com.ulyp.agent.options.AgentOptions;
-import com.ulyp.agent.queue.RecordingEventQueue;
-import com.ulyp.core.*;
-import com.ulyp.core.metrics.NullMetrics;
-import com.ulyp.storage.writer.HeapRecordingDataWrtiter;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.AfterEach;
-
-import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
-import com.ulyp.core.util.ReflectionBasedMethodResolver;
-import com.ulyp.core.util.ReflectionBasedTypeResolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

@@ -1,13 +1,13 @@
 package com.ulyp.storage.writer;
 
-import java.time.Duration;
-
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.SerializedMethodList;
 import com.ulyp.core.mem.SerializedRecordedMethodCallList;
 import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.storage.StorageException;
+
+import java.time.Duration;
 
 public class BlackholeRecordingDataWriter implements RecordingDataWriter {
 

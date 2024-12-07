@@ -24,16 +24,15 @@
  */
 package com.ulyp.agent.log;
 
-import java.io.PrintStream;
-import java.util.Date;
-
+import com.ulyp.agent.AgentContext;
+import com.ulyp.agent.RecorderInstance;
 import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
 
-import com.ulyp.agent.AgentContext;
-import com.ulyp.agent.RecorderInstance;
+import java.io.PrintStream;
+import java.util.Date;
 
 /**
  * Forked from slf4j-simple

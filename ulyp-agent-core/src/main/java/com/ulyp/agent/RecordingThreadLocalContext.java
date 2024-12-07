@@ -1,14 +1,13 @@
 package com.ulyp.agent;
 
-import javax.annotation.Nullable;
-
 import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.RecordingMetadata;
-
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.annotation.Nullable;
 
 /**
  * Thread-local context which contains all necessary information about ongoing (if any) recording session.

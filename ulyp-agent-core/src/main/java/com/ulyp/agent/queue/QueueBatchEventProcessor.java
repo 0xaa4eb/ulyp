@@ -1,21 +1,15 @@
 package com.ulyp.agent.queue;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.lmax.disruptor.AlertException;
-import com.lmax.disruptor.DataProvider;
-import com.lmax.disruptor.EventProcessor;
-import com.lmax.disruptor.Sequence;
-import com.lmax.disruptor.SequenceBarrier;
-import com.lmax.disruptor.Sequencer;
+import com.lmax.disruptor.*;
 import com.ulyp.agent.AgentDataWriter;
 import com.ulyp.agent.queue.events.*;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.util.LoggingSettings;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public final class QueueBatchEventProcessor implements EventProcessor {

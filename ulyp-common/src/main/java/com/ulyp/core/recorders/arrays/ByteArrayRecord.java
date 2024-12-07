@@ -3,7 +3,6 @@ package com.ulyp.core.recorders.arrays;
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
-
 import lombok.Getter;
 
 public class ByteArrayRecord extends ObjectRecord {

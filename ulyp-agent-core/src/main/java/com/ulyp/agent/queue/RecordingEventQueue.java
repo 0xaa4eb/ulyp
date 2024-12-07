@@ -1,23 +1,21 @@
 package com.ulyp.agent.queue;
 
+import com.lmax.disruptor.SleepingWaitStrategy;
+import com.ulyp.agent.AgentDataWriter;
+import com.ulyp.agent.RecordingEventBuffer;
+import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
+import com.ulyp.core.TypeResolver;
+import com.ulyp.core.metrics.Metrics;
+import com.ulyp.core.util.NamedThreadFactory;
+import com.ulyp.core.util.SystemPropertyUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
-
-import com.ulyp.agent.AgentDataWriter;
-import com.ulyp.agent.RecordingEventBuffer;
-import com.ulyp.agent.queue.disruptor.RecordingQueueDisruptor;
-import com.ulyp.core.metrics.Metrics;
-import com.ulyp.core.util.SystemPropertyUtil;
-
-import com.lmax.disruptor.SleepingWaitStrategy;
-import com.ulyp.core.TypeResolver;
-import com.ulyp.core.util.NamedThreadFactory;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Main entry point for recorded call events. For most of the objects only their identity is recorded (identity hash code and type id).

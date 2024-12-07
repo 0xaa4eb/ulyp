@@ -1,10 +1,9 @@
 package com.ulyp.core.util;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class ReflectionBasedMethodResolverTest {
 

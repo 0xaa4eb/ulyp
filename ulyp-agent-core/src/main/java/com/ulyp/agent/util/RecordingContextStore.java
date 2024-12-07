@@ -2,7 +2,6 @@ package com.ulyp.agent.util;
 
 import com.ulyp.agent.RecordingThreadLocalContext;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
 

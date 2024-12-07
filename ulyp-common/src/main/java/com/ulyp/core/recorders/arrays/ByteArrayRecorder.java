@@ -3,13 +3,12 @@ package com.ulyp.core.recorders.arrays;
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
-import com.ulyp.core.recorders.IdentityObjectRecord;
-import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
+import com.ulyp.core.recorders.IdentityObjectRecord;
+import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
-
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 

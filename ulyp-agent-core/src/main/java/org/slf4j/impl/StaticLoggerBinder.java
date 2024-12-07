@@ -24,10 +24,9 @@
  */
 package org.slf4j.impl;
 
+import com.ulyp.agent.log.SimpleLoggerFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
-
-import com.ulyp.agent.log.SimpleLoggerFactory;
 
 /**
  * Links slf4j-api to ulyp's nested slf4j logging implementation. The API is relocated to

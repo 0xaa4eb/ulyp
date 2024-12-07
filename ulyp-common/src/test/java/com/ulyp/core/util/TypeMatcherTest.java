@@ -1,10 +1,10 @@
 package com.ulyp.core.util;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import com.ulyp.core.Type;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

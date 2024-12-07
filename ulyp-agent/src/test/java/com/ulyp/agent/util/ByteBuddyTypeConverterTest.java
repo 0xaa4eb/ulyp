@@ -1,12 +1,11 @@
 package com.ulyp.agent.util;
 
-import java.util.HashSet;
-
 import com.ulyp.core.Type;
-
 import net.bytebuddy.description.type.TypeDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
 
 class ByteBuddyTypeConverterTest {
 

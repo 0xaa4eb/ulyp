@@ -1,7 +1,6 @@
 package com.ulyp.agent.queue.events;
 
 import com.ulyp.core.RecordingMetadata;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

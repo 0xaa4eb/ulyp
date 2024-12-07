@@ -3,12 +3,12 @@ package com.ulyp.core.serializers;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.bytes.BytesIn;
+import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
-import com.ulyp.core.bytes.BytesIn;
-import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.repository.ReadableRepository;
 
 import java.util.Optional;

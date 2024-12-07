@@ -1,18 +1,17 @@
 package com.ulyp.core.recorders;
 
-import java.util.Arrays;
-
-import org.agrona.concurrent.UnsafeBuffer;
-
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.bytes.DirectBytesIn;
-import com.ulyp.core.bytes.BufferBytesOut;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.core.util.TypeMatcher;
+import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 class PrintingRecorderTest {
 

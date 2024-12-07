@@ -1,8 +1,5 @@
 package com.ulyp.storage.writer;
 
-import java.time.Duration;
-import java.util.concurrent.TimeoutException;
-
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.mem.SerializedMethodList;
@@ -11,8 +8,10 @@ import com.ulyp.core.mem.SerializedTypeList;
 import com.ulyp.core.metrics.BytesCounter;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.storage.StorageException;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 public class StatsRecordingDataWriter implements RecordingDataWriter {

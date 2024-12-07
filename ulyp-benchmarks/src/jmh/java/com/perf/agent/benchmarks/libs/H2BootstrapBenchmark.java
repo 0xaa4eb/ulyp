@@ -1,7 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
 import com.perf.agent.benchmarks.RecordingBenchmark;
-import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.openjdk.jmh.annotations.*;
 
 import java.sql.*;

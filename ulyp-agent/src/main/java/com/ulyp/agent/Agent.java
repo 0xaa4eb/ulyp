@@ -1,23 +1,12 @@
 package com.ulyp.agent;
 
-import java.lang.instrument.Instrumentation;
-import java.util.List;
-import java.util.Optional;
-
 import com.ulyp.agent.advice.*;
 import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
-import com.ulyp.core.recorders.ObjectRecorderRegistry;
-import com.ulyp.core.recorders.PrintingRecorder;
-import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
-import com.ulyp.core.recorders.collections.CollectionRecorder;
-import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
-import com.ulyp.core.recorders.collections.MapRecorder;
-import com.ulyp.core.util.TypeMatcher;
 import com.ulyp.core.util.LoggingSettings;
-
+import com.ulyp.core.util.TypeMatcher;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -27,6 +16,10 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
+
+import java.lang.instrument.Instrumentation;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The agent entry point which is invoked by JVM itself

@@ -1,7 +1,7 @@
 package com.ulyp.ui.elements.controls
 
-import com.ulyp.ui.UIApplication
 import com.ulyp.ui.SceneRegistry
+import com.ulyp.ui.UIApplication
 import javafx.scene.Node
 import javafx.scene.image.Image
 import org.springframework.beans.factory.annotation.Autowired

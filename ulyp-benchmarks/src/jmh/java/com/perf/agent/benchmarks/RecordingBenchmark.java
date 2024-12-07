@@ -4,9 +4,6 @@ import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.util.AgentHelper;
 import com.ulyp.core.metrics.Counter;
-import org.openjdk.jmh.annotations.AuxCounters;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.function.Supplier;

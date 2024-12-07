@@ -1,12 +1,11 @@
 package com.ulyp.core.bytes;
 
-import java.io.IOException;
-
+import com.ulyp.core.util.FixedSizeObjectPool;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-import com.ulyp.core.util.FixedSizeObjectPool;
+import java.io.IOException;
 
 /**
  * Allows to write to direct buffer

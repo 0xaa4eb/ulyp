@@ -1,12 +1,11 @@
 package com.ulyp.agent;
 
-import java.time.Duration;
-import java.util.concurrent.TimeoutException;
-
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.storage.writer.RecordingDataWriter;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 public class AgentShutdownHook implements Runnable {

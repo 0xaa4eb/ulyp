@@ -1,5 +1,7 @@
 package com.ulyp.agent.log;
 
+import org.slf4j.helpers.Util;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -9,8 +11,6 @@ import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-
-import org.slf4j.helpers.Util;
 
 /**
  * Forked from slf4j-simple

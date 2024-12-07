@@ -1,9 +1,9 @@
 package com.ulyp.storage.writer;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import com.ulyp.core.util.ByteSize;
 import lombok.RequiredArgsConstructor;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 @RequiredArgsConstructor
 // intentionally not thread safe, but call count is thread safe for tests only

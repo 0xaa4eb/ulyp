@@ -1,18 +1,18 @@
 package com.ulyp.storage.reader;
 
+import com.ulyp.core.ProcessMetadata;
+import com.ulyp.core.RecordingMetadata;
+import com.ulyp.core.Type;
+import com.ulyp.core.mem.SerializedTypeList;
+import com.ulyp.storage.writer.FileRecordingDataWriter;
+import com.ulyp.storage.writer.RecordingDataWriter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-
-import com.ulyp.core.Type;
-import com.ulyp.core.mem.SerializedTypeList;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.AfterEach;
-
-import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.RecordingMetadata;
-import com.ulyp.storage.writer.RecordingDataWriter;
-import com.ulyp.storage.writer.FileRecordingDataWriter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

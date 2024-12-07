@@ -1,8 +1,8 @@
 package com.ulyp.core.util;
 
-import java.util.function.Supplier;
-
 import com.ulyp.core.Resettable;
+
+import java.util.function.Supplier;
 
 public class FixedSizeObjectPool<T extends Resettable> {
 

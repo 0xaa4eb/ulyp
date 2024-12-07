@@ -1,13 +1,13 @@
 package com.ulyp.storage.reader;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.ulyp.core.ProcessMetadata;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.Type;
 import com.ulyp.core.repository.ReadableRepository;
 import com.ulyp.storage.StorageException;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The entry point to all data recorded by the agent

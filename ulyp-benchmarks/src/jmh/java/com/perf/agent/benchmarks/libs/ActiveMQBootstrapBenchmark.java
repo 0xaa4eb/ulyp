@@ -1,7 +1,6 @@
 package com.perf.agent.benchmarks.libs;
 
 import com.perf.agent.benchmarks.RecordingBenchmark;
-import com.perf.agent.benchmarks.util.BenchmarkConstants;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.openjdk.jmh.annotations.*;

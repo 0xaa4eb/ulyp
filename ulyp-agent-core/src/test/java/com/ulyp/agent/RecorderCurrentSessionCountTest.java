@@ -1,32 +1,25 @@
 package com.ulyp.agent;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import com.ulyp.agent.options.AgentOptions;
-import com.ulyp.core.metrics.NullMetrics;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Test;
-import org.slf4j.impl.StaticLoggerBinder;
-import org.slf4j.spi.LocationAwareLogger;
-
 import com.ulyp.agent.log.SimpleLoggerFactory;
+import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.policy.AlwaysEnabledRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import com.ulyp.core.TypeResolver;
+import com.ulyp.core.metrics.NullMetrics;
 import com.ulyp.core.util.ReflectionBasedMethodResolver;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.BlackholeRecordingDataWriter;
 import com.ulyp.storage.writer.StatsRecordingDataWriter;
+import org.junit.jupiter.api.*;
+import org.slf4j.impl.StaticLoggerBinder;
+import org.slf4j.spi.LocationAwareLogger;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

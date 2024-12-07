@@ -3,7 +3,6 @@ package com.ulyp.storage.search;
 import com.ulyp.core.RecordedEnterMethodCall;
 import com.ulyp.core.RecordedExitMethodCall;
 import com.ulyp.core.RecordedMethodCall;
-
 import lombok.Getter;
 
 import java.util.ArrayList;

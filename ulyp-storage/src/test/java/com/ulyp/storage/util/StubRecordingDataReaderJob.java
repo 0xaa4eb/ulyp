@@ -1,17 +1,15 @@
 package com.ulyp.storage.util;
 
+import com.ulyp.core.*;
+import com.ulyp.core.repository.InMemoryRepository;
+import com.ulyp.storage.reader.RecordedMethodCalls;
+import com.ulyp.storage.reader.RecordingDataReaderJob;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ulyp.core.*;
-
-import com.ulyp.core.repository.InMemoryRepository;
-import com.ulyp.storage.reader.RecordedMethodCalls;
-import com.ulyp.storage.reader.RecordingDataReaderJob;
-
-import lombok.Getter;
 
 @Getter
 public class StubRecordingDataReaderJob implements RecordingDataReaderJob {

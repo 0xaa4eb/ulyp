@@ -1,11 +1,10 @@
 package com.ulyp.agent.queue;
 
-import java.util.concurrent.ThreadFactory;
-
-import org.jetbrains.annotations.NotNull;
-
 import com.ulyp.agent.AgentContext;
 import com.ulyp.agent.RecorderInstance;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadFactory;
 
 public class QueueEventHandlerThreadFactory implements ThreadFactory {
 

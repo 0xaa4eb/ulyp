@@ -1,10 +1,9 @@
 package com.ulyp.core.mem;
 
+import com.ulyp.core.Resettable;
 import lombok.Getter;
 import lombok.Setter;
 import org.agrona.concurrent.UnsafeBuffer;
-
-import com.ulyp.core.Resettable;
 
 @Getter
 public class MemPage implements Resettable {

@@ -5,9 +5,9 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.RecorderChooser;
+import com.ulyp.core.util.SystemPropertyUtil;
 
 import java.nio.charset.StandardCharsets;
-import com.ulyp.core.util.SystemPropertyUtil;
 
 public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
 
