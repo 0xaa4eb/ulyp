@@ -4,7 +4,7 @@ import com.ulyp.agent.advice.*;
 import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
-import com.ulyp.agent.util.ErrorLoggingInstrumentationListener;
+import com.ulyp.agent.util.InstrumentationListener;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.TypeMatcher;
 import net.bytebuddy.ByteBuddy;
@@ -118,11 +118,7 @@ public class Agent {
             agent = agent.with(AgentBuilder.LambdaInstrumentationStrategy.ENABLED);
         }
 
-        if (LoggingSettings.TRACE_ENABLED) {
-            agent = agent.with(AgentBuilder.Listener.StreamWriting.toSystemOut());
-        } else {
-            agent = agent.with(new ErrorLoggingInstrumentationListener());
-        }
+        agent = agent.with(new InstrumentationListener());
 
         agent.installOn(instrumentation);
     }

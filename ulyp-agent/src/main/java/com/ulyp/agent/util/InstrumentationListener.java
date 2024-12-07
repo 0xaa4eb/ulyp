@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 import static com.ulyp.core.util.LoggingSettings.LOG_LEVEL_PROPERTY;
 
 @Slf4j
-public class ErrorLoggingInstrumentationListener implements AgentBuilder.Listener {
+public class InstrumentationListener implements AgentBuilder.Listener {
 
     private static final Duration ERROR_DUMP_INTERVAL = Duration.ofSeconds(10);
 
     private final InstrumentationErrors errors = new InstrumentationErrors();
 
-    public ErrorLoggingInstrumentationListener() {
+    public InstrumentationListener() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
                 NamedThreadFactory.builder()
                         .name("InstrumentationErrorsLoggingThread")
@@ -45,12 +45,16 @@ public class ErrorLoggingInstrumentationListener implements AgentBuilder.Listene
 
     @Override
     public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, boolean loaded, DynamicType dynamicType) {
-
+        if (LoggingSettings.TRACE_ENABLED) {
+            log.trace("Transformed {}", typeDescription);
+        }
     }
 
     @Override
     public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, boolean loaded) {
-
+        if (LoggingSettings.TRACE_ENABLED) {
+            log.trace("Instrumentation ignored {}", typeDescription);
+        }
     }
 
     @Override
