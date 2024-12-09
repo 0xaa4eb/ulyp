@@ -29,7 +29,7 @@ dependencies {
     jmhImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
     jmhImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
-    jmhImplementation group: 'com.hazelcast', name: 'hazelcast', version: '5.3.6'
+    jmhImplementation group: 'com.hazelcast', name: 'hazelcast', version: '5.5.0'
     jmhImplementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
     jmhImplementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.10.2'
     jmhImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
