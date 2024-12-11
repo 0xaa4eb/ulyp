@@ -9,6 +9,8 @@ import com.ulyp.storage.tree.CallRecord;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import static com.agent.tests.util.RecordingMatchers.isIdentity;
+import static com.agent.tests.util.RecordingMatchers.isPrinted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -49,6 +51,64 @@ class ConstructorRecordingTest extends AbstractInstrumentationTest {
         assertThat(callee, instanceOf(IdentityObjectRecord.class));
         IdentityObjectRecord identityCallee = (IdentityObjectRecord) callee;
         assertThat(identityCallee.getType().getName(), is("com.agent.tests.recorders.java.ConstructorRecordingTest$X"));
+    }
+
+    public static class A {
+
+        private final int data;
+
+        public A(int data) {
+            this.data = data;
+
+            if (data > 0) {
+                A other = get();
+                System.out.println(other);
+            }
+        }
+
+        public static A get() {
+            return new A(0);
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(data);
+        }
+    }
+
+    public static class TestCase2 {
+
+        public static A get() {
+            return new A(777);
+        }
+
+        public static void main(String[] args) {
+            System.out.println(get());
+        }
+    }
+
+    @Test
+    public void testConstructorBlocksRecordersForType() {
+        /*
+         * If constructor is being called for certain type, this particular type temporarily should not be available
+         * for recorders other than identity recorder
+         */
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withRecordConstructors()
+                        .withMain(TestCase2.class)
+                        .withMethodToRecord("get")
+                        .withPrintTypes("**.A")
+        );
+
+        ObjectRecord printed = root.getReturnValue(); // the return of TestCase2.get()
+
+        assertThat(printed, isPrinted("777"));
+
+        CallRecord constructorCall = root.getChildren().get(0);
+        CallRecord getCall = constructorCall.getChildren().get(0);
+
+        assertThat(getCall.getReturnValue(), isIdentity());
     }
 
     @Test

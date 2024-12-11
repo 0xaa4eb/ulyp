@@ -3,6 +3,7 @@ package com.agent.tests.util;
 import com.ulyp.core.Method;
 import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
+import com.ulyp.core.recorders.PrintedObjectRecord;
 import com.ulyp.core.recorders.basic.NullObjectRecord;
 import com.ulyp.core.recorders.basic.StringObjectRecord;
 import com.ulyp.core.recorders.numeric.IntegralRecord;
@@ -80,6 +81,20 @@ public class RecordingMatchers {
             @Override
             public void describeTo(Description description) {
                 description.appendText("is null");
+            }
+        };
+    }
+
+    public static Matcher<ObjectRecord> isPrinted(String value) {
+        return new TypeSafeMatcher<ObjectRecord>() {
+            @Override
+            protected boolean matchesSafely(ObjectRecord item) {
+                return item instanceof PrintedObjectRecord && ((PrintedObjectRecord) item).getPrintedObject().equals(value);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is printed object with text ").appendValue(value);
             }
         };
     }

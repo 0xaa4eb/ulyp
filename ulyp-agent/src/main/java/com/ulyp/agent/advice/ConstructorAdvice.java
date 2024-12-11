@@ -18,13 +18,14 @@ public class ConstructorAdvice {
     static void enter(
             @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
+            @Advice.Origin("#t") Class<?> declaringClass,
             @Advice.AllArguments Object[] arguments) {
 
         if (Recorder.currentRecordingSessionCount.get() > 0) {
             RecordingThreadLocalContext recordingCtx = RecorderInstance.instance.getCtx();
             if (recordingCtx != null) {
                 //noinspection UnusedAssignment
-                callToken = RecorderInstance.instance.onMethodEnter(recordingCtx, methodId, null, arguments);
+                callToken = RecorderInstance.instance.onConstructorEnter(recordingCtx, methodId, declaringClass, arguments);
             }
         }
     }
@@ -38,9 +39,10 @@ public class ConstructorAdvice {
     static void exit(
             @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
-            @Advice.This Object returnValue) {
+            @Advice.This Object returnValue,
+            @Advice.Origin("#t") Class<?> declaringClass) {
         if (callToken > 0) {
-            RecorderInstance.instance.onMethodExit(methodId, returnValue, null, callToken);
+            RecorderInstance.instance.onConstructorExit(methodId, returnValue, declaringClass, null, callToken);
         }
     }
 }

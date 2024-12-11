@@ -114,6 +114,23 @@ public class Recorder {
         }
     }
 
+    /**
+     * Starts recording (if possible) on constructor enter
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
+    public long startRecordingOnConstructorEnter(int methodId, Class<?> declaringClass, Object[] args) {
+        if (startRecordingPolicy.canStartRecording()) {
+            RecordingThreadLocalContext recordingCtx = initializeRecordingCtx(methodId);
+
+            recordingCtx.getConstructingTypes().push(typeResolver.get(declaringClass).getId());
+
+            return onMethodEnter(recordingCtx, methodId, null, args);
+        } else {
+            return -1;
+        }
+    }
+
     @NotNull
     private RecordingThreadLocalContext initializeRecordingCtx(int methodId) {
         RecordingThreadLocalContext recordingCtx = threadLocalRecordingCtx.get();
@@ -138,32 +155,51 @@ public class Recorder {
         return recordingCtx;
     }
 
+    public long onConstructorEnter(RecordingThreadLocalContext ctx, int methodId, Class<?> declaringClass, Object[] args) {
+        if (ctx == null || !ctx.isEnabled()) {
+            return -1;
+        }
+
+        ctx.getConstructingTypes().push(typeResolver.get(declaringClass).getId());
+
+        return onMethodEnter(ctx, methodId, null, args);
+    }
+
     /**
      * Specialized version of recording method enter logic for methods which have any number of parameters.
      *
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object[] args) {
+    public long onMethodEnter(RecordingThreadLocalContext ctx, int methodId, @Nullable Object callee, Object[] args) {
         try {
-            if (recordingCtx == null || !recordingCtx.isEnabled()) {
+            if (ctx == null || !ctx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingCtx.setEnabled(false);
-                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
-                int callId = recordingCtx.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
+                ctx.setEnabled(false);
+                ObjectRecordingConverter objectConverter = ctx.getRecordingObjectConverter();
+                int callId = ctx.nextCallId();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(args), System.nanoTime());
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(args, ctx.getConstructingTypes()),
+                            System.nanoTime()
+                    );
                 } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(args));
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(args, ctx.getConstructingTypes())
+                    );
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
+                return BitUtil.longFromInts(ctx.getRecordingId(), callId);
             } finally {
-                recordingCtx.setEnabled(true);
+                ctx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -177,105 +213,125 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg) {
+    public long onMethodEnter(RecordingThreadLocalContext ctx, int methodId, @Nullable Object callee, Object arg) {
         try {
-            if (recordingCtx == null || !recordingCtx.isEnabled()) {
+            if (ctx == null || !ctx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingCtx.setEnabled(false);
-                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
-                int callId = recordingCtx.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg), System.nanoTime());
-                } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg));
-                }
-                dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
-            } finally {
-                recordingCtx.setEnabled(true);
-            }
-        } catch (Throwable err) {
-            log.error("Error happened when recording", err);
-            return -1;
-        }
-    }
-
-    /**
-     * Specialized version of recording method enter logic for methods which accept only two parameters.
-     *
-     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
-     * method completes
-     */
-    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg1, Object arg2) {
-        try {
-            if (recordingCtx == null || !recordingCtx.isEnabled()) {
-                return -1;
-            }
-
-            try {
-                recordingCtx.setEnabled(false);
-                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
-                int callId = recordingCtx.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
-                if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg1), objectConverter.prepare(arg2), System.nanoTime());
-                } else {
-                    eventBuffer.appendMethodEnterEvent(methodId, callee, objectConverter.prepare(arg1), objectConverter.prepare(arg2));
-                }
-                dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
-            } finally {
-                recordingCtx.setEnabled(true);
-            }
-        } catch (Throwable err) {
-            log.error("Error happened when recording", err);
-            return -1;
-        }
-    }
-
-    /**
-     * Specialized version of recording method enter logic for methods which accept only two parameters.
-     *
-     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
-     * method completes
-     */
-    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee, Object arg1, Object arg2, Object arg3) {
-        try {
-            if (recordingCtx == null || !recordingCtx.isEnabled()) {
-                return -1;
-            }
-
-            try {
-                recordingCtx.setEnabled(false);
-                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
-                int callId = recordingCtx.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
+                ctx.setEnabled(false);
+                ObjectRecordingConverter objectConverter = ctx.getRecordingObjectConverter();
+                int callId = ctx.nextCallId();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(
                             methodId,
                             callee,
-                            objectConverter.prepare(arg1),
-                            objectConverter.prepare(arg2),
-                            objectConverter.prepare(arg3),
+                            objectConverter.prepare(arg, ctx.getConstructingTypes()),
                             System.nanoTime()
                     );
                 } else {
                     eventBuffer.appendMethodEnterEvent(
                             methodId,
                             callee,
-                            objectConverter.prepare(arg1),
-                            objectConverter.prepare(arg2),
-                            objectConverter.prepare(arg3)
+                            objectConverter.prepare(arg, ctx.getConstructingTypes())
                     );
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
+                return BitUtil.longFromInts(ctx.getRecordingId(), callId);
             } finally {
-                recordingCtx.setEnabled(true);
+                ctx.setEnabled(true);
+            }
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
+            return -1;
+        }
+    }
+
+    /**
+     * Specialized version of recording method enter logic for methods which accept only two parameters.
+     *
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
+    public long onMethodEnter(RecordingThreadLocalContext ctx, int methodId, @Nullable Object callee, Object arg1, Object arg2) {
+        try {
+            if (ctx == null || !ctx.isEnabled()) {
+                return -1;
+            }
+
+            try {
+                ctx.setEnabled(false);
+                ObjectRecordingConverter objectConverter = ctx.getRecordingObjectConverter();
+                int callId = ctx.nextCallId();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg2, ctx.getConstructingTypes()),
+                            System.nanoTime()
+                    );
+                } else {
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg2, ctx.getConstructingTypes())
+                    );
+                }
+                dropIfFull(eventBuffer);
+                return BitUtil.longFromInts(ctx.getRecordingId(), callId);
+            } finally {
+                ctx.setEnabled(true);
+            }
+        } catch (Throwable err) {
+            log.error("Error happened when recording", err);
+            return -1;
+        }
+    }
+
+    /**
+     * Specialized version of recording method enter logic for methods which accept only two parameters.
+     *
+     * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
+     * method completes
+     */
+    public long onMethodEnter(RecordingThreadLocalContext ctx, int methodId, @Nullable Object callee, Object arg1, Object arg2, Object arg3) {
+        try {
+            if (ctx == null || !ctx.isEnabled()) {
+                return -1;
+            }
+
+            try {
+                ctx.setEnabled(false);
+                ObjectRecordingConverter objectConverter = ctx.getRecordingObjectConverter();
+                int callId = ctx.nextCallId();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
+                if (AgentOptions.TIMESTAMPS_ENABLED) {
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg2, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg3, ctx.getConstructingTypes()),
+                            System.nanoTime()
+                    );
+                } else {
+                    eventBuffer.appendMethodEnterEvent(
+                            methodId,
+                            callee,
+                            objectConverter.prepare(arg1, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg2, ctx.getConstructingTypes()),
+                            objectConverter.prepare(arg3, ctx.getConstructingTypes())
+                    );
+                }
+                dropIfFull(eventBuffer);
+                return BitUtil.longFromInts(ctx.getRecordingId(), callId);
+            } finally {
+                ctx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
@@ -289,30 +345,41 @@ public class Recorder {
      * @return call token which should be passed back to method {@link Recorder#onMethodExit} when the corresponding
      * method completes
      */
-    public long onMethodEnter(RecordingThreadLocalContext recordingCtx, int methodId, @Nullable Object callee) {
+    public long onMethodEnter(RecordingThreadLocalContext ctx, int methodId, @Nullable Object callee) {
         try {
-            if (recordingCtx == null || !recordingCtx.isEnabled()) {
+            if (ctx == null || !ctx.isEnabled()) {
                 return -1;
             }
 
             try {
-                recordingCtx.setEnabled(false);
-                int callId = recordingCtx.nextCallId();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
+                ctx.setEnabled(false);
+                int callId = ctx.nextCallId();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
                     eventBuffer.appendMethodEnterEvent(methodId, callee, System.nanoTime());
                 } else {
                     eventBuffer.appendMethodEnterEvent(methodId, callee);
                 }
                 dropIfFull(eventBuffer);
-                return BitUtil.longFromInts(recordingCtx.getRecordingId(), callId);
+                return BitUtil.longFromInts(ctx.getRecordingId(), callId);
             } finally {
-                recordingCtx.setEnabled(true);
+                ctx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);
             return -1;
         }
+    }
+
+    public void onConstructorExit(int methodId, Object result, Class<?> declaringClass, Throwable thrown, long callToken) {
+        int recordingId = recordingId(callToken);
+        int callId = callId(callToken);
+        RecordingThreadLocalContext ctx = recordingContextStore.get(recordingId);
+        if (ctx == null || !ctx.isEnabled()) return;
+
+        ctx.getConstructingTypes().pop(typeResolver.get(declaringClass).getId());
+
+        onMethodExit(methodId, result, thrown, callToken);
     }
 
     /**
@@ -324,18 +391,27 @@ public class Recorder {
         try {
             int recordingId = recordingId(callToken);
             int callId = callId(callToken);
-            RecordingThreadLocalContext recordingCtx = recordingContextStore.get(recordingId);
-            if (recordingCtx == null || !recordingCtx.isEnabled()) return;
+            RecordingThreadLocalContext ctx = recordingContextStore.get(recordingId);
+            if (ctx == null || !ctx.isEnabled()) return;
 
             try {
-                recordingCtx.setEnabled(false);
+                ctx.setEnabled(false);
 
-                RecordedObjectConverter objectConverter = recordingCtx.getObjectConverter();
-                RecordingEventBuffer eventBuffer = recordingCtx.getEventBuffer();
+                ObjectRecordingConverter objectConverter = ctx.getRecordingObjectConverter();
+                RecordingEventBuffer eventBuffer = ctx.getEventBuffer();
                 if (AgentOptions.TIMESTAMPS_ENABLED) {
-                    eventBuffer.appendMethodExitEvent(callId, objectConverter.prepare(thrown != null ? thrown : result), thrown != null, System.nanoTime());
+                    eventBuffer.appendMethodExitEvent(
+                            callId,
+                            objectConverter.prepare(thrown != null ? thrown : result, ctx.getConstructingTypes()),
+                            thrown != null,
+                            System.nanoTime()
+                    );
                 } else {
-                    eventBuffer.appendMethodExitEvent(callId, objectConverter.prepare(thrown != null ? thrown : result), thrown != null);
+                    eventBuffer.appendMethodExitEvent(
+                            callId,
+                            objectConverter.prepare(thrown != null ? thrown : result, ctx.getConstructingTypes()),
+                            thrown != null
+                    );
                 }
 
                 if (callId == RecordingThreadLocalContext.ROOT_CALL_RECORDING_ID) {
@@ -347,16 +423,16 @@ public class Recorder {
                     if (LoggingSettings.DEBUG_ENABLED) {
                         Method method = methodRepository.get(methodId);
                         log.debug("Finished recording {} at method {}, recorded {} calls",
-                            recordingCtx.getRecordingMetadata(),
+                            ctx.getRecordingMetadata(),
                             method.toShortString(),
-                            recordingCtx.getCallId()
+                            ctx.getCallId()
                         );
                     }
                 } else {
                     dropIfFull(eventBuffer);
                 }
             } finally {
-                recordingCtx.setEnabled(true);
+                ctx.setEnabled(true);
             }
         } catch (Throwable err) {
             log.error("Error happened when recording", err);

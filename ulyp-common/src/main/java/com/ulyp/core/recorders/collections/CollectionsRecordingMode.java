@@ -31,7 +31,7 @@ public enum CollectionsRecordingMode {
 
         @Override
         public String toString() {
-            return "Recording java.* collections";
+            return "Recording kotlin.* collections";
         }
     },
     /**

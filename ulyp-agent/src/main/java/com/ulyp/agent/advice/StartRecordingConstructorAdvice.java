@@ -20,10 +20,11 @@ public class StartRecordingConstructorAdvice {
     static void enter(
             @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
+            @Advice.Origin("#t") Class<?> declaringClass,
             @Advice.AllArguments Object[] arguments) {
 
         // noinspection UnusedAssignment local variable callId is used by exit() method
-        callToken = RecorderInstance.instance.startRecordingOnMethodEnter(methodId, null, arguments);
+        callToken = RecorderInstance.instance.startRecordingOnConstructorEnter(methodId, declaringClass, arguments);
     }
 
     /**
@@ -35,9 +36,10 @@ public class StartRecordingConstructorAdvice {
     static void exit(
             @Advice.Local("callToken") long callToken,
             @MethodId int methodId,
+            @Advice.Origin("#t") Class<?> declaringClass,
             @Advice.This Object returnValue) {
         if (callToken > 0) {
-            RecorderInstance.instance.onMethodExit(methodId, returnValue, null, callToken);
+            RecorderInstance.instance.onConstructorExit(methodId, returnValue, declaringClass, null, callToken);
         }
     }
 }

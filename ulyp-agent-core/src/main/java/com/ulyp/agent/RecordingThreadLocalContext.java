@@ -1,11 +1,13 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.options.AgentOptions;
+import com.ulyp.agent.util.ConstructedTypesStack;
 import com.ulyp.core.RecordingMetadata;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.recorders.collections.CollectionsRecordingMode;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -20,11 +22,13 @@ public class RecordingThreadLocalContext {
     public static final int ROOT_CALL_RECORDING_ID = 1;
 
     @Getter
+    private final ConstructedTypesStack constructingTypes;
+    @Getter
     private int recordingId = -1;
     @Nullable
     private RecordingMetadata recordingMetadata;
     @Getter
-    private RecordedObjectConverter objectConverter;
+    private final ObjectRecordingConverter recordingObjectConverter;
     private int callId = ROOT_CALL_RECORDING_ID;
     @Setter
     private boolean enabled;
@@ -32,12 +36,23 @@ public class RecordingThreadLocalContext {
     @Setter
     private RecordingEventBuffer eventBuffer;
 
+
     public RecordingThreadLocalContext(AgentOptions options, TypeResolver typeResolver) {
+        this.recordingObjectConverter = initializeObjectRecordingConverter(options, typeResolver);
+        this.constructingTypes = new ConstructedTypesStack();
+    }
+
+    private static @NotNull ObjectRecordingConverter initializeObjectRecordingConverter(AgentOptions options, TypeResolver typeResolver) {
+        ObjectRecordingConverter converter;
         if (CollectionsRecordingMode.isDisabled(options.getCollectionsRecordingMode().get()) && !options.getArraysRecordingOption().get()) {
-            this.objectConverter = PassByRefRecordedObjectConverter.INSTANCE;
+            converter = PassByRefObjectRecordingConverter.INSTANCE;
         } else {
-            this.objectConverter = new ByTypeRecordedObjectConverter(typeResolver);
+            converter = new ByTypeObjectRecordingConverter(typeResolver);
         }
+        if (options.isInstrumentConstructorsEnabled()) {
+            converter = new ConstructorTrackingObjectConverter(typeResolver, converter);
+        }
+        return converter;
     }
 
     public int nextCallId() {
