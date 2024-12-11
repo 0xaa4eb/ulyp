@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IntStackTest {
 
     @Test
-    public void testPushPop() {
+    void testPushPop() {
         IntStack stack = new IntStack();
 
         assertTrue(stack.isEmpty());
@@ -28,7 +28,7 @@ class IntStackTest {
     }
 
     @Test
-    public void testPushThrows() {
+    void testPushThrows() {
         IntStack stack = new IntStack();
 
         stack.push(5);

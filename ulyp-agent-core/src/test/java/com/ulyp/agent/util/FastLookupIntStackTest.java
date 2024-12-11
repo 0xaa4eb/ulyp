@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FastLookupIntStackTest {
 
     @Test
-    public void testPopUntil() {
+    void testPopUntil() {
         FastLookupIntStack stack = new FastLookupIntStack();
 
         stack.push(1);
@@ -30,7 +30,7 @@ class FastLookupIntStackTest {
     }
 
     @Test
-    public void testPushPopFind() {
+    void testPushPopFind() {
         FastLookupIntStack stack = new FastLookupIntStack();
 
         stack.push(5);

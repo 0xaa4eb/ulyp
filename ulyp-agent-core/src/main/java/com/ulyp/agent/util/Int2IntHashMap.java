@@ -147,11 +147,6 @@ public class Int2IntHashMap {
         return size == 0;
     }
 
-    @Deprecated
-    public boolean rehash() {
-        return true;
-    }
-
     @SuppressWarnings("unchecked")
     protected void rehash(final int newN) {
         int i = 0, pos;
