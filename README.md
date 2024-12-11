@@ -6,9 +6,9 @@
 
 ## TL;DR
 
-Run your code, record everything, analyze execution flow.
+Turn your software inside out. The tool records everything you app does, and you then can analyze the execution flow.
 
-Here is the basic example of recorded execution of Hibernate framework
+Here is the basic example of recorded execution for Hibernate framework
 
     ```
     @Transactional
@@ -16,6 +16,8 @@ Here is the basic example of recorded execution of Hibernate framework
         personRepository.save(person);
     }
     ```
+
+translates to this:
 
 ![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
