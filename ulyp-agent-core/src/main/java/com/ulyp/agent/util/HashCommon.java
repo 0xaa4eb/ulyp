@@ -7,9 +7,9 @@ package com.ulyp.agent.util;
  */
 public class HashCommon {
 
-    protected HashCommon() {};
+    protected HashCommon() {}
 
-    public final static int murmurHash3( int x ) {
+    public static int murmurHash3(int x) {
         x ^= x >>> 16;
         x *= 0x85ebca6b;
         x ^= x >>> 13;

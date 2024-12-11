@@ -12,17 +12,16 @@ public class Int2IntHashMap {
 
     private static final int DEFAULT_INITIAL_SIZE = 16;
     private static final float DEFAULT_LOAD_FACTOR = .25f;
+    private static final int DEFAULT_RETURN_VALUE = 0;
 
-    protected transient int key[];
-    protected transient int value[];
-    protected transient boolean used[];
-    protected final float f;
-    protected transient int n;
-    protected transient int maxFill;
-    protected transient int mask;
-    protected int size;
-
-    private final int defRetValue = 0;
+    private final float f;
+    private int[] key;
+    private int[] value;
+    private boolean[] used;
+    private int n;
+    private int maxFill;
+    private int mask;
+    private int size;
 
     @SuppressWarnings("unchecked")
     public Int2IntHashMap(final int expected, final float f) {
@@ -58,7 +57,7 @@ public class Int2IntHashMap {
         key[pos] = k;
         value[pos] = v;
         if (++size >= maxFill) rehash(arraySize(size + 1, f));
-        return defRetValue;
+        return DEFAULT_RETURN_VALUE;
     }
 
     public int addTo(final int k, final int incr) {
@@ -75,14 +74,15 @@ public class Int2IntHashMap {
         }
         used[pos] = true;
         key[pos] = k;
-        value[pos] = defRetValue + incr;
+        value[pos] = DEFAULT_RETURN_VALUE + incr;
         if (++size >= maxFill) rehash(arraySize(size + 1, f));
-        return defRetValue;
+        return DEFAULT_RETURN_VALUE;
     }
 
     protected final int shiftKeys(int pos) {
         // Shift entries with the same hash.
-        int last, slot;
+        int last;
+        int slot;
         for (; ; ) {
             pos = ((last = pos) + 1) & mask;
             while (used[pos]) {
@@ -112,7 +112,7 @@ public class Int2IntHashMap {
             }
             pos = (pos + 1) & mask;
         }
-        return defRetValue;
+        return DEFAULT_RETURN_VALUE;
     }
 
     public Integer get(final Integer ok) {
@@ -136,7 +136,7 @@ public class Int2IntHashMap {
             if (((key[pos]) == (k))) return value[pos];
             pos = (pos + 1) & mask;
         }
-        return defRetValue;
+        return DEFAULT_RETURN_VALUE;
     }
 
     public int size() {
@@ -155,13 +155,13 @@ public class Int2IntHashMap {
     @SuppressWarnings("unchecked")
     protected void rehash(final int newN) {
         int i = 0, pos;
-        final boolean used[] = this.used;
+        final boolean[] used = this.used;
         int k;
-        final int key[] = this.key;
-        final int value[] = this.value;
+        final int[] key = this.key;
+        final int[] value = this.value;
         final int newMask = newN - 1;
-        final int newKey[] = new int[newN];
-        final int newValue[] = new int[newN];
+        final int[] newKey = new int[newN];
+        final int[] newValue = new int[newN];
         final boolean newUsed[] = new boolean[newN];
         for (int j = size; j-- != 0; ) {
             while (!used[i]) i++;
@@ -180,5 +180,4 @@ public class Int2IntHashMap {
         this.value = newValue;
         this.used = newUsed;
     }
-
 }
