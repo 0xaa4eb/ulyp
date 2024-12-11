@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class AbstractBytesOut implements AutoCloseable, BytesOut {
 
-    protected static final int MAX_VAR_INT_BYTES = 5;
     private static final int MAXIMUM_RECURSION_DEPTH = SystemPropertyUtil.getInt("ulyp.recorder.max-recursion", 3);
     private static final int MAX_STRING_LENGTH = SystemPropertyUtil.getInt("ulyp.recorder.max-string-length", 200);
 

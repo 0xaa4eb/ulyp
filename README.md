@@ -70,6 +70,7 @@ The agent is controlled via JVM system properties.
 | ulyp.record-lambdas               | Enabled instrumentation (and possibly recording) of lambdas (experimental)                                                                                                                                                                        | `-Dulyp.record-lambdas`                                   | Disabled     |
 | ulyp.record-static-blocks         | Enabled instrumentation (and possibly recording) of static blocks (experimental)                                                                                                                                                                  | `-Dulyp.record-static-blocks`                             | Disabled     |
 | ulyp.print-types                  | A list of type matchers to print with toString() while recording their values                                                                                                                                                                     | `-Dulyp.print-types=com.enterprise.**.SomeEntity`         | -            |
+| ulyp.recorder.max-string-length   | A maximum number of characters for String recording                                                                                                                                                                                               | `-Dulyp.recorder.max-string-length=400`                   | 200          |
 
 ## UI
 
