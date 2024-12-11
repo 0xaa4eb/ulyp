@@ -26,6 +26,10 @@ fun getArrayDequeue(): ArrayDeque<String> {
     return deq
 }
 
+fun getReversedList(): List<String> {
+    return mutableListOf("AB", "C", "D", "E", "F").asReversed()
+}
+
 fun getMutableList(): MutableList<String> {
     return mutableListOf("ABC", "CDE", "EFG", "FGH", "HJK")
 }

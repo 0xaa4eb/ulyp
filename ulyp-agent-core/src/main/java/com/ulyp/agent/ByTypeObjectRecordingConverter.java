@@ -1,5 +1,6 @@
 package com.ulyp.agent;
 
+import com.ulyp.agent.util.ConstructedTypesStack;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BufferBytesOut;
@@ -18,24 +19,24 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 @Slf4j
 @NotThreadSafe
-public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
+public class ByTypeObjectRecordingConverter implements ObjectRecordingConverter {
 
     private static final int TMP_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.recording.tmp-buffer.size", 16 * 1024);
 
     private final TypeResolver typeResolver;
     private byte[] tmpBuffer;
 
-    public ByTypeRecordedObjectConverter(TypeResolver typeResolver) {
+    public ByTypeObjectRecordingConverter(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
     }
 
     @Override
-    public Object[] prepare(Object[] args) {
+    public Object[] prepare(Object[] args, ConstructedTypesStack constructedObjects) {
         if (args == null) {
             return null;
         }
         for (int i = 0; i < args.length; i++) {
-            args[i] = prepare(args[i]);
+            args[i] = prepare(args[i], constructedObjects);
         }
         return args;
     }
@@ -45,7 +46,8 @@ public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
      * have only their identity hash code and type id recorded, so it can be safely done concurrently in some other thread.
      * Collections have a few of their items recorded (if enabled), so the recording must happen here.
      */
-    public Object prepare(Object value) {
+    @Override
+    public Object prepare(Object value, ConstructedTypesStack constructedObjects) {
         if (value == null) {
             return null;
         }
@@ -79,7 +81,7 @@ public class ByTypeRecordedObjectConverter implements RecordedObjectConverter {
                 log.debug("Error while recording object", e);
             }
             // recording failed, we can only record identity
-            return new QueuedIdentityObject(type.getId(), value);
+            return new QueuedIdentityObject(type.getId(), System.identityHashCode(value));
         }
     }
 

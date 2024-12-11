@@ -96,7 +96,7 @@ public class CollectionRecorder extends ObjectRecorder {
                 }
             } catch (Throwable throwable) {
                 if (LoggingSettings.INFO_ENABLED) {
-                    log.info("Collection elements will not be recorded as error occurred while recording", throwable);
+                    log.info("Collection elements will not be recorded as error occurred while recording for class {}", object.getClass(), throwable);
                 }
                 mark.rollback();
                 active = false; // TODO ban by id

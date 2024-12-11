@@ -33,6 +33,24 @@ class ListRecorderTest extends AbstractInstrumentationTest {
     }
 
     @Test
+    void shouldRecordReversedList() {
+        CallRecord root = runSubprocessAndReadFile(
+                new ForkProcessBuilder()
+                        .withMain(TestCase.class)
+                        .withMethodToRecord(MethodMatcher.parse("**.CollectionsTestKt.getReversedList"))
+                        .withRecordCollections(CollectionsRecordingMode.JDK, CollectionsRecordingMode.KT)
+                        .withRecordConstructors()
+        );
+
+        CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        List<ObjectRecord> elements = collection.getElements();
+        assertThat(elements.get(0), RecordingMatchers.isString("F"));
+        assertThat(elements.get(1), RecordingMatchers.isString("E"));
+        assertThat(elements.get(2), RecordingMatchers.isString("D"));
+    }
+
+    @Test
     void shouldRecordImmutableListEntries() {
         CallRecord root = runSubprocessAndReadFile(
                 new ForkProcessBuilder()
@@ -115,6 +133,7 @@ class ListRecorderTest extends AbstractInstrumentationTest {
             System.out.println(CollectionsTestKt.getEmptyList());
             System.out.println(CollectionsTestKt.getMutableList());
             System.out.println(CollectionsTestKt.getArrayDequeue());
+            System.out.println(CollectionsTestKt.getReversedList());
         }
     }
 }
