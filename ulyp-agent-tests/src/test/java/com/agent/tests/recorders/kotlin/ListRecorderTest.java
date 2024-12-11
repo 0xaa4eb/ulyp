@@ -43,6 +43,11 @@ class ListRecorderTest extends AbstractInstrumentationTest {
         );
 
         CollectionRecord collection = (CollectionRecord) root.getReturnValue();
+
+        List<ObjectRecord> elements = collection.getElements();
+        assertThat(elements.get(0), RecordingMatchers.isString("F"));
+        assertThat(elements.get(1), RecordingMatchers.isString("E"));
+        assertThat(elements.get(2), RecordingMatchers.isString("D"));
     }
 
     @Test

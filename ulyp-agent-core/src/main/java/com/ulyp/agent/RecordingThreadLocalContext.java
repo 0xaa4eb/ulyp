@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 
 /**
  * Thread-local context which contains all necessary information about ongoing (if any) recording session.
- *
  * There is only single {@link ThreadLocal#get()} call for every recorded method
  */
 @Getter
