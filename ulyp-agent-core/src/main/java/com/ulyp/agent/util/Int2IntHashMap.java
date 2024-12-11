@@ -162,7 +162,7 @@ public class Int2IntHashMap {
         final int newMask = newN - 1;
         final int[] newKey = new int[newN];
         final int[] newValue = new int[newN];
-        final boolean newUsed[] = new boolean[newN];
+        final boolean[] newUsed = new boolean[newN];
         for (int j = size; j-- != 0; ) {
             while (!used[i]) i++;
             k = key[i];
