@@ -4,6 +4,7 @@ import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import com.ulyp.core.recorders.PrintingRecorder;
 import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
+import com.ulyp.core.recorders.arrays.CharArrayRecorder;
 import com.ulyp.core.recorders.arrays.IntArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.collections.*;
@@ -29,12 +30,14 @@ public class RecorderContext {
 
     private void configureArrayRecorders() {
         ByteArrayRecorder byteArrayRecorder = (ByteArrayRecorder) ObjectRecorderRegistry.BYTE_ARRAY_RECORDER.getInstance();
+        CharArrayRecorder charArrayRecorder = (CharArrayRecorder) ObjectRecorderRegistry.CHAR_ARRAY_RECORDER.getInstance();
         ObjectArrayRecorder objectArrayRecorder = (ObjectArrayRecorder) ObjectRecorderRegistry.OBJECT_ARRAY_RECORDER.getInstance();
         IntArrayRecorder intArrayRecorder = (IntArrayRecorder) ObjectRecorderRegistry.INT_ARRAY_RECORDER.getInstance();
         if (options.getArraysRecordingOption().get()) {
             objectArrayRecorder.setEnabled(true);
             byteArrayRecorder.setEnabled(true);
             intArrayRecorder.setEnabled(true);
+            charArrayRecorder.setEnabled(true);
         }
         objectArrayRecorder.setMaxItemsToRecord(options.getMaxItemsArrayRecordingOption().get());
         intArrayRecorder.setMaxItemsToRecord(options.getMaxItemsArrayRecordingOption().get());

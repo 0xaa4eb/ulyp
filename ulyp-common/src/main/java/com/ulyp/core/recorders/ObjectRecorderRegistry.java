@@ -2,6 +2,7 @@ package com.ulyp.core.recorders;
 
 import com.ulyp.core.Type;
 import com.ulyp.core.recorders.arrays.ByteArrayRecorder;
+import com.ulyp.core.recorders.arrays.CharArrayRecorder;
 import com.ulyp.core.recorders.arrays.IntArrayRecorder;
 import com.ulyp.core.recorders.arrays.ObjectArrayRecorder;
 import com.ulyp.core.recorders.basic.*;
@@ -40,6 +41,7 @@ public enum ObjectRecorderRegistry {
     OBJECT_ARRAY_RECORDER(new ObjectArrayRecorder((byte) 11), 1),
     INT_ARRAY_RECORDER(new IntArrayRecorder((byte) 14), 1),
     BYTE_ARRAY_RECORDER(new ByteArrayRecorder((byte) 29), 1),
+    CHAR_ARRAY_RECORDER(new CharArrayRecorder((byte) 30), 5),
     LIST_RECORDER(new ListRecorder((byte) 80), 2),
     SET_RECORDER(new SetRecorder((byte) 81), 2),
     QUEUE_RECORDER(new QueueRecorder((byte) 82), 2),

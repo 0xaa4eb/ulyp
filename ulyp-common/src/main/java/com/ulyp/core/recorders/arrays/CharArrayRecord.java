@@ -5,14 +5,14 @@ import com.ulyp.core.recorders.IdentityObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import lombok.Getter;
 
-public class ByteArrayRecord extends ObjectRecord {
+public class CharArrayRecord extends ObjectRecord {
 
     @Getter
     private final IdentityObjectRecord identityRecord;
     @Getter
     private final int length;
 
-    protected ByteArrayRecord(Type type, IdentityObjectRecord identityRecord, int length) {
+    protected CharArrayRecord(Type type, IdentityObjectRecord identityRecord, int length) {
         super(type);
 
         this.length = length;
@@ -21,6 +21,6 @@ public class ByteArrayRecord extends ObjectRecord {
 
     @Override
     public String toString() {
-        return "byte array len: " + length;
+        return "char array len: " + length;
     }
 }

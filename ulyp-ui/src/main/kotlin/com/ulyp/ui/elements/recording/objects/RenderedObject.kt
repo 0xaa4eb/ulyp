@@ -6,6 +6,7 @@ import com.ulyp.core.recorders.ObjectRecord
 import com.ulyp.core.recorders.PrintedObjectRecord
 import com.ulyp.core.recorders.arrays.ArrayRecord
 import com.ulyp.core.recorders.arrays.ByteArrayRecord
+import com.ulyp.core.recorders.arrays.CharArrayRecord
 import com.ulyp.core.recorders.basic.*
 import com.ulyp.core.recorders.collections.CollectionRecord
 import com.ulyp.core.recorders.collections.MapEntryRecord
@@ -33,6 +34,7 @@ abstract class RenderedObject protected constructor() : TextFlow() {
                 is FileRecord -> RenderedFile(record.path, record.getType(), renderSettings)
                 is ArrayRecord -> RenderedArray(record, renderSettings)
                 is ByteArrayRecord -> RenderedByteArray(record)
+                is CharArrayRecord -> RenderedCharArray(record)
                 is CollectionRecord -> RenderedCollection(record, renderSettings)
                 is MapEntryRecord -> RenderedMapEntry(record, renderSettings)
                 is ClassRecord -> RenderedClass(record, renderSettings)
