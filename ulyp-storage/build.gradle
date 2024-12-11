@@ -24,14 +24,14 @@ dependencies {
     compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
-    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '26.0.1'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
     compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
     testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
-    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '26.0.1'
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.7'
 

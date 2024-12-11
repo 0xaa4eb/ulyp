@@ -11,7 +11,7 @@ dependencies {
 
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
-    compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    compileOnly group: 'org.jetbrains', name: 'annotations', version: '26.0.1'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     testImplementation project(':ulyp-agent-core')

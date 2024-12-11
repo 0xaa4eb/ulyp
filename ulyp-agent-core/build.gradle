@@ -14,7 +14,7 @@ dependencies {
 
     implementation group: 'com.lmax', name: 'disruptor', version: '3.4.4'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
-    implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '26.0.1'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
