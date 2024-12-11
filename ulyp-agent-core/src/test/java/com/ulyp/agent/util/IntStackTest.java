@@ -28,6 +28,44 @@ class IntStackTest {
     }
 
     @Test
+    public void testPushAndGrow() {
+        IntStack stack = new IntStack();
+
+        for (int i = 0; i < 100; i++) {
+            stack.push(i);
+        }
+
+        assertEquals(100, stack.size());
+
+        for (int i = 0; i < 100; i++) {
+            assertTrue(stack.contains(i), "" + i);
+        }
+
+        for (int i = 0; i < 100; i++) {
+            assertEquals(100 - i - 1, stack.pop());
+        }
+    }
+
+    @Test
+    public void testPushAndGrow2() {
+        IntStack stack = new IntStack();
+
+        for (int i = 0; i < 100; i++) {
+            stack.push(i);
+        }
+
+        assertEquals(100, stack.size());
+
+        for (int i = 0; i < 100; i++) {
+            assertTrue(stack.contains(i), "" + i);
+        }
+
+        for (int i = 0; i < 100; i++) {
+            assertTrue(stack.popIfTop(100 - i - 1));
+        }
+    }
+
+    @Test
     void testPushThrows() {
         IntStack stack = new IntStack();
 

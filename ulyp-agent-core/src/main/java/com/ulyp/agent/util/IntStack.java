@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
  */
 public class IntStack {
 
-    private final int[] array;
+    private int[] array;
     private int size;
 
     public IntStack() {
@@ -75,7 +75,8 @@ public class IntStack {
     private void ensureCapacity() {
         if (size == array.length) {
             int[] newArray = new int[array.length * 2];
-            System.arraycopy(newArray, 0, newArray, 0, array.length);
+            System.arraycopy(array, 0, newArray, 0, array.length);
+            this.array = newArray;
         }
     }
 
