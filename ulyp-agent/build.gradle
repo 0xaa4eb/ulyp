@@ -27,7 +27,7 @@ if (project.hasProperty("customByteBuddy")) {
     }
 } else {
     dependencies {
-        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.10'
+        implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.11'
     }
 }
 
