@@ -22,7 +22,7 @@ dependencies {
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
     testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
-    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.13'
+    testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.11'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
