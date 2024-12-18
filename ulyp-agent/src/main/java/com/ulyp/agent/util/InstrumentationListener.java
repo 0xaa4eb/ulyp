@@ -8,19 +8,24 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.utility.JavaModule;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static com.ulyp.core.util.LoggingSettings.LOG_LEVEL_PROPERTY;
-
+/**
+ * A listener which is called by byte-buddy library
+ */
 @Slf4j
 public class InstrumentationListener implements AgentBuilder.Listener {
 
     private static final Duration ERROR_DUMP_INTERVAL = Duration.ofSeconds(10);
 
-    private final InstrumentationErrors errors = new InstrumentationErrors();
+    private final AtomicReference<Errors> errors = new AtomicReference<>(new Errors());
 
     public InstrumentationListener() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
@@ -62,18 +67,7 @@ public class InstrumentationListener implements AgentBuilder.Listener {
         if (LoggingSettings.DEBUG_ENABLED) {
             log.debug("Failed to instrument class " + typeName, throwable);
         }
-        errors.onError();
-    }
-
-    private void dumpErrors() {
-        long errorCount = errors.getErrorCountAndReset();
-        if (errorCount > 0) {
-            log.info("There were {} instrumentation errors. You may want to enable " +
-                    "debug log level using {} system prop to check actual errors",
-                    errorCount,
-                    LOG_LEVEL_PROPERTY
-            );
-        }
+        errors.get().onError(typeName, throwable);
     }
 
     @Override
@@ -81,18 +75,46 @@ public class InstrumentationListener implements AgentBuilder.Listener {
 
     }
 
-    private static class InstrumentationErrors {
+    private void dumpErrors() {
+        Errors errors = this.errors.getAndSet(new Errors());
+        if (!errors.isEmpty()) {
+            log.info("There were {} instrumentation errors. Some types: {}", errors.errorsCount, errors.errors);
+        }
+    }
 
-        private long errorsCount = 0L;
+    private static class Error {
 
-        public synchronized void onError() {
-            errorsCount++;
+        private final String typeName;
+        private final Throwable throwable;
+
+        private Error(String typeName, Throwable throwable) {
+            this.typeName = typeName;
+            this.throwable = throwable;
         }
 
-        public synchronized long getErrorCountAndReset() {
-            long value = errorsCount;
-            errorsCount = 0L;
-            return value;
+        @Override
+        public String toString() {
+            return "Error{typeName='" + typeName + '\'' + ", throwable=" + throwable + '}';
+        }
+    }
+
+    @ThreadSafe
+    private static class Errors {
+
+        private static final int MAX_ERRORS_STORED = 10;
+
+        private int errorsCount;
+        private final List<Error> errors = new ArrayList<>();
+
+        public synchronized void onError(String typeName, Throwable throwable) {
+            errorsCount++;
+            if (errors.size() < MAX_ERRORS_STORED) {
+                errors.add(new Error(typeName, throwable));
+            }
+        }
+
+        public boolean isEmpty() {
+            return errorsCount == 0;
         }
     }
 }
