@@ -1,6 +1,7 @@
 package com.ulyp.agent;
 
 import com.ulyp.agent.queue.RecordingEventQueue;
+import com.ulyp.core.util.ByteSize;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +17,8 @@ public class AgentShutdownHook implements Runnable {
         if (!ctx.getOptions().isAgentEnabled()) {
             return;
         }
+
+        log.info("Shutting down the agent conext. Will wait for recording data to be flushed to disk...");
 
         RecordingEventQueue recordingEventQueue = ctx.getRecordingEventQueue();
         try {
@@ -35,6 +38,8 @@ public class AgentShutdownHook implements Runnable {
         } catch (TimeoutException e) {
             // ignore
         }
+        long totalBytesWritten = storageWriter.estimateBytesWritten();
+        log.info("Total bytes written to file: {}", ByteSize.toHumanReadable(totalBytesWritten));
         storageWriter.close();
     }
 }

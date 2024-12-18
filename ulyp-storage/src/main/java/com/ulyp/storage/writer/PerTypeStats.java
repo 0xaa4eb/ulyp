@@ -18,14 +18,6 @@ public class PerTypeStats {
 
     }
 
-    public long getTotalCount() {
-        return totalCount.get();
-    }
-
-    public void addToCount(long delta) {
-        totalCount.addAndGet(delta);
-    }
-
     public long getTotalBytes() {
         return totalBytes.getByteSize();
     }
