@@ -9,7 +9,7 @@
 Turn your software inside out. The tool records everything you app does, and you then can analyze the execution flow.
 Bytecode instrumentation is handled by [byte-buddy](https://github.com/raphw/byte-buddy), UI is built on JavaFX.
 
-Here is a basic example. We have transactional method service and Hibernate is used as a JPA provider. 
+Here is a basic example. We have a transactional method service and Hibernate is used as a JPA provider. 
 
     ```
     @Service
@@ -24,7 +24,7 @@ Here is a basic example. We have transactional method service and Hibernate is u
     }
     ```
 
-Calling this method with ulyp agent enabled can provide a full call tree. No code change is required.
+Calling this method with ulyp agent enabled is able to provide a full call tree. No code change is required.
 
 ![Spring/Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
