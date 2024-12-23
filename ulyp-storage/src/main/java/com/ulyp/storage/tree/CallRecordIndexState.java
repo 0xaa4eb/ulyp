@@ -1,8 +1,7 @@
 package com.ulyp.storage.tree;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.*;
+import org.agrona.collections.LongArrayList;
 
 @Getter
 @Builder
@@ -15,10 +14,11 @@ public class CallRecordIndexState {
     private final long id;
     private final long enterMethodCallAddress;
     @Builder.Default
-    private final LongList childrenCallIds = new LongArrayList();
+    private final LongArrayList childrenCallIds = new LongArrayList();
     @Builder.Default
     private int subtreeSize = 1;
     @Builder.Default
+    @Setter
     private long exitMethodCallAddr = -1;
 
     public void incrementSubtreeSize() {
@@ -27,9 +27,5 @@ public class CallRecordIndexState {
 
     public void addChildrenCallId(long callId) {
         childrenCallIds.add(callId);
-    }
-
-    public void setExitMethodCallAddr(long value) {
-        this.exitMethodCallAddr = value;
     }
 }

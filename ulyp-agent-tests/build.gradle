@@ -23,7 +23,6 @@ dependencies {
     implementation project(':ulyp-agent-core')
     implementation project(':ulyp-storage')
 
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'

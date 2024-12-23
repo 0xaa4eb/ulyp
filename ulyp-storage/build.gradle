@@ -21,7 +21,6 @@ dependencies {
     implementation project(':ulyp-common')
 
     compileOnly group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
-    compileOnly group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
@@ -29,7 +28,6 @@ dependencies {
 
     compileOnly group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
     testImplementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
-    testImplementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     testImplementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'

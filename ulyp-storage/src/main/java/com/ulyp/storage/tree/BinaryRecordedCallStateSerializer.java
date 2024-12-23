@@ -3,8 +3,7 @@ package com.ulyp.storage.tree;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.serializers.Serializer;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
+import org.agrona.collections.LongArrayList;
 
 public class BinaryRecordedCallStateSerializer implements Serializer<CallRecordIndexState> {
 
@@ -17,7 +16,7 @@ public class BinaryRecordedCallStateSerializer implements Serializer<CallRecordI
         int subtreeSize = input.readInt();
         long exitCallRecordAddress = input.readLong();
         int childrenCallCount = input.readInt();
-        LongList childrenCallIds = new LongArrayList(childrenCallCount);
+        LongArrayList childrenCallIds = new LongArrayList(childrenCallCount, Long.MIN_VALUE);
         for (int i = 0; i < childrenCallCount; i++) {
             childrenCallIds.add(input.readLong());
         }
@@ -36,7 +35,7 @@ public class BinaryRecordedCallStateSerializer implements Serializer<CallRecordI
         out.write(value.getEnterMethodCallAddress());
         out.write(value.getSubtreeSize());
         out.write(value.getExitMethodCallAddr());
-        LongList childrenCallIds = value.getChildrenCallIds();
+        LongArrayList childrenCallIds = value.getChildrenCallIds();
         int childrenCallIdCount = childrenCallIds.size();
         out.write(childrenCallIdCount);
         for (int i = 0; i < childrenCallIdCount; i++) {

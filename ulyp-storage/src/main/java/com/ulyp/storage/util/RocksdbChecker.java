@@ -4,9 +4,8 @@ import com.ulyp.core.util.FileUtil;
 import com.ulyp.storage.tree.CallRecordIndexState;
 import com.ulyp.storage.tree.Index;
 import com.ulyp.storage.tree.RocksdbIndex;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.extern.slf4j.Slf4j;
+import org.agrona.collections.LongArrayList;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +23,7 @@ public class RocksdbChecker {
         }
         try (Index index = new RocksdbIndex(tempDirectory)) {
 
-            LongList childrenCallIds = new LongArrayList();
+            LongArrayList childrenCallIds = new LongArrayList();
             childrenCallIds.add(32L);
             childrenCallIds.add(62L);
 

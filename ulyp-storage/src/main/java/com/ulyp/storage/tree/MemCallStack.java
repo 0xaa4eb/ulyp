@@ -1,11 +1,11 @@
 package com.ulyp.storage.tree;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Maintains a call stack for each recording being processed. Having in-memory stack
@@ -16,7 +16,9 @@ import java.util.Deque;
 public class MemCallStack {
 
     private final Deque<CallRecordIndexState> deque = new ArrayDeque<>();
-    private final Long2ObjectMap<CallRecordIndexState> lookupIndex = new Long2ObjectOpenHashMap<>();
+
+    // We don't optimize boxing, it's used in UI app
+    private final Map<Long, CallRecordIndexState> lookupIndex = new HashMap<>();
 
     public CallRecordIndexState get(long callId) {
         return lookupIndex.get(callId);

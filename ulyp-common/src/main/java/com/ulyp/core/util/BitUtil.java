@@ -1,7 +1,6 @@
 package com.ulyp.core.util;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
+import org.agrona.collections.LongArrayList;
 
 public class BitUtil {
 
@@ -26,7 +25,7 @@ public class BitUtil {
         }
     }
 
-    public static byte[] longsToBytes(LongList list) {
+    public static byte[] longsToBytes(LongArrayList list) {
         byte[] result = new byte[Long.BYTES * list.size()];
         for (int i = 0; i < list.size(); i++) {
             longToBytes(list.getLong(i), result, i * Long.BYTES);
@@ -53,9 +52,9 @@ public class BitUtil {
     }
 
 
-    public static LongList bytesToLongs(final byte[] bytes) {
+    public static LongArrayList bytesToLongs(final byte[] bytes) {
         int size = bytes.length / Long.BYTES;
-        LongList result = new LongArrayList(size);
+        LongArrayList result = new LongArrayList(size, Long.MIN_VALUE);
         for (int i = 0; i < size; i++) {
             result.add(BitUtil.bytesToLong(bytes, i * Long.BYTES));
         }

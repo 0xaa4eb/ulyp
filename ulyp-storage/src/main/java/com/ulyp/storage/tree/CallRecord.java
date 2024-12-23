@@ -4,9 +4,9 @@ import com.ulyp.core.Method;
 import com.ulyp.core.recorders.NotRecordedObjectRecord;
 import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.storage.StorageException;
-import it.unimi.dsi.fastutil.longs.LongList;
 import lombok.Builder;
 import lombok.Getter;
+import org.agrona.collections.LongArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -42,9 +42,12 @@ public class CallRecord {
     private final int subtreeSize;
     @Getter
     private final long nanosDuration;
+    @Getter
     private final Method method;
+    @Getter
     private final List<ObjectRecord> args;
-    private final LongList childrenCallIds;
+    @Getter
+    private final LongArrayList childrenCallIds;
     private final RecordingState recordingState;
     @Builder.Default
     private final ObjectRecord callee = NotRecordedObjectRecord.getInstance();
@@ -68,14 +71,6 @@ public class CallRecord {
         return callId;
     }
 
-    public LongList getChildrenCallIds() {
-        return childrenCallIds;
-    }
-
-    public List<ObjectRecord> getArgs() {
-        return args;
-    }
-
     @NotNull
     public ObjectRecord getReturnValue() {
         return returnValue;
@@ -83,10 +78,6 @@ public class CallRecord {
 
     public boolean hasThrown() {
         return thrown;
-    }
-
-    public Method getMethod() {
-        return method;
     }
 
     public List<CallRecord> getChildren() throws StorageException {
