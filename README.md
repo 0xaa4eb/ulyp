@@ -28,6 +28,12 @@ Calling this method with ulyp agent enabled can provide a full call tree. No cod
 
 ![Spring/Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
+## Blogpost
+
+The underlying rationale for the development, technical design, as well as some use cases are outlined in the following blog posts:
+* [Ulyp: Recording Java code execution for faster debugging (ENG)](https://0xaa4eb.github.io/2024/10/13/recording-java-code-execution-for-faster-debugging.html)
+* [Reverse engineer Spring Web in 5 minutes using a recording debugger (ENG)](https://0xaa4eb.github.io/2024/12/14/reverse-engineer-spring-boot.html)
+
 ## How to use
 
 Usage is relatively simple.
