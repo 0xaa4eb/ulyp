@@ -28,7 +28,7 @@ Calling this method with ulyp agent enabled is able to provide a full call tree.
 
 ![Spring/Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
-## Blogposts
+## Blog posts
 
 The underlying rationale for the development, technical design, as well as some use cases are outlined in the following blog posts:
 * [Ulyp: Recording Java code execution for faster debugging (ENG)](https://0xaa4eb.github.io/2024/10/13/recording-java-code-execution-for-faster-debugging.html)
