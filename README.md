@@ -7,19 +7,26 @@
 ## TL;DR
 
 Turn your software inside out. The tool records everything you app does, and you then can analyze the execution flow.
+Bytecode instrumentation is handled by [byte-buddy](https://github.com/raphw/byte-buddy), UI is built on JavaFX.
 
-Here is the basic example of recorded execution for Hibernate framework
+Here is a basic example. We have transactional method service and Hibernate is used as a JPA provider. 
 
     ```
+    @Service
     @Transactional
-    public void save(Person person) {
-        personRepository.save(person);
+    public class PersonStoreService {
+        @Autowired
+        private PersonRepository repository;
+    
+        public void save(Person person) {
+            repository.save(person);
+        }
     }
     ```
 
-translates to this:
+Calling this method with ulyp agent enabled can provide a full call tree. No code change is required.
 
-![Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
+![Spring/Hibernate call recorded](https://github.com/0xaa4eb/ulyp/blob/master/images/hibernate.png)
 
 ## How to use
 
