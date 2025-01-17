@@ -33,7 +33,7 @@ if (project.hasProperty("apiBuild")) {
 
         implementation group: 'io.grpc', name: 'grpc-protobuf', version: '1.27.0'
         implementation group: 'io.grpc', name: 'grpc-stub', version: '1.27.0'
-        implementation group: 'io.grpc', name: 'grpc-netty', version: '1.27.0'
+        implementation group: 'io.grpc', name: 'grpc-netty', version: '1.69.1'
         implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.11.0'
         implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 
