@@ -2,6 +2,8 @@ package com.ulyp.core.util;
 
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
+import com.ulyp.core.TypeResolver;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.TestOnly;
 
@@ -14,7 +16,7 @@ public class ReflectionBasedMethodResolver {
 
     private static final AtomicInteger idGenerator = new AtomicInteger();
 
-    private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
+    private final TypeResolver typeResolver = ReflectionBasedTypeResolver.getInstance();
 
     public Method resolve(java.lang.reflect.Method method) {
         boolean returns = method.getReturnType() != Void.class;

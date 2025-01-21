@@ -12,9 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ReflectionBasedTypeResolver implements TypeResolver {
 
-    private static final ReflectionBasedTypeResolver INSTANCE = new ReflectionBasedTypeResolver();
+    //    private static final TypeResolver INSTANCE = new ReflectionBasedTypeResolver2(2 * 1024 * 1024);
+    private static final TypeResolver INSTANCE = new ReflectionBasedTypeResolver();
 
-    public static ReflectionBasedTypeResolver getInstance() {
+    public static TypeResolver getInstance() {
         return INSTANCE;
     }
 
