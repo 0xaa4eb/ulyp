@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 20)
-@Measurement(iterations = 30)
+@Measurement(iterations = 40)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciNumbersBenchmark extends RecordingBenchmark {
 
@@ -28,13 +28,13 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
     @Fork(jvmArgs = "-Dulyp.off", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int baseline() {
-        return compute(18);
+        return compute(27);
     }
 
     @Fork(jvmArgs = "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int instrumented() {
-        return compute(18);
+        return compute(27);
     }
 
     @Fork(jvmArgs = {
@@ -44,7 +44,7 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
     @Benchmark
     public int record() {
         // TODO direct mem limit reached with 31
-        return compute(18);
+        return compute(27);
     }
 
     @Fork(jvmArgs = {
@@ -54,6 +54,6 @@ public class FibonacciNumbersBenchmark extends RecordingBenchmark {
     @Benchmark
     public int syncRecord(Counters counters) {
         // TODO direct mem limit reached with 31
-        return execSyncRecord(counters, () -> compute(18));
+        return execSyncRecord(counters, () -> compute(27));
     }
 }
