@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 20)
 @Measurement(iterations = 50)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class FibonacciNumbersBenchmark extends RecordingBenchmark {
+public class FibonacciRecordingBenchmark extends RecordingBenchmark {
 
     private int compute(int x) {
         if (x < 0) {

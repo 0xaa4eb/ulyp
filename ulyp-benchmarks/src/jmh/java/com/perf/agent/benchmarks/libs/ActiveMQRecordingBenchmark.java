@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Warmup(iterations = 20)
 @Measurement(iterations = 20)
-public class ActiveMQBenchmark extends RecordingBenchmark {
+public class ActiveMQRecordingBenchmark extends RecordingBenchmark {
 
     private static final int MESSAGE_COUNT = 5000;
 
