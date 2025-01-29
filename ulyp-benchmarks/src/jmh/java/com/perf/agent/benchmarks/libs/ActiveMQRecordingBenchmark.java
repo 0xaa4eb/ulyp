@@ -61,14 +61,14 @@ public class ActiveMQRecordingBenchmark extends RecordingBenchmark {
         sendMsg();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.ActiveMQInstrumentationBenchmark.zxc", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.ActiveMQRecordingBenchmark.zxc", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         sendMsg();
     }
 
     @Fork(jvmArgs = {
-            "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
+            "-Dulyp.methods=**.ActiveMQRecordingBenchmark.sendMsg",
             "-Dulyp.metrics",
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
@@ -77,7 +77,7 @@ public class ActiveMQRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-            "-Dulyp.methods=**.ActiveMQBenchmark.sendMsg",
+            "-Dulyp.methods=**.ActiveMQRecordingBenchmark.sendMsg",
             "-Dulyp.metrics"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 20)
-@Measurement(iterations = 50)
+@Measurement(iterations = 500)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciRecordingBenchmark extends RecordingBenchmark {
 
@@ -31,14 +31,14 @@ public class FibonacciRecordingBenchmark extends RecordingBenchmark {
         return compute(27);
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.FibonacciNumbersBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.FibonacciRecordingBenchmark.sdjfhgsdhjfsd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int instrumented() {
         return compute(27);
     }
 
     @Fork(jvmArgs = {
-            "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
+            "-Dulyp.methods=**.FibonacciRecordingBenchmark.compute",
             "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
@@ -48,7 +48,7 @@ public class FibonacciRecordingBenchmark extends RecordingBenchmark {
     }
 
     @Fork(jvmArgs = {
-            "-Dulyp.methods=**.FibonacciNumbersBenchmark.compute",
+            "-Dulyp.methods=**.FibonacciRecordingBenchmark.compute",
             "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark

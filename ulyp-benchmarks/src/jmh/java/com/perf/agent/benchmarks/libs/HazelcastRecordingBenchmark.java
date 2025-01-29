@@ -53,20 +53,20 @@ public class HazelcastRecordingBenchmark extends RecordingBenchmark {
         put();
     }
 
-    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastBenchmark.zxc"}, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastRecordingBenchmark.zxc"}, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         put();
     }
 
 
-    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastBenchmark.put", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastRecordingBenchmark.put", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
         put();
     }
 
-    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastBenchmark.put", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = {"-Dulyp.methods=**.HazelcastRecordingBenchmark.put", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void syncRecord(Counters counters) {
         execSyncRecord(counters, this::put);

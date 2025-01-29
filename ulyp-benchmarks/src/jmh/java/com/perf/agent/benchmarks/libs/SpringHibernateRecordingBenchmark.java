@@ -61,7 +61,7 @@ public class SpringHibernateRecordingBenchmark extends RecordingBenchmark {
         departmentService.shufflePeople();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.SpringHibernateBenchmark.asdasd", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.SpringHibernateRecordingBenchmark.asdasd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         departmentService.shufflePeople();

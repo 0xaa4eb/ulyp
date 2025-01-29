@@ -64,19 +64,19 @@ public class H2RecordingBenchmark extends RecordingBenchmark {
         insertRow();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.asdasd", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2RecordingBenchmark.asdasd", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void instrumented() {
         insertRow();
     }
 
-    @Fork(jvmArgs = {"-Dulyp.methods=**.H2Benchmark.insertRow", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = {"-Dulyp.methods=**.H2RecordingBenchmark.insertRow", "-Dulyp.metrics"}, value = BenchmarkConstants.FORKS)
     @Benchmark
     public void record() {
         insertRow();
     }
 
-    @Fork(jvmArgs = "-Dulyp.methods=**.H2Benchmark.insertRow", value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.H2RecordingBenchmark.insertRow", value = BenchmarkConstants.FORKS)
     @Benchmark
     public void syncRecord(Counters counters) {
         execSyncRecord(counters, this::insertRow);
