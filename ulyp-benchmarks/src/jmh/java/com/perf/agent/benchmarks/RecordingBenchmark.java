@@ -14,7 +14,9 @@ import java.util.function.Supplier;
         "-XX:+AlwaysPreTouch",
         BenchmarkConstants.ENABLE_AGENT_SYSTEM_PROP,
         "-Dulyp.file=/tmp/test.dat",
-        "-Dulyp.record-constructors"
+        "-Dulyp.record-constructors",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED"
 })
 @State(Scope.Benchmark)
 public class RecordingBenchmark {
