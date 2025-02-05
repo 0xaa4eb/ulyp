@@ -33,19 +33,13 @@ public class StringsRecordingBenchmark extends RecordingBenchmark {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=65536"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute", value = BenchmarkConstants.FORKS)
     @Benchmark
     public String record() {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=65536"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.StringsRecordingBenchmark.doCompute", value = BenchmarkConstants.FORKS)
     @Benchmark
     public String syncRecord(Counters counters) {
         return execSyncRecord(counters, this::doCompute);

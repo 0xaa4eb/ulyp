@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.SingleShotTime)
 @Warmup(iterations = 20)
-@Measurement(iterations = 500)
+@Measurement(iterations = 50)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class FibonacciRecordingBenchmark extends RecordingBenchmark {
 
@@ -39,7 +39,6 @@ public class FibonacciRecordingBenchmark extends RecordingBenchmark {
 
     @Fork(jvmArgs = {
             "-Dulyp.methods=**.FibonacciRecordingBenchmark.compute",
-            "-Dulyp.recording-queue.size=65536"
     }, value = BenchmarkConstants.FORKS)
     @Benchmark
     public int record() {
@@ -47,10 +46,7 @@ public class FibonacciRecordingBenchmark extends RecordingBenchmark {
         return compute(27);
     }
 
-    @Fork(jvmArgs = {
-            "-Dulyp.methods=**.FibonacciRecordingBenchmark.compute",
-            "-Dulyp.recording-queue.size=65536"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.FibonacciRecordingBenchmark.compute", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int syncRecord(Counters counters) {
         // TODO direct mem limit reached with 31

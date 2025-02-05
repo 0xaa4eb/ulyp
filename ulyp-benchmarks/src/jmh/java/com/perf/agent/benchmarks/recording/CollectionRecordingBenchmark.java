@@ -31,19 +31,13 @@ public class CollectionRecordingBenchmark extends RecordingBenchmark {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=65536"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int record() {
         return doCompute();
     }
 
-    @Fork(jvmArgs = {
-            "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute",
-            "-Dulyp.recording-queue.size=65536"
-    }, value = BenchmarkConstants.FORKS)
+    @Fork(jvmArgs = "-Dulyp.methods=**.CollectionRecordingBenchmark.doCompute", value = BenchmarkConstants.FORKS)
     @Benchmark
     public int syncRecord(Counters counters) throws InterruptedException {
         return execSyncRecord(counters, this::doCompute);
