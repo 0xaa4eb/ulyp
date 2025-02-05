@@ -60,6 +60,7 @@ classes {
 
 compileJava {
     options.debug = true
+    dependsOn(':ulyp-agent-core:copyShadowJar')
 }
 
 /*jar {
@@ -69,7 +70,6 @@ compileJava {
 }*/
 
 shadowJar {
-    dependsOn(':ulyp-agent-core:shadowJar')
     dependsOn(':ulyp-agent-core:copyShadowJar')
 
     relocate 'org.agrona', 'shadowed.org.agrona'
