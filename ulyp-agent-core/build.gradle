@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'io.freefair.lombok' version '5.3.0'
-    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "com.gradleup.shadow" version "8.3.6"
 }
 
 test {
@@ -17,9 +17,9 @@ dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    shadow group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.11'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
@@ -48,13 +48,16 @@ compileJava {
     options.debug = true
 }
 
+/*
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+*/
 
 shadowJar {
+    dependsOn 'jar'
     relocate 'org.agrona', 'shadowed.org.agrona'
     relocate 'org.slf4j', 'com.ulyp.slf4j'
     relocate 'io', 'shadowed.io'
@@ -63,7 +66,7 @@ shadowJar {
     relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
     relocate 'com.lmax', 'shadowed.com.lmax'
 
-    archiveName = "${rootProject.name}-agent-core-${rootProject.version}.jar"
+    archiveFileName = "${rootProject.name}-agent-core-${rootProject.version}.jar"
 
     mergeServiceFiles()
 

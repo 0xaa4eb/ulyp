@@ -1,18 +1,18 @@
 plugins {
     id 'java'
     id 'io.freefair.lombok' version '5.3.0'
-    id "com.github.johnrengelman.shadow" version "2.0.4"
+    id "com.gradleup.shadow" version "8.3.6"
 }
 
 dependencies {
-    implementation project(':ulyp-common')
-    compileOnly project(':ulyp-agent-core')
+    shadow project(':ulyp-common')
+    shadow project(':ulyp-agent-core')
     runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarr')
 
-    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
-    compileOnly group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    shadow group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    shadow group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+    shadow group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+    shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     testImplementation project(':ulyp-agent-core')
 
@@ -62,11 +62,11 @@ compileJava {
     options.debug = true
 }
 
-jar {
+/*jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
     }
-}
+}*/
 
 shadowJar {
     dependsOn(':ulyp-agent-core:shadowJar')
@@ -79,7 +79,7 @@ shadowJar {
     relocate 'javax.annotation', 'shadowed.javax.annotation'
     relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
 
-    archiveName = "${rootProject.name}-agent-${rootProject.version}.jar"
+    archiveFileName = "${rootProject.name}-agent-${rootProject.version}.jar"
 
     mergeServiceFiles()
 
