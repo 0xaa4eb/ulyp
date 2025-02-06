@@ -24,6 +24,7 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     shadow group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
     testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.11'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
