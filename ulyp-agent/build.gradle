@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'io.freefair.lombok' version '5.3.0'
+    id 'io.freefair.lombok' version '8.12.1'
     id "com.gradleup.shadow" version "8.3.6"
 }
 
@@ -12,8 +12,8 @@ dependencies {
     shadow group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     shadow group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
     shadow group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
-    shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
     testImplementation project(':ulyp-agent-core')
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
