@@ -60,6 +60,7 @@ classes {
 
 compileJava {
     options.debug = true
+    dependsOn(':ulyp-agent-core:shadowJar')
     dependsOn(':ulyp-agent-core:copyShadowJar')
 }
 
