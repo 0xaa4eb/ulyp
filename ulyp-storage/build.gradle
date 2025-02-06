@@ -15,8 +15,6 @@ test {
     useJUnitPlatform()
 }
 
-sourceCompatibility = 1.8
-
 dependencies {
     implementation project(':ulyp-common')
 

@@ -63,12 +63,6 @@ compileJava {
     dependsOn(':ulyp-agent-core:copyShadowJar')
 }
 
-/*jar {
-    from {
-        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}*/
-
 shadowJar {
     dependsOn(':ulyp-agent-core:copyShadowJar')
 
