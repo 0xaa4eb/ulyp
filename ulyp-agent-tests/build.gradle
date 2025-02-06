@@ -54,6 +54,10 @@ sourceSets {
     main.java.srcDirs = ['src/main/java', '../src/main/java']
 }
 
+compileKotlin {
+    dependsOn(':ulyp-agent-core:copyShadowJar')
+}
+
 test {
     dependsOn(':ulyp-agent:shadowJar')
 }

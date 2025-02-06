@@ -12,7 +12,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
-    id 'io.freefair.lombok' version '5.3.0'
+    id 'io.freefair.lombok' version '8.12.1'
     id 'org.openjfx.javafxplugin' version '0.0.14' apply(false)
 }
 
@@ -45,8 +45,8 @@ dependencies {
     implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '9.7.3'
     implementation group: 'org.agrona', name: 'agrona', version: '1.4.0'
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
 
     implementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.4.0'
     implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.16.1'
