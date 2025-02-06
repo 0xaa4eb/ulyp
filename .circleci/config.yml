@@ -11,11 +11,11 @@ jobs:
       - run:
           name: "Run gradle build"
           command: "chmod +x gradlew && ./gradlew ulyp-common:check ulyp-storage:check ulyp-agent-core:check ulyp-agent-tests:check -i"
-  jdk-14-build:
+  jdk-17-build:
     environment:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
-      - image: circleci/openjdk:14.0.2-buster-node-browsers-legacy
+      - image: circleci/openjdk:17.0.14
     steps:
       - checkout
       - run:
@@ -26,4 +26,4 @@ workflows:
   build-workflow:
     jobs:
       - jdk-8-build
-      - jdk-14-build
+      - jdk-17-build
