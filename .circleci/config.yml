@@ -5,7 +5,7 @@ jobs:
     environment:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
-      - image: circleci/openjdk:8u312-buster-node-browsers
+      - image: cimg/openjdk:8.0.442
     steps:
       - checkout
       - run:
@@ -15,7 +15,7 @@ jobs:
     environment:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     docker:
-      - image: circleci/openjdk:17.0.14
+      - image: cimg/openjdk:17.0.14
     steps:
       - checkout
       - run:
