@@ -68,6 +68,7 @@ public class TestUtil {
             if (jdkVersion >= OPEN_MODULES_JDK_VERSION) {
                 processArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED");
                 processArgs.add("--add-opens=java.base/java.lang.invoke=ALL-UNNAMED");
+                processArgs.add("--add-opens=java.base/sun.nio.ch=ALL-UNNAMED");
             }
         }
     }
