@@ -31,7 +31,7 @@ Calling this method with ulyp agent enabled is able to provide a full call tree.
 ## Blog posts
 
 The underlying rationale for the development, technical design, as well as some use cases are outlined in the following blog posts:
-* [Ulyp: Recording Java code execution for faster debugging (ENG)](https://0xaa4eb.github.io/2024/10/13/recording-java-code-execution-for-faster-debugging.html)
+* [Ulyp: Recording Java code execution for faster debugging (ENG)](https://dzone.com/articles/ulyp-recording-java-execution-flow-for-faster-debugging)
 * [Reverse engineer Spring Web in 5 minutes using a recording debugger (ENG)](https://0xaa4eb.github.io/2024/12/14/reverse-engineer-spring-boot.html)
 
 ## How to use
