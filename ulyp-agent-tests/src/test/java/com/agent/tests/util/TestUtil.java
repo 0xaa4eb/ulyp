@@ -3,6 +3,7 @@ package com.agent.tests.util;
 import org.buildobjects.process.ProcBuilder;
 import org.buildobjects.process.ProcResult;
 import org.junit.jupiter.api.Assertions;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -12,8 +13,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestUtil {
+
+    private static final Pattern JDK_VERSION_PATTERN = Pattern.compile("(\\d\\d)\\..*");
+    private static final int OPEN_MODULES_JDK_VERSION = 17;
 
     public static void runClassInSeparateJavaProcess(ForkProcessBuilder settingsBuilder) {
         File agentJar = findAgentJar();
@@ -27,6 +33,7 @@ public class TestUtil {
             processArgs.add("-javaagent:" + agentJar.getAbsolutePath());
             processArgs.add("-cp");
             processArgs.add(classPath);
+            openJavaModules(processArgs);
             processArgs.addAll(settingsBuilder.toCmdJavaProps());
             processArgs.add(settingsBuilder.getMainClass().getName());
 
@@ -44,6 +51,24 @@ public class TestUtil {
             }
         } catch (Exception e) {
             throw new AssertionError("Process ended unsuccessfully", e);
+        }
+    }
+
+    private static void openJavaModules(List<String> processArgs) {
+        String jdkVersionRaw = System.getProperty("java.version");
+        Matcher matcher = JDK_VERSION_PATTERN.matcher(jdkVersionRaw);
+        if (matcher.matches()) {
+            int jdkVersion;
+            try {
+                jdkVersion = Integer.parseInt(matcher.group(1));
+            } catch (NumberFormatException numberFormatException) {
+                throw new AssertionFailedError("Could not define java version from " + jdkVersionRaw);
+            }
+
+            if (jdkVersion >= OPEN_MODULES_JDK_VERSION) {
+                processArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED");
+                processArgs.add("--add-opens=java.base/java.lang.invoke=ALL-UNNAMED");
+            }
         }
     }
 
