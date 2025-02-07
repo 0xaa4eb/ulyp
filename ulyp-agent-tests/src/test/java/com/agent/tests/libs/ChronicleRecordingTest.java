@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import static com.agent.tests.util.DebugCallRecordTreePrinter.printTree;
 import static com.agent.tests.util.RecordingMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -31,7 +32,7 @@ class ChronicleRecordingTest extends AbstractInstrumentationTest {
         );
 
         CallRecord root = recordingResult.getSingleRoot();
-        String errMsg = DebugCallRecordTreePrinter.printTree(root);
+        String errMsg = printTree(root);
 
         assertThat(errMsg, root.getSubtreeSize(), greaterThan(100));
 
@@ -50,14 +51,14 @@ class ChronicleRecordingTest extends AbstractInstrumentationTest {
                         .withMain(TestCase.class)
                         .withMethodToRecord(MethodMatcher.parse("**.ChronicleRecordingTest.TestCase.main"))
                         .withInstrumentedPackages()
-                        .withSystemProp(SystemProp.builder().key("messageCount").value("6").build())
+                        .withSystemProp(SystemProp.builder().key("messageCount").value("100").build())
         );
 
         CallRecord singleRoot = recordingResult.getSingleRoot();
 
-        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot.getSubtreeSize(), greaterThan(300));
+        assertThat(printTree(singleRoot), singleRoot.getSubtreeSize(), greaterThan(3000));
 
-        assertThat(DebugCallRecordTreePrinter.printTree(singleRoot), singleRoot, allOf(
+        assertThat(printTree(singleRoot), singleRoot, allOf(
                 hasChildCall(hasMethod(hasName("startExcerpt"))),
                 hasChildCall(hasMethod(hasName("writeInt"))),
                 hasChildCall(hasMethod(hasName("readInt")))
@@ -76,17 +77,28 @@ class ChronicleRecordingTest extends AbstractInstrumentationTest {
 
             for (int i = 0; i < msgCount; i++) {
                 appender.startExcerpt();
-                appender.writeInt(4324);
-                appender.writeLong(54563463L);
-                appender.writeDouble(234324.43);
+                appender.writeInt(i);
+                appender.writeLong(2L * i);
+                appender.writeDouble(i * 5.0);
                 appender.finish();
             }
 
             ExcerptTailer tailer = chronicle.createTailer();
+            int i = 0;
             while (tailer.nextIndex()) {
-                System.out.println(tailer.readInt());
-                System.out.println(tailer.readLong());
-                System.out.println(tailer.readDouble());
+                if (tailer.readInt() != i) {
+                    throw new RuntimeException("consistency check");
+                }
+                if (tailer.readLong() != 2L * i) {
+                    throw new RuntimeException("consistency check");
+                }
+                if (Math.abs(tailer.readDouble() - i * 5.0) > 1e-8) {
+                    throw new RuntimeException("consistency check");
+                }
+                i++;
+            }
+            if (i != msgCount) {
+                throw new RuntimeException("got " + i + " messages from tailer, expected " + msgCount);
             }
             tailer.finish();
         }
