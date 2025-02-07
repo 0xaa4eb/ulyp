@@ -44,6 +44,10 @@ compileJava {
     options.debug = true
 }
 
+compileJmhJava {
+    dependsOn(':ulyp-agent-core:copyShadowJar', ':ulyp-agent-core:shadowJar')
+}
+
 def jmhArgs = []
 if (project.hasProperty('jmhProf')) {
     jmhArgs.add('-prof')
