@@ -1,5 +1,8 @@
 package com.ulyp.core.util;
 
+import org.jetbrains.annotations.TestOnly;
+
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -81,6 +84,18 @@ public class ConcurrentArrayList<V> {
                 return currentChunkIndex * CHUNK_SIZE + currentChunk.size();
             }
         }
+    }
+
+    @TestOnly
+    public boolean contains(V value) {
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            V valueAt = get(i);
+            if (Objects.equals(valueAt, value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static class Chunk<V> {

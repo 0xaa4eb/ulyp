@@ -5,7 +5,6 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
-import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.util.LoggingSettings;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class ClassRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
+    public ClassRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
         return new ClassRecord(objectType, typeResolver.getType(input.readVarInt()));
     }
 

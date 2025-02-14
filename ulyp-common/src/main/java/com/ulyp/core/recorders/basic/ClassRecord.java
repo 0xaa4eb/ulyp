@@ -22,6 +22,6 @@ public class ClassRecord extends ObjectRecord {
 
     @Override
     public String toString() {
-        return "class " + declaringType.getName();
+        return declaringType.getName();
     }
 }

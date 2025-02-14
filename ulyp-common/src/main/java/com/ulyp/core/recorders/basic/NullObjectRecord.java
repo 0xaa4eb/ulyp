@@ -5,13 +5,13 @@ import com.ulyp.core.recorders.ObjectRecord;
 
 public class NullObjectRecord extends ObjectRecord {
 
-    private static final ObjectRecord instance = new NullObjectRecord();
+    private static final NullObjectRecord instance = new NullObjectRecord();
 
     private NullObjectRecord() {
         super(Type.unknown());
     }
 
-    public static ObjectRecord getInstance() {
+    public static NullObjectRecord getInstance() {
         return instance;
     }
 

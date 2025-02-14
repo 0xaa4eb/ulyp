@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class BufferBytesOut extends AbstractBytesOut {
 
-    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<MarkImpl>(
+    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<>(
             MarkImpl::new,
             3
     );

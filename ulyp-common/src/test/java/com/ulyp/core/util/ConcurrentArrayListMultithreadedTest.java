@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class ConcurrentArrayListMultithreadedTest {
 
     static {
@@ -57,14 +59,14 @@ class ConcurrentArrayListMultithreadedTest {
                 for (int j = 0; j < keys.length; j++) {
                     int actualValue = list.get(keys[j]);
                     int expectedValue = j * (threads + 1) + threadOffset;
-                    Assertions.assertEquals(expectedValue, actualValue);
+                    assertEquals(expectedValue, actualValue);
                 }
             } catch (Exception e) {
                 Assertions.fail("Test failed: " + e.getMessage());
             }
         }
 
-        Assertions.assertEquals(putsPerThread * threads, list.size());
+        assertEquals(putsPerThread * threads, list.size());
 
         executorService.shutdownNow();
         executorService.awaitTermination(5, TimeUnit.SECONDS);

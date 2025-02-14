@@ -2,6 +2,7 @@ package com.ulyp.core.bytes;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.recorders.ObjectRecord;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -37,4 +38,7 @@ public interface BytesIn {
     String readString();
 
     int readIntAt(int offset);
+
+    @TestOnly
+    byte[] toByteArray();
 }

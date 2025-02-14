@@ -17,7 +17,7 @@ public class ReflectionBasedMethodResolver {
     private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     public Method resolve(java.lang.reflect.Method method) {
-        boolean returns = method.getReturnType() != Void.class;
+        boolean returns = method.getReturnType() != void.class;
         Type declaringType = typeResolver.get(method.getDeclaringClass());
 
         return Method.builder()

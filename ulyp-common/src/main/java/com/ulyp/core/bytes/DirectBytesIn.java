@@ -151,4 +151,11 @@ public class DirectBytesIn implements BytesIn {
             return null;
         }
     }
+
+    @Override
+    public byte[] toByteArray() {
+        byte[] result = new byte[buffer.capacity()];
+        buffer.getBytes(0, result);
+        return result;
+    }
 }

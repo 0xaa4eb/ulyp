@@ -3,6 +3,7 @@ package com.ulyp.core.bytes;
 import com.ulyp.core.TypeResolver;
 import lombok.SneakyThrows;
 import org.agrona.DirectBuffer;
+import org.agrona.ExpandableArrayBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.jetbrains.annotations.TestOnly;
 
@@ -17,6 +18,11 @@ import java.io.IOException;
  */
 @NotThreadSafe
 public interface BytesOut extends AutoCloseable {
+
+    @TestOnly
+    static BytesOut expandableArray() {
+        return new BufferBytesOut(new ExpandableArrayBuffer());
+    }
 
     int recursionDepth();
 
@@ -50,9 +56,6 @@ public interface BytesOut extends AutoCloseable {
 
     void write(char val);
 
-    /**
-     * Closing is only used for decrementing recursion depth, use {@link BytesOut#dispose()} to free the memory
-     */
     DirectBuffer copy();
 
     void close() throws RuntimeException;

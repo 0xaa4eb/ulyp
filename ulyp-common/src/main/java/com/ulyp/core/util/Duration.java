@@ -12,7 +12,7 @@ public class Duration {
         this.nanos = nanos;
     }
 
-    public static String print(long nanos) {
+    public static String printNanos(long nanos) {
         if (nanos >= SECONDS_THRESHOLD) return formatSize(nanos, SECONDS_THRESHOLD, "s");
         if (nanos >= MILLISECOND_THRESHOLD) return formatSize(nanos, MILLISECOND_THRESHOLD, "ms");
         if (nanos >= MICROSECOND_THRESHOLD) return formatSize(nanos, MICROSECOND_THRESHOLD, "us");
@@ -25,6 +25,6 @@ public class Duration {
 
     @Override
     public String toString() {
-        return print(nanos);
+        return printNanos(nanos);
     }
 }

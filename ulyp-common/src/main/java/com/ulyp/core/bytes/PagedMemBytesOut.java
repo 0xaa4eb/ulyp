@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class PagedMemBytesOut extends AbstractBytesOut {
 
-    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<MarkImpl>(
+    private final FixedSizeObjectPool<MarkImpl> marksPool = new FixedSizeObjectPool<>(
             MarkImpl::new,
             3
     );

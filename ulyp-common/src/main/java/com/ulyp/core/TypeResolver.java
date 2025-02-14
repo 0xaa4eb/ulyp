@@ -17,6 +17,8 @@ public interface TypeResolver {
     @NotNull
     Type get(Class<?> clazz);
 
+    Type getById(int id);
+
     @NotNull
     ConcurrentArrayList<Type> values();
 }
