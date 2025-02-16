@@ -6,6 +6,11 @@ plugins {
 
 dependencies {
     shadow project(':ulyp-common')
+
+    /*
+     We are embedding ulyp-agent-core jar file inside ulyp-agent jar file. ulyp-agent-core jar is copied to temp folder
+     and attached to bootstrap class loader on agent startup.
+    */
     shadow project(':ulyp-agent-core')
     runtimeOnly files('../ulyp-agent-core/build/libs/ulyp-agent-core.jarr')
 
@@ -14,8 +19,9 @@ dependencies {
     shadow group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
-    testImplementation project(':ulyp-agent-core')
 
+    testImplementation project(':ulyp-common')
+    testImplementation project(':ulyp-agent-core')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'

@@ -19,6 +19,7 @@ dependencies {
     shadow group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     shadow group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
     shadow group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+    shadow group: 'net.bytebuddy', name: 'byte-buddy', version: '1.15.11'
 
     shadow group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
@@ -62,7 +63,6 @@ shadowJar {
     relocate 'io', 'shadowed.io'
     relocate 'com.google', 'shadowed.com.google'
     relocate 'javax.annotation', 'shadowed.javax.annotation'
-    relocate 'net.bytebuddy', 'shadowed.net.bytebuddy'
     relocate 'com.lmax', 'shadowed.com.lmax'
 
     archiveFileName = "${rootProject.name}-agent-core-${rootProject.version}.jar"

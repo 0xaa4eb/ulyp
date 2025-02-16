@@ -5,9 +5,7 @@ import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.policy.OverridableRecordingPolicy;
 import com.ulyp.agent.queue.RecordingEventQueue;
 import com.ulyp.agent.util.MetricDumper;
-import com.ulyp.core.MethodRepository;
-import com.ulyp.core.ProcessMetadata;
-import com.ulyp.core.TypeResolver;
+import com.ulyp.core.*;
 import com.ulyp.core.metrics.Metrics;
 import com.ulyp.core.metrics.MetricsImpl;
 import com.ulyp.core.metrics.NullMetrics;
@@ -15,6 +13,8 @@ import com.ulyp.core.util.Classpath;
 import com.ulyp.core.util.ReflectionBasedTypeResolver;
 import com.ulyp.storage.writer.RecordingDataWriter;
 import lombok.Getter;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.description.type.TypeDescription;
 import org.jetbrains.annotations.Nullable;
 
 public class AgentContext {
@@ -32,6 +32,10 @@ public class AgentContext {
     @Getter
     private final TypeResolver typeResolver;
     @Getter
+    private final Converter<MethodDescription, Method> methodResolver;
+    @Getter
+    private final Converter<TypeDescription.Generic, Type> typeConverter;
+    @Getter
     private final MethodRepository methodRepository;
     @Getter
     private final RecordingEventQueue recordingEventQueue;
@@ -45,7 +49,7 @@ public class AgentContext {
     private final MetricDumper metricDumper;
     private final RecorderContext recorderContext;
 
-    private AgentContext() {
+    private AgentContext(AgentContextBootstrap bootstrap) {
         this.options = new AgentOptions();
         if (options.getMetricsEnabled().get()) {
             this.metrics = new MetricsImpl();
@@ -64,7 +68,9 @@ public class AgentContext {
                 .pid(System.currentTimeMillis())
                 .classpath(new Classpath().toList())
                 .build();
-        this.typeResolver = ReflectionBasedTypeResolver.getInstance();
+        this.typeConverter = bootstrap.getTypeConverter();
+        this.methodResolver = bootstrap.getMethodConverter();
+        this.typeResolver = new ReflectionBasedTypeResolver();
         this.recordingEventQueue = new RecordingEventQueue(typeResolver, new AgentDataWriter(recordingDataWriter, methodRepository), metrics);
         this.recorder = new Recorder(options, typeResolver, methodRepository, startRecordingPolicy, recordingEventQueue, metrics);
 
@@ -82,8 +88,8 @@ public class AgentContext {
         }
     }
 
-    public static void init() {
-        ctx = new AgentContext();
+    public static void init(AgentContextBootstrap bootstrap) {
+        ctx = new AgentContext(bootstrap);
 
         if (ctx.getOptions().isAgentEnabled()) {
             ctx.getStorageWriter().write(ctx.getProcessMetadata());

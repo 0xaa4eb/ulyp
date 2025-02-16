@@ -2,8 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.advice.ConstructorAdvice;
 import com.ulyp.agent.advice.MethodAdvice;
-import com.ulyp.agent.util.ByteBuddyMethodResolver;
-import com.ulyp.agent.util.ByteBuddyTypeConverter;
+import com.ulyp.core.Converter;
 import com.ulyp.core.Method;
 import com.ulyp.core.MethodRepository;
 import net.bytebuddy.asm.Advice;
@@ -26,9 +25,8 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
     private final ForMethodIdOffsetMapping instance;
 
-    public MethodIdFactory(MethodRepository methodRepository) {
-        ByteBuddyMethodResolver byteBuddyMethodResolver = new ByteBuddyMethodResolver(ByteBuddyTypeConverter.INSTANCE);
-        this.instance = new ForMethodIdOffsetMapping(byteBuddyMethodResolver, methodRepository);
+    public MethodIdFactory(MethodRepository methodRepository, Converter<MethodDescription, Method> methodResolver) {
+        this.instance = new ForMethodIdOffsetMapping(methodResolver, methodRepository);
     }
 
     @Override
@@ -56,9 +54,9 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
 
         private final MethodRepository methodRepository;
         private final ThreadLocal<IdMapping> lastMethod = new ThreadLocal<>();
-        private final ByteBuddyMethodResolver byteBuddyMethodResolver;
+        private final Converter<MethodDescription, Method> byteBuddyMethodResolver;
 
-        ForMethodIdOffsetMapping(ByteBuddyMethodResolver byteBuddyMethodResolver, MethodRepository methodRepository) {
+        ForMethodIdOffsetMapping(Converter<MethodDescription, Method> byteBuddyMethodResolver, MethodRepository methodRepository) {
             this.byteBuddyMethodResolver = byteBuddyMethodResolver;
             this.methodRepository = methodRepository;
         }
@@ -79,7 +77,7 @@ public class MethodIdFactory implements Advice.OffsetMapping.Factory<MethodId> {
                 lastMethod.set(null);
                 id = idMapping.methodId;
             } else {
-                Method method = byteBuddyMethodResolver.resolve(instrumentedMethod);
+                Method method = byteBuddyMethodResolver.convert(instrumentedMethod);
                 id = methodRepository.putAndGetId(method);
                 lastMethod.set(new IdMapping(instrumentedMethod, id));
             }

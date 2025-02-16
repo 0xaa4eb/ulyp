@@ -5,6 +5,9 @@ import com.ulyp.agent.options.AgentOptions;
 import com.ulyp.agent.util.ByteBuddyMethodResolver;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.InstrumentationListener;
+import com.ulyp.core.Converter;
+import com.ulyp.core.Method;
+import com.ulyp.core.Type;
 import com.ulyp.core.util.LoggingSettings;
 import com.ulyp.core.util.TypeMatcher;
 import net.bytebuddy.ByteBuddy;
@@ -48,42 +51,49 @@ public class Agent {
         if (AgentContext.isLoaded()) {
             return;
         } else {
-            AgentContext.init();
+            ByteBuddyTypeConverter typeConverter = new ByteBuddyTypeConverter();
+
+            AgentContextBootstrap bootstrap = AgentContextBootstrap.builder()
+                    .typeConverter(typeConverter)
+                    .methodConverter(new ByteBuddyMethodResolver(typeConverter))
+                    .build();
+
+            AgentContext.init(bootstrap);
         }
         AgentContext context = AgentContext.getCtx();
 
         System.out.println(ULYP_LOGO);
         System.out.println("ULYP agent started, logging level = " + logLevel + ", settings: " + options);
 
-        ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(options);
+        ElementMatcher.Junction<TypeDescription> ignoreMatcher = buildIgnoreMatcher(options, context.getTypeConverter());
         ElementMatcher.Junction<TypeDescription> instrumentationMatcher = buildInstrumentationMatcher(options);
 
-        MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository());
+        MethodIdFactory methodIdFactory = new MethodIdFactory(context.getMethodRepository(), context.getMethodResolver());
 
         AsmVisitorWrapper.ForDeclaredMethods startRecordingMethodAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(StartRecordingMethodAdvice.class)
-                .on(buildStartRecordingMethodsMatcher(options));
+                .on(buildStartRecordingMethodsMatcher(options, context.getMethodResolver()));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdvice = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdvice.class)
-                .on(buildContinueRecordingMethodsMatcher(options).and(x -> x.getParameters().size() > 3));
+                .on(buildContinueRecordingMethodsMatcher(options, context.getMethodResolver()).and(x -> x.getParameters().size() > 3));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceNoParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceNoArgs.class)
-                .on(buildContinueRecordingMethodsMatcher(options).and(x -> x.getParameters().isEmpty()));
+                .on(buildContinueRecordingMethodsMatcher(options, context.getMethodResolver()).and(x -> x.getParameters().isEmpty()));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceOneParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceOneArg.class)
-                .on(buildContinueRecordingMethodsMatcher(options).and(x -> x.getParameters().size() == 1));
+                .on(buildContinueRecordingMethodsMatcher(options, context.getMethodResolver()).and(x -> x.getParameters().size() == 1));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceTwoParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceTwoArgs.class)
-                .on(buildContinueRecordingMethodsMatcher(options).and(x -> x.getParameters().size() == 2));
+                .on(buildContinueRecordingMethodsMatcher(options, context.getMethodResolver()).and(x -> x.getParameters().size() == 2));
         AsmVisitorWrapper.ForDeclaredMethods methodCallAdviceThreeParams = Advice.withCustomMapping()
                 .bind(methodIdFactory)
                 .to(MethodAdviceThreeArgs.class)
-                .on(buildContinueRecordingMethodsMatcher(options).and(x -> x.getParameters().size() == 3));
+                .on(buildContinueRecordingMethodsMatcher(options, context.getMethodResolver()).and(x -> x.getParameters().size() == 3));
 
         TypeValidation typeValidation = options.isTypeValidationEnabled() ? TypeValidation.ENABLED : TypeValidation.DISABLED;
 
@@ -103,11 +113,11 @@ public class Agent {
             AsmVisitorWrapper.ForDeclaredMethods startRecordingConstructorAdvice = Advice.withCustomMapping()
                     .bind(methodIdFactory)
                     .to(StartRecordingConstructorAdvice.class)
-                    .on(buildStartRecordingConstructorMatcher(options));
+                    .on(buildStartRecordingConstructorMatcher(options, context.getMethodResolver()));
             AsmVisitorWrapper.ForDeclaredMethods constructorAdvice = Advice.withCustomMapping()
                     .bind(methodIdFactory)
                     .to(ConstructorAdvice.class)
-                    .on(buildContinueRecordingConstructorMatcher(options));
+                    .on(buildContinueRecordingConstructorMatcher(options, context.getMethodResolver()));
 
             agentBuilder = agentBuilder.transform((builder, typeDescription, classLoader, module, protectionDomain) ->
                     builder.visit(startRecordingConstructorAdvice).visit(constructorAdvice));
@@ -123,27 +133,35 @@ public class Agent {
         agent.installOn(instrumentation);
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(AgentOptions options) {
+    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingConstructorMatcher(
+            AgentOptions options,
+            Converter<MethodDescription, Method> methodResolver) {
         return ElementMatchers.isConstructor().and(
-                methodDescription -> options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> options.getRecordMethodList().matches(methodResolver.convert(methodDescription))
         );
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingConstructorMatcher(AgentOptions options) {
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingConstructorMatcher(
+            AgentOptions options,
+            Converter<MethodDescription, Method> methodResolver) {
         return ElementMatchers.isConstructor().and(
-                methodDescription -> !options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> !options.getRecordMethodList().matches(methodResolver.convert(methodDescription))
         );
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingMethodsMatcher(AgentOptions options) {
+    private static ElementMatcher.Junction<MethodDescription> buildStartRecordingMethodsMatcher(
+            AgentOptions options,
+            Converter<MethodDescription, Method> methodResolver) {
         return basicMethodsMatcher(options).and(
-                methodDescription -> options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> options.getRecordMethodList().matches(methodResolver.convert(methodDescription))
         );
     }
 
-    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingMethodsMatcher(AgentOptions options) {
+    private static ElementMatcher.Junction<MethodDescription> buildContinueRecordingMethodsMatcher(
+            AgentOptions options,
+            Converter<MethodDescription, Method> methodResolver) {
         return basicMethodsMatcher(options).and(
-                methodDescription -> !options.getRecordMethodList().matches(ByteBuddyMethodResolver.INSTANCE.resolve(methodDescription))
+                methodDescription -> !options.getRecordMethodList().matches(methodResolver.convert(methodDescription))
         );
     }
 
@@ -174,7 +192,9 @@ public class Agent {
         return Optional.ofNullable(instrumentationMatcher).orElse(ElementMatchers.any());
     }
 
-    private static ElementMatcher.Junction<TypeDescription> buildIgnoreMatcher(AgentOptions options) {
+    private static ElementMatcher.Junction<TypeDescription> buildIgnoreMatcher(
+            AgentOptions options,
+            Converter<TypeDescription.Generic, Type> typeConverter) {
         List<String> excludedPackages = options.getExcludedFromInstrumentationPackages().get();
 
         ElementMatcher.Junction<TypeDescription> ignoreMatcher = ElementMatchers.nameStartsWith("java.")
@@ -195,7 +215,6 @@ public class Agent {
         }
 
         for (TypeMatcher excludeTypeMatcher : options.getExcludeFromInstrumentationClasses().get()) {
-            ByteBuddyTypeConverter typeConverter = ByteBuddyTypeConverter.INSTANCE;
             ignoreMatcher = ignoreMatcher.or(
                 target -> excludeTypeMatcher.matches(typeConverter.convert(target.asGenericType()))
             );

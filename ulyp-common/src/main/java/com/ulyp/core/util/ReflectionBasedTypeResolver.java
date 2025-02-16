@@ -13,12 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ReflectionBasedTypeResolver implements TypeResolver {
 
-    private static final ReflectionBasedTypeResolver INSTANCE = new ReflectionBasedTypeResolver();
-
-    public static ReflectionBasedTypeResolver getInstance() {
-        return INSTANCE;
-    }
-
     private final ConcurrentMap<Class<?>, Type> map = new ConcurrentHashMap<>();
     private final Map<Integer, Type> byIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger idGen = new AtomicInteger();

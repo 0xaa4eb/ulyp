@@ -1,5 +1,6 @@
 package com.ulyp.agent.util;
 
+import com.ulyp.core.Converter;
 import com.ulyp.core.Type;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.type.TypeDefinition;
@@ -11,9 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Slf4j
-public class ByteBuddyTypeConverter {
-
-    public static final ByteBuddyTypeConverter INSTANCE = new ByteBuddyTypeConverter();
+public class ByteBuddyTypeConverter implements Converter<TypeDescription.Generic, Type> {
 
     private static final AtomicInteger typeIdGenerator = new AtomicInteger(0);
 

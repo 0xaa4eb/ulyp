@@ -1,19 +1,13 @@
 package com.ulyp.core.util;
 
 import com.ulyp.core.Type;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReflectionBasedTypeResolverTest {
 
-    private ReflectionBasedTypeResolver typeResolver;
-
-    @BeforeEach
-    void setUp() {
-        typeResolver = ReflectionBasedTypeResolver.getInstance();
-    }
+    private final ReflectionBasedTypeResolver typeResolver = new ReflectionBasedTypeResolver();
 
     @Test
     void shouldReturnSameTypeForSameClass() {

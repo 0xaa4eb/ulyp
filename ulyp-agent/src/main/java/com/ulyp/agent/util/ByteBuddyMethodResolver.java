@@ -1,5 +1,6 @@
 package com.ulyp.agent.util;
 
+import com.ulyp.core.Converter;
 import com.ulyp.core.Method;
 import com.ulyp.core.Type;
 import com.ulyp.core.util.LoggingSettings;
@@ -11,9 +12,7 @@ import net.bytebuddy.description.type.TypeDescription;
  * Converts byte buddy method description to internal domain class {@link Method}
  */
 @Slf4j
-public class ByteBuddyMethodResolver {
-
-    public static final ByteBuddyMethodResolver INSTANCE = new ByteBuddyMethodResolver(ByteBuddyTypeConverter.INSTANCE);
+public class ByteBuddyMethodResolver implements Converter<MethodDescription, Method> {
 
     private final ByteBuddyTypeConverter declaringTypeConverter;
 
@@ -21,7 +20,7 @@ public class ByteBuddyMethodResolver {
         this.declaringTypeConverter = declaringTypeConverter;
     }
 
-    public Method resolve(MethodDescription description) {
+    public Method convert(MethodDescription description) {
         boolean returns = !description.getReturnType().asGenericType().equals(TypeDescription.Generic.VOID);
         Type declaringType = declaringTypeConverter.convert(description.getDeclaringType().asGenericType());
         String actualName = description.getActualName();
