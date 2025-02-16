@@ -41,7 +41,7 @@ class CharRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Character.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(CharRecord.class, record);
@@ -59,7 +59,7 @@ class CharRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Character.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(Character.class.getName(), record.getType().getName());
@@ -76,12 +76,12 @@ class CharRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(Character.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(Character.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(record1.toString(), record2.toString());
@@ -110,7 +110,7 @@ class CharRecorderTest {
             ObjectRecord record = recorder.read(
                 typeResolver.get(Character.class),
                 out.flip(),
-                typeResolver::get
+                typeResolver::getById
             );
 
             assertEquals(specialChar, ((CharRecord) record).getValue());

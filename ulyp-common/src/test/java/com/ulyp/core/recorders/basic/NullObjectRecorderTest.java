@@ -35,7 +35,7 @@ class NullObjectRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Object.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertSame(NullObjectRecord.getInstance(), record);
@@ -53,12 +53,12 @@ class NullObjectRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(Object.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(Object.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertSame(record1, record2);
@@ -75,7 +75,7 @@ class NullObjectRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Object.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertSame(NullObjectRecord.getInstance(), record);
@@ -98,7 +98,7 @@ class NullObjectRecorderTest {
             ObjectRecord record = recorder.read(
                 typeResolver.get(type),
                 out.flip(),
-                typeResolver::get
+                typeResolver::getById
             );
 
             assertSame(NullObjectRecord.getInstance(), record);
@@ -130,7 +130,7 @@ class NullObjectRecorderTest {
             ObjectRecord record = recorder.read(
                 typeResolver.get(Object.class),
                 out.flip(),
-                typeResolver::get
+                typeResolver::getById
             );
             assertSame(NullObjectRecord.getInstance(), record);
         }

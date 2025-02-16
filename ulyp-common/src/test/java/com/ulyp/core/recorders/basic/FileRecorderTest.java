@@ -41,7 +41,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(FileRecord.class, record);
@@ -58,7 +58,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.getPath(), record.toString());
@@ -74,7 +74,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.getPath(), record.toString());
@@ -90,7 +90,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.getPath(), record.toString());
@@ -106,7 +106,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(File.class.getName(), record.getType().getName());
@@ -124,12 +124,12 @@ class FileRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(File.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(File.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(record1.toString(), record2.toString());
@@ -154,7 +154,7 @@ class FileRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(File.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.getPath(), record.toString());

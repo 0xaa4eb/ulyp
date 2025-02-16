@@ -43,7 +43,7 @@ class IntegralRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Long.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IntegralRecord.class, record);
@@ -61,7 +61,7 @@ class IntegralRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Integer.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IntegralRecord.class, record);
@@ -79,7 +79,7 @@ class IntegralRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Short.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IntegralRecord.class, record);
@@ -97,7 +97,7 @@ class IntegralRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Byte.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IntegralRecord.class, record);
@@ -112,7 +112,7 @@ class IntegralRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Byte.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(Byte.class.getName(), record.getType().getName());
 
@@ -122,7 +122,7 @@ class IntegralRecorderTest {
         record = recorder.read(
             typeResolver.get(Long.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(Long.class.getName(), record.getType().getName());
     }

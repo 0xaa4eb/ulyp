@@ -39,7 +39,7 @@ class DoubleRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(NumberRecord.class, record);
@@ -54,7 +54,7 @@ class DoubleRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("Infinity", record.toString());
 
@@ -63,7 +63,7 @@ class DoubleRecorderTest {
         record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("-Infinity", record.toString());
 
@@ -72,7 +72,7 @@ class DoubleRecorderTest {
         record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("NaN", record.toString());
     }
@@ -87,7 +87,7 @@ class DoubleRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(String.valueOf(testValue), record.toString());

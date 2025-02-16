@@ -42,7 +42,7 @@ class DateRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Date.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(DateRecord.class, record);
@@ -64,7 +64,7 @@ class DateRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Date.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.toString(), record.toString());
@@ -80,7 +80,7 @@ class DateRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Date.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.toString(), record.toString());
@@ -96,7 +96,7 @@ class DateRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Date.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(Date.class.getName(), record.getType().getName());
@@ -114,12 +114,12 @@ class DateRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(Date.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(Date.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(record1.toString(), record2.toString());
@@ -144,7 +144,7 @@ class DateRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Date.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.toString(), record.toString());

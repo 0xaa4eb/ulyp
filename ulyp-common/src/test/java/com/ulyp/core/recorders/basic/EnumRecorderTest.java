@@ -49,7 +49,7 @@ class EnumRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(TestEnum.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(EnumRecord.class, record);
@@ -66,7 +66,7 @@ class EnumRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(TestEnum.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.name(), record.toString());
@@ -82,7 +82,7 @@ class EnumRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(TimeUnit.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.name(), record.toString());
@@ -98,7 +98,7 @@ class EnumRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(TestEnum.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(TestEnum.class.getName(), record.getType().getName());
@@ -116,12 +116,12 @@ class EnumRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(TestEnum.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(TestEnum.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(record1.toString(), record2.toString());
@@ -161,7 +161,7 @@ class EnumRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(EnumWithFields.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertEquals(testValue.name(), record.toString());

@@ -24,7 +24,7 @@ class PrintingRecorderTest {
 
         recorder.write(value, out, typeResolver);
 
-        ObjectRecord objectRecord = recorder.read(typeResolver.get(X.class), out.flip(), typeResolver::get);
+        ObjectRecord objectRecord = recorder.read(typeResolver.get(X.class), out.flip(), typeResolver::getById);
 
         assertInstanceOf(IdentityObjectRecord.class, objectRecord);
         IdentityObjectRecord identityObjectRecord = (IdentityObjectRecord) objectRecord;

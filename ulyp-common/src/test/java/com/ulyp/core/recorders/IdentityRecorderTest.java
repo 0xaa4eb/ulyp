@@ -22,7 +22,7 @@ class IdentityRecorderTest {
         ObjectRecord objectRecord = recorder.read(
             typeResolver.get(Object.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IdentityObjectRecord.class, objectRecord);
@@ -42,12 +42,12 @@ class IdentityRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(Object.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(Object.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         IdentityObjectRecord identityRecord1 = (IdentityObjectRecord) record1;
@@ -81,12 +81,12 @@ class IdentityRecorderTest {
         ObjectRecord record1 = recorder.read(
             typeResolver.get(Object.class),
             out1.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         ObjectRecord record2 = recorder.read(
             typeResolver.get(Object.class),
             out2.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertNotEquals(record1, record2);
@@ -110,7 +110,7 @@ class IdentityRecorderTest {
         ObjectRecord objectRecord = recorder.read(
             typeResolver.get(CustomClass.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(IdentityObjectRecord.class, objectRecord);

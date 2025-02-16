@@ -50,7 +50,7 @@ class NumbersRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
 
         assertInstanceOf(NumberRecord.class, record);
@@ -65,7 +65,7 @@ class NumbersRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(BigInteger.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(bigInt.toString(), record.toString());
 
@@ -75,7 +75,7 @@ class NumbersRecorderTest {
         record = recorder.read(
             typeResolver.get(BigDecimal.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(bigDec.toString(), record.toString());
     }
@@ -88,7 +88,7 @@ class NumbersRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("Infinity", record.toString());
 
@@ -97,7 +97,7 @@ class NumbersRecorderTest {
         record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("-Infinity", record.toString());
 
@@ -106,7 +106,7 @@ class NumbersRecorderTest {
         record = recorder.read(
             typeResolver.get(Double.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals("NaN", record.toString());
     }
@@ -119,7 +119,7 @@ class NumbersRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(Integer.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(Integer.class.getName(), record.getType().getName());
 
@@ -129,7 +129,7 @@ class NumbersRecorderTest {
         record = recorder.read(
             typeResolver.get(BigDecimal.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         assertEquals(BigDecimal.class.getName(), record.getType().getName());
     }
@@ -157,7 +157,7 @@ class NumbersRecorderTest {
         ObjectRecord record = recorder.read(
             typeResolver.get(CustomNumber.class),
             out.flip(),
-            typeResolver::get
+            typeResolver::getById
         );
         
         assertEquals("CustomNumber:42", record.toString());
