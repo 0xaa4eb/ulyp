@@ -1,7 +1,5 @@
 package com.ulyp.agent.util;
 
-import com.ulyp.core.util.SystemPropertyUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -9,7 +7,7 @@ import java.util.List;
 
 public class StreamDrainer {
 
-    public static final int DEFAULT_BUFFER_SIZE = SystemPropertyUtil.getInt("ulyp.common.stream-drainer-buffer-size", 8 * 1024);
+    public static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
     private static final int END_OF_STREAM = -1;
     private static final int FROM_BEGINNING = 0;
 

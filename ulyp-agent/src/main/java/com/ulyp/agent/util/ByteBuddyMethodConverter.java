@@ -41,9 +41,6 @@ public class ByteBuddyMethodConverter implements Converter<MethodDescription, Me
                 .type(declaringType)
                 .build();
 
-        if (LoggingSettings.TRACE_ENABLED) {
-            log.trace("Resolved {} to {}", description, resolved);
-        }
         return resolved;
     }
 }
