@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
+/**
+ * Converts byte buddy type description to internal domain class {@link Type}
+ */
 @Slf4j
 public class ByteBuddyTypeConverter implements Converter<TypeDescription.Generic, Type> {
 

@@ -2,7 +2,7 @@ package com.ulyp.agent;
 
 import com.ulyp.agent.advice.*;
 import com.ulyp.agent.options.AgentOptions;
-import com.ulyp.agent.util.ByteBuddyMethodResolver;
+import com.ulyp.agent.util.ByteBuddyMethodConverter;
 import com.ulyp.agent.util.ByteBuddyTypeConverter;
 import com.ulyp.agent.util.InstrumentationListener;
 import com.ulyp.core.Converter;
@@ -55,7 +55,7 @@ public class Agent {
 
             AgentContextBootstrap bootstrap = AgentContextBootstrap.builder()
                     .typeConverter(typeConverter)
-                    .methodConverter(new ByteBuddyMethodResolver(typeConverter))
+                    .methodConverter(new ByteBuddyMethodConverter(typeConverter))
                     .build();
 
             AgentContext.init(bootstrap);

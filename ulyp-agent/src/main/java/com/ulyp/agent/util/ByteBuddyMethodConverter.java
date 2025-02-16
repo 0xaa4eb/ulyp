@@ -12,11 +12,11 @@ import net.bytebuddy.description.type.TypeDescription;
  * Converts byte buddy method description to internal domain class {@link Method}
  */
 @Slf4j
-public class ByteBuddyMethodResolver implements Converter<MethodDescription, Method> {
+public class ByteBuddyMethodConverter implements Converter<MethodDescription, Method> {
 
     private final ByteBuddyTypeConverter declaringTypeConverter;
 
-    public ByteBuddyMethodResolver(ByteBuddyTypeConverter declaringTypeConverter) {
+    public ByteBuddyMethodConverter(ByteBuddyTypeConverter declaringTypeConverter) {
         this.declaringTypeConverter = declaringTypeConverter;
     }
 
