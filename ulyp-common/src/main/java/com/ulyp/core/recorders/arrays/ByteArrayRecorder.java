@@ -6,7 +6,6 @@ import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
 import com.ulyp.core.recorders.IdentityObjectRecord;
-import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.ObjectRecorderRegistry;
 import lombok.Setter;
@@ -35,7 +34,7 @@ public class ByteArrayRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
+    public ByteArrayRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         IdentityObjectRecord identityRecord = (IdentityObjectRecord) ObjectRecorderRegistry.IDENTITY_RECORDER.getInstance().read(type, input, typeResolver);
         return new ByteArrayRecord(type, identityRecord, input.readVarInt());
     }

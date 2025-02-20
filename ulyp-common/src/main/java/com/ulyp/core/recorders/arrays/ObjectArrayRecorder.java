@@ -33,7 +33,7 @@ public class ObjectArrayRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
+    public ArrayRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readVarInt();
         int recordedItemsCount = input.readVarInt();
         List<ObjectRecord> items = new ArrayList<>(recordedItemsCount);

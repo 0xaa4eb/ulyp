@@ -32,7 +32,7 @@ public class OptionalRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
+    public OptionalRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         boolean hasSomething = input.readBoolean();
         if (hasSomething) {
             ObjectRecord value = input.readObject(typeResolver);

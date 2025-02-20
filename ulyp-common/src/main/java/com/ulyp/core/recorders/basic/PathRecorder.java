@@ -1,11 +1,11 @@
-package com.ulyp.core.recorders;
+package com.ulyp.core.recorders.basic;
 
 import com.ulyp.core.ByIdTypeResolver;
 import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
-import com.ulyp.core.recorders.basic.FileRecord;
+import com.ulyp.core.recorders.ObjectRecorder;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -31,7 +31,7 @@ public class PathRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
+    public FileRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
         return new FileRecord(objectType, input.readString());
     }
 

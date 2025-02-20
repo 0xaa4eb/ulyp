@@ -29,7 +29,7 @@ public class StringRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
+    public StringObjectRecord read(@NotNull Type objectType, BytesIn input, ByIdTypeResolver typeResolver) {
         return new StringObjectRecord(objectType, input.readString());
     }
 

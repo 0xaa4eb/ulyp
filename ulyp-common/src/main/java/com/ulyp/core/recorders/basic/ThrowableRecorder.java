@@ -29,7 +29,7 @@ public class ThrowableRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
+    public ThrowableRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         return new ThrowableRecord(type, input.readObject(typeResolver));
     }
 

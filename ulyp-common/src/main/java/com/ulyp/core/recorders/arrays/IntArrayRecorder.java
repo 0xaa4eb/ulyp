@@ -5,7 +5,6 @@ import com.ulyp.core.Type;
 import com.ulyp.core.TypeResolver;
 import com.ulyp.core.bytes.BytesIn;
 import com.ulyp.core.bytes.BytesOut;
-import com.ulyp.core.recorders.ObjectRecord;
 import com.ulyp.core.recorders.ObjectRecorder;
 import com.ulyp.core.recorders.numeric.IntegralRecord;
 import lombok.Setter;
@@ -39,7 +38,7 @@ public class IntArrayRecorder extends ObjectRecorder {
     }
 
     @Override
-    public ObjectRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
+    public ArrayRecord read(@NotNull Type type, BytesIn input, ByIdTypeResolver typeResolver) {
         int arrayLength = input.readVarInt();
         int recordedItemsCount = input.readVarInt();
         List<IntegralRecord> elements = IntStream.range(0, recordedItemsCount)
