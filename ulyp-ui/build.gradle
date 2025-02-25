@@ -12,7 +12,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.21'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.21'
-    id 'io.freefair.lombok' version '8.12.1'
+    id 'io.freefair.lombok' version '8.12.2'
     id 'org.openjfx.javafxplugin' version '0.0.14' apply(false)
 }
 
